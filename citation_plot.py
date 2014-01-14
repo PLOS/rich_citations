@@ -29,9 +29,12 @@ papers_in_range = filter(lambda x: x["citations"] >= citation_range[0] and x["ci
 print "Number of papers with at least " + str(citation_range[0]) + " citations and no more than " + str(citation_range[1]) + " citations is " + str(len(papers_in_range)) +"."
 mean_mentions = [mean(p["ipcs"]) for p in papers_in_range]
 bins = linspace(1, 10, 19)
+fig = figure()
+fig.subplots_adjust(left = 0.09, right = 0.98, bottom = 0.11)
 hist(mean_mentions, bins)
 xticks(size = 30)
 yticks(size = 30)
-ylabel(r"Number of papers ($n = 431$)", size = 40)
-xlabel("Mean number of mentions within a citing paper", size = 40)
+ylabel(r"Number of cited papers ($n = 431$)", size = 40)
+xlabel("Mean number of mentions within citing papers", size = 40)
+title("Labs Prototype Test: Paper Mention Histogram", size = 40, va = "top", y = 1.1)
 show()
