@@ -6,7 +6,7 @@
 
 """
 citation_utilities.py
-Version 0.8, 2014-01-06
+Version 0.9, 2014-01-22
 Written by Adam M. Becker.
 Released under a Creative Commons CC-BY 4.0 license (cc) 2014. Some rights reserved.
 """
@@ -27,6 +27,14 @@ def soupify(filename):
     f.close()
     return soup
 
+
+def remote_retrieve(doi):
+    '''Given the DOI of a PLOS paper, downloads the XML.'''
+    headers = {"Content-Type":"application/xml"}
+    r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML") 
+    # Doesn't matter whether it's a PLOS ONE article or not -- this will work for any article in any PLOS journal.
+    r.encoding = "UTF-8" # This is needed to keep the encoding on the papers correct.
+    return r.text
 
 def remote_soupify(doi):
     '''Given the DOI of a PLOS paper, downloads the XML and parses it using Beautiful Soup.'''
@@ -80,7 +88,27 @@ def citation_grouper(paper):
 
 def number(citation):
     '''A little function that translates XML citations into their citation numbers.'''
-    number = re.search(r"\d+", citation.text)
+    # try:
+    #     # Sometimes, the citation tag is inside the brackets, eg. [<xref>12</xref>]
+    #     naive = int(citation.text)
+    #     return naive
+    # except ValueError:
+    #     try:
+    #         # But sometimes, the brackets are inside the tag.
+    #         less_naive = int(citation.text[1:-1])
+    #         return less_naive
+    #     except ValueError:
+    #         # And sometimes, there's a full-text citation rather than a number! (Only on older papers, I think.)
+    #         rid = citation["rid"]
+    #         ref = citation.find_next("ref", attrs = {"id": rid})
+    #         label = ref.label
+    #         # number = re.search(r"\d+", citation.text)
+    #         number = re.search(r"\d+", label.text)
+    #         return int(number.group())
+    rid = citation["rid"]
+    ref = citation.find_next("ref", attrs = {"id": rid})
+    label = ref.label
+    number = re.search(r"\d+", label.text)
     return int(number.group())
 
 
@@ -469,3 +497,29 @@ def plos_paper_doi(paper):
     '''Given a soupified PLOS XML paper, returns that paper's DOI.'''
     paper_doi = paper.find("article-id", attrs={"pub-id-type":"doi"}).text
     return paper_doi
+
+def zero_mentions(paper):
+    '''
+    Given a soupified PLOS XML paper, returns False, 
+    unless there are citation reference numbers in that paper's list of references that are not actually mentioned in the text of the paper.
+    (This is against PLOS editorial policy, but it happens.)
+    If there are such "zero-mention" citations, this function returns a tuple with two entries:
+    the DOI of the given paper,
+    and a list of all the zero-mention citation reference numbers.
+    '''
+    # Get the intra-paper mentions for everything in the list of references of the given paper.
+    ipms = ipm_dictionary(paper)
+    # See whether there are any references with zero mentions.
+    if min(ipms.values()) > 0:
+        print "Paper is okay!"
+        return False
+    else:
+        print "Paper is NOT okay!"
+        # Get the DOI of the offending paper
+        doi = plos_paper_doi(paper)
+        print doi
+        # Get the reference numbers of the zero-mention references.
+        zero_mentions = filter(lambda x: not x[1], ipms.items())
+        print zero_mentions
+        zero_mentions = [z[0] for z in zero_mentions]
+        return (doi, zero_mentions)
