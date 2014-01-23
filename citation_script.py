@@ -11,7 +11,7 @@ Created by Adam M Becker on 2014-01-04.
 Released under a Creative Commons CC-BY 4.0 license (cc) 2014. Some rights reserved.
 """
 
-from citation_metadata import *
+from citation_utilities import *
 import pickle
 
 SEARCH_SUBJECT = "circadian rhythms"

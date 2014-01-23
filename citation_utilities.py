@@ -383,6 +383,8 @@ def micc_dictionary(paper):
         counts = [g.count(i) for g in all_groups]
         cite_groups = compress(all_groups, counts)
         cocite_counts = [len(g) - 1 for g in cite_groups]
+        if len(cocite_counts) == 0:
+            cocite_counts = [-1]
         results[i] = median(cocite_counts)
     return results
 
