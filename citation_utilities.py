@@ -29,13 +29,20 @@ def soupify(filename):
 
 def remote_retrieve(doi, filename = ''):
     '''Given the DOI of a PLOS paper, downloads the XML.'''
+    # First, see if the file was already downloaded.
+    if filename:
+        try:
+            f = open(filename)
+            return filename
+        except IOError:
+            pass
     headers = {"Content-Type":"application/xml"}
-    r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML") 
+    r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML", headers = headers) 
     # Doesn't matter whether it's a PLOS ONE article or not -- this will work for any article in any PLOS journal.
     r.encoding = "UTF-8" # This is needed to keep the encoding on the papers correct.
     if filename:
         f = open(filename, "w")
-        f.write(r.text)
+        f.write(r.text.encode("UTF-8"))
         f.close()
         return filename
     # Nothing after a return statement is executed, so the following line will only happen if filename is False.
@@ -44,7 +51,7 @@ def remote_retrieve(doi, filename = ''):
 def remote_soupify(doi):
     '''Given the DOI of a PLOS paper, downloads the XML and parses it using Beautiful Soup.'''
     headers = {"Content-Type":"application/xml"}
-    r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML") 
+    r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML", headers = headers) 
     # Doesn't matter whether it's a PLOS ONE article or not -- this will work for any article in any PLOS journal.
     r.encoding = "UTF-8" # This is needed to keep the encoding on the papers correct.
     soup = BeautifulSoup(r.text, features = "xml")
@@ -509,7 +516,7 @@ def large_citation_database(dois, xmlfolder = "papers/", verbose = True, num_of_
     # it retrieves the full XML text of the PLOS papers with the DOIs listed in the argument;
     # it saves the XML files to the path specified in xmlfolder, with filenames of the pattern <the part of the doi that comes after the slash>.xml;
     # it creates a list of those filenames.
-    filenames = [remote_retrieve(doi, filename = xmlfolder + re.search(r"/.+", doi).group()[1:] + ".xml") for doi in dois]
+    filenames = [remote_retrieve(doi, filename = xmlfolder + str(re.search(r"/.+", doi).group()[1:]) + ".xml") for doi in dois]
     
     # Prepare for multiprocessing!
     p = Pool(num_of_processors)
