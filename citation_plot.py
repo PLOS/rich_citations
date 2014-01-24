@@ -8,7 +8,6 @@
 citation_plot.py
 
 Created by Adam M Becker on 2014-01-04.
-Released under a Creative Commons CC-BY 4.0 license (cc) 2014. Some rights reserved.
 """
 
 from __future__ import division

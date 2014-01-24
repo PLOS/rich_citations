@@ -8,7 +8,6 @@
 zero_mention_script.py
 
 Created by Adam M Becker on 2014-01-04.
-Released under a Creative Commons CC-BY 4.0 license (cc) 2014. Some rights reserved.
 """
 
 from citation_utilities import plos_search, plos_dois, remote_soupify, remote_retrieve, zero_mentions

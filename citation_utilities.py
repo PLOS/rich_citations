@@ -6,9 +6,7 @@
 
 """
 citation_utilities.py
-Version 0.9, 2014-01-22
-Written by Adam M. Becker.
-Released under a Creative Commons CC-BY 4.0 license (cc) 2014. Some rights reserved.
+Version 0.10, 2014-01-24
 """
 
 from __future__ import division
@@ -95,6 +93,9 @@ def citation_grouper(paper):
 
 def number(citation):
     '''A little function that translates XML citations into their citation numbers.'''
+    # I attempted to make this function more subtle and capable of handling a wider variety of citation styles.
+    # I failed! But the attempt is instructive, so it's commented out below.
+    #
     # try:
     #     # Sometimes, the citation tag is inside the brackets, eg. [<xref>12</xref>]
     #     naive = int(citation.text)
@@ -112,6 +113,10 @@ def number(citation):
     #         # number = re.search(r"\d+", citation.text)
     #         number = re.search(r"\d+", label.text)
     #         return int(number.group())
+    # 
+    # The real function is below.
+    # This just pulls the reference ID off of the citation's XML tags, 
+    # then looks up the reference number of that RID down in the references section of the paper.
     rid = citation["rid"]
     ref = citation.find_next("ref", attrs = {"id": rid})
     label = ref.label
@@ -312,7 +317,6 @@ def intra_paper_mentions(number, paper):
     DEPRECATED in favor of ipm_dictionary
     Given a soupified paper and a citation number, returns the number of times that citation number is mentioned in the given paper.
     '''
-    # This is gonna be pretty.
     groups = [group_cleaner(g) for g in citation_grouper(paper)]
     flat_list = list(chain(*groups))
     return flat_list.count(number)
@@ -327,11 +331,9 @@ def ipm_dictionary(paper):
     '''
     groups = [group_cleaner(g) for g in citation_grouper(paper)]
     flat_list = list(chain(*groups))
-    # max_num = max(flat_list)
     # Find all the references.
     references = paper.find_all("ref")
     max_ref_num = len(references)
-    # results = {i:flat_list.count(i) for i in range(1, max_num + 1)}
     results = {i:flat_list.count(i) for i in range(1, max_ref_num + 1)}
     return results
 
@@ -364,8 +366,7 @@ def micc(number, paper):
     '''
     DEPRECATED in favor of micc_dictionary
     Given a paper and a citation number within that paper, 
-    returns the median number of inline co-citations of that citation in that paper.
-    PAPER PAPER PAPER CITATION PAPER PAPER
+    returns the median number of inline co-citations alongside that citation in that paper.
     '''
     # Fairly straightforward.
     all_groups = [group_cleaner(g) for g in citation_grouper(paper)]
@@ -380,12 +381,9 @@ def micc_dictionary(paper):
     Analogous to citation_number_dictionary, but for MICCs rather than the number of citations.
     '''
     all_groups = [group_cleaner(g) for g in citation_grouper(paper)]
-    # flat_list = list(chain(*all_groups))
-    # max_num = max(flat_list)
     references = paper.find_all("ref")
     max_ref_num = len(references)
     results = {}
-    # for i in range(1, max_num + 1):
     for i in range(1, max_ref_num + 1):
         counts = [g.count(i) for g in all_groups]
         cite_groups = compress(all_groups, counts)
@@ -500,13 +498,25 @@ def paper_citations(filename, verbose = False):
     
     return citations
 
-def large_citation_database(dois, xmlfolder = "papers/", verbose = True):
+def large_citation_database(dois, xmlfolder = "papers/", verbose = True, num_of_processors = 8):
     '''
+    Does the same thing as citation_database, but doesn't store as much information in RAM.
+    Also, takes a list of DOIs as its argument, rather than a list of soupified XML papers.
     '''
-    print "Retrieving papers..."
+    if verbose:
+        print "Retrieving papers..."
+    # The one-liner below does several things:
+    # it retrieves the full XML text of the PLOS papers with the DOIs listed in the argument;
+    # it saves the XML files to the path specified in xmlfolder, with filenames of the pattern <the part of the doi that comes after the slash>.xml;
+    # it creates a list of those filenames.
     filenames = [remote_retrieve(doi, filename = xmlfolder + re.search(r"/.+", doi).group()[1:] + ".xml") for doi in dois]
-    p = Pool(8)
-    print "Pulling citations..."
+    
+    # Prepare for multiprocessing!
+    p = Pool(num_of_processors)
+    
+    # Do it!
+    if verbose:
+        print "Pulling citations..."
     individual_databases = p.map(paper_citations, filenames)
     print "Assembling citations into a database..."
     database = {}
@@ -521,7 +531,6 @@ def large_citation_database(dois, xmlfolder = "papers/", verbose = True):
                 database[doi]["ipms"] = [data["ipms"]]
                 database[doi]["miccs"] = [data["miccs"]]
                 database[doi]["citations"] = 1
-                
     if verbose:
         print "Database post-processing..."
     for info in database.itervalues():
@@ -539,7 +548,12 @@ def plos_search(query, query_type = None, rows = 20, more_parameters = None, fq 
     fq: determines what kind of results are returned. 
     Set by default to return only full documents that are research articles (almost always what you want).
     output: determines output type. Set to JSON by default, XML is also possible, along with a few others.
+    Note that the PLOS search API cannot return full paper text, only abstracts and metadata.
+    However, the URL for retrieving full-text PLOS papers is wholly specified by a paper's DOI (journal is not necessary).
     '''
+    
+    # This is *MY* API key. Please don't overuse it. 
+    # We're going to need a different one (or a different arrangement altogether) for any public release.
     api_key = "s4ZVBmgJyfZPMpqyy3Gs" # for abecker@plos.org
     
     query_string = ""
