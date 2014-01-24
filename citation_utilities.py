@@ -19,6 +19,7 @@ import requests
 from urllib2 import quote
 import json
 import re
+from multiprocessing import Pool
 
 def soupify(filename):
     '''Opens the given XML file, parses it using Beautiful Soup, and returns the output.'''
@@ -28,12 +29,18 @@ def soupify(filename):
     return soup
 
 
-def remote_retrieve(doi):
+def remote_retrieve(doi, filename = ''):
     '''Given the DOI of a PLOS paper, downloads the XML.'''
     headers = {"Content-Type":"application/xml"}
     r = requests.get("http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/" + doi + "&representation=XML") 
     # Doesn't matter whether it's a PLOS ONE article or not -- this will work for any article in any PLOS journal.
     r.encoding = "UTF-8" # This is needed to keep the encoding on the papers correct.
+    if filename:
+        f = open(filename, "w")
+        f.write(r.text)
+        f.close()
+        return filename
+    # Nothing after a return statement is executed, so the following line will only happen if filename is False.
     return r.text
 
 def remote_soupify(doi):
@@ -457,7 +464,71 @@ def citation_database(papers, verbose = True):
     
     return database
 
+def paper_citations(filename, verbose = False):
+    '''
+    Somewhat similar to citation_database. 
+    Useful as a helper function in situations where there are too many papers in the corpus to hold in RAM at once.
+    Given a filename for a PLOS XML paper, 
+    assembles a list of the papers it cites, 
+    collects DOIs, the number of mentions, and MICCs for each of those papers,
+    Returns a dictionary of these measures, along with bare number of citations, keyed by DOI. 
+    Papers without discoverable DOIs are removed from the database.
+    '''
+    citations = {}
+    
+    paper = soupify(filename)
+    
+    if verbose:
+        paper_doi = plos_paper_doi(paper)
+        print "DOI of paper " + str(i + 1) + " is " + paper_doi
+    # Get the DOIs, the intra-paper mention counts, and the miccs.
+    ipms = ipm_dictionary(paper)
+    miccs = micc_dictionary(paper)
+    if verbose:
+        print "Retrieving DOIs for paper " + str(i + 1) + "..."
+    dois = doi_batch(paper)
+    # Remove the papers with un-identifiable DOIs.
+    dois = {k:v for k, v in compress(dois.items(), dois.values())}
+    if verbose:
+        print "Retrieved " + str(len(dois)) + " DOIs."
+        print "Processing database entries..."
+    for j, doi in dois.iteritems():
+        citations[doi] = {}
+        citations[doi]["ipms"] = [ipms[j]]
+        citations[doi]["miccs"] = [miccs[j]]
+        citations[doi]["citations"] = 1
+    
+    return citations
 
+def large_citation_database(dois, xmlfolder = "papers/", verbose = True):
+    '''
+    '''
+    print "Retrieving papers..."
+    filenames = [remote_retrieve(doi, filename = xmlfolder + re.search(r"/.+", doi).group()[1:] + ".xml") for doi in dois]
+    p = Pool(8)
+    print "Pulling citations..."
+    individual_databases = p.map(paper_citations, filenames)
+    print "Assembling citations into a database..."
+    database = {}
+    for db in individual_databases:
+        for doi, data in db.iteritems():            
+            try:
+                database[doi]["ipms"].append(data["ipms"])
+                database[doi]["miccs"].append(data["miccs"])
+                database[doi]["citations"] += 1
+            except KeyError:
+                database[doi] = {}
+                database[doi]["ipms"] = [data["ipms"]]
+                database[doi]["miccs"] = [data["miccs"]]
+                database[doi]["citations"] = 1
+                
+    if verbose:
+        print "Database post-processing..."
+    for info in database.itervalues():
+        info["median_ipm"] = median(info["ipms"])
+        info["median_micc"] = median(info["miccs"])
+    
+    
 def plos_search(query, query_type = None, rows = 20, more_parameters = None, fq = '''doc_type:full AND article_type_facet:"Research Article"''', output = "json", verbose = False):
     '''
     Accesses the PLOS search API.
@@ -525,3 +596,4 @@ def zero_mentions(paper):
         print zero_mentions
         zero_mentions = [z[0] for z in zero_mentions]
         return (doi, zero_mentions)
+
