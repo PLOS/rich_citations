@@ -127,8 +127,12 @@ def number(citation):
     rid = citation["rid"]
     ref = citation.find_next("ref", attrs = {"id": rid})
     label = ref.label
-    number = re.search(r"\d+", label.text)
-    return int(number.group())
+    try:
+        number = re.search(r"\d+", label.text)
+        return int(number.group())
+    except AttributeError:
+        print "Missing reference labels on DOI " + ref.find_previous("article-id", attrs={"pub-id-type":"doi"}).text.encode("UTF-8") + " for reference " + citation.text.encode("UTF-8") + "."
+        return 0 # This should be a reasonable thing to return in the case that no citation number is found: it won't cause errors elsewhere, but it's easy to track.
 
 
 def group_cleaner(group):
@@ -293,7 +297,13 @@ def doi_batch(paper, crossref = False):
         html_references = [r.next_sibling.next_sibling for r in refnums]
         for i in cr_queries.iterkeys():
             ref = html_references[i-1]
-            doimatch = re.search(r"\sdoi:|\sDOI:|\sDoi:|\.doi\.|\.DOI\.", ref)
+            try:
+                doimatch = re.search(r"\sdoi:|\sDOI:|\sDoi:|\.doi\.|\.DOI\.", ref)
+            except TypeError:
+                # if a ValueError is raised, that means that somehow, ref is not a string, which means there's something really weird with the reference.
+                # Skip it and go to the next one.
+                dois[i] = None
+                continue # jump to the next reference
             if doimatch:
                 rawdoi = ref[doimatch.start():]
                 try:
@@ -483,14 +493,14 @@ def paper_citations(filename, verbose = False):
     
     paper = soupify(filename)
     
-    if verbose:
-        paper_doi = plos_paper_doi(paper)
-        print "DOI of paper " + str(i + 1) + " is " + paper_doi
+    # if verbose:
+    paper_doi = plos_paper_doi(paper)
+    print "DOI of paper is " + paper_doi
     # Get the DOIs, the intra-paper mention counts, and the miccs.
     ipms = ipm_dictionary(paper)
     miccs = micc_dictionary(paper)
     if verbose:
-        print "Retrieving DOIs for paper " + str(i + 1) + "..."
+        print "Retrieving DOIs for paper references..."
     dois = doi_batch(paper)
     # Remove the papers with un-identifiable DOIs.
     dois = {k:v for k, v in compress(dois.items(), dois.values())}
@@ -510,13 +520,14 @@ def large_citation_database(dois, xmlfolder = "papers/", verbose = True, num_of_
     Does the same thing as citation_database, but doesn't store as much information in RAM.
     Also, takes a list of DOIs as its argument, rather than a list of soupified XML papers.
     '''
+        
     if verbose:
         print "Retrieving papers..."
     # The one-liner below does several things:
     # it retrieves the full XML text of the PLOS papers with the DOIs listed in the argument;
     # it saves the XML files to the path specified in xmlfolder, with filenames of the pattern <the part of the doi that comes after the slash>.xml;
     # it creates a list of those filenames.
-    filenames = [remote_retrieve(doi, filename = xmlfolder + str(re.search(r"/.+", doi).group()[1:]) + ".xml") for doi in dois]
+    filenames = [remote_retrieve(doi, filename = xmlfolder + re.search(r"/.+", doi).group()[1:].encode("UTF-8") + ".xml") for doi in dois]
     
     # Prepare for multiprocessing!
     p = Pool(num_of_processors)
@@ -525,7 +536,10 @@ def large_citation_database(dois, xmlfolder = "papers/", verbose = True, num_of_
     if verbose:
         print "Pulling citations..."
     individual_databases = p.map(paper_citations, filenames)
-    print "Assembling citations into a database..."
+    # individual_databases = map(paper_citations, filenames)
+    p.close()
+    if verbose:
+        print "Assembling citations into a database..."
     database = {}
     for db in individual_databases:
         for doi, data in db.iteritems():            
