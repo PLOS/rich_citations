@@ -509,8 +509,8 @@ def paper_citations(filename, verbose = False):
         print "Processing database entries..."
     for j, doi in dois.iteritems():
         citations[doi] = {}
-        citations[doi]["ipms"] = [ipms[j]]
-        citations[doi]["miccs"] = [miccs[j]]
+        citations[doi]["ipms"] = ipms[j]
+        citations[doi]["miccs"] = miccs[j]
         citations[doi]["citations"] = 1
     
     return citations
@@ -557,6 +557,8 @@ def large_citation_database(dois, xmlfolder = "papers/", verbose = True, num_of_
     for info in database.itervalues():
         info["median_ipm"] = median(info["ipms"])
         info["median_micc"] = median(info["miccs"])
+    
+    return database
     
     
 def plos_search(query, query_type = None, rows = 20, more_parameters = None, fq = '''doc_type:full AND article_type_facet:"Research Article"''', output = "json", verbose = False):
