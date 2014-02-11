@@ -450,7 +450,7 @@ def citation_database(papers, verbose = True):
             paper_doi = plos_paper_doi(paper)
             print "DOI of paper " + str(i + 1) + " is " + paper_doi
         # Get the DOIs, the intra-paper mention counts, and the miccs.
-        ipms = ipm_dictionary(paper)
+        ipms = ipm_dictionary(paper) #-> citation_counts
         miccs = micc_dictionary(paper)
         if verbose:
             print "Retrieving DOIs for paper " + str(i + 1) + "..."
