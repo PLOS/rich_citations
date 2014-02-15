@@ -9,7 +9,6 @@ require_relative 'plos/paper_parser'
 
 SEARCH_SUBJECT = "circadian rhythms"
 MAX_PAPERS = 500
-MAX_PAPERS = 10 #@mro
 
 # Find information about a bunch of PLOS papers!
 puts "Searching..."
@@ -28,15 +27,3 @@ dois.each do |doi|
 end
 
 pp database.results
-
-## Returns citation reference numbers in the paper's list of references that are not actually mentioned in the text of the paper.
-## (This is against PLOS editorial policy, but it happens.)
-## Returns a list of all such entries or nil
-##@ todo
-#def zero_mentions
-#  mentions = citation_counts.map { |num, count| count == 0 ? num : nil }.compact
-#  mentions.presence
-#end
-
-
-
