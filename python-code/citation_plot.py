@@ -26,7 +26,7 @@ print "Number of papers in database is " + str(len(db)) + "."
 citation_range = (5, 10)
 papers_in_range = filter(lambda x: x["citations"] >= citation_range[0] and x["citations"] <= citation_range[1], db.values())
 print "Number of papers with at least " + str(citation_range[0]) + " citations and no more than " + str(citation_range[1]) + " citations is " + str(len(papers_in_range)) +"."
-mean_mentions = [mean(p["ipcs"]) for p in papers_in_range]
+mean_mentions = [mean(p["ipms"]) for p in papers_in_range]
 bins = linspace(1, 10, 19)
 fig = figure()
 fig.subplots_adjust(left = 0.09, right = 0.98, bottom = 0.11)

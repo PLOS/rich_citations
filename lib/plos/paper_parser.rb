@@ -3,70 +3,15 @@ require 'active_support/core_ext/object/blank'
 module Plos
   class PaperParser
 
-    attr_reader :doi, :paper, :xml
+    attr_reader :doi, :xml
 
-    def initialize(paper, xml)
-      @paper = paper
-      @xml   = xml
-
-      @citation_numbers = {}
-    end
-
-    def parse
+    def initialize(xml)
+      @xml = xml
       @doi = xml.at('article-id[pub-id-type=doi]').content
-      paper.doi = @doi
-
-      ref = references
-      ipms = citation_counts
-      miccs = median_co_citations
-
-      references.each do |num, ref|
-        if ref[:doi]
-          paper.intra_paper_mentions << ipms[num]
-          paper.median_co_citations  << miccs[num]
-        end
-      end
-
-      paper.zero_mentions = zero_mentions
-
-      paper
     end
 
-    # Returns citation reference numbers in the paper's list of references that are not actually mentioned in the text of the paper.
-    # (This is against PLOS editorial policy, but it happens.)
-    # Returns a list of all such entries or nil
-    def zero_mentions
-      mentions = citation_counts.map { |num, count| count == 0 ? num : nil }.compact
-      mentions.presence
-    end
-
-    # MICC = median in-line co-citations
-    # @mro - aka micc_dictionary
-    def median_co_citations
-      unless @micc_dictionary
-        @micc_dictionary = {}
-        all_groups = citation_groups
-
-        (1..references.count).each do |ref_num|
-          cited_groups = all_groups.select { |g| g.include?(ref_num) }
-
-          @micc_dictionary[ref_num] = if cited_groups.present?
-            cocite_counts = cited_groups.map { |g| g.count - 1 }
-            cocite_counts.median
-          else
-            -1
-          end
-        end
-
-      end
-
-      @micc_dictionary
-    end
-
-    # The number of times each reference is cited in the paper
-    # @mro aka ipm_dictionary
-    def citation_counts
-      @citation_counts ||= citation_groups.flatten.group_by {|n| n }.map { |k,v| [k, v.count] }.to_h
+    def test
+      references
     end
 
     # A citation group is all of the papers that are cited together at a certain point in the paper
@@ -84,14 +29,7 @@ module Plos
         end
 
         grouper.groups
-
       end
-    end
-
-    # Find the reference number for an XREF node
-    def reference_number(xref_node)
-      refid = xref_node['rid']
-      references_by_id[ refid ] || warn("There was an error getting the reference for #{refid}") || 0
     end
 
     # Get all the references
@@ -103,10 +41,13 @@ module Plos
           index = i + 1
           @references[index] = {
               id:   ref[:id],
-              doi:  doi_for_reference(ref, info_page_references[index])
+              doi:  doi_for_reference(ref, info_page_references[i])
           }
           @references_by_id[ref[:id]] = index
         end
+
+        add_median_co_citations
+        add_citation_counts
       end
 
       @references
@@ -118,7 +59,43 @@ module Plos
       @references_by_id
     end
 
+    # Find the reference number for an XREF node
+    def reference_number(xref_node)
+      refid = xref_node['rid']
+      references_by_id[ refid ] || warn("There was an error getting the reference for #{refid}") || 0
+    end
+
+    def zero_mentions
+      references.select { |num,info| info.zero_mentions }
+    end
+
     private
+
+    # MICC = median in-line co-citations
+    # @mro - aka micc_dictionary
+    def add_median_co_citations
+      all_groups = citation_groups
+
+      references.each do |ref_num, info|
+        cited_groups = all_groups.select { |g| g.include?(ref_num) }
+
+        median_co_citations = if cited_groups.present?
+                                cocite_counts = cited_groups.map { |g| g.count - 1 }
+                                cocite_counts.median
+                              else
+                                -1
+                              end
+
+        info[:median_co_citations] = median_co_citations
+        info[:zero_mentions]       = median_co_citations==0
+      end
+    end
+
+    # The number of times each reference is cited in the paper
+    # @mro aka ipm_dictionary
+    def add_citation_counts
+      citation_groups.flatten.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
+    end
 
     def extract_doi(text)
       match = text.match( /\sdoi:|\.doi\./i)
@@ -128,7 +105,7 @@ module Plos
       match = text.match( /(\s)*(10\.)/, match.end(0) )
       return nil unless match
 
-      match = text.match( /[\w\.\/]*/, match.begin(2))
+      match = text.match( /[^\s\"]*/, match.begin(2))
       result = match[0]
       result = result[0..-2] if result.end_with?('.')
       result
@@ -144,7 +121,7 @@ module Plos
     def info_page_references
       @info_page_references ||= begin
         paper_html = API.info(doi)
-        references = paper_html.css('[class=references] > li')
+        references = paper_html.css('.references > li')
         references.map.with_index{ |r,i| [i,r] }.to_h
       end
     end

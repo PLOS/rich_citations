@@ -13,9 +13,10 @@ Created by Adam M Becker on 2014-01-04.
 from citation_utilities import plos_search, plos_dois, remote_soupify, remote_retrieve, zero_mentions
 from itertools import compress
 import pickle
+from bs4 import BeautifulSoup
 
 SEARCH_SUBJECT = "circadian rhythms"
-CORPUS_FILE = "circadian_papers.pickle"
+CORPUS_FILE = "circadian_database.pickle"
 FAILURE_FILE = "failure_database.pickle"
 MAX_PAPERS = 500
 

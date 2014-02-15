@@ -94,7 +94,7 @@ def citation_grouper(paper):
         except AttributeError:
             cite = cite.find_next(attrs={"ref-type":"bibr"}) 
             # we need this try-except clause in the event that the citation has no further siblings, meaning next will be None and will fail to have the find_next method.
-        
+
     return groups
 
 
@@ -292,11 +292,10 @@ def doi_batch(paper, crossref = False):
         paper_url = "http://www.plosone.org/article/info:doi/" + paper_doi
         paper_request = requests.get(paper_url)
         paper_html = BeautifulSoup(paper_request.content)
-        html_reflist = paper_html.find(attrs={"class":"references"})
-        refnums = html_reflist.findChildren("span", attrs={"class":"label"})
-        html_references = [r.next_sibling.next_sibling for r in refnums]
+        html_references = paper_html.select('.references > li')
+
         for i in cr_queries.iterkeys():
-            ref = html_references[i-1]
+            ref = str( html_references[i-1] )
             try:
                 doimatch = re.search(r"\sdoi:|\sDOI:|\sDoi:|\.doi\.|\.DOI\.", ref)
             except TypeError:
@@ -408,6 +407,7 @@ def micc_dictionary(paper):
         if len(cocite_counts) == 0:
             cocite_counts = [-1]
         results[i] = median(cocite_counts)
+
     return results
 
 
@@ -455,6 +455,7 @@ def citation_database(papers, verbose = True):
         if verbose:
             print "Retrieving DOIs for paper " + str(i + 1) + "..."
         dois = doi_batch(paper)
+
         # Remove the papers with un-identifiable DOIs.
         dois = {k:v for k, v in compress(dois.items(), dois.values())}
         if verbose:
@@ -620,7 +621,7 @@ def zero_mentions(paper):
     # Get the intra-paper mentions for everything in the list of references of the given paper.
     ipms = ipm_dictionary(paper)
     # See whether there are any references with zero mentions.
-    if min(ipms.values()) > 0:
+    if ipms.values() and min(ipms.values()) > 0:
         print "Paper is okay!"
         return False
     else:

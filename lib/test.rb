@@ -2,44 +2,41 @@
 
 require 'pp'
 
-require_relative './extensions'
-require_relative './plos/api'
-require_relative './plos/paper'
-require_relative './plos/paper_parser'
+require_relative 'extensions'
+require_relative 'plos/api'
+require_relative 'plos/paper_database'
+require_relative 'plos/paper_parser'
 
 SEARCH_SUBJECT = "circadian rhythms"
-MAX_PAPERS = 500 #@mro
+MAX_PAPERS = 500
+MAX_PAPERS = 10 #@mro
 
 # Find information about a bunch of PLOS papers!
 puts "Searching..."
 results = Plos::API.search(SEARCH_SUBJECT, query_type:"subject", rows:MAX_PAPERS)
 puts "Retrieving #{results.count}  papers from PLOS journals..."
-## pp results[0]
 dois = results.map { |r| r['id'] }
-## puts dois
 
-#doi = "10.1371/journal.pcbi.1000712"
-#doi = "10.1371/journal.pgen.1003361"
-#begin
+database = Plos::PaperDatabase.new
+
 dois.each do |doi|
-puts "Fetching ... #{doi}"
-xml = Plos::API.document( doi )
-#puts "Parsing ..."
-#puts xml
-paper = Plos::Paper.new
-parser = Plos::PaperParser.new(paper, xml)
-parser.parse
-#parser.citation_groups
-#  pp parser.references
-#  pp parser.median_co_citations
-#  pp paper
+  puts "Fetching ... #{doi}"
+  xml = Plos::API.document( doi )
+  #puts "Parsing ..."
+  parser = Plos::PaperParser.new(xml)
+  database.add_paper(doi, parser.references)
 end
 
-#pp paper
+pp database.results
 
-#gg = parser.citation_groups
-# pp gg
+## Returns citation reference numbers in the paper's list of references that are not actually mentioned in the text of the paper.
+## (This is against PLOS editorial policy, but it happens.)
+## Returns a list of all such entries or nil
+##@ todo
+#def zero_mentions
+#  mentions = citation_counts.map { |num, count| count == 0 ? num : nil }.compact
+#  mentions.presence
+#end
 
-# pp parser.citation_groups
-# pp parser.median_co_citations
+
 
