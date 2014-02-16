@@ -3,7 +3,7 @@ require 'uri'
 require 'net/http'
 
 module Plos
-  class API
+  class Api
 
     SEARCH_URL = 'http://api.plos.org/search'
     DOC_URL    = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'

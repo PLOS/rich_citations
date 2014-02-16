@@ -8,6 +8,7 @@ gem 'rails', '~> 4.1.0.beta1'
 
 gem 'sass-rails', '~> 4.0.0'
 gem 'haml'
+gem 'haml-rails'
 gem 'coffee-rails', '~> 4.0.0'
 
 # Use Uglifier as compressor for JavaScript assets

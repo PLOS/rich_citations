@@ -118,7 +118,7 @@ module Plos
 
     def info_page_references
       @info_page_references ||= begin
-        paper_html = API.info(doi)
+        paper_html = Api.info(doi)
         references = paper_html.css('.references > li')
         references.map.with_index{ |r,i| [i,r] }.to_h
       end

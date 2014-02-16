@@ -1,0 +1,19 @@
+.messages {
+  div {
+    background-color: lightgoldenrodyellow;
+
+    &.alert {
+      background-color: #ffbbbb;
+    }
+
+    &.notice {
+      background-color: bbffbb;
+    }
+
+  }
+}
+
+.results textarea {
+  width: 100%;
+  height: 400px;
+}
