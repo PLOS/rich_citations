@@ -1,6 +1,6 @@
 # config/unicorn.rb
 worker_processes Integer(ENV["WEB_CONCURRENCY"] || 3)
-timeout 15
+timeout 60 # This is the maximum for Heroku
 preload_app true
 
 before_fork do |server, worker|
