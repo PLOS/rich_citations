@@ -32,7 +32,7 @@ module Plos
     def add_paper(paper_doi, references)
       @results[:citations] ||= {}
 
-      references.each do |num, ref|
+      references.each do |ref_num, ref|
         ref_doi = ref[:doi]
         next unless ref_doi
 
@@ -40,6 +40,7 @@ module Plos
             :intra_paper_mentions => [],
             :median_co_citations  => [],
             :citations            =>  0,
+            :co_citation_counts   => {},
         })
 
         # info[:id]                  ||= id
@@ -50,6 +51,17 @@ module Plos
         if ref[:zero_mentions]
           info[:zero_mentions] ||= []
           info[:zero_mentions] << paper_doi
+        end
+
+        if ref[:citation_groups]
+          co_citation_counts = info[:co_citation_counts]
+
+          ref[:citation_groups].flatten.each do |co_citation_num|
+            if co_citation_num != ref_num
+              co_citation_doi = references[co_citation_num][:doi] || 'No-DOI'
+              co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
+            end
+          end
         end
       end
 
