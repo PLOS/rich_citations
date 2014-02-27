@@ -37,9 +37,10 @@ module Plos
         @references_by_id = {}
         xml.css('ref').each_with_index do |ref, i|
           index = i + 1
+          doi = doi_for_reference(ref, info_page_references[i])
           @references[index] = {
               id:   ref[:id],
-              doi:  doi_for_reference(ref, info_page_references[i])
+              doi:  doi
           }
           @references_by_id[ref[:id]] = index
         end
@@ -84,8 +85,9 @@ module Plos
                                 -1
                               end
 
+        info[:citation_groups]     = cited_groups if cited_groups.present?
         info[:median_co_citations] = median_co_citations
-        info[:zero_mentions]       = median_co_citations==0
+        info[:zero_mentions]       = true if cited_groups.empty?
       end
     end
 
