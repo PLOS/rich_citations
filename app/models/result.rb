@@ -3,7 +3,7 @@ class Result < ActiveRecord::Base
   before_save   :normalize_fields
 
   validates :query, presence:true
-  validates :limit, presence:true, numericality: { only_integer:true, greater_than:0, less_than_or_equal_to:50 }
+  validates :limit, presence:true, numericality: { only_integer:true, greater_than:0, less_than_or_equal_to:500 }
 
   def self.find_or_new(params)
     params[:query] = params[:query].try(:strip)
