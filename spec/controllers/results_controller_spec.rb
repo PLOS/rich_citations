@@ -1,10 +1,10 @@
 require 'spec_helper'
 
-describe CitationsController do
+describe ResultsController do
 
-  describe "GET 'index'" do
+  describe "GET 'new'" do
     it "returns http success" do
-      get 'index'
+      get 'new'
       expect(response).to be_success
     end
   end

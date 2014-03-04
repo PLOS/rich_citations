@@ -1,11 +1,9 @@
 CitationTools::Application.routes.draw do
 
-  resource :citation, only:   [:show] do
-    member do
-      get :search
-    end
-  end
+  root 'results#index'
 
-  root 'citations#show'
+  get '', to:'results#index', as:'search'
+
+  resources :results, only:[:index, :create, :show]
 
 end

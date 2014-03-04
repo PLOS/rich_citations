@@ -1,0 +1,6 @@
+= simple_form_for @result, html:{class:'form-horizontal'}  do |f|
+  = f.error_notification
+  = f.input  :query
+  = f.input  :limit, as:'integer', input_html:{maxLength:'3'}
+  .form-actions
+    = f.button :submit, name:nil, value:'Search', class:'btn-primary'
