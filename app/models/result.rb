@@ -18,12 +18,20 @@ class Result < ActiveRecord::Base
     self.where(token:token).first!
   end
 
+  def ready?
+    analysis_json.present?
+  end
+
   def start_analysis!
-    if self.analysis_json.present?
+    if ready?
       self.touch
+
     else
-      #@mro - Start thread here
-      analyze!
+      # Note this does not prevent a task being started multiple times
+      ThreadingHelpers.background("Analyze #{self.id}") do
+        analyze!
+      end
+
     end
 
   end

@@ -2,5 +2,6 @@
   = image_tag('spinner.gif')
   Analysing query '#{@result.query}' (limit #{@result.limit})
 
+-# Refresh the page in 30 seconds
 - content_for :head do
   %meta{ 'http-equiv' => 'refresh', 'content' => '30'}

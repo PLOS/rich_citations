@@ -1,4 +1,4 @@
-- if @result.analysis_json.present?
+- if @result.ready?
   = render partial:'display_form'
 - else
   = render partial:'waiting_form'
