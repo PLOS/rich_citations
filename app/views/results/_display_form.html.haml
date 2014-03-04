@@ -1,9 +1,11 @@
 %h3 Results for '#{@result.query}' (limit #{@result.limit}, matches #{@result.matches.count})
 
 .results
-  = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
 
-  .dois
+  .span9
+    = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
+
+  .span3.dois
     - @result.matches.each do |doi|
       %div= link_to doi, paper_path(doi)
 
