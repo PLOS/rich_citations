@@ -10,6 +10,7 @@ module ThreadingHelpers
 
       rescue => ex
         Rails.logger.error("Background Thread #{name} failed with #{ex}")
+        Rails.logger.error(ex.backtrace.join("\n"))
       ensure
         ActiveRecord::Base.connection.close
       end

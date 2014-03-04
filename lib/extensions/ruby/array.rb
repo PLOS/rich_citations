@@ -1,14 +1,16 @@
 class Array
 
   def median
-    return nil if empty?
+    copy = self.compact
+    return nil if copy.empty?
 
-    sorted = self.sort
-    len = sorted.length
+    copy.sort!
+
+    len = copy.length
     if len.odd?
-      sorted[ (len-1)/2 ].to_f
+      copy[ (len-1)/2 ].to_f
     else
-      (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
+      (copy[(len - 1) / 2] + copy[len / 2]) / 2.0
     end
   end
 
