@@ -37,7 +37,7 @@ module Plos
         @references_by_id = {}
         xml.css('ref').each_with_index do |ref, i|
           index = i + 1
-          doi = doi_for_reference(ref, info_page_references[i])
+          doi = doi_for_reference(ref, i)
           @references[index] = {
               id:   ref[:id],
               doi:  doi
@@ -111,11 +111,11 @@ module Plos
       result
     end
 
-    def doi_for_reference(ref, info_page_ref )
+    def doi_for_reference(ref, info_page_index )
       # Note: Removed code that used cross-refs
 
       # inline DOI or DOI from Web Page references list
-      extract_doi(ref.text) || extract_doi( info_page_ref.inspect )
+      extract_doi(ref.text) || extract_doi( info_page_references[info_page_index].inspect )
     end
 
     def info_page_references
