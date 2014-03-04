@@ -10,8 +10,6 @@ module Plos
       matching_dois = matching.map { |r| r['id'] }
 
       database = self.new
-      database.results[:match_count] = matching.count
-      database.results[:matches] = matching_dois
 
       matching_dois.each do |doi|
         Rails.logger.info("Fetching #{doi} ...")
@@ -20,19 +18,26 @@ module Plos
         parser = Plos::PaperParser.new(xml)
         database.add_paper(doi, parser.references)
       end
-      Rails.logger.info("Completed Analysis")
 
+      Rails.logger.info("Completed Analysis")
       database.results
     end
 
     def initialize
-      @results = {  }
+      @results = {
+          match_count: 0,
+          matches:     [],
+      }
     end
 
     def add_paper(paper_doi, references)
+      @results[:match_count] += 1
+      @results[:matches] << paper_doi
+
       @results[:citations] ||= {}
 
       references.each do |ref_num, ref|
+        ref_num = ref_num.to_i
         ref_doi = ref[:doi]
         next unless ref_doi
 
@@ -58,7 +63,8 @@ module Plos
 
           ref[:citation_groups].flatten.each do |co_citation_num|
             if co_citation_num != ref_num
-              co_citation_doi = references[co_citation_num][:doi] || 'No-DOI'
+              cc_ref = references[co_citation_num] || references[co_citation_num.to_s]
+              co_citation_doi = cc_ref[:doi] || 'No-DOI'
               co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
             end
           end

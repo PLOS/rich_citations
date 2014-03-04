@@ -1,0 +1,6 @@
+%h3 References for DOI #{@paper.doi}
+
+.results
+  = text_area_tag :references_json, JSON.pretty_generate(@paper.references), readonly:true
+
+%br

@@ -8,6 +8,7 @@ gem 'rails', '~> 4.1.0.beta1'
 gem 'unicorn'
 
 gem 'pg'
+gem 'schema_plus'
 
 gem 'sass-rails', '~> 4.0.0'
 gem 'haml'

@@ -11,10 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140304024830) do
+ActiveRecord::Schema.define(version: 20140304183840) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "papers", force: true do |t|
+    t.string   "doi",             null: false
+    t.text     "references_json", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "results", force: true do |t|
     t.string   "token",         limit: 64, null: false

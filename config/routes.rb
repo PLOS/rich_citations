@@ -6,4 +6,6 @@ CitationTools::Application.routes.draw do
 
   resources :results, only:[:index, :create, :show]
 
+  resources :papers, only:[:show], format:false, id: /.+/
+
 end

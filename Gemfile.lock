@@ -119,6 +119,9 @@ GEM
       railties (>= 4.0.0, < 5.0)
       sass (>= 3.1.10)
       sprockets-rails (~> 2.0.0)
+    schema_plus (1.4.0)
+      rails (>= 3.2)
+      valuable
     sdoc (0.4.0)
       json (~> 1.8)
       rdoc (~> 4.0, < 5.0)
@@ -155,6 +158,7 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    valuable (0.9.8)
 
 PLATFORMS
   ruby
@@ -171,6 +175,7 @@ DEPENDENCIES
   rails_12factor
   rspec-rails (~> 3.0.0.beta)
   sass-rails (~> 4.0.0)
+  schema_plus
   sdoc
   simple_form
   twitter-bootstrap-rails
