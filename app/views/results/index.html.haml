@@ -1,0 +1,15 @@
+%h3 Search Citations
+
+= render partial:'form'
+
+%h3 Previous Searches
+
+- @available_results.each do |r|
+  %div
+    - if ! r.ready?
+      Analyzing
+    = link_to r.query, result_path(r.token)
+    limit #{r.limit}
+
+%br
+

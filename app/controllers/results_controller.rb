@@ -6,7 +6,9 @@ class ResultsController < ApplicationController
         limit: 50
     )
 
-    render :new
+    @available_results = Result.order(updated_at: :desc)
+
+    render :index
   end
 
   def create
