@@ -43,8 +43,9 @@ module Plos
 
         info = doi_info(ref_doi)
 
-        # info[:id]                  ||= id
+        # info[:id]                 ||= id
         info[:citations]            += 1
+        info[:citing_papers]        << paper_doi
         info[:intra_paper_mentions] << ref[:citation_count]
         info[:median_co_citations]  << ref[:median_co_citations]
 
@@ -75,11 +76,12 @@ module Plos
 
     def doi_info(doi)
       @results[:citations][ doi ] ||= {
-        :intra_paper_mentions => [],
-        :median_co_citations  => [],
-        :citations            =>  0,
-        :sections             => {},
-        :co_citation_counts   => {},
+        intra_paper_mentions: [],
+        median_co_citations:  [],
+        citations:            0,
+        citing_papers:        [],
+        sections:             {},
+        co_citation_counts:   {},
       }
     end
 

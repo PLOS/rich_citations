@@ -14,7 +14,6 @@ gem 'sass-rails', '~> 4.0.0'
 gem 'haml'
 gem 'haml-rails'
 gem 'coffee-rails', '~> 4.0.0'
-gem 'quiet_assets', :group => :development
 
 # Use Uglifier as compressor for JavaScript assets
 gem 'uglifier', '>= 1.3.0'
@@ -33,6 +32,10 @@ gem 'nokogiri'
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
+end
+
+group :development do
+  gem 'quiet_assets'
 end
 
 group :development, :test do
