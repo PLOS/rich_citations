@@ -37,7 +37,7 @@ module Plos
         @references_by_id = {}
         xml.css('ref').each_with_index do |ref, i|
           index = i + 1
-          doi = doi_for_reference(ref, i)
+          doi = doi_for_reference(index, ref)
           @references[index] = {
               id:   ref[:id],
               doi:  doi
@@ -126,25 +126,11 @@ module Plos
       all_citations.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
     end
 
-    def extract_doi(text)
-      match = text.match( /\sdoi:|\.doi\./i)
-      return nil unless match
-
-      # all DOI's start with 10., see reference here: http://www.doi.org/doi_handbook/2_Numbering.html#2.2
-      match = text.match( /(\s)*(10\.)/, match.end(0) )
-      return nil unless match
-
-      match = text.match( /[^\s\"]*/, match.begin(2))
-      result = match[0]
-      result = result[0..-2] if result.end_with?('.')
-      result
-    end
-
-    def doi_for_reference(ref, info_page_index )
+    def doi_for_reference(ref_num, ref)
       # Note: Removed code that used cross-refs
 
       # inline DOI or DOI from Web Page references list
-      extract_doi(ref.text) || extract_doi( info_page_references[info_page_index].inspect )
+      Plos::Utilities.extract_doi(ref.text) || Plos::Utilities.extract_doi( info_page_references[ref_num-1].inspect )
     end
 
     def info_page_references
