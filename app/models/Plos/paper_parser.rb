@@ -45,8 +45,9 @@ module Plos
           @references_by_id[ref[:id]] = index
         end
 
-        add_median_co_citations
         add_citation_counts
+        add_citation_sections
+        add_median_co_citations
       end
 
       @references
@@ -68,6 +69,22 @@ module Plos
       references.select { |num,info| info.zero_mentions }
     end
 
+    # Get the outermost section title
+    def section_title_for(node)
+      title = nil
+
+      while node && defined?(node.parent)
+        if node.name == 'sec'
+          title_node = node.css('> title')
+          title = title_node.text if title_node && title_node.text
+        end
+
+        node = node.parent
+      end
+
+      title || '[Unknown]'
+    end
+
     private
 
     # MICC = median in-line co-citations
@@ -76,7 +93,7 @@ module Plos
       all_groups = citation_groups
 
       references.each do |ref_num, info|
-        cited_groups = all_groups.select { |g| g.include?(ref_num) }
+        cited_groups = all_groups.select { |g| g[:references].include?(ref_num) }
 
         median_co_citations = if cited_groups.present?
                                 cocite_counts = cited_groups.map { |g| g.count - 1 }
@@ -91,10 +108,22 @@ module Plos
       end
     end
 
+    def add_citation_sections
+      xml.search('xref[ref-type=bibr]').each do |citation|
+        ref_num = reference_number(citation)
+        title   = section_title_for(citation)
+
+        info = references[ref_num]
+        sections = info[:sections] ||= {}
+        sections[title] = sections[title].to_i + 1
+      end
+    end
+
     # The number of times each reference is cited in the paper
     # @mro aka ipm_dictionary
     def add_citation_counts
-      citation_groups.flatten.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
+      all_citations = citation_groups.map{|g| g[:references]}.flatten
+      all_citations.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
     end
 
     def extract_doi(text)
@@ -142,7 +171,7 @@ module Plos
       end
 
       def add_citation(citation)
-        start_group! if citation.previous_sibling != @last_node
+        start_group!(citation) if citation.previous_sibling != @last_node
 
         @last_node = citation
         number = parser.reference_number(citation)
@@ -159,16 +188,21 @@ module Plos
       private
 
       def add(number)
-        @current_group.push number
+        @current_group[:count] += 1
+        @current_group[:references].push number
       end
 
       def add_range(range_end)
-        range_start = @current_group.last+1
-        (range_start..range_end).each { |n| add n }
+        range_start = @current_group[:references].last+1
+        (range_start..range_end).each { |n| add(n) }
       end
 
-      def start_group!
-        @current_group =  []
+      def start_group!(node)
+        @current_group =  {
+                            section:    parser.section_title_for(node),
+                            count:      0,
+                            references: [],
+                          }
         @groups        << @current_group
         @last_node     =  :none
       end

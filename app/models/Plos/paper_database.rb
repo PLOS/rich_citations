@@ -41,12 +41,7 @@ module Plos
         ref_doi = ref[:doi]
         next unless ref_doi
 
-        info = (@results[:citations][ ref_doi ] ||= {
-            :intra_paper_mentions => [],
-            :median_co_citations  => [],
-            :citations            =>  0,
-            :co_citation_counts   => {},
-        })
+        info = doi_info(ref_doi)
 
         # info[:id]                  ||= id
         info[:citations]            += 1
@@ -58,17 +53,7 @@ module Plos
           info[:zero_mentions] << paper_doi
         end
 
-        if ref[:citation_groups]
-          co_citation_counts = info[:co_citation_counts]
-
-          ref[:citation_groups].flatten.each do |co_citation_num|
-            if co_citation_num != ref_num
-              cc_ref = references[co_citation_num] || references[co_citation_num.to_s]
-              co_citation_doi = cc_ref[:doi] || 'No-DOI'
-              co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
-            end
-          end
-        end
+        add_citation_groups(ref_num, info, ref, references)
       end
 
       @recalculate = true
@@ -84,6 +69,42 @@ module Plos
       end
 
       @results
+    end
+
+    private
+
+    def doi_info(doi)
+      @results[:citations][ doi ] ||= {
+        :intra_paper_mentions => [],
+        :median_co_citations  => [],
+        :citations            =>  0,
+        :sections             => {},
+        :co_citation_counts   => {},
+      }
+    end
+
+    def add_citation_groups(ref_num, info, ref, all_references)
+      return unless ref[:citation_groups]
+
+      sections = info[:sections]
+      co_citation_counts = info[:co_citation_counts]
+
+      ref[:citation_groups].each do |group|
+
+        # Aggregate section counts
+        section = group[:section]
+        sections[section] = sections[section].to_i + 1
+
+        # Aggregate co-citation counts
+        group[:references].each do |co_citation_num|
+          if co_citation_num != ref_num
+            cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s]
+            co_citation_doi = cc_ref[:doi] || 'No-DOI'
+            co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
+          end
+        end
+
+      end
     end
 
   end
