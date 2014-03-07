@@ -23,6 +23,16 @@ class ResultsController < ApplicationController
 
   def show
     @result = Result.for_token( params.require(:id) )
+
+    respond_to do |format|
+      format.html
+      format.json {
+        response.content_type = Mime::JSON
+        headers['Content-Disposition'] = %Q{attachment; filename="#{@result.query}.js"}
+        render json: @result.analysis_results
+      }
+      # format.xml  { render xml:  @result.analysis_results.to_xml }
+    end
   end
 
   private

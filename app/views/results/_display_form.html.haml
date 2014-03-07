@@ -4,9 +4,11 @@
 
   .span9
     = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
+    = link_to 'Download JSON', result_path(@result.token, format:'json'), class:'btn btn-primary pull-right'
 
   .span3.dois
     - @result.matches.each do |doi|
       %div= link_to doi, paper_path(doi)
 
+%br
 %br

@@ -3,5 +3,6 @@
 .results
   .span9
     = text_area_tag :references_json, JSON.pretty_generate(@paper.references), readonly:true
+    = link_to 'Download JSON', paper_path(@paper.doi, format:'json'), class:'btn btn-primary pull-right'
 
 %br
