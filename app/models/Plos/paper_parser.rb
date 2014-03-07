@@ -22,7 +22,7 @@ module Plos
 
         grouper = CitationGrouper.new(self)
 
-        xml.search('xref[ref-type=bibr]').each do |citation|
+        citation_nodes.each do |citation|
           grouper.add_citation(citation)
         end
 
@@ -35,9 +35,9 @@ module Plos
       unless @references
         @references = {}
         @references_by_id = {}
-        xml.css('ref').each_with_index do |ref, i|
+        reference_nodes.each_with_index do |ref, i|
           index = i + 1
-          doi = doi_for_reference(index, ref)
+          doi = doi_for_reference[index]
           @references[index] = {
               id:   ref[:id],
               doi:  doi
@@ -51,6 +51,30 @@ module Plos
       end
 
       @references
+    end
+
+    def doi_for_reference
+      unless @doi_for_reference
+        @doi_for_reference = {}
+
+        #@TODO: The Cross ref API is ridiculously slow about 60 seconds
+        #       And usually times-out
+        #search_texts = reference_nodes.map { |n| n.text }
+        #result_dois  = Plos::Api.cross_refs( search_texts )
+        #
+        #result_dois.each_with_index do | result, index|
+        #  @@doi_for_reference[index+1] = result || Plos::Utilities.extract_doi( search_texts[index] )
+        #end
+
+        reference_nodes.each_with_index do |node, index|
+          # inline DOI or DOI from Web Page references list
+          doi = Plos::Utilities.extract_doi(node.text) || Plos::Utilities.extract_doi( info_page_references[index].inspect )
+          @doi_for_reference[index+1] = doi
+        end
+
+      end
+
+      @doi_for_reference
     end
 
     # Get a list of references by ref id /rid
@@ -109,7 +133,7 @@ module Plos
     end
 
     def add_citation_sections
-      xml.search('xref[ref-type=bibr]').each do |citation|
+      citation_nodes.each do |citation|
         ref_num = reference_number(citation)
         title   = section_title_for(citation)
 
@@ -126,19 +150,20 @@ module Plos
       all_citations.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
     end
 
-    def doi_for_reference(ref_num, ref)
-      # Note: Removed code that used cross-refs
-
-      # inline DOI or DOI from Web Page references list
-      Plos::Utilities.extract_doi(ref.text) || Plos::Utilities.extract_doi( info_page_references[ref_num-1].inspect )
-    end
-
     def info_page_references
       @info_page_references ||= begin
         paper_html = Api.info(doi)
         references = paper_html.css('.references > li')
         references.map.with_index{ |r,i| [i,r] }.to_h
       end
+    end
+
+    def reference_nodes
+      xml.css('ref')
+    end
+
+    def citation_nodes
+      xml.search('xref[ref-type=bibr]')
     end
 
     # class to help in grouping citations

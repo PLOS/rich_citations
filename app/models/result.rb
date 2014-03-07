@@ -37,7 +37,7 @@ class Result < ActiveRecord::Base
   end
 
   def analysis_results
-    @analysis_results ||= JSON.parse(analysis_json).with_indifferent_access
+    @analysis_results ||= ready? ? JSON.parse(analysis_json).with_indifferent_access : nil
   end
 
   def matches

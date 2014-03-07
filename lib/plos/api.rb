@@ -5,10 +5,10 @@ require 'net/http'
 module Plos
   class Api
 
-    SEARCH_URL = 'http://api.plos.org/search'
-    DOC_URL    = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
-    INFO_URL   = 'http://www.plosone.org/article/info:doi/%s'
-
+    SEARCH_URL   = 'http://api.plos.org/search'
+    DOC_URL      = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
+    INFO_URL     = 'http://www.plosone.org/article/info:doi/%s'
+    CROSSREF_URL = 'http://search.crossref.org/links'
 
 
     # This is Adam's API key. Please don't overuse it.
@@ -65,6 +65,20 @@ module Plos
       Nokogiri::HTML(response)
     end
 
+    def self.cross_refs(texts)
+      texts = JSON.generate( texts.map { |t| t.to_s } )
+      response = http_post(CROSSREF_URL, texts, 'Content-Type' => "application/xml")
+      json = JSON.parse(response)
+
+      json['results'].map do |result|
+        if result['match']
+          Plos::Utilities.extract_doi( result['doi'] )
+        else
+          nil
+        end
+      end
+    end
+
     private
 
     def self.http_get(url, headers={})
@@ -76,6 +90,33 @@ module Plos
 
         Net::HTTP.start(uri.host) do |http|
           response = http.get(uri.request_uri, headers)
+
+          location = response.header['location']
+          if location
+            raise "Recursive redirect" if redirects.include?(location)
+            raise "Toom many redirects" if redirect_count >= 3
+            redirect_count += 1
+            redirects << location
+            url = location
+
+          else
+            response.value
+            return response.body
+          end
+
+        end
+
+      end
+    end
+
+    def self.http_post(url, content, headers={})
+      redirect_count = 0
+      redirects = []
+      loop do
+        uri = URI.parse(url)
+
+        Net::HTTP.start(uri.host) do |http|
+          response = http.post(uri.request_uri, content, headers)
 
           location = response.header['location']
           if location

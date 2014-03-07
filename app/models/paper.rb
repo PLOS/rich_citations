@@ -12,7 +12,7 @@ class Paper < ActiveRecord::Base
 
   def self.calculate_for(doi)
     paper = find_by_doi(doi)
-    if paper && paper.references_json.present?
+    if paper && paper.ready?
       Rails.logger.info("Using cached #{doi}")
       paper.touch
       return paper
@@ -32,7 +32,11 @@ class Paper < ActiveRecord::Base
   end
 
   def references
-    @references ||= JSON.parse(references_json).with_indifferent_access
+    @references ||= ready? ? JSON.parse(references_json).with_indifferent_access : nil
+  end
+
+  def ready?
+    references_json.present?
   end
 
 end

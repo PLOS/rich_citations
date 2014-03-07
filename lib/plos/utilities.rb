@@ -3,6 +3,8 @@ module Plos
   class Utilities
 
     def self.extract_doi(text)
+      return nil unless text.present?
+
       match = text.match( /\sdoi:|\.doi\./i)
       return nil unless match
 
