@@ -30,10 +30,21 @@ module Plos
       end
     end
 
+    def paper_info
+      {
+          doi: doi,
+          paper: {
+              word_count: word_count,
+          },
+          references: references
+      }
+    end
+
     # Get all the references
     def references
       unless @references
         @references = {}
+
         @references_by_id = {}
         reference_nodes.each_with_index do |ref, i|
           index = i + 1
@@ -110,6 +121,16 @@ module Plos
     end
 
     private
+
+    def word_count
+      body =  xml.search('body').first
+
+      count = 0
+      body.traverse do |n|
+        count+= n.text.word_count if n.text?
+      end
+      count
+    end
 
     # MICC = median in-line co-citations
     # @mro - aka micc_dictionary

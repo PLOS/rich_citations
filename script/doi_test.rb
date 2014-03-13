@@ -8,4 +8,5 @@ DOI='10.1371/journal.pone.0046843'
 
 xml = Plos::Api.document( DOI )
 parser = Plos::PaperParser.new(xml)
-pp parser.references
+info = parser.paper_info
+pp info
