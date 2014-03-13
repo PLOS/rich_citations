@@ -120,17 +120,29 @@ module Plos
       title || '[Unknown]'
     end
 
-    private
-
     def word_count
-      body =  xml.search('body').first
+      @body =  xml.search('body').first
 
       count = 0
-      body.traverse do |n|
+      @body.traverse do |n|
         count+= n.text.word_count if n.text?
       end
       count
     end
+
+    def word_count_upto(node)
+      @body =  xml.search('body').first
+
+      count = 1
+      @body.traverse do |n|
+        return count if n==node
+        count+= n.text.word_count if n.text?
+      end
+
+      nil
+    end
+
+    private
 
     # MICC = median in-line co-citations
     # @mro - aka micc_dictionary
@@ -180,11 +192,11 @@ module Plos
     end
 
     def reference_nodes
-      xml.css('ref')
+      @reference_nodes ||= xml.css('ref')
     end
 
     def citation_nodes
-      xml.search('xref[ref-type=bibr]')
+      @citation_nodes ||= xml.search('xref[ref-type=bibr]')
     end
 
     # class to help in grouping citations
@@ -232,6 +244,7 @@ module Plos
       def start_group!(node)
         @current_group =  {
                             section:    parser.section_title_for(node),
+                            word_count: parser.word_count_upto(node),
                             count:      0,
                             references: [],
                           }
