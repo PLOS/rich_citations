@@ -29,7 +29,7 @@ class ResultsController < ApplicationController
       format.html {
         if @result.ready?
           @sort      = params[:sort].to_sym
-          @citations = @result.analysis_results[:citations]
+          @citations = @result.analysis_results[:citations] || {}
           @citations = sort_citations(@citations, @sort)
         end
       }

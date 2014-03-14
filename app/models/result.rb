@@ -22,6 +22,10 @@ class Result < ActiveRecord::Base
     analysis_json.present?
   end
 
+  def has_matches?
+    ready? && analysis_results[:match_count] && analysis_results[:match_count] > 0
+  end
+
   def start_analysis!
     if ready?
       self.touch

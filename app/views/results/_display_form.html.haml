@@ -3,14 +3,15 @@
 .results
 
   .span4
-    %table.citing
-      %thead
-        %tr
-          %th Search Result / Citing Paper
-      %tbody
-        - @result.matches.each do |doi|
+    - if @result.has_matches?
+      %table.citing
+        %thead
           %tr
-            %td= link_to doi, paper_path(doi)
+            %th Search Result / Citing Paper
+        %tbody
+          - @result.matches.each do |doi|
+            %tr
+              %td= link_to doi, paper_path(doi)
 
     %br
     .json
@@ -19,18 +20,19 @@
       = link_to 'Download JSON', result_path(@result.token, format:'json'), class:'btn btn-primary pull-right'
 
   .span8
-    %table.cited
-      %thead
-        %tr
-          %th= sort_link('Cited Paper', nil)
-          %th= sort_link('Citations',   :citations)
-          %th= sort_link('Mentions',    :ipms_count)
-      %tbody
-        - @citations.each do |doi, info|
+    - if @result.has_matches?
+      %table.cited
+        %thead
           %tr
-            %td= link_to doi, cited_result_path(@result.token, doi)
-            %td.number= info[:citations]
-            %td.number= info[:ipms_count]
+            %th= sort_link('Cited Paper', nil)
+            %th= sort_link('Citations',   :citations)
+            %th= sort_link('Mentions',    :ipms_count)
+        %tbody
+          - @citations.each do |doi, info|
+            %tr
+              %td= link_to doi, cited_result_path(@result.token, doi)
+              %td.number= info[:citations]
+              %td.number= info[:ipms_count]
 
 %br
 %br
