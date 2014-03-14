@@ -2,13 +2,35 @@
 
 .results
 
-  .span9
-    = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
-    = link_to 'Download JSON', result_path(@result.token, format:'json'), class:'btn btn-primary pull-right'
+  .span4
+    %table.citing
+      %thead
+        %tr
+          %th Search Result / Citing Paper
+      %tbody
+        - @result.matches.each do |doi|
+          %tr
+            %td= link_to doi, paper_path(doi)
 
-  .span3.dois
-    - @result.matches.each do |doi|
-      %div= link_to doi, paper_path(doi)
+    %br
+    .json
+      %h5 JSON Output
+      = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
+      = link_to 'Download JSON', result_path(@result.token, format:'json'), class:'btn btn-primary pull-right'
+
+  .span8
+    %table.cited
+      %thead
+        %tr
+          %th Cited Paper
+          %th Citations
+          %th Mentions
+      %tbody
+        - @citations.each do |doi, info|
+          %tr
+            %td= doi
+            %td= info[:citations]
+            %td= info[:median_ipms]
 
 %br
 %br
