@@ -13,7 +13,11 @@
             %tr
               %td= link_to doi, paper_path(doi)
 
-    %br
+      %br
+
+    - else
+      %h4 No Matches found
+
     .json
       %h5 JSON Output
       = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
