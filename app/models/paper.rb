@@ -22,7 +22,7 @@ class Paper < ActiveRecord::Base
     xml = Plos::Api.document( doi )
     Rails.logger.info("Parsing #{doi} ...")
     parser = Plos::PaperParser.new(xml)
-    references = parser.references
+    references = parser.paper_info
 
     paper = find_by_doi(doi) || new(doi:doi)
     paper.references_json = JSON.generate(references)
@@ -32,7 +32,7 @@ class Paper < ActiveRecord::Base
   end
 
   def references
-    @references ||= ready? ? JSON.parse(references_json).with_indifferent_access : nil
+    @references ||= ready? ? JSON.parse(references_json).symbolize_keys_recursive! : nil
   end
 
   def ready?

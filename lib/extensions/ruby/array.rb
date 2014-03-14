@@ -14,4 +14,14 @@ class Array
     end
   end
 
+  def symbolize_keys_recursive!
+    each do |v|
+      case v
+        when Hash, Array then v.symbolize_keys_recursive!
+      end
+    end
+
+    self
+  end
+
 end

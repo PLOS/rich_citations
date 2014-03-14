@@ -31,6 +31,7 @@ module Plos
     end
 
     def add_paper(paper_doi, paper_info)
+      # Rails.logger.debug(paper_info.inspect)
       add_references(paper_doi, paper_info, paper_info[:references])
     end
 
@@ -55,7 +56,7 @@ module Plos
       @results[:citations] ||= {}
 
       references.each do |ref_num, ref|
-        ref_num = ref_num.to_i
+        ref_num = ref_num.to_s.to_i
         ref_doi = ref[:doi]
         next unless ref_doi
 
@@ -101,13 +102,13 @@ module Plos
 
         # Aggregate section counts
         section = group[:section]
-        sections[section] = sections[section].to_i + 1
+        sections[section] = sections[section].to_s.to_i + 1
         positions << "#{group[:word_count]}/#{paper_word_count}"
 
         # Aggregate co-citation counts
         group[:references].each do |co_citation_num|
           if co_citation_num != ref_num
-            cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s]
+            cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s.to_sym]
             co_citation_doi = cc_ref[:doi] || 'No-DOI'
             co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
           end
