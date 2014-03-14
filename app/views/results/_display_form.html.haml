@@ -28,9 +28,9 @@
       %tbody
         - @citations.each do |doi, info|
           %tr
-            %td= doi
-            %td= info[:citations]
-            %td= info[:median_ipms]
+            %td= link_to doi, cited_result_path(@result.token, doi)
+            %td.number= info[:citations]
+            %td.number= info[:ipms_count]
 
 %br
 %br

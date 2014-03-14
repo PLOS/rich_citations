@@ -65,6 +65,7 @@ module Plos
         # info[:id]                 ||= id
         info[:citations]            += 1
         info[:citing_papers]        << paper_doi
+        info[:ipms_count]           += ref[:citation_count].to_i
         info[:intra_paper_mentions] << ref[:citation_count]
         info[:median_co_citations]  << ref[:median_co_citations]
 
@@ -82,6 +83,7 @@ module Plos
     def doi_info(doi)
       @results[:citations][ doi ] ||= {
         intra_paper_mentions: [],
+        ipms_count:           0,
         median_co_citations:  [],
         citations:            0,
         citing_papers:        [],

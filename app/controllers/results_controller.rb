@@ -27,7 +27,9 @@ class ResultsController < ApplicationController
     respond_to do |format|
 
       format.html {
-        @citations = @result.analysis_results[:citations]
+        if @result.ready?
+          @citations = @result.analysis_results[:citations]
+        end
       }
 
       format.json {
@@ -38,6 +40,28 @@ class ResultsController < ApplicationController
 
       # format.xml  { render xml:  @result.analysis_results.to_xml }
     end
+
+  end
+
+  def cited
+    @result = Result.for_token( params.require(:id) )
+    @doi    = params[:doi]
+    @cited  = @result.analysis_results[:citations][ @doi.to_sym ]
+    raise ActiveRecord::RecordNotFound unless @cited
+
+    respond_to do |format|
+
+      format.html
+
+      format.json {
+        response.content_type = Mime::JSON
+        headers['Content-Disposition'] = %Q{attachment; filename="cited #{@doi}.js"}
+        render json: @cited
+      }
+
+      # format.xml  { render xml:  @result.analysis_results.to_xml }
+    end
+
   end
 
   private

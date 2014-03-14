@@ -1,0 +1,12 @@
+%h3 Results for cited DOI: #{@doi} from #{link_to "'" + @result.query + "'", result_path(@result.token) },
+
+.results
+
+  .span8
+    .json
+      %h5 JSON Output
+      = text_area_tag :json, JSON.pretty_generate(@cited), readonly:true
+      = link_to 'Download JSON', cited_result_path(@result.token, @doi, format:'json'), class:'btn btn-primary pull-right'
+
+%br
+%br
