@@ -16,7 +16,7 @@ module Plos
         xml = Plos::Api.document( doi )
         Rails.logger.info("Parsing #{doi} ...")
         parser = Plos::PaperParser.new(xml)
-        database.add_paper(doi, parser.references)
+        database.add_paper(doi, parser.paper_info)
       end
 
       Rails.logger.info("Completed Analysis")
@@ -30,7 +30,25 @@ module Plos
       }
     end
 
-    def add_paper(paper_doi, references)
+    def add_paper(paper_doi, paper_info)
+      add_references(paper_doi, paper_info, paper_info[:references])
+    end
+
+    def results
+      if @recalculate
+        @results[:citations].each do |k, info|
+          info[:median_ipms ] = info[:intra_paper_mentions].median if info[:intra_paper_mentions]
+          info[:median_miccs] = info[:median_co_citations].median  if info[:median_co_citations]
+        end
+        @recalculate = false
+      end
+
+      @results
+    end
+
+    private
+
+    def add_references(paper_doi, paper_info, references)
       @results[:match_count] += 1
       @results[:matches] << paper_doi
 
@@ -54,25 +72,11 @@ module Plos
           info[:zero_mentions] << paper_doi
         end
 
-        add_citation_groups(ref_num, info, ref, references)
+        add_citation_groups(ref_num, info, ref, references, paper_info[:paper][:word_count])
       end
 
       @recalculate = true
     end
-
-    def results
-      if @recalculate
-        @results[:citations].each do |k, info|
-          info[:median_ipms ] = info[:intra_paper_mentions].median if info[:intra_paper_mentions]
-          info[:median_miccs] = info[:median_co_citations].median  if info[:median_co_citations]
-        end
-        @recalculate = false
-      end
-
-      @results
-    end
-
-    private
 
     def doi_info(doi)
       @results[:citations][ doi ] ||= {
@@ -81,14 +85,16 @@ module Plos
         citations:            0,
         citing_papers:        [],
         sections:             {},
+        word_positions:       [],
         co_citation_counts:   {},
       }
     end
 
-    def add_citation_groups(ref_num, info, ref, all_references)
+    def add_citation_groups(ref_num, info, ref, all_references, paper_word_count)
       return unless ref[:citation_groups]
 
-      sections = info[:sections]
+      sections  = info[:sections]
+      positions = info[:word_positions]
       co_citation_counts = info[:co_citation_counts]
 
       ref[:citation_groups].each do |group|
@@ -96,6 +102,7 @@ module Plos
         # Aggregate section counts
         section = group[:section]
         sections[section] = sections[section].to_i + 1
+        positions << "#{group[:word_count]}/#{paper_word_count}"
 
         # Aggregate co-citation counts
         group[:references].each do |co_citation_num|

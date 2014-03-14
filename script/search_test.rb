@@ -23,7 +23,7 @@ pp Plos::PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
 #  xml = Plos::Api.document( doi )
 #  #puts "Parsing ..."
 #  parser = Plos::PaperParser.new(xml)
-#  database.add_paper(doi, parser.references)
+#  database.add_paper(doi, parser.paper_info)
 #end
 #
 #pp database.results
