@@ -22,9 +22,9 @@
     %table.cited
       %thead
         %tr
-          %th Cited Paper
-          %th Citations
-          %th Mentions
+          %th= sort_link('Cited Paper', nil)
+          %th= sort_link('Citations',   :citations)
+          %th= sort_link('Mentions',    :ipms_count)
       %tbody
         - @citations.each do |doi, info|
           %tr

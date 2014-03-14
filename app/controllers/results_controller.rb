@@ -28,7 +28,9 @@ class ResultsController < ApplicationController
 
       format.html {
         if @result.ready?
+          @sort      = params[:sort].to_sym
           @citations = @result.analysis_results[:citations]
+          @citations = sort_citations(@citations, @sort)
         end
       }
 
@@ -64,10 +66,29 @@ class ResultsController < ApplicationController
 
   end
 
+  protected
+
+  def sort_link(text, column)
+    if column == @sort
+      text
+    else
+      view_context.link_to(text, result_path(@result.token, sort:column))
+    end
+  end
+  helper_method :sort_link
+
   private
 
   def result_params
     params.require(:result).permit(:query, :limit)
+  end
+
+  def sort_citations(citations, column)
+    if column
+      Hash[ citations.sort_by { |_,v| v[column] } ]
+    else
+      Hash[ citations.sort_by { |k,_| k  } ]
+    end
   end
 
 end
