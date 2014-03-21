@@ -84,26 +84,24 @@ module Plos
     def self.http_get(url, headers={})
       redirect_count = 0
       redirects = []
+      http = Net::HTTP::Persistent.new
+
       loop do
-
         uri = URI.parse(url)
+        req = Net::HTTP::Get.new(uri.request_uri, headers)
+        response = http.request uri, req
 
-        Net::HTTP.start(uri.host) do |http|
-          response = http.get(uri.request_uri, headers)
+        location = response.header['location']
+        if location
+          raise "Recursive redirect" if redirects.include?(location)
+          raise "Toom many redirects" if redirect_count >= 3
+          redirect_count += 1
+          redirects << location
+          url = location
 
-          location = response.header['location']
-          if location
-            raise "Recursive redirect" if redirects.include?(location)
-            raise "Toom many redirects" if redirect_count >= 3
-            redirect_count += 1
-            redirects << location
-            url = location
-
-          else
-            response.value
-            return response.body
-          end
-
+        else
+          response.value
+          return response.body
         end
 
       end
@@ -112,25 +110,27 @@ module Plos
     def self.http_post(url, content, headers={})
       redirect_count = 0
       redirects = []
+      http = Net::HTTP::Persistent.new
+
       loop do
         uri = URI.parse(url)
+        req = Net::HTTP::Post.new(uri.request_uri, headers)
+        req.set_form_data = content
+        response = http.request uri, req
 
-        Net::HTTP.start(uri.host) do |http|
-          response = http.post(uri.request_uri, content, headers)
+        response = http.post(uri.request_uri, content, headers)
 
-          location = response.header['location']
-          if location
-            raise "Recursive redirect" if redirects.include?(location)
-            raise "Toom many redirects" if redirect_count >= 3
-            redirect_count += 1
-            redirects << location
-            url = location
+        location = response.header['location']
+        if location
+          raise "Recursive redirect" if redirects.include?(location)
+          raise "Toom many redirects" if redirect_count >= 3
+          redirect_count += 1
+          redirects << location
+          url = location
 
-          else
-            response.value
-            return response.body
-          end
-
+        else
+          response.value
+          return response.body
         end
 
       end
