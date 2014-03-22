@@ -31,16 +31,17 @@ module Plos
     end
 
     def add_paper(paper_doi, paper_info)
-      # Rails.logger.debug(paper_info.inspect)
+      # Rails.logger.debug(citing_info.inspect)
       add_references(paper_doi, paper_info, paper_info[:references])
     end
 
     def results
       if @recalculate
-        @results[:citations].each do |k, info|
-          info[:median_ipms ] = info[:intra_paper_mentions].median if info[:intra_paper_mentions]
-          info[:median_miccs] = info[:median_co_citations].median  if info[:median_co_citations]
+
+        @results[:citations].each do |doi, info|
+          recalculate_results(info)
         end
+
         @recalculate = false
       end
 
@@ -49,74 +50,104 @@ module Plos
 
     private
 
-    def add_references(paper_doi, paper_info, references)
+    def add_references(citing_doi, paper_info, all_references)
       @results[:match_count] += 1
-      @results[:matches] << paper_doi
+      @results[:matches] << citing_doi
 
       @results[:citations] ||= {}
 
-      references.each do |ref_num, ref|
-        ref_num = ref_num.to_s.to_i
-        ref_doi = ref[:doi]
-        next unless ref_doi
+      all_references.each do |cited_num, cited_ref|
+        cited_num = cited_num.to_s.to_i
+        cited_doi = cited_ref[:doi]
+        next unless cited_doi
 
-        info = doi_info(ref_doi)
+        cited_info = cited_doi_info(cited_doi)
 
-        # info[:id]                 ||= id
-        info[:citations]            += 1
-        info[:citing_papers]        << paper_doi
-        info[:ipms_count]           += ref[:citation_count].to_i
-        info[:intra_paper_mentions] << ref[:citation_count]
-        info[:median_co_citations]  << ref[:median_co_citations]
+        # cited_info[:id]                 ||= id
+        cited_info[:citations]            += 1
+        cited_info[:intra_paper_mentions] += cited_ref[:citation_count].to_i
 
-        if ref[:zero_mentions]
-          info[:zero_mentions] ||= []
-          info[:zero_mentions] << paper_doi
+        citing_info = new_citing_info(cited_ref)
+        cited_info[:citing_papers][citing_doi] = citing_info
+
+        if cited_ref[:zero_mentions]
+          cited_info[:zero_mentions] ||= []
+          cited_info[:zero_mentions] << citing_doi
         end
 
-        add_citation_groups(ref_num, info, ref, references, paper_info[:paper][:word_count])
+        groups = cited_ref[:citation_groups]
+        if groups
+          add_co_citation_counts(cited_num, groups, cited_info, all_references)
+          add_citing_word_counts(groups, citing_info, paper_info[:paper][:word_count] )
+          add_section_summaries(groups, cited_info)
+        end
       end
 
       @recalculate = true
     end
 
-    def doi_info(doi)
+    def cited_doi_info(doi)
       @results[:citations][ doi ] ||= {
-        intra_paper_mentions: [],
-        ipms_count:           0,
-        median_co_citations:  [],
+        intra_paper_mentions: 0,
         citations:            0,
-        citing_papers:        [],
+        citing_papers:        {},
         sections:             {},
-        word_positions:       [],
         co_citation_counts:   {},
       }
     end
 
-    def add_citation_groups(ref_num, info, ref, all_references, paper_word_count)
-      return unless ref[:citation_groups]
+    def new_citing_info(ref)
+      info = {
+          word_positions: [],
+          citation_count: ref[:citation_count].to_i,
+          median_co_citations: ref[:median_co_citations].to_i,
+      }
+      info[:zero_mentions] = true if ref[:zero_mentions]
 
-      sections  = info[:sections]
-      positions = info[:word_positions]
-      co_citation_counts = info[:co_citation_counts]
+      info
+    end
 
-      ref[:citation_groups].each do |group|
+    def add_citing_word_counts(groups, citing_info, paper_word_count)
+      positions = citing_info[:word_positions]
 
+      groups.each do |group|
+        positions << "#{group[:word_count]}/#{paper_word_count}"
+      end
+    end
+
+    def add_section_summaries(groups, cited_info)
+      sections  = cited_info[:sections]
+
+      groups.each do |group|
         # Aggregate section counts
         section = group[:section]
         sections[section] = sections[section].to_s.to_i + 1
-        positions << "#{group[:word_count]}/#{paper_word_count}"
+      end
+    end
+
+    def add_co_citation_counts(cited_num, groups, cited_info, all_references)
+      co_citation_counts = cited_info[:co_citation_counts]
+
+      groups.each do |group|
 
         # Aggregate co-citation counts
         group[:references].each do |co_citation_num|
-          if co_citation_num != ref_num
-            cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s.to_sym]
-            co_citation_doi = cc_ref[:doi] || 'No-DOI'
-            co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
-          end
+          next if co_citation_num == cited_num
+
+          cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s.to_sym]
+          co_citation_doi = cc_ref[:doi] || 'No-DOI'
+          co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
         end
 
       end
+    end
+
+    def recalculate_results(info)
+      ipms = info[:citing_papers].map { |doi, p| p[:intra_paper_mentions]}
+      info[:median_ipms]  = ipms.median
+
+      miccs = info[:citing_papers].map { |doi, p| p[:median_co_citations]}
+      info[:median_miccs] = miccs.median
     end
 
   end
