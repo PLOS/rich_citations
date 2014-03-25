@@ -80,6 +80,7 @@ module Plos
           add_co_citation_counts(cited_num, groups, cited_info, all_references)
           add_citing_word_counts(groups, citing_info, paper_info[:paper][:word_count] )
           add_section_summaries(groups, cited_info)
+          add_citing_section_summaries(groups, citing_info)
         end
       end
 
@@ -117,6 +118,16 @@ module Plos
 
     def add_section_summaries(groups, cited_info)
       sections  = cited_info[:sections]
+
+      groups.each do |group|
+        # Aggregate section counts
+        section = group[:section]
+        sections[section] = sections[section].to_s.to_i + 1
+      end
+    end
+
+    def add_citing_section_summaries(groups, citing_info)
+      sections  = citing_info[:sections] ||= {}
 
       groups.each do |group|
         # Aggregate section counts
