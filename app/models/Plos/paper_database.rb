@@ -143,7 +143,7 @@ module Plos
     end
 
     def recalculate_results(info)
-      ipms = info[:citing_papers].map { |doi, p| p[:intra_paper_mentions]}
+      ipms = info[:citing_papers].map { |doi, p| p[:citation_count]}
       info[:median_ipms]  = ipms.median
 
       miccs = info[:citing_papers].map { |doi, p| p[:median_co_citations]}
