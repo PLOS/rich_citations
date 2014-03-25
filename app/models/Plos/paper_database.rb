@@ -42,6 +42,7 @@ module Plos
           recalculate_results(info)
         end
 
+        sort_results
         @recalculate = false
       end
 
@@ -82,6 +83,7 @@ module Plos
           add_section_summaries(groups, cited_info)
           add_citing_section_summaries(groups, citing_info)
         end
+
       end
 
       @recalculate = true
@@ -154,6 +156,13 @@ module Plos
     end
 
     def recalculate_results(info)
+    end
+
+    def sort_results
+      @results[:citations] = @results[:citations].sort.to_h
+      @results[:citations].each do |doi, cited_info|
+        cited_info[:citing_papers] = cited_info[:citing_papers].sort.to_h
+      end
     end
 
   end

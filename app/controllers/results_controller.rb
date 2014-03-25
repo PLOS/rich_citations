@@ -28,9 +28,10 @@ class ResultsController < ApplicationController
 
       format.html {
         if @result.ready?
-          @sort      = params[:sort].to_sym
+          @sort_col  = params[:sort].to_sym
+          @sort_desc = params[:dir] == 'desc'
           @citations = @result.analysis_results[:citations] || {}
-          @citations = sort_citations(@citations, @sort)
+          @citations = sort_citations(@citations, @sort_col, @sort_desc)
         end
       }
 
@@ -69,11 +70,12 @@ class ResultsController < ApplicationController
   protected
 
   def sort_link(text, column)
-    if column == @sort
-      text
-    else
-      view_context.link_to(text, result_path(@result.token, sort:column))
+    options = {sort:column}
+    if column == @sort_col
+      options[:dir] = @sort_desc ? nil : 'desc'
     end
+
+    view_context.link_to(text, result_path(@result.token, options))
   end
   helper_method :sort_link
 
@@ -83,12 +85,18 @@ class ResultsController < ApplicationController
     params.require(:result).permit(:query, :limit)
   end
 
-  def sort_citations(citations, column)
+  def sort_citations(citations, column, descending)
+
     if column
-      Hash[ citations.sort_by { |_,v| v[column] } ]
+      results = citations.sort_by { |_,v| v[column] }
+      descending ? results.reverse.to_h : results.to_h
+    elsif descending
+      citations.to_a.reverse.to_h
     else
-      Hash[ citations.sort_by { |k,_| k  } ]
+      # Parser ensures that citations are sorted
+      citations
     end
+
   end
 
 end
