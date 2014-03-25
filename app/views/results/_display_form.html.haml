@@ -30,13 +30,13 @@
           %tr
             %th= sort_link('Cited Paper', nil)
             %th= sort_link('Citations',   :citations)
-            %th= sort_link('Mentions',    :ipms_count)
+            %th= sort_link('Mentions',    :intra_paper_mentions)
         %tbody
           - @citations.each do |doi, info|
             %tr
               %td= link_to doi, cited_result_path(@result.token, doi)
               %td.number= info[:citations]
-              %td.number= info[:ipms_count]
+              %td.number= info[:intra_paper_mentions]
 
 %br
 %br
