@@ -27,6 +27,7 @@ module Plos
       @results = {
           match_count: 0,
           matches:     [],
+          cited_count: 0,
       }
     end
 
@@ -90,13 +91,18 @@ module Plos
     end
 
     def cited_doi_info(doi)
-      @results[:citations][ doi ] ||= {
-        intra_paper_mentions: 0,
-        citations:            0,
-        citing_papers:        {},
-        sections:             {},
-        co_citation_counts:   {},
-      }
+      unless @results[:citations][ doi ]
+        @results[:citations][ doi ] = {
+          intra_paper_mentions: 0,
+          citations:            0,
+          citing_papers:        {},
+          sections:             {},
+          co_citation_counts:   {},
+        }
+        @results[:cited_count] += 1
+      end
+
+      @results[:citations][ doi ]
     end
 
     def new_citing_info(ref)
