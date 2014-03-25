@@ -1,3 +1,6 @@
+- content_for :title do
+  Results for '#{@result.query}'
+
 - if @result.ready?
   = render partial:'display_form'
 - else

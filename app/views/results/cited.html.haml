@@ -1,3 +1,6 @@
+- content_for :title do
+  Results for cited DOI: #{@doi}
+
 %h3 Results for cited DOI: #{@doi} from #{link_to "'" + @result.query + "'", result_path(@result.token) },
 
 .results
