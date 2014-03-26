@@ -115,10 +115,8 @@ module Plos
       loop do
         uri = URI.parse(url)
         req = Net::HTTP::Post.new(uri.request_uri, headers)
-        req.set_form_data = content
+        req.body = content
         response = http.request uri, req
-
-        response = http.post(uri.request_uri, content, headers)
 
         location = response.header['location']
         if location

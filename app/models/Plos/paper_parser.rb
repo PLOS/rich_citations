@@ -68,19 +68,14 @@ module Plos
       unless @doi_for_reference
         @doi_for_reference = {}
 
-        #@TODO: The Cross ref API is ridiculously slow about 60 seconds
-        #       And usually times-out
-        #search_texts = reference_nodes.map { |n| n.text }
-        #result_dois  = Plos::Api.cross_refs( search_texts )
-        #
-        #result_dois.each_with_index do | result, index|
-        #  @@doi_for_reference[index+1] = result || Plos::Utilities.extract_doi( search_texts[index] )
-        #end
+        search_texts = reference_nodes.map { |n| n.text }
+        result_dois  = Plos::Api.cross_refs( search_texts )
 
-        reference_nodes.each_with_index do |node, index|
-          # inline DOI or DOI from Web Page references list
-          doi = Plos::Utilities.extract_doi(node.text) || Plos::Utilities.extract_doi( info_page_references[index].inspect )
-          @doi_for_reference[index+1] = doi
+        result_dois.each_with_index do | result, index|
+          @doi_for_reference[index+1] = result
+                                        # ||
+                                        # Plos::Utilities.extract_doi( search_texts[index] ) ||
+                                        # Plos::Utilities.extract_doi( info_page_references[index].inspect )
         end
 
       end
