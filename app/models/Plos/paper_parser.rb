@@ -48,10 +48,11 @@ module Plos
         @references_by_id = {}
         reference_nodes.each_with_index do |ref, i|
           index = i + 1
-          doi = doi_for_reference[index]
+          crossref = crossref_for_reference[index]
           @references[index] = {
-              id:   ref[:id],
-              doi:  doi
+              id:       ref[:id],
+              doi:      crossref && crossref[:doi],
+              crossref: crossref
           }
           @references_by_id[ref[:id]] = index
         end
@@ -64,23 +65,23 @@ module Plos
       @references
     end
 
-    def doi_for_reference
-      unless @doi_for_reference
-        @doi_for_reference = {}
+    def crossref_for_reference
+      unless @crossref_for_reference
+        @crossref_for_reference = {}
 
         search_texts = reference_nodes.map { |n| n.text }
-        result_dois  = Plos::Api.cross_refs( search_texts )
+        result_dois  = Plos::Api.crossrefs( search_texts )
 
         result_dois.each_with_index do | result, index|
-          @doi_for_reference[index+1] = result
+          @crossref_for_reference[index+1] = result
                                         # ||
-                                        # Plos::Utilities.extract_doi( search_texts[index] ) ||
-                                        # Plos::Utilities.extract_doi( info_page_references[index].inspect )
+                                        # 'doi':Plos::Utilities.extract_doi( search_texts[index] ) ||
+                                        # 'doi':Plos::Utilities.extract_doi( info_page_references[index].inspect )
         end
 
       end
 
-      @doi_for_reference
+      @crossref_for_reference
     end
 
     # Get a list of references by ref id /rid

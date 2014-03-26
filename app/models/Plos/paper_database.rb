@@ -33,6 +33,10 @@ module Plos
 
     def add_paper(paper_doi, paper_info)
       # Rails.logger.debug(citing_info.inspect)
+
+      @results[:match_count] += 1
+      @results[:matches] << paper_doi
+
       add_references(paper_doi, paper_info, paper_info[:references])
     end
 
@@ -53,9 +57,6 @@ module Plos
     private
 
     def add_references(citing_doi, paper_info, all_references)
-      @results[:match_count] += 1
-      @results[:matches] << citing_doi
-
       @results[:citations] ||= {}
 
       all_references.each do |cited_num, cited_ref|
@@ -63,31 +64,35 @@ module Plos
         cited_doi = cited_ref[:doi]
         next unless cited_doi
 
-        cited_info = cited_doi_info(cited_doi)
-
-        # cited_info[:id]                 ||= id
-        cited_info[:citations]            += 1
-        cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
-
-        citing_info = new_citing_info(cited_ref)
-        cited_info[:citing_papers][citing_doi] = citing_info
-
-        if cited_ref[:zero_mentions]
-          cited_info[:zero_mentions] ||= []
-          cited_info[:zero_mentions] << citing_doi
-        end
-
-        groups = cited_ref[:citation_groups]
-        if groups
-          add_co_citation_counts(cited_num, groups, cited_info, all_references)
-          add_citing_word_counts(groups, citing_info, paper_info[:paper][:word_count] )
-          add_section_summaries(groups, cited_info)
-          add_citing_section_summaries(groups, citing_info)
-        end
-
+        add_reference(all_references, cited_doi, cited_num, cited_ref, citing_doi, paper_info)
       end
 
       @recalculate = true
+    end
+
+    def add_reference(all_references, cited_doi, cited_num, cited_ref, citing_doi, paper_info)
+      cited_info                        = cited_doi_info(cited_doi)
+
+      # cited_info[:id]                 ||= id
+      cited_info[:citations]            += 1
+      cited_info[:crossref]             =  cited_ref[:crossref] unless cited_info[:crossref]
+      cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
+
+      citing_info                            = new_citing_info(cited_ref)
+      cited_info[:citing_papers][citing_doi] = citing_info
+
+      if cited_ref[:zero_mentions]
+        cited_info[:zero_mentions] ||= []
+        cited_info[:zero_mentions] << citing_doi
+      end
+
+      groups = cited_ref[:citation_groups]
+      if groups
+        add_co_citation_counts(cited_num, groups, cited_info, all_references)
+        add_citing_word_counts(groups, citing_info, paper_info[:paper][:word_count])
+        add_section_summaries(groups, cited_info)
+        add_citing_section_summaries(groups, citing_info)
+      end
     end
 
     def cited_doi_info(doi)

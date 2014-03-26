@@ -65,14 +65,14 @@ module Plos
       Nokogiri::HTML(response)
     end
 
-    def self.cross_refs(texts)
+    def self.crossrefs(texts)
       texts = JSON.generate( texts.map { |t| t.to_s } )
       response = http_post(CROSSREF_URL, texts, 'Content-Type' => "application/xml")
       json = JSON.parse(response)
 
       json['results'].map do |result|
         if result['match']
-          Plos::Utilities.extract_doi( result['doi'] )
+          parse_crossref(result)
         else
           nil
         end
@@ -80,6 +80,35 @@ module Plos
     end
 
     private
+
+    CROSSREF_KEY_MAP = {
+      'rft.atitle' => 'title',
+      'rft.jtitle' => 'journal',
+      'rft.date'   => 'year',
+      'rft.volume' => 'volume',
+      'rft.issue'  => 'issue',
+      'rft.spage'  => 'start_page',
+      'rft.epage'  => 'end_page',
+      'rft.au'     => 'authors[]',
+    }
+
+    def self.parse_crossref(ref)
+      crossref = { 'doi' => Plos::Utilities.extract_doi( ref['doi'] ) }
+
+      coins = ref['coins'].to_s.gsub('&amp;', '&')
+      coins.split('&').each do |p|
+        k, v = p.split('=', 2)
+        k = CROSSREF_KEY_MAP[k]
+
+        if k
+          v = Rack::Utils.unescape(v).strip
+          Rack::Utils.normalize_params(crossref, k, v)
+        end
+
+      end
+
+      crossref.symbolize_keys!
+    end
 
     def self.http_get(url, headers={})
       redirect_count = 0
