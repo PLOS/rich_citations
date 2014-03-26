@@ -67,7 +67,7 @@ module Plos
 
         # cited_info[:id]                 ||= id
         cited_info[:citations]            += 1
-        cited_info[:intra_paper_mentions] += cited_ref[:citation_count].to_i
+        cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
 
         citing_info = new_citing_info(cited_ref)
         cited_info[:citing_papers][citing_doi] = citing_info
@@ -108,7 +108,7 @@ module Plos
     def new_citing_info(ref)
       info = {
           word_positions: [],
-          citation_count: ref[:citation_count].to_i,
+          mentions: ref[:citation_count].to_i,
           # median_co_citations: ref[:median_co_citations].to_i,
       }
       info[:zero_mentions] = true if ref[:zero_mentions]

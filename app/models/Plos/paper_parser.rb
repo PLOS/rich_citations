@@ -180,7 +180,7 @@ module Plos
     # @mro aka ipm_dictionary
     def add_citation_counts
       all_citations = citation_groups.map{|g| g[:references]}.flatten
-      all_citations.group_by {|n| n }.each { |k,v| references[k][:citation_count] = v.count }
+      all_citations.group_by {|n| n }.each { |k,v| references[k][:mentions] = v.count }
     end
 
     def info_page_references
