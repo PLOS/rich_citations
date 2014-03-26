@@ -169,7 +169,9 @@ module Plos
       @results[:citations].each do |doi, cited_info|
         cited_info[:citing_papers] = cited_info[:citing_papers].sort.to_h
       end
-      @results[:matches].sort!
+
+      # Don't sort these - matches are sorted by relevance
+      # @results[:matches].sort!
     end
 
   end
