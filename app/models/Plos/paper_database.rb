@@ -113,7 +113,7 @@ module Plos
     def new_citing_info(ref)
       info = {
           word_positions: [],
-          mentions: ref[:citation_count].to_i,
+          mentions: ref[:mentions].to_i,
           # median_co_citations: ref[:median_co_citations].to_i,
       }
       info[:zero_mentions] = true if ref[:zero_mentions]
