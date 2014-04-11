@@ -1,21 +1,32 @@
 
 module Plos
   class Utilities
+    PUNCT = %q{[]'".,:!?)-;/`]}  # Posix [[:punct:]] regex is more liberal than we want
+
+    # (^|\s)doi:?\s*(?<result>10\.([[:punct:]]*[^[[:punct:]][[:space:]]]+)+)
+
+    DOI_PREFIX_REGEX = /(^|\s)doi:?\s*(?<result>10\.\S+(?<![[:punct:]]))/io
+    DOI_URL_REGEX    = /(^|\W)doi\.org\/(?<result>10\.\S+(?<![[:punct:]]))/io
 
     def self.extract_doi(text)
+      match(text, { DOI_URL_REGEX    => true,
+                    DOI_PREFIX_REGEX => false })
+    end
+
+    # Regexes must have a named capture called 'result'
+    def self.match(text, regexes)
       return nil unless text.present?
 
-      match = text.match( /\sdoi:|\.doi\./i)
-      return nil unless match
+      regexes.each do |regex, unescape|
+        match = text.match(regex)
+        next unless match
 
-      # all DOI's start with 10., see reference here: http://www.doi.org/doi_handbook/2_Numbering.html#2.2
-      match = text.match( /(\s)*(10\.)/, match.end(0) )
-      return nil unless match
+        result = match['result']
+        result = CGI.unescape(result) if unescape
+        return result
+      end
 
-      match = text.match( /[^\s\"]*/, match.begin(2))
-      result = match[0]
-      result = result[0..-2] if result.end_with?('.')
-      result
+      nil
     end
 
   end
