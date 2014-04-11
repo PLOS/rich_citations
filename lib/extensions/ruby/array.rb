@@ -16,9 +16,7 @@ class Array
 
   def symbolize_keys_recursive!
     each do |v|
-      case v
-        when Hash, Array then v.symbolize_keys_recursive!
-      end
+      v.try(:symbolize_keys_recursive!)
     end
 
     self
