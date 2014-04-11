@@ -27,3 +27,18 @@ CitationTools::Application.configure do
   # number of complex assets.
   config.assets.debug = true
 end
+
+class ::ActiveSupport::Logger
+  self.singleton_class.send(:alias_method, :old_broadcast_module, :broadcast)
+
+  def self.broadcast(logger)
+    mod = old_broadcast_module(logger)
+    mod.send :define_method, :add do |severity, *args, &block|
+      logger.add(severity, *args, &block) if severity != ::Logger::INFO
+      super(*args, &block)
+    end
+    mod
+  end
+end
+
+
