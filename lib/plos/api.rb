@@ -8,8 +8,6 @@ module Plos
     SEARCH_URL   = 'http://api.plos.org/search'
     DOC_URL      = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
     INFO_URL     = 'http://www.plosone.org/article/info:doi/%s'
-    CROSSREF_URL = 'http://search.crossref.org/links'
-
 
     # This is Adam's API key. Please don't overuse it.
     # We're going to need a different one (or a different arrangement altogether) for any public release.
@@ -26,7 +24,7 @@ module Plos
     #Note that the PLOS search API cannot return full paper text, only abstracts and metadata.
     #However, the URL for retrieving full-text PLOS papers is wholly specified by a paper's DOI (journal is not necessary).
 
-    def self.search(query, query_type:nil, rows:20, more_parameters:nil, fq:'doc_type:full AND article_type_facet:"Research Article"', output:'json')
+    def self.search(query, query_type:nil, rows:20, more_parameters:nil, fq:'doc_type:full AND article_type_facet:"Research Article"', output: :json)
       params = {}
 
       query = URI.encode("\"#{query}\"")
@@ -46,7 +44,7 @@ module Plos
 
       query_string = params.map{ |k,v| "#{k}=#{v}"}.join('&')
       url = SEARCH_URL + '?'+query_string
-      response = http_get(url, 'Content-Type' => "application/#{output}")
+      response = http_get(url, output)
       json = JSON.parse(response)
       json['response']['docs']
     end
@@ -54,7 +52,7 @@ module Plos
     # Given the DOI of a PLOS paper, downloads the XML and parses it
     def self.document(doi)
       url = DOC_URL % [doi]
-      response = http_get(url, 'Content-Type' => "application/xml")
+      response = http_get(url, :xml)
       Nokogiri::XML(response)
     end
 
@@ -65,51 +63,6 @@ module Plos
       Nokogiri::HTML(response)
     end
 
-    def self.crossrefs(texts)
-      texts = JSON.generate( texts.map { |t| t.to_s } )
-      response = http_post(CROSSREF_URL, texts, 'Content-Type' => "application/xml")
-      json = JSON.parse(response)
-
-      json['results'].map do |result|
-        if result['match']
-          parse_crossref(result)
-        else
-          nil
-        end
-      end
-    end
-
-    private
-
-    CROSSREF_KEY_MAP = {
-      'rft.atitle' => 'title',
-      'rft.jtitle' => 'journal',
-      'rft.date'   => 'year',
-      'rft.volume' => 'volume',
-      'rft.issue'  => 'issue',
-      'rft.spage'  => 'start_page',
-      'rft.epage'  => 'end_page',
-      'rft.au'     => 'authors[]',
-    }
-
-    def self.parse_crossref(ref)
-      crossref = { 'doi' => Plos::Utilities.extract_doi( ref['doi'] ) }
-
-      coins = ref['coins'].to_s.gsub('&amp;', '&')
-      coins.split('&').each do |p|
-        k, v = p.split('=', 2)
-        k = CROSSREF_KEY_MAP[k]
-
-        if k
-          v = Rack::Utils.unescape(v).strip
-          Rack::Utils.normalize_params(crossref, k, v)
-        end
-
-      end
-
-      crossref.symbolize_keys!
-    end
-
     def self.http_get(url, headers={})
       redirect_count = 0
       redirects = []
@@ -117,7 +70,7 @@ module Plos
 
       loop do
         uri = URI.parse(url)
-        req = Net::HTTP::Get.new(uri.request_uri, headers)
+        req = Net::HTTP::Get.new(uri.request_uri, parse_headers(headers))
         response = http.request uri, req
 
         location = response.header['location']
@@ -143,7 +96,7 @@ module Plos
 
       loop do
         uri = URI.parse(url)
-        req = Net::HTTP::Post.new(uri.request_uri, headers)
+        req = Net::HTTP::Post.new(uri.request_uri, parse_headers(headers))
         req.body = content
         response = http.request uri, req
 
@@ -163,5 +116,19 @@ module Plos
       end
     end
 
+    private
+
+    def self.parse_headers(original)
+      case original
+        when :xml
+          { 'Content-Type' => 'application/xml' }
+        when :json
+          { 'Content-Type' => 'application/json' }
+        when :js
+          { 'Content-Type' => 'application/javascript' }
+        ekse
+          original
+      end
+    end
   end
 end

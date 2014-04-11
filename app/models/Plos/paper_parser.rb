@@ -66,22 +66,9 @@ module Plos
     end
 
     def crossref_for_reference
-      unless @crossref_for_reference
-        @crossref_for_reference = {}
-
-        search_texts = reference_nodes.map { |n| n.text }
-        result_dois  = Plos::Api.crossrefs( search_texts )
-
-        result_dois.each_with_index do | result, index|
-          @crossref_for_reference[index+1] = result
-                                        # ||
-                                        # 'doi':Plos::Utilities.extract_doi( search_texts[index] ) ||
-                                        # 'doi':Plos::Utilities.extract_doi( info_page_references[index].inspect )
-        end
-
-      end
-
-      @crossref_for_reference
+      @crossref_for_reference ||= Plos::CrossRefResolver.resolve(
+            reference_nodes.map.with_index { |n, i| [i+1, n.text.to_s] }.to_h
+          )
     end
 
     # Get a list of references by ref id /rid
