@@ -2,9 +2,9 @@ require 'spec_helper'
 
 describe ResultsController do
 
-  describe "GET 'new'" do
+  describe "GET 'index'" do
     it "returns http success" do
-      get 'new'
+      get 'index'
       expect(response).to be_success
     end
   end
