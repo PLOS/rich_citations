@@ -1,4 +1,4 @@
-= simple_form_for @result, html:{class:'form-horizontal'}  do |f|
+= simple_form_for @search_result, html:{class:'form-horizontal'}, url:search_results_path  do |f|
   = f.error_notification
   = f.input  :query
   = f.input  :limit, as:'integer', input_html:{maxLength:'3'}

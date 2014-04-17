@@ -5,13 +5,31 @@ class Result < ActiveRecord::Base
   validates :query, presence:true
   validates :limit, presence:true, numericality: { only_integer:true, greater_than:0, less_than_or_equal_to:500 }
 
-  def self.find_or_new(params)
+  def self.find_or_new_for_search(params)
     params[:query] = params[:query].try(:strip)
 
     find_params = params.dup
     find_params[:query] = find_params[:query].try(:downcase)
 
     self.where(find_params).first || self.new(params)
+  end
+
+  def self.find_or_new_for_analyze(params)
+    list = extract_dois_from_list(params[:query])
+    return nil if list.empty?
+
+    limit = list.count
+    query = list[0..1].join(',')
+    query += '…' if limit > 2
+    query_result = list.map { |i| { id:i }  }
+
+    find_params = {
+        query:        query,
+        limit:        limit,
+        query_result: JSON.generate(query_result),
+    }
+
+    self.where(find_params).first || self.new(find_params)
   end
 
   def self.for_token(token)
@@ -50,6 +68,12 @@ class Result < ActiveRecord::Base
 
   private
 
+  def self.extract_dois_from_list(text)
+    list = (text || '').split(/\s+/)
+    list.map!{|i| Plos::DoiResolver.extract_doi(i) }
+    list.select(&:present?)
+  end
+
   def analyze!
     matching_dois = search_dois
 
@@ -71,6 +95,7 @@ class Result < ActiveRecord::Base
       matching = Plos::Api.search(self.query, query_type: "subject", rows: self.limit)
       self.update_attributes!(query_result: JSON.generate(matching))
       Rails.logger.info("Found #{matching.count} results")
+
     else
       matching = JSON.parse(self.query_result)
       Rails.logger.info("Using #{matching.count} cached query results")
@@ -84,7 +109,9 @@ class Result < ActiveRecord::Base
   end
 
   def normalize_fields
-    self.query &&= self.query.downcase
+    unless self.query_result.present? # Analysis
+      self.query &&= self.query.downcase
+    end
   end
 
 end

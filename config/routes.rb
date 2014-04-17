@@ -4,9 +4,13 @@ CitationTools::Application.routes.draw do
 
   get '', to:'results#index', as:'search'
 
-  resources :results, only:[:index, :create, :show] do
+  resources :results, only:[:index, :show] do
     member do
       get '/cited/:doi', action:'cited', constraints: {doi: /.+/}, format:false, as:'cited'
+    end
+    collection do
+      post :search
+      post :analyze
     end
   end
 

@@ -25,3 +25,15 @@ th {
 td.number {
   text-align: center;
 }
+
+.span4 .simple_form, .span3 .simple_form {
+  label.control-label { width: 60px; }
+  div.controls        {margin-left:80px; }
+}
+
+form.analyze-form {
+  textarea {
+    height: 71px;
+    width: 280px;
+  }
+}

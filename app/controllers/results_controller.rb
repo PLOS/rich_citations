@@ -1,23 +1,43 @@
 class ResultsController < ApplicationController
 
   def index
-    @result = Result.new(
+    @search_result ||= Result.new(
         query: 'Circadian Rhythms',
         limit: 50
     )
+    @analyze_result ||= Result.new
 
     @available_results = Result.order(updated_at: :desc)
 
     render :index
   end
 
-  def create
-    @result = Result.find_or_new( result_params )
-    if @result.save
-      @result.start_analysis!
-      redirect_to result_path(@result.token)
+  def search
+    @search_result = Result.find_or_new_for_search( search_params )
+    if @search_result.save
+      @search_result.start_analysis!
+      redirect_to result_path(@search_result.token)
+
     else
-      render :new
+      index
+
+    end
+  end
+
+  def analyze
+    @analyze_result = Result.find_or_new_for_analyze( analyze_params )
+    if @analyze_result.nil?
+      @analyze_result = Result.new(analyze_params)
+      @analyze_result.errors.add(:query, 'must be valid')
+      index
+
+    elsif @analyze_result.save
+      @analyze_result.start_analysis!
+      redirect_to result_path(@analyze_result.token)
+
+    else
+      index
+
     end
   end
 
@@ -81,8 +101,12 @@ class ResultsController < ApplicationController
 
   private
 
-  def result_params
+  def search_params
     params.require(:result).permit(:query, :limit)
+  end
+
+  def analyze_params
+    params.require(:result).permit(:query)
   end
 
   def sort_citations(citations, column, descending)
