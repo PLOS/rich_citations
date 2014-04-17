@@ -48,11 +48,11 @@ module Plos
         @references_by_id = {}
         reference_nodes.each_with_index do |ref, i|
           index = i + 1
-          crossref = crossref_for_reference[index]
+          info = info_for_reference[index]
           @references[index] = {
               id:       ref[:id],
-              doi:      crossref && crossref[:doi],
-              crossref: crossref
+              doi:      info && info[:doi],
+              info:     info
           }
           @references_by_id[ref[:id]] = index
         end
@@ -65,8 +65,8 @@ module Plos
       @references
     end
 
-    def crossref_for_reference
-      @crossref_for_reference ||= Plos::CrossRefResolver.resolve(
+    def info_for_reference
+      @info_for_reference ||= Plos::InfoResolver.resolve(
             reference_nodes.map.with_index { |n, i| [i+1, n.text.to_s] }.to_h
           )
     end

@@ -34,7 +34,7 @@
         %tbody
           - @citations.each do |doi, info|
             %tr
-              %td= link_to doi, cited_result_path(@result.token, doi)
+              %td= link_to doi, cited_result_path(@result.token, url_encode(doi) )
               %td.number= info[:citations]
               %td.number= info[:intra_paper_mentions]
 

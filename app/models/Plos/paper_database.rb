@@ -75,7 +75,7 @@ module Plos
 
       # cited_info[:id]                 ||= id
       cited_info[:citations]            += 1
-      cited_info[:crossref]             =  cited_ref[:crossref] unless cited_info[:crossref]
+      cited_info[:info]                  =  cited_ref[:info] unless cited_info[:info]
       cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
 
       citing_info                            = new_citing_info(cited_ref)
