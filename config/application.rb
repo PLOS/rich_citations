@@ -27,5 +27,9 @@ module CitationTools
 
     config.app.crossref_pid = "plos:plos1"
 
+    # This is Adam's API key. Please don't overuse it.
+    # We're going to need a different one (or a different arrangement altogether) for any public release.
+    config.app.plos_api_key = "s4ZVBmgJyfZPMpqyy3Gs" # for abecker@plos.org
+
   end
 end

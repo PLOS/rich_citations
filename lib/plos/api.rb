@@ -9,10 +9,6 @@ module Plos
     DOC_URL      = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
     INFO_URL     = 'http://www.plosone.org/article/info:doi/%s'
 
-    # This is Adam's API key. Please don't overuse it.
-    # We're going to need a different one (or a different arrangement altogether) for any public release.
-    API_KEY = "s4ZVBmgJyfZPMpqyy3Gs" # for abecker@plos.org
-
     #Accesses the PLOS search API.
     #query: the text of your query.
     #query_type: subject, author, etc.
@@ -40,7 +36,7 @@ module Plos
       params[:fq]      = URI.encode(fq) if fq
       params[:wt]      = output
       params[:rows]    = rows
-      params[:api_key] = API_KEY
+      params[:api_key] = Rails.configuration.app.plos_api_key
 
       query_string = params.map{ |k,v| "#{k}=#{v}"}.join('&')
       url = SEARCH_URL + '?'+query_string
@@ -54,6 +50,10 @@ module Plos
       url = DOC_URL % [doi]
       response = http_get(url, :xml)
       Nokogiri::XML(response)
+
+    rescue Net::HTTPFatalError
+      #@todo Need a better way to detect invalid docs than 500 errore
+      nil
     end
 
     # Given the DOI of a PLOS paper, downloads the XML and parses it

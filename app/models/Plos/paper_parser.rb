@@ -5,7 +5,7 @@ module Plos
 
     def initialize(xml)
       @xml = xml
-      @doi = xml.at('article-id[pub-id-type=doi]').content
+      @doi = xml.at('article-id[pub-id-type=doi]').content if xml
     end
 
     def test
@@ -31,6 +31,8 @@ module Plos
     end
 
     def paper_info
+      return {failed:true} unless xml
+
       {
           doi: doi,
           paper: {

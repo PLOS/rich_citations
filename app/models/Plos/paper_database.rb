@@ -27,17 +27,22 @@ module Plos
       @results = {
           match_count: 0,
           matches:     [],
+          failures:    [],
           cited_count: 0,
       }
     end
 
     def add_paper(paper_doi, paper_info)
-      # Rails.logger.debug(citing_info.inspect)
+      # Rails.logger.debug(paper_info.inspect)
 
       @results[:match_count] += 1
       @results[:matches] << paper_doi
 
-      add_references(paper_doi, paper_info, paper_info[:references])
+      if is_failure?(paper_info)
+        add_failure(paper_doi)
+      else
+        add_references(paper_doi, paper_info, paper_info[:references])
+      end
     end
 
     def results
@@ -51,10 +56,16 @@ module Plos
         @recalculate = false
       end
 
+      @results.delete(:failures) if @results[:failures].empty?
+
       @results
     end
 
     private
+
+    def add_failure(paper_doi)
+      @results[:failures] << paper_doi
+    end
 
     def add_references(citing_doi, paper_info, all_references)
       @results[:citations] ||= {}
@@ -177,6 +188,10 @@ module Plos
 
       # Don't sort these - matches are sorted by relevance
       # @results[:matches].sort!
+    end
+
+    def is_failure?(paper_info)
+      paper_info.blank? || paper_info[:failed]
     end
 
   end
