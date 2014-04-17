@@ -1,58 +1,26 @@
-class Plos::CrossRefResolver
+class Plos::CrossRefResolver < Plos::BaseResolver
 
-  # Results with a lower score from the crossref.org will be ignored
-  MIN_CROSSREF_SCORE = 1
-
-  def self.resolve(references)
-    new(references).resolve
-  end
-
-  def initialize(references)
-    @references = references
-  end
+  # cf  http://search.crossref.org/help/api#match
+  API_URL = 'http://search.crossref.org/links'
 
   def resolve
-    @cross_refs = {}
-    @unresolved_indexes = @references.keys
+    return if unresolved_references.empty?
 
-    search_crossref
+    texts = JSON.generate( unresolved_references.values )
+    response = Plos::Api::http_post(API_URL, texts, :xml)
+    results = JSON.parse(response)['results']
 
-    @cross_refs
+    results.each_with_index do |result, i|
+      index = unresolved_references.keys[i]
+      info  = extract_info(result)
+      root.set_result(index, info)
+    end
   end
 
   private
 
-  attr_reader :references
-  attr_reader :cross_refs
-  attr_reader :unresolved_indexes
-
-  def unresolved_references
-    references.slice(*unresolved_indexes)
-  end
-
-  def set_crossref(index, crossref)
-    return unless crossref
-
-    unresolved_indexes.delete(index)
-    cross_refs[index] = crossref
-  end
-
-  CROSSREF_URL = 'http://search.crossref.org/links'
-
-  # cf  http://search.crossref.org/help/api#match
-  def search_crossref
-    unresolved = unresolved_references
-    return if unresolved_references.empty?
-
-    texts = JSON.generate( unresolved_references.values )
-    response = Plos::Api::http_post(CROSSREF_URL, texts, :xml)
-    json = JSON.parse(response)
-
-    json['results'].map.with_index do |result, i|
-      index = unresolved.keys[i]
-      set_crossref index, extract_crossref_info(result)
-    end
-  end
+  # Results with a lower score from the crossref.org will be ignored
+  MIN_CROSSREF_SCORE = 3 #@TODO: Keeping this value low to force skips for testing
 
   CROSSREF_KEY_MAP = {
       'rft.atitle' => 'title',
@@ -65,29 +33,29 @@ class Plos::CrossRefResolver
       'rft.au'     => 'authors[]',
   }
 
-  def extract_crossref_info(ref)
-    return nil unless ref['match']
-    return nil unless ref['score'] > MIN_CROSSREF_SCORE
+  def extract_info(result)
+    return nil unless result['match']
+    return nil unless result['score'] > MIN_CROSSREF_SCORE
 
-    crossref = {
+    info = {
         source: :crossref,
-        doi:    Plos::Utilities.extract_doi( ref['doi'] ),
-        score:  ref['score'].to_f,
+        doi:    Plos::DoiResolver.extract_doi( result['doi'] ),
+        score:  result['score'].to_f,
     }
 
-    coins = ref['coins'].to_s.gsub('&amp;', '&')
-    coins.split('&').each do |p|
-      k, v = p.split('=', 2)
-      k = CROSSREF_KEY_MAP[k]
+    coins = result['coins'].to_s.gsub('&amp;', '&')
+    coins.split('&').each do |coin|
+      key, value = coin.split('=', 2)
+      key = CROSSREF_KEY_MAP[key]
 
-      if k
-        v = Rack::Utils.unescape(v).strip
-        Rack::Utils.normalize_params(crossref, k, v)
+      if key
+        value = Rack::Utils.unescape(value).strip
+        Rack::Utils.normalize_params(info, key, value)
       end
 
     end
 
-    crossref.symbolize_keys!
+    info.symbolize_keys!
   end
 
 end
