@@ -21,5 +21,11 @@ module CitationTools
     # config.i18n.default_locale = :de
 
     config.autoload_paths += %W(#{config.root}/lib)
+
+    #App configuration
+    config.app = ActiveSupport::OrderedOptions.new
+
+    config.app.crossref_pid = "plos:plos1"
+
   end
 end
