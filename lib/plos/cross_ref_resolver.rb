@@ -21,7 +21,7 @@ class Plos::CrossRefResolver < Plos::BaseResolver
   private
 
   # Results with a lower score from the crossref.org will be ignored
-  MIN_CROSSREF_SCORE = 3.0 #@TODO: Keeping this value low to force skips for testing
+  MIN_CROSSREF_SCORE = 2.0 #@TODO: Keeping this value high to force skips for testing
 
   CROSSREF_KEY_MAP = {
       'rft.atitle' => 'title',
