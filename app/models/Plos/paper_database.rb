@@ -38,7 +38,7 @@ module Plos
       @results[:match_count] += 1
       @results[:matches] << paper_doi
 
-      if is_failure?(paper_info)
+      if PaperParser.is_failure?(paper_info)
         add_failure(paper_doi)
       else
         add_references(paper_doi, paper_info, paper_info[:references])
@@ -188,10 +188,6 @@ module Plos
 
       # Don't sort these - matches are sorted by relevance
       # @results[:matches].sort!
-    end
-
-    def is_failure?(paper_info)
-      paper_info.blank? || paper_info[:failed]
     end
 
   end

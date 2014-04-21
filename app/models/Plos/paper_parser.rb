@@ -1,6 +1,11 @@
 module Plos
   class PaperParser
 
+
+    def self.is_failure?(paper_info)
+      paper_info.blank? || paper_info[:failed]
+    end
+
     attr_reader :doi, :xml
 
     def initialize(xml)

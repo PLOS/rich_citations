@@ -51,8 +51,9 @@ module Plos
       response = http_get(url, :xml)
       Nokogiri::XML(response)
 
-    rescue Net::HTTPFatalError
-      #@todo Need a better way to detect invalid docs than 500 errore
+    rescue Net::HTTPFatalError => ex
+      raise unless ex.response.code == '500'
+      #todo Need a better way to detect invalid docs than 500 errors
       nil
     end
 

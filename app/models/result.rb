@@ -15,7 +15,7 @@ class Result < ActiveRecord::Base
   end
 
   def self.find_or_new_for_analyze(params)
-    list = extract_dois_from_list(params[:query])
+    list = Plos::DoiResolver.extract_doi_list(params[:query])
     return nil if list.empty?
 
     limit = list.count
@@ -67,12 +67,6 @@ class Result < ActiveRecord::Base
   end
 
   private
-
-  def self.extract_dois_from_list(text)
-    list = (text || '').split(/\s+/)
-    list.map!{|i| Plos::DoiResolver.extract_doi(i) }
-    list.select(&:present?)
-  end
 
   def analyze!
     matching_dois = search_dois
