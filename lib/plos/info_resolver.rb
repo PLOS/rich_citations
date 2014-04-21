@@ -41,6 +41,7 @@ class Plos::InfoResolver
   RESOLVERS = [
       Plos::CrossRefResolver,
       Plos::DoiResolver,
+      Plos::FailResolver,     # When nothing else has worked
   ]
 
 end
