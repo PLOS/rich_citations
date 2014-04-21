@@ -3,9 +3,9 @@
 class Plos::FailResolver < Plos::BaseResolver
 
   def resolve
-    unresolved_references.each do |index, text|
+    unresolved_references.each do |index, node|
       info = {
-          ref_text: text,
+          text: node.text,
       }
       root.set_result(index, info )
     end

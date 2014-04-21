@@ -29,6 +29,7 @@ gem 'simple_form'
 gem 'jbuilder', '~> 1.2'
 gem 'nokogiri'
 gem 'net-http-persistent'
+gem 'hashie'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

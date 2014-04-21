@@ -1,7 +1,6 @@
 module Plos
   class PaperParser
 
-
     def self.is_failure?(paper_info)
       paper_info.blank? || paper_info[:failed]
     end
@@ -53,8 +52,7 @@ module Plos
         @references = {}
 
         @references_by_id = {}
-        reference_nodes.each_with_index do |ref, i|
-          index = i + 1
+        reference_nodes.each do |index, ref|
           info = info_for_reference[index]
           @references[index] = {
               id:       ref[:id],
@@ -73,9 +71,7 @@ module Plos
     end
 
     def info_for_reference
-      @info_for_reference ||= Plos::InfoResolver.resolve(
-            reference_nodes.map.with_index { |n, i| [i+1, n.text.to_s] }.to_h
-          )
+      @info_for_reference ||= Plos::InfoResolver.resolve(reference_nodes)
     end
 
     # Get a list of references by ref id /rid
@@ -182,7 +178,9 @@ module Plos
     end
 
     def reference_nodes
-      @reference_nodes ||= xml.css('ref')
+      @reference_nodes ||= begin
+          xml.css('ref').map.with_index{ |n,i| [i+1, n] }.to_h
+      end
     end
 
     def citation_nodes

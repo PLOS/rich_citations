@@ -3,8 +3,8 @@ class Plos::DoiResolver < Plos::BaseResolver
   API_URL = 'http://doi.crossref.org/servlet/query'
 
   def resolve
-    unresolved_dois = unresolved_references.map{ |index, text|
-      doi = extract_doi(text)
+    unresolved_dois = unresolved_references.map{ |index, node|
+      doi = extract_doi(node.text)
       [index, doi] if doi
     }.compact.to_h
     return if unresolved_dois.empty?

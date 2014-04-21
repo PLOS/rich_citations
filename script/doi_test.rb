@@ -6,6 +6,7 @@ require 'pp'
 
 DOI='10.1371/journal.pone.0046843'
 DOI='10.1371/journal.pbio.0050222xxx'
+DOI='10.1371/journal.pone.0032408'
 
 xml = Plos::Api.document( DOI )
 parser = Plos::PaperParser.new(xml)

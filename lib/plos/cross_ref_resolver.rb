@@ -6,7 +6,8 @@ class Plos::CrossRefResolver < Plos::BaseResolver
   def resolve
     return if unresolved_references.empty?
 
-    texts = JSON.generate( unresolved_references.values )
+    unresolved_values = unresolved_references.values.map(&:text)
+    texts = JSON.generate( unresolved_values )
     response = Plos::Api::http_post(API_URL, texts, :xml)
     results = JSON.parse(response)['results']
 

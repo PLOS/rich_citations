@@ -9,12 +9,19 @@ class Plos::InfoResolver
   end
 
   def initialize(references)
-    @references = references
+    @references = references.map do |index, node|
+      [index,
+       Hashie::Mash.new(
+         node: node,
+         text: normalized_node_text(index, node)
+       )
+      ]
+    end.to_h
+    @unresolved_indexes = @references.keys
   end
 
   def resolve
     @results = {}
-    @unresolved_indexes = @references.keys
 
     run_resolvers
 
@@ -36,6 +43,26 @@ class Plos::InfoResolver
 
   def run_resolvers
     RESOLVERS.each { |resolver| resolver.resolve(self) }
+  end
+
+  def normalized_node_text(index, node)
+    # node.text # This concatenates strings together
+    text_nodes = node.xpath('.//text()').map(&:text)
+    text = text_nodes.join(" ")
+    clean_text = text.gsub(/\s+/, ' ').strip
+
+    remove_index(index, clean_text)
+  end
+
+  # If the text starts with the index then remove it
+  def remove_index(index, text)
+    index = index.to_s+' '
+
+    if text.start_with?(index)
+      text[index.length..-1]
+    else
+      text
+    end
   end
 
   RESOLVERS = [
