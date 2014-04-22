@@ -3,6 +3,7 @@ class Plos::InfoResolver
   attr_reader :references
   attr_reader :results
   attr_reader :unresolved_indexes
+  attr_reader :state
 
   def self.resolve(references)
     new(references).resolve
@@ -18,6 +19,8 @@ class Plos::InfoResolver
       ]
     end.to_h
     @unresolved_indexes = @references.keys
+
+    @state = {}
   end
 
   def resolve
@@ -68,6 +71,7 @@ class Plos::InfoResolver
   RESOLVERS = [
       Plos::CrossRefResolver,
       Plos::DoiResolver,
+      Plos::LowScoreCrossRefResolver,
       Plos::FailResolver,     # When nothing else has worked
   ]
 

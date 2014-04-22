@@ -4,12 +4,11 @@ class Plos::CrossRefResolver < Plos::BaseResolver
   API_URL = 'http://search.crossref.org/links'
 
   def resolve
-    return if unresolved_references.empty?
-
     unresolved_values = unresolved_references.values.map(&:text)
     texts = JSON.generate( unresolved_values )
     response = Plos::Api::http_post(API_URL, texts, :xml)
     results = JSON.parse(response)['results']
+    root.state[:crossref_results] = results
 
     results.each_with_index do |result, i|
       index = unresolved_references.keys[i]
@@ -21,7 +20,7 @@ class Plos::CrossRefResolver < Plos::BaseResolver
   private
 
   # Results with a lower score from the crossref.org will be ignored
-  MIN_CROSSREF_SCORE = 2.0 #@TODO: Keeping this value high to force skips for testing
+  MIN_CROSSREF_SCORE = 3.0 #@TODO: Keeping this value high to force skips for testing
 
   CROSSREF_KEY_MAP = {
       'rft.atitle' => 'title',
@@ -35,8 +34,12 @@ class Plos::CrossRefResolver < Plos::BaseResolver
   }
 
   def extract_info(result)
+    return nil unless result['score'].to_f >= MIN_CROSSREF_SCORE
+    self.class.extract_info(result)
+  end
+
+  def self.extract_info(result)
     return nil unless result['match']
-    return nil unless result['score'] >= MIN_CROSSREF_SCORE
 
     info = {
         source: :crossref,
