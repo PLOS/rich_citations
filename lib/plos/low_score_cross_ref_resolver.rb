@@ -8,7 +8,7 @@ class Plos::LowScoreCrossRefResolver < Plos::BaseResolver
 
     results.each_with_index do |result, i|
       index = i + 1 # This assumes that the CrossRefResolver was first and indexes match
-      if unresolved_indexes.include?(index)
+      if ! root.results[index]
         info  = extract_info(result)
         root.set_result(index, :doi, info)
       end

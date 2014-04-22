@@ -7,7 +7,9 @@ class Plos::FailResolver < Plos::BaseResolver
       info = {
           text: node.text,
       }
-      root.set_result(index, nil, info )
+      if ! root.results[index]
+        root.set_result(index, nil, info )
+      end
     end
   end
 

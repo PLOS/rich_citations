@@ -33,7 +33,7 @@ class Plos::InfoResolver
     unresolved_indexes.delete(index)
     results[index] = info
 
-    # flag_duplicates(key, index, info[key])
+    flag_duplicates_for_more_resolving(key, index, info[key])
   end
 
   def unresolved_references
@@ -46,7 +46,7 @@ class Plos::InfoResolver
     RESOLVERS.each { |resolver| resolver.resolve(self) }
   end
 
-  def flag_duplicates(key, current_index, value)
+  def flag_duplicates_for_more_resolving(key, current_index, value)
     return false unless key && value
 
     found = false
