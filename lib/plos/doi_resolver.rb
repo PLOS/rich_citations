@@ -21,7 +21,7 @@ class Plos::DoiResolver < Plos::BaseResolver
     results.each_with_index do |result, i|
       index = unresolved_dois.keys[i]
       info  = extract_info(result)
-      root.set_result(index, info)
+      root.set_result(index, :doi, info)
     end
   end
 

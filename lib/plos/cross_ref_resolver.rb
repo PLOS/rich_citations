@@ -13,14 +13,14 @@ class Plos::CrossRefResolver < Plos::BaseResolver
     results.each_with_index do |result, i|
       index = unresolved_references.keys[i]
       info  = extract_info(result)
-      root.set_result(index, info)
+      root.set_result(index, :doi, info)
     end
   end
 
   private
 
   # Results with a lower score from the crossref.org will be ignored
-  MIN_CROSSREF_SCORE = 3.0 #@TODO: Keeping this value high to force skips for testing
+  MIN_CROSSREF_SCORE = 2.5 #@TODO: Keeping this value high to force skips for testing
 
   CROSSREF_KEY_MAP = {
       'rft.atitle' => 'title',
