@@ -20,7 +20,7 @@ class Plos::InfoResolver
     @results = {}
 
     run_all_resolvers
-    fixup_duplicates_for_all_keys
+    # [#69951266] fixup_duplicates_for_all_keys
 
     @results
   end
@@ -33,7 +33,7 @@ class Plos::InfoResolver
     unresolved_indexes.delete(index)
     results[index] = info
 
-    flag_duplicates_for_more_resolving(key, index, info[key])
+    # [#69951266] flag_duplicates_for_more_resolving(key, index, info[key])
   end
 
   def unresolved_references
