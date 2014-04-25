@@ -9,7 +9,7 @@ module Plos
 
     def initialize(xml)
       @xml = xml
-      @doi = xml.at('article-id[pub-id-type=doi]').content if xml
+      @doi = xml.at('article-id[pub-id-type=doi]').content.strip if xml
     end
 
     def test
@@ -42,7 +42,8 @@ module Plos
           paper: {
               word_count: word_count,
           },
-          references: references
+          references: references,
+          authors:    authors,
       }
     end
 
@@ -61,6 +62,7 @@ module Plos
           }
           @references_by_id[ref[:id]] = index
         end
+
 
         add_citation_counts
         add_citation_sections
@@ -185,6 +187,61 @@ module Plos
 
     def citation_nodes
       @citation_nodes ||= xml.search('xref[ref-type=bibr]')
+    end
+
+    def affiliations
+      unless @affiliations
+        @affiliations = {}
+        nodes = xml.css('article-meta aff')
+
+        nodes.each do |node|
+          text_node = node.css('addr-line')
+          text_node = node if text_node.empty?
+          @affiliations[ node['id']] = text_node.text
+        end
+      end
+
+      @affiliations
+    end
+
+    def authors
+      unless @authors
+        @authors = []
+        nodes = xml.css('article-meta contrib[contrib-type=author]')
+
+        nodes.each do |node|
+           @authors << {
+               fullname:    author_full_name(node),
+               email:       author_email(node),
+               affiliation: author_affiliation(node),
+           }.compact
+        end
+      end
+
+      @authors
+    end
+
+    def author_full_name(node)
+      (node.css('given-names').text.strip + ' ' + node.css('surname').text.strip).strip
+    end
+
+    def author_email(node)
+      xref = node.css('xref[ref-type=corresp]')
+
+      if xref.present?
+        rid = xref.first['rid']
+        email = xml.css("article-meta corresp##{rid} email")
+        email.text if email.present?
+      end
+    end
+
+    def author_affiliation(node)
+      xref = node.css('xref[ref-type=aff]')
+
+      if xref.present?
+        rid = xref.first['rid']
+        affiliations[rid]
+      end
     end
 
     # class to help in grouping citations
