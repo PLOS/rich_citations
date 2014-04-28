@@ -20,6 +20,7 @@ class Plos::InfoResolver
     @results = {}
 
     run_all_resolvers
+
     # [#69951266] fixup_duplicates_for_all_keys
 
     @results
@@ -30,6 +31,8 @@ class Plos::InfoResolver
     return unless info
 
     info[:score] ||= Plos::CrossRefResolver::MIN_CROSSREF_SCORE
+    hash_author_names(info)
+
     unresolved_indexes.delete(index)
     results[index] = info
 
@@ -76,6 +79,18 @@ class Plos::InfoResolver
         mark_as_duplicate(key, index, best_index) if index != best_index
       end
 
+    end
+  end
+
+  def hash_author_names(info)
+    return unless info[:authors]
+
+    info[:authors].map! do |i|
+       if i.is_a?(String)
+         { fullname: i }
+       else
+         i
+      end
     end
   end
 
@@ -130,15 +145,21 @@ class Plos::InfoResolver
     end
   end
 
-  RESOLVERS = [
+  DOCUMENT_KEYS = [
+      :doi
+  ]
+
+  ALL_RESOLVERS = [
       Plos::CrossRefResolver,
       Plos::DoiResolver,
       Plos::LowScoreCrossRefResolver,
       Plos::FailResolver,     # When nothing else has worked
   ]
 
-  DOCUMENT_KEYS = [
-      :doi
+  TEST_RESOLVERS = [
+      Plos::FailResolver,     # When nothing else has worked
   ]
+
+  RESOLVERS = ALL_RESOLVERS
 
 end

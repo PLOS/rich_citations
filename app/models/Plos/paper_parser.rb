@@ -51,19 +51,21 @@ module Plos
     def references
       unless @references
         @references = {}
-
         @references_by_id = {}
+
         reference_nodes.each do |index, ref|
+          reference   = { id: ref[:id] }
+
           info = info_for_reference[index]
-          @references[index] = {
-              id:       ref[:id],
-              doi:      info && info[:doi],
-              info:     info
-          }
+          reference[:doi]  = info && info[:doi]
+          reference[:info] = info
+          reference[:self_citations] = self_citations(info)
+
+          @references[index] = reference.compact
           @references_by_id[ref[:id]] = index
         end
 
-
+        # Do these afterwards because they have a dependency
         add_citation_counts
         add_citation_sections
         add_median_co_citations
@@ -181,7 +183,7 @@ module Plos
 
     def reference_nodes
       @reference_nodes ||= begin
-          xml.css('ref').map.with_index{ |n,i| [i+1, n] }.to_h
+          xml.css('ref-list ref').map.with_index{ |n,i| [i+1, n] }.to_h
       end
     end
 
@@ -211,7 +213,7 @@ module Plos
 
         nodes.each do |node|
            @authors << {
-               fullname:    author_full_name(node),
+               fullname:    author_fullname(node),
                email:       author_email(node),
                affiliation: author_affiliation(node),
            }.compact
@@ -221,7 +223,7 @@ module Plos
       @authors
     end
 
-    def author_full_name(node)
+    def author_fullname(node)
       (node.css('given-names').text.strip + ' ' + node.css('surname').text.strip).strip
     end
 
@@ -230,8 +232,14 @@ module Plos
 
       if xref.present?
         rid = xref.first['rid']
-        email = xml.css("article-meta corresp##{rid} email")
-        email.text if email.present?
+        corresp = xml.css("article-meta corresp##{rid}")
+        email = corresp.css('email')
+
+        if email.present?
+          email.text
+        elsif corresp.present?
+          corresp.text
+        end
       end
     end
 
@@ -242,6 +250,29 @@ module Plos
         rid = xref.first['rid']
         affiliations[rid]
       end
+    end
+
+    def self_citations(cited_info)
+      cited_authors = cited_info[:authors]
+      return if cited_authors.blank?
+
+      result = cited_authors.product(authors).map do |cited, citing|
+         reason = is_self_citation?(cited, citing)
+         "#{cited[:fullname]} [#{reason}]" if reason
+      end.compact
+
+      result.present? ? result : nil
+    end
+
+    def is_self_citation?(cited, citing)
+      return if cited[:affiliation] && citing[:affiliation] && cited[:affiliation] != citing[:affiliation]
+
+      result = []
+      result << "name"        if cited[:fullname]    && cited[:fullname]    == citing[:fullname]
+      result << "email"       if cited[:email]       && cited[:email]       == citing[:email]
+      result << "affiliation" if cited[:affiliation] && cited[:affiliation] == citing[:affiliation]
+
+      result.present? ? result.join(',') : nil
     end
 
     # class to help in grouping citations
