@@ -91,6 +91,7 @@ module Plos
 
       citing_info                            = new_citing_info(cited_ref)
       cited_info[:citing_papers][citing_doi] = citing_info
+      cited_info[:self_citations]            = cited_ref[:self_citations]
 
       if cited_ref[:zero_mentions]
         cited_info[:zero_mentions] ||= []
@@ -98,12 +99,14 @@ module Plos
       end
 
       groups = cited_ref[:citation_groups]
-      if groups
+      if groups.present?
         add_co_citation_counts(cited_num, groups, cited_info, all_references)
         add_citing_word_counts(groups, citing_info, paper_info[:paper][:word_count])
         add_section_summaries(groups, cited_info)
         add_citing_section_summaries(groups, citing_info)
       end
+
+      cited_info.compact!
     end
 
     def cited_doi_info(doi)
