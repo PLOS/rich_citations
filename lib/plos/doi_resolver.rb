@@ -64,7 +64,7 @@ class Plos::DoiResolver < Plos::BaseResolver
 
   def extract_info(result)
     journal = result.css('crossref journal')
-    return nil unless journal
+    return nil unless journal.present?
 
     info = {
         source: :doi

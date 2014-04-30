@@ -32,6 +32,7 @@ class Plos::InfoResolver
 
     info[:score] ||= Plos::CrossRefResolver::MIN_CROSSREF_SCORE
     hash_author_names(info)
+    # info[:text] = references[index][:text]
 
     unresolved_indexes.delete(index)
     results[index] = info
