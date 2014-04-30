@@ -6,6 +6,7 @@ class Plos::FailResolver < Plos::BaseResolver
     unresolved_references.each do |index, node|
       info = {
           text: node.text,
+          score: nil,
       }
       if ! root.results[index]
         root.set_result(index, nil, info )

@@ -30,12 +30,12 @@ class Plos::InfoResolver
   def set_result(index, key, info)
     return unless info
 
-    info[:score] ||= Plos::CrossRefResolver::MIN_CROSSREF_SCORE
+    info[:score] = Plos::CrossRefResolver::MIN_CROSSREF_SCORE unless info.has_key?(:score)
     hash_author_names(info)
     # info[:text] = references[index][:text]
 
     unresolved_indexes.delete(index)
-    results[index] = info
+    results[index] = info.compact
 
     # [#69951266] flag_duplicates_for_more_resolving(key, index, info[key])
   end
