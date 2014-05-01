@@ -19,4 +19,9 @@ class PapersController < ApplicationController
 
   end
 
+  def view
+    @doi = params[:id]
+    @xml = Plos::Api.document(@doi)
+    render layout: 'viewer'
+  end
 end

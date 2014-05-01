@@ -15,5 +15,5 @@ CitationTools::Application.routes.draw do
   end
 
   resources :papers, only:[:show], format:false, id: /.+/
-
+  get '/view/:id', to: 'papers#view', id:/.+/
 end

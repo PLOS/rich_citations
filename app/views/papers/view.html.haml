@@ -1,0 +1,7 @@
+#page-wrap
+  #pagebdy-wrap
+    #article-block.cf
+      #pjax-container.main.cf
+        .article
+          - cache do
+            = render(partial: "transform").html_safe
