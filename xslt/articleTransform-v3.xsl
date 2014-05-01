@@ -27,8 +27,8 @@
 
     <!-- 1/4/12: nlm contains strip-space, preserve-space, param (css), and keys (element-by-id, xref-by-rid) -->
 
-    <!-- 1/4/12: plos-specific global param (pub config, passed into stylesheet from elsewhere in the pipeline) -->
-    <xsl:param name="pubAppContext" />
+    <!-- support for linking to another journal -egh -->
+    <xsl:param name="journalBaseURL" />
 
     <!-- ============================================================= -->
     <!--  ROOT TEMPLATE - HANDLES HTML FRAMEWORK                       -->
@@ -1022,23 +1022,23 @@
       <xsl:if test="./graphic|./alternatives/graphic">
         <xsl:variable name="imageURI"><xsl:value-of select="(./graphic|./alternatives/graphic)/@xlink:href"/></xsl:variable>
         <xsl:variable name="slideshowURL">
-          <xsl:value-of select="concat($pubAppContext, '/article/fetchObject.action?uri=',
+          <xsl:value-of select="concat($journalBaseURL, '/article/fetchObject.action?uri=',
                   $imageURI,'&amp;representation=PNG_M')"/>
         </xsl:variable>
 
         <xsl:variable name="pptURL">
-          <xsl:value-of select="concat('/article/',$imageURI, '/powerpoint')"/>
+          <xsl:value-of select="concat($journalBaseURL, '/article/',$imageURI, '/powerpoint')"/>
         </xsl:variable>
 
         <xsl:variable name="bigImgURL">
-          <xsl:value-of select="concat('/article/',$imageURI,'/largerimage')"/>
+          <xsl:value-of select="concat($journalBaseURL, '/article/',$imageURI,'/largerimage')"/>
         </xsl:variable>
         <xsl:variable name="bigImgDOI">
-          <xsl:value-of select="concat($imageURI,'.PNG_L')"/>
+          <xsl:value-of select="concat($journalBaseURL, $imageURI,'.PNG_L')"/>
         </xsl:variable>
 
         <xsl:variable name="origImgURL">
-          <xsl:value-of select="concat('/article/',$imageURI,'/originalimage')"/>
+          <xsl:value-of select="concat($journalBaseURL, '/article/',$imageURI,'/originalimage')"/>
         </xsl:variable>
         <xsl:variable name="origImgDOI">
           <xsl:value-of select="concat($imageURI,'.TIF')"/>
@@ -1069,7 +1069,7 @@
                 <xsl:attribute name="data-uri"><xsl:value-of select="$imageURI"/></xsl:attribute>
                 <xsl:element name="img">
                   <xsl:attribute name="src">
-                  <xsl:value-of select="concat($pubAppContext,'/article/fetchObject.action?uri=',$imageURI,'&amp;representation=PNG_I')"/>
+                  <xsl:value-of select="concat($journalBaseURL,'/article/fetchObject.action?uri=',$imageURI,'&amp;representation=PNG_I')"/>
                   </xsl:attribute>
                   <xsl:attribute name="alt">thumbnail</xsl:attribute>
                   <xsl:attribute name="class">thumbnail</xsl:attribute>
@@ -1269,7 +1269,7 @@
         <xsl:if test="@xlink:href">
           <xsl:variable name="graphicDOI"><xsl:value-of select="@xlink:href"/></xsl:variable>
           <xsl:attribute name="src">
-            <xsl:value-of select="concat($pubAppContext,'/article/fetchObject.action?uri=',$graphicDOI,'&amp;representation=PNG')"/>
+            <xsl:value-of select="concat($journalBaseURL,'/article/fetchObject.action?uri=',$graphicDOI,'&amp;representation=PNG')"/>
           </xsl:attribute>
         </xsl:if>
         <xsl:attribute name="class">
@@ -1935,7 +1935,7 @@
         <strong>
           <xsl:element name="a">
             <xsl:attribute name="href">
-              <xsl:value-of select="concat($pubAppContext,'/article/fetchSingleRepresentation.action?uri=',$objURI)"/>
+              <xsl:value-of select="concat($journalBaseURL,'/article/fetchSingleRepresentation.action?uri=',$objURI)"/>
             </xsl:attribute>
             <xsl:apply-templates select="label"/>
           </xsl:element>
