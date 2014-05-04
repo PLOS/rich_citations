@@ -10,7 +10,9 @@ DOI='10.1371/journal.pone.0032408' # The Paper from Hell
 DOI='10.1371/journal.pbio.1001675'
 
 xml = Plos::Api.document( DOI )
-# p xml.to_xml; exit
+# r = xml.css('ref-list')
+# puts xml.to_xml; exit
+
 parser = Plos::PaperParser.new(xml)
 info = parser.paper_info
 

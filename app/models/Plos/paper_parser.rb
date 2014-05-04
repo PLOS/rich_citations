@@ -43,6 +43,7 @@ module Plos
               word_count: word_count,
           },
           references: references,
+          groups:     citation_groups,
           authors:    authors,
       }
     end
@@ -319,10 +320,10 @@ module Plos
 
       def start_group!(node)
         @current_group =  {
-                            section:    parser.section_title_for(node),
-                            word_count: parser.word_count_upto(node),
-                            count:      0,
-                            references: [],
+                            section:       parser.section_title_for(node),
+                            word_position: parser.word_count_upto(node),
+                            count:         0,
+                            references:    [],
                           }
         @groups        << @current_group
         @last_node     =  :none
