@@ -42,11 +42,10 @@ class Plos::CitationGrouper
 
   def start_group!(node)
     @current_group =  {
-        section:       parser.section_title_for(node),
-        word_position: parser.word_count_upto(node),
         count:         0,
         references:    [],
-    }
+    }.merge( parser.citation_group_info(node) )
+
     @groups        << @current_group
     @last_node     =  :none
   end

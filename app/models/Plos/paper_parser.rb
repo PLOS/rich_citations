@@ -91,6 +91,23 @@ module Plos
       references.select { |num,info| info.zero_mentions }
     end
 
+    def citation_group_info(node)
+      {
+          section:       section_title_for(node),
+          word_position: Plos::NodeUtilities.word_count_upto(body, node),
+      }
+    end
+
+    private
+
+    def body
+      @body ||= xml.search('body').first
+    end
+
+    def word_count
+      Plos::NodeUtilities.word_count(body)
+    end
+
     # Get the outermost section title
     def section_title_for(node)
       title = nil
@@ -106,30 +123,6 @@ module Plos
 
       title || '[Unknown]'
     end
-
-    def word_count
-      @body =  xml.search('body').first
-
-      count = 0
-      @body.traverse do |n|
-        count+= n.text.word_count if n.text?
-      end
-      count
-    end
-
-    def word_count_upto(node)
-      @body =  xml.search('body').first
-
-      count = 1
-      @body.traverse do |n|
-        return count if n==node
-        count+= n.text.word_count if n.text?
-      end
-
-      nil
-    end
-
-    private
 
     # MICC = median in-line co-citations
     # @mro - aka micc_dictionary
