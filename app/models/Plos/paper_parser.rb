@@ -12,10 +12,6 @@ module Plos
       @doi = xml.at('article-id[pub-id-type=doi]').content.strip if xml
     end
 
-    def test
-      references
-    end
-
     # A citation group is all of the papers that are cited together at a certain point in the paper
     # -- the bare stuff of inline co-citations.
     # So, for example, a citation group might simply be [1], or it could be [2]-[10], or even
@@ -24,7 +20,7 @@ module Plos
     def citation_groups
       @citation_groups ||= begin
 
-        grouper = CitationGrouper.new(self)
+        grouper = Plos::CitationGrouper.new(self)
 
         citation_nodes.each do |citation|
           grouper.add_citation(citation)
@@ -274,77 +270,6 @@ module Plos
       result << "affiliation" if cited[:affiliation] && cited[:affiliation] == citing[:affiliation]
 
       result.present? ? result.join(',') : nil
-    end
-
-    # class to help in grouping citations
-    class CitationGrouper
-
-      HYPHEN_SEPARATORS = ["-", "\u2013", "\u2014"]
-      ALL_SEPARATORS    = [',', ''] + HYPHEN_SEPARATORS
-
-      attr_reader :parser,
-                  :groups
-
-      def initialize(parser)
-        @parser    = parser
-        @last_node = :none
-        @groups    = []
-      end
-
-      def add_citation(citation)
-        start_group!(citation) if citation.previous_sibling != @last_node
-
-        @last_node = citation
-        number = parser.reference_number(citation)
-
-        if @hyphen_found
-          add_range(number)
-        else
-          add(number)
-        end
-
-        parse_text_separators(citation)
-      end
-
-      private
-
-      def add(number)
-        @current_group[:count] += 1
-        @current_group[:references].push number
-      end
-
-      def add_range(range_end)
-        range_start = @current_group[:references].last+1
-        (range_start..range_end).each { |n| add(n) }
-      end
-
-      def start_group!(node)
-        @current_group =  {
-                            section:       parser.section_title_for(node),
-                            word_position: parser.word_count_upto(node),
-                            count:         0,
-                            references:    [],
-                          }
-        @groups        << @current_group
-        @last_node     =  :none
-      end
-
-      def parse_text_separators(citation)
-        @hyphen_found = false
-        sibling = citation.next_sibling
-
-        while is_separator?(sibling) do
-          @last_node = sibling
-          @hyphen_found ||= HYPHEN_SEPARATORS.include?(sibling.text.strip)
-          sibling = sibling.next_sibling
-        end
-      end
-
-      def is_separator?(node)
-        return false unless node && node.text?
-        return ALL_SEPARATORS.include?(node.text.strip)
-      end
-
     end
 
   end # class
