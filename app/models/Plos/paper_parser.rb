@@ -1,6 +1,8 @@
 module Plos
   class PaperParser
 
+    CITATION_CONTEXT_LENGTH = 60
+
     def self.is_failure?(paper_info)
       paper_info.blank? || paper_info[:failed]
     end
@@ -12,10 +14,6 @@ module Plos
       @doi = xml.at('article-id[pub-id-type=doi]').content.strip if xml
     end
 
-    def test
-      references
-    end
-
     # A citation group is all of the papers that are cited together at a certain point in the paper
     # -- the bare stuff of inline co-citations.
     # So, for example, a citation group might simply be [1], or it could be [2]-[10], or even
@@ -24,7 +22,7 @@ module Plos
     def citation_groups
       @citation_groups ||= begin
 
-        grouper = CitationGrouper.new(self)
+        grouper = Plos::CitationGrouper.new(self)
 
         citation_nodes.each do |citation|
           grouper.add_citation(citation)
@@ -43,6 +41,7 @@ module Plos
               word_count: word_count,
           },
           references: references,
+          groups:     citation_groups,
           authors:    authors,
       }
     end
@@ -94,6 +93,46 @@ module Plos
       references.select { |num,info| info.zero_mentions }
     end
 
+    def citation_group_info(citation)
+      {
+          section:       section_title_for(citation),
+          word_position: Plos::XmlUtilities.text_before(body, citation).word_count + 1,
+          context:       citation_context(citation),
+      }
+    end
+
+    private
+
+    def body
+      @body ||= xml.search('body').first || xml
+    end
+
+    def word_count
+      Plos::XmlUtilities.text(body).word_count
+    end
+
+    def citation_context(citation)
+      context_node = Plos::XmlUtilities.nearest(citation, ['p', 'sec', 'body']) || body
+
+      text_before  = Plos::XmlUtilities.text_before(context_node, citation)
+      text_after  = Plos::XmlUtilities.text_after(context_node, citation)
+
+      length_before = (CITATION_CONTEXT_LENGTH - citation.text.length) / 2
+      text_before = text_before.truncate_beginning(length_before, separator:/\s+/, omission:"\u2026")
+
+      length_after = CITATION_CONTEXT_LENGTH - citation.text.length - text_before.length
+      text_after = text_after.truncate(length_after, separator:/\s+/, omission:"\u2026")
+
+      # Recalculate before in case the citation turned out to be near the end of the text
+      length_before2 = CITATION_CONTEXT_LENGTH - citation.text.length - text_after.length
+      if length_before2 > length_before
+        text_before = text_before.truncate_beginning(length_before2, separator:/\s+/, omission:"\u2026")
+      end
+
+      "#{text_before}#{citation.text}#{text_after}"
+    end
+
+
     # Get the outermost section title
     def section_title_for(node)
       title = nil
@@ -109,30 +148,6 @@ module Plos
 
       title || '[Unknown]'
     end
-
-    def word_count
-      @body =  xml.search('body').first
-
-      count = 0
-      @body.traverse do |n|
-        count+= n.text.word_count if n.text?
-      end
-      count
-    end
-
-    def word_count_upto(node)
-      @body =  xml.search('body').first
-
-      count = 1
-      @body.traverse do |n|
-        return count if n==node
-        count+= n.text.word_count if n.text?
-      end
-
-      nil
-    end
-
-    private
 
     # MICC = median in-line co-citations
     # @mro - aka micc_dictionary
@@ -273,77 +288,6 @@ module Plos
       result << "affiliation" if cited[:affiliation] && cited[:affiliation] == citing[:affiliation]
 
       result.present? ? result.join(',') : nil
-    end
-
-    # class to help in grouping citations
-    class CitationGrouper
-
-      HYPHEN_SEPARATORS = ["-", "\u2013", "\u2014"]
-      ALL_SEPARATORS    = [',', ''] + HYPHEN_SEPARATORS
-
-      attr_reader :parser,
-                  :groups
-
-      def initialize(parser)
-        @parser    = parser
-        @last_node = :none
-        @groups    = []
-      end
-
-      def add_citation(citation)
-        start_group!(citation) if citation.previous_sibling != @last_node
-
-        @last_node = citation
-        number = parser.reference_number(citation)
-
-        if @hyphen_found
-          add_range(number)
-        else
-          add(number)
-        end
-
-        parse_text_separators(citation)
-      end
-
-      private
-
-      def add(number)
-        @current_group[:count] += 1
-        @current_group[:references].push number
-      end
-
-      def add_range(range_end)
-        range_start = @current_group[:references].last+1
-        (range_start..range_end).each { |n| add(n) }
-      end
-
-      def start_group!(node)
-        @current_group =  {
-                            section:    parser.section_title_for(node),
-                            word_count: parser.word_count_upto(node),
-                            count:      0,
-                            references: [],
-                          }
-        @groups        << @current_group
-        @last_node     =  :none
-      end
-
-      def parse_text_separators(citation)
-        @hyphen_found = false
-        sibling = citation.next_sibling
-
-        while is_separator?(sibling) do
-          @last_node = sibling
-          @hyphen_found ||= HYPHEN_SEPARATORS.include?(sibling.text.strip)
-          sibling = sibling.next_sibling
-        end
-      end
-
-      def is_separator?(node)
-        return false unless node && node.text?
-        return ALL_SEPARATORS.include?(node.text.strip)
-      end
-
     end
 
   end # class

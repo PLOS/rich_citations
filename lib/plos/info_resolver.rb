@@ -47,7 +47,7 @@ class Plos::InfoResolver
   private
 
   def run_all_resolvers
-    RESOLVERS.each { |resolver| resolver.resolve(self) }
+    self.class.resolvers.each { |resolver| resolver.resolve(self) }
   end
 
   def flag_duplicates_for_more_resolving(key, current_index, value)
@@ -127,11 +127,7 @@ class Plos::InfoResolver
   end
 
   def normalized_node_text(index, node)
-    # node.text # This concatenates strings together
-    text_nodes = node.xpath('.//text()').map(&:text)
-    text = text_nodes.join(" ")
-    clean_text = text.gsub(/\s+/, ' ').strip
-
+    clean_text = Plos::XmlUtilities.spaced_text(node)
     remove_index_from_text(index, clean_text)
   end
 
@@ -144,6 +140,10 @@ class Plos::InfoResolver
     else
       text
     end
+  end
+
+  def self.resolvers
+    ALL_RESOLVERS
   end
 
   DOCUMENT_KEYS = [
@@ -160,7 +160,5 @@ class Plos::InfoResolver
   TEST_RESOLVERS = [
       Plos::FailResolver,     # When nothing else has worked
   ]
-
-  RESOLVERS = ALL_RESOLVERS
 
 end
