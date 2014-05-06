@@ -94,7 +94,7 @@ module Plos
     def citation_group_info(node)
       {
           section:       section_title_for(node),
-          word_position: Plos::NodeUtilities.word_count_upto(body, node),
+          word_position: Plos::XmlUtilities.text_before(body, node).word_count + 1,
       }
     end
 
@@ -105,7 +105,7 @@ module Plos
     end
 
     def word_count
-      Plos::NodeUtilities.word_count(body)
+      Plos::XmlUtilities.text(body).word_count
     end
 
     # Get the outermost section title

@@ -127,11 +127,7 @@ class Plos::InfoResolver
   end
 
   def normalized_node_text(index, node)
-    # node.text # This concatenates strings together
-    text_nodes = node.xpath('.//text()').map(&:text)
-    text = text_nodes.join(" ")
-    clean_text = text.gsub(/\s+/, ' ').strip
-
+    clean_text = Plos::XmlUtilities.spaced_text(node)
     remove_index_from_text(index, clean_text)
   end
 
