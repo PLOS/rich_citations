@@ -60,7 +60,7 @@ describe Plos::XmlUtilities do
     before do
       @xml = x(<<-EOX.strip_heredoc
              <root>
-             <body> <a>A</a> <b>B</b> <c>C</c> <d>D</d> <e>E</e> </body>
+             <body> <a>A</a> <b>B</b> <c> C </c> <d>D</d> <e>E</e> </body>
              <other />
              </root>
       EOX
@@ -68,7 +68,7 @@ describe Plos::XmlUtilities do
     end
 
     it "should return the text before the node" do
-      expect( subject.text_before( @xml.css('body'), @xml.css('c').first ) ).to eq('A B')
+      expect( subject.text_before( @xml.css('body'), @xml.css('c').first ) ).to eq('A B ')
     end
 
     it "it should return '' if for the first node" do
@@ -86,7 +86,7 @@ describe Plos::XmlUtilities do
     before do
       @xml = x(<<-EOX.strip_heredoc
              <root>
-             <body> <a>A</a> <b>B</b> <c>C</c> <d>D</d> <e>E</e> </body>
+             <body> <a>A</a> <b>B</b> <c> C </c> <d>D</d> <e>E</e> </body>
              <other />
              </root>
       EOX
@@ -94,7 +94,7 @@ describe Plos::XmlUtilities do
     end
 
     it "should return the text before the node" do
-      expect( subject.text_after( @xml.css('body'), @xml.css('c').first ) ).to eq('D E')
+      expect( subject.text_after( @xml.css('body'), @xml.css('c').first ) ).to eq(' D E')
     end
 
     it "it should return '' if for the first node" do

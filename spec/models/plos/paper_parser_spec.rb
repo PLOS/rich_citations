@@ -3,7 +3,7 @@ require 'spec_helper'
 describe Plos::PaperParser do
 
   before do
-    allow(Plos::InfoResolver).to receive(:RESOLVERS).and_return(Plos::InfoResolver::TEST_RESOLVERS)
+    allow(Plos::InfoResolver).to receive(:resolvers).and_return(Plos::InfoResolver::TEST_RESOLVERS)
   end
 
   def parts
@@ -14,12 +14,26 @@ describe Plos::PaperParser do
     parts[:doi] = doi
   end
 
-  def refs(refs)
-    parts[:refs] = refs
+  def refs(*refs)
+    (parts[:refs] ||= []).concat(refs)
   end
 
   def meta (meta)
-    parts[:meta]  = meta
+    (parts[:meta] ||= '') << meta
+  end
+
+  def body (body)
+    (parts[:body] ||= '') << body
+  end
+
+  def cite(number)
+    "<xref ref-type='bibr' rid='ref-#{number}'>[#{number}]</xref>"
+  end
+
+  def ref_list
+    if parts[:refs]
+     parts[:refs].map.with_index{ |r,i| "<ref id='ref-#{i+1}'>#{r}</ref>" }.join
+    end
   end
 
   def wrapped_xml(parts)
@@ -27,9 +41,8 @@ describe Plos::PaperParser do
       <root>
         <article-id pub-id-type='doi'>#{parts[:doi] || '10.12345/1234.12345'}</article-id>
         <article-meta>#{parts[:meta]}</article-meta>
-        <body>
-        </body>
-        <ref-list>#{parts[:refs]}</ref-list>
+        <body>#{parts[:body]}</body>
+        <ref-list>#{ref_list}</ref-list>
       </root>
     EOS
   end
@@ -54,11 +67,11 @@ describe Plos::PaperParser do
   context "citations" do
 
     it "should have a citation" do
-      refs '<ref>Some Reference</ref><ref>Another Reference</ref>'
+      refs 'Some Reference', 'Another Reference'
 
       expect(result[:references]).to have(2).items
-      expect(result[:references][1]).to eq(:info=>{:text=>"Some Reference", :score=>2.5}, :median_co_citations=>-1, :zero_mentions=>true)
-      expect(result[:references][2]).to eq(:info=>{:text=>"Another Reference", :score=>2.5}, :median_co_citations=>-1, :zero_mentions=>true)
+      expect(result[:references][1]).to eq(id:'ref-1', info:{text: "Some Reference"},    :median_co_citations=>-1, :zero_mentions=>true)
+      expect(result[:references][2]).to eq(id:'ref-2', info:{text: "Another Reference"}, :median_co_citations=>-1, :zero_mentions=>true)
     end
 
   end
@@ -131,7 +144,7 @@ describe Plos::PaperParser do
         <corresp id="corr1">a.jolie@hollywood.com</corresp>
       EOM
 
-      refs '<ref>Some Reference</ref>'
+      refs 'Some Reference'
     end
 
     def resolve_author!(author)
@@ -170,12 +183,44 @@ describe Plos::PaperParser do
 
     it "should match self citations based on name and email" do
       resolve_author!(fullname:'Angelina Jolie', email:'a.jolie@hollywood.com')
-      expect(reference[:self_citations]).to eq(['Angelina Jolie [name, email]'])
+      expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email]'])
     end
 
     it "should note self citations based on name and email with the same affiliation" do
       resolve_author!(fullname:'Angelina Jolie', email:'a.jolie@hollywood.com', affiliation:'Hollywood')
-      expect(reference[:self_citations]).to eq(['Angelina Jolie [name, email,affiliation]'])
+      expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email,affiliation]'])
+    end
+
+  end
+
+  context "citation context" do
+
+    before do
+      refs 'A Reference'
+    end
+
+    it "should provide citation context" do
+      body "Some text #{cite(1)} More text"
+      expect(result[:groups][0][:context]).to eq('Some text [1] More text')
+    end
+
+    it "should truncate ellipses" do
+      body "A lot of very long text before the citation #{cite(1)} and then more very long text after the citation."
+      expect(result[:groups][0][:context]).to eq("\u2026text before the citation [1] and then more very long text\u2026")
+    end
+
+    it "should be limited to the nearest section" do
+      body "<sec>abc<sec>"
+      body "Some text #{cite(1)} More text"
+      body "</sec>def</sec>"
+      expect(result[:groups][0][:context]).to eq('Some text [1] More text')
+    end
+
+    it "should be limited to the nearest paragraph" do
+      body "<sec>abc<P>"
+      body "Some text #{cite(1)} More text"
+      body "</P>def</sec>"
+      expect(result[:groups][0][:context]).to eq('Some text [1] More text')
     end
 
   end

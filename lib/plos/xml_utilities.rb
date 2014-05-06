@@ -5,7 +5,7 @@ module Plos
     # Like Xml::Node.text but uses the same logic used by the other text
     def self.text(container)
       container.text.strip
-      # self.text_before(container, nil)
+      # self.text_before(container, nil).try(:strip)
     end
 
     # Adds spaces where nodes break and removes multiple spaces.
@@ -19,22 +19,21 @@ module Plos
     # Text up to a node
     def self.text_before(container, node)
       text = ''
-      container = container.first if container.is_a?(Enumerable)
-
+      container = container.first if container.is_a?(Nokogiri::XML::NodeSet)
       breadth_traverse(container) do |n|
-        return text.strip if n == node
+        return text.lstrip if n == node
         text += n.text if n.text?
       end
 
       # If node is not found it is a failure
-      node ? nil : text.strip
+      node ? nil : text.lstrip
     end
 
     # Text after a node
     def self.text_after(container, node)
       text = ''
       found = false
-      container = container.first if container.is_a?(Enumerable)
+      container = container.first if container.is_a?(Nokogiri::XML::NodeSet)
 
       depth_traverse(container) do |n|
         if found
@@ -46,7 +45,7 @@ module Plos
       end
 
       # If node is not found it is a failure
-      found ? text.strip : nil
+      found ? text.rstrip : nil
     end
 
     # Get the outermost section title

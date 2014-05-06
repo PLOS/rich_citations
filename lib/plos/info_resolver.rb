@@ -47,7 +47,7 @@ class Plos::InfoResolver
   private
 
   def run_all_resolvers
-    RESOLVERS.each { |resolver| resolver.resolve(self) }
+    self.class.resolvers.each { |resolver| resolver.resolve(self) }
   end
 
   def flag_duplicates_for_more_resolving(key, current_index, value)
@@ -142,6 +142,10 @@ class Plos::InfoResolver
     end
   end
 
+  def self.resolvers
+    ALL_RESOLVERS
+  end
+
   DOCUMENT_KEYS = [
       :doi
   ]
@@ -156,7 +160,5 @@ class Plos::InfoResolver
   TEST_RESOLVERS = [
       Plos::FailResolver,     # When nothing else has worked
   ]
-
-  RESOLVERS = ALL_RESOLVERS
 
 end

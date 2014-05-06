@@ -1,6 +1,8 @@
 module Plos
   class PaperParser
 
+    CITATION_CONTEXT_LENGTH = 60
+
     def self.is_failure?(paper_info)
       paper_info.blank? || paper_info[:failed]
     end
@@ -91,22 +93,45 @@ module Plos
       references.select { |num,info| info.zero_mentions }
     end
 
-    def citation_group_info(node)
+    def citation_group_info(citation)
       {
-          section:       section_title_for(node),
-          word_position: Plos::XmlUtilities.text_before(body, node).word_count + 1,
+          section:       section_title_for(citation),
+          word_position: Plos::XmlUtilities.text_before(body, citation).word_count + 1,
+          context:       citation_context(citation),
       }
     end
 
     private
 
     def body
-      @body ||= xml.search('body').first
+      @body ||= xml.search('body').first || xml
     end
 
     def word_count
       Plos::XmlUtilities.text(body).word_count
     end
+
+    def citation_context(citation)
+      context_node = Plos::XmlUtilities.nearest(citation, ['p', 'sec', 'body']) || body
+
+      text_before  = Plos::XmlUtilities.text_before(context_node, citation)
+      text_after  = Plos::XmlUtilities.text_after(context_node, citation)
+
+      length_before = (CITATION_CONTEXT_LENGTH - citation.text.length) / 2
+      text_before = text_before.truncate_beginning(length_before, separator:/\s+/, omission:"\u2026")
+
+      length_after = CITATION_CONTEXT_LENGTH - citation.text.length - text_before.length
+      text_after = text_after.truncate(length_after, separator:/\s+/, omission:"\u2026")
+
+      # Recalculate before in case the citation turned out to be near the end of the text
+      length_before2 = CITATION_CONTEXT_LENGTH - citation.text.length - text_after.length
+      if length_before2 > length_before
+        text_before = text_before.truncate_beginning(length_before2, separator:/\s+/, omission:"\u2026")
+      end
+
+      "#{text_before}#{citation.text}#{text_after}"
+    end
+
 
     # Get the outermost section title
     def section_title_for(node)

@@ -101,8 +101,10 @@ module Plos
       groups = cited_ref[:citation_groups]
       if groups.present?
         add_co_citation_counts(cited_num, groups, cited_info, all_references)
-        add_citing_word_positions(groups, citing_info, paper_info[:paper][:word_count])
         add_section_summaries(groups, cited_info)
+
+        add_citing_word_positions(groups, citing_info, paper_info[:paper][:word_count])
+        add_citing_contexts(groups, citing_info)
         add_citing_section_summaries(groups, citing_info)
       end
 
@@ -126,7 +128,6 @@ module Plos
 
     def new_citing_info(ref)
       info = {
-          word_positions: [],
           mentions: ref[:mentions].to_i,
           # median_co_citations: ref[:median_co_citations].to_i,
       }
@@ -136,10 +137,18 @@ module Plos
     end
 
     def add_citing_word_positions(groups, citing_info, paper_word_count)
-      positions = citing_info[:word_positions]
+      positions = citing_info[:word_positions] ||= []
 
       groups.each do |group|
         positions << "#{group[:word_position]}/#{paper_word_count}"
+      end
+    end
+
+    def add_citing_contexts(groups, citing_info)
+      contexts = citing_info[:contexts] ||= []
+
+      groups.each do |group|
+        contexts << group[:context]
       end
     end
 
