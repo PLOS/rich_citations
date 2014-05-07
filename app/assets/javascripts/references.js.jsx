@@ -12,7 +12,7 @@ var idx = lunr(function () {
 function buildIndex(references, json) {
     var refs = getRefListById(json);
     jQuery.makeArray(references).map(function (el) {
-        var id = $("a:first", el).attr('id');
+        var id = getReferenceId(el);
         var doc = { "title" : refs[id].info.title,
                     "body"  : $(el).text(),
                     "id" : id};
@@ -43,7 +43,7 @@ function getReferenceInfoById(refs, id) {
 function mkUnsortableFilter(by, json) {
     var refs = getRefListById(json);
     return function (el) {
-        var info = getReferenceInfoById(refs, $("a:first", el).attr('id'));
+        var info = getReferenceInfoById(refs, getReferenceId(el));
         if (info === null) {
             return true;
         }
@@ -77,8 +77,8 @@ function mkSortRefListFunction (by, json, descending=false) {
     pipeline.add(lunr.trimmer,
                  lunr.stopWordFilter);
     return function (a, b) {
-        var aref = getReferenceInfoById(refs, $("a:first", a).attr('id'));
-        var bref = getReferenceInfoById(refs, $("a:first", b).attr('id'));
+        var aref = getReferenceInfoById(refs, getReferenceId(a));
+        var bref = getReferenceInfoById(refs, getReferenceId(b));
         var aval = getReferenceInfoField(aref, by);
         var bval = getReferenceInfoField(bref, by);
         // XXX too many calls to pipeline
