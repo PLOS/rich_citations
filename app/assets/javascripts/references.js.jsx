@@ -78,6 +78,10 @@ function getReferenceInfoField(info, fieldname) {
     }
 }
 
+function getReferenceId (el) {
+    return $("a:first", el).attr('id');
+}
+
 /**
  * Build a function from a field and a JSON data structure as returned
  * by richcites API that can be passed to sort to sort an array of
@@ -103,7 +107,7 @@ var Reference = React.createClass({
 
 var SearchBar = React.createClass({
     handleChange: function() {
-        this.props.onUserInput(
+        this.props.onSearchUpdate(
             this.refs.filterTextInput.getDOMNode().value
         );
     },
@@ -122,33 +126,42 @@ var SearchBar = React.createClass({
     }
 });
 
+var Sorter = React.createClass({
+    handleClick: function() {
+        this.props.onClick(this.props.by);
+        return false;
+    },
+    render: function() {
+        var sortorderstr = "";
+        if (this.props.current.by === this.props.by) {
+            sortorderstr = this.props.current.order == "asc" ? "↑" : "↓";
+        }
+        return <a href="#" onClick={this.handleClick}>{this.props.name}{sortorderstr}</a>;
+    }
+});
+
 var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "index", order: "asc" },
-                filterText: 'medicine'};
+                filterText: ''};
     },
-    mkSortColumnHandler: function (column) {
-        return function(event) {
-            var newSortOrder = (this.state.sort.order == "asc") ? "desc" : "asc";
-            if (this.state.sort.by != column) {
-                newSortOrder = "asc";
-            }
-            this.setState({sort: { by: column, order: newSortOrder }});
-            /* intercept link */
-            return false;
-        }.bind(this);
-    },
-    handleUserInput: function(filterText) {
+    handleSearchUpdate: function(filterText) {
         this.setState({
             filterText: filterText
         });
     },
+    handleSorterClick: function(by) {
+        var newSortOrder = (this.state.sort.order == "asc") ? "desc" : "asc";
+        if (this.state.sort.by != by) {
+            newSortOrder = "asc";
+        }
+        this.setState({sort: { by: by, order: newSortOrder }});
+    },
     render: function() {
         var refsArray = jQuery.makeArray(this.props.references);
         var sorted, unsorted;
-        /* by default return all results and use a stable sort */
+        /* by default return all results */
         var searchResultsFilter = function (e) { return true; };
-        var searchResultsSort = function (a,b) { return -1; };
         if (this.state.filterText) {
             var resultHash = {};
             idx.search(this.state.filterText).map(function (res) {
@@ -157,22 +170,19 @@ var ReferencesApp = React.createClass({
             searchResultsFilter = function (e) {
                 return (resultHash[getReferenceId(e)] != null);
             };
-            searchResultsSort = function(a,b) {
-                return resultHash[getReferenceId(b)] - resultHash[getReferenceId(a)];
-            };
         } 
         /* Index is special, we just use the original sort order. */
         if (this.state.sort.by === 'index') {
-            sorted = refsArray.filter(searchResultsFilter).sort(searchResultsSort);
+            sorted = refsArray.filter(searchResultsFilter);
             unsorted = [];
         } else {
             var unsortableFilter = mkUnsortableFilter(this.state.sort.by, this.props.json);
             var sortableFilter = function (el) { return !unsortableFilter(el); };
             var sortFunc = mkSortRefListFunction(this.state.sort.by, this.props.json);
             unsorted = refsArray.filter(unsortableFilter).
-                filter(searchResultsFilter).sort(searchResultsSort);
+                filter(searchResultsFilter);
             sorted = refsArray.filter(sortableFilter).sort(sortFunc).
-                filter(searchResultsFilter).sort(searchResultsSort);
+                filter(searchResultsFilter);
         }
         
         if (this.state.sort.order == "desc") { sorted = sorted.reverse(); }
@@ -184,21 +194,18 @@ var ReferencesApp = React.createClass({
         var sortedElements = sorted.map(mkElementFunc);
         var unsortedElements = unsorted.map(mkElementFunc);
 
-        /* Build sort headers. */
-        var sorts = ["index", "title", "year"].map(function (c) {
-            var sortorderstr = "";
-            if (this.state.sort.by.toUpperCase() === c.toUpperCase()) {
-                sortorderstr = this.state.sort.order == "asc" ? "↑" : "↓";
-            }
-            return <li key={c}><a href="#" onClick={this.mkSortColumnHandler(c)}>{c}{sortorderstr}</a></li>;
-        }.bind(this));
         return <div>
-            <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput}/>
-                 <ul>{ sorts }</ul>
-                 <ol className="references">{ sortedElements }</ol>
-                 <h5>Unsortable</h5>
-                 <ol className="references">{ unsortedElements }</ol>
-               </div>;
+            <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
+            <ul>
+            <li><Sorter name="Index"  by="index"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Title"  by="title"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Author" by="author" current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Year"   by="year"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            </ul>
+            <ol className="references">{ sortedElements }</ol>
+            <h5>Unsortable</h5>
+            <ol className="references">{ unsortedElements }</ol>
+            </div>;
     }
 });
 
