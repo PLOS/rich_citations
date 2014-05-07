@@ -6,6 +6,22 @@ var stopWords = [/\ba\b/g,/\babout\b/g,/\babove\b/g,/\bafter\b/g,/\bagain\b/g,/\
 
 var doi = $('meta[name=citation_doi]').attr("content");
 
+var idx = lunr(function () {
+    this.field('title', { boost: 10 });
+    this.field('body');
+});
+
+function buildIndex(references, json) {
+    var refs = getRefListById(json);
+    jQuery.makeArray(references).map(function (el) {
+        var id = $("a:first", el).attr('id');
+        var doc = { "title" : refs[id].info.title,
+                    "body"  : $(el).text(),
+                    "id" : id};
+        idx.add(doc);
+    });
+}
+
 function getRefListById(json) {
     var l = {};
     $.each(json['references'], function (ignore, v) {
@@ -85,9 +101,31 @@ var Reference = React.createClass({
     }
 });
 
+var SearchBar = React.createClass({
+    handleChange: function() {
+        this.props.onUserInput(
+            this.refs.filterTextInput.getDOMNode().value
+        );
+    },
+    render: function() {
+        return (
+            <form onSubmit={this.handleSubmit}>
+                <input
+                    type="text"
+                    placeholder="Search..."
+                    value={this.props.filterText}
+                    ref="filterTextInput"
+                    onChange={this.handleChange}
+                />
+            </form>
+        );
+    }
+});
+
 var ReferencesApp = React.createClass({
     getInitialState: function() {
-        return {sort: { by: "index", order: "asc" }};
+        return {sort: { by: "index", order: "asc" },
+                filterText: 'medicine'};
     },
     mkSortColumnHandler: function (column) {
         return function(event) {
@@ -100,19 +138,41 @@ var ReferencesApp = React.createClass({
             return false;
         }.bind(this);
     },
+    handleUserInput: function(filterText) {
+        this.setState({
+            filterText: filterText
+        });
+    },
     render: function() {
         var refsArray = jQuery.makeArray(this.props.references);
         var sorted, unsorted;
+        /* by default return all results and use a stable sort */
+        var searchResultsFilter = function (e) { return true; };
+        var searchResultsSort = function (a,b) { return -1; };
+        if (this.state.filterText) {
+            var resultHash = {};
+            idx.search(this.state.filterText).map(function (res) {
+                return resultHash[res['ref']] = res['score'];
+            });
+            searchResultsFilter = function (e) {
+                return (resultHash[getReferenceId(e)] != null);
+            };
+            searchResultsSort = function(a,b) {
+                return resultHash[getReferenceId(b)] - resultHash[getReferenceId(a)];
+            };
+        } 
         /* Index is special, we just use the original sort order. */
         if (this.state.sort.by === 'index') {
-            sorted = refsArray;
+            sorted = refsArray.filter(searchResultsFilter).sort(searchResultsSort);
             unsorted = [];
         } else {
             var unsortableFilter = mkUnsortableFilter(this.state.sort.by, this.props.json);
             var sortableFilter = function (el) { return !unsortableFilter(el); };
             var sortFunc = mkSortRefListFunction(this.state.sort.by, this.props.json);
-            unsorted = refsArray.filter(unsortableFilter);
-            sorted = refsArray.filter(sortableFilter).sort(sortFunc);
+            unsorted = refsArray.filter(unsortableFilter).
+                filter(searchResultsFilter).sort(searchResultsSort);
+            sorted = refsArray.filter(sortableFilter).sort(sortFunc).
+                filter(searchResultsFilter).sort(searchResultsSort);
         }
         
         if (this.state.sort.order == "desc") { sorted = sorted.reverse(); }
@@ -133,6 +193,7 @@ var ReferencesApp = React.createClass({
             return <li key={c}><a href="#" onClick={this.mkSortColumnHandler(c)}>{c}{sortorderstr}</a></li>;
         }.bind(this));
         return <div>
+            <SearchBar filterText={this.state.filterText} onUserInput={this.handleUserInput}/>
                  <ul>{ sorts }</ul>
                  <ol className="references">{ sortedElements }</ol>
                  <h5>Unsortable</h5>
@@ -146,11 +207,14 @@ $(document).ready(function () {
     var doi = $('meta[name=citation_doi]').attr("content");
     /* now fetch the JSON describing the paper */
     $.getJSON("/papers/" + doi + "?format=json", function(data) {
+        var references = $("ol.references li");
+        /* build full-text index */
+        buildIndex(references, data);
         /* insert the container */
         $("<div id='richcites'></div>").insertBefore("#references");
         /* and drop into react */
         React.renderComponent(
-            <ReferencesApp references={$("ol.references li")} json={data}/>,
+            <ReferencesApp references={references} json={data}/>,
             $("ol.references").get(0)
         );
     });
