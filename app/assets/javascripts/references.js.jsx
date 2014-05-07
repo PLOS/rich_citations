@@ -105,6 +105,39 @@ var Reference = React.createClass({
     }
 });
 
+var SortedReferencesList = React.createClass({
+    render: function() {
+        var refsArray = $.makeArray(this.props.references);
+        var sorted, unsorted;
+
+        /* Index is special, we just use the original sort order. */
+        if (this.props.current.by === 'index') {
+            sorted = refsArray.filter(this.props.searchResultsFilter);
+            unsorted = [];
+        } else {
+            var unsortableFilter = mkUnsortableFilter(this.props.current.by, this.props.json);
+            var sortableFilter = function (el) { return !unsortableFilter(el); };
+            var sortFunc = mkSortRefListFunction(this.props.current.by, this.props.json);
+            unsorted = refsArray.filter(unsortableFilter).
+                filter(this.props.searchResultsFilter);
+            sorted = refsArray.filter(sortableFilter).sort(sortFunc).
+                filter(this.props.searchResultsFilter);
+        }
+        
+        if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
+
+        /* Build elements for react */
+        var mkElementFunc = function (h) {
+            return <Reference html={$(h).html()} key={getReferenceId(h)} />;
+        };
+        return <div>
+            <ol className="references">{ sorted.map(mkElementFunc) }</ol>
+            <h5>Unsortable</h5>
+            <ol className="references">{ unsorted.map(mkElementFunc) }</ol>
+            </div>;
+    }
+});
+
 var SearchBar = React.createClass({
     handleChange: function() {
         this.props.onSearchUpdate(
@@ -157,43 +190,21 @@ var ReferencesApp = React.createClass({
         }
         this.setState({sort: { by: by, order: newSortOrder }});
     },
-    render: function() {
-        var refsArray = jQuery.makeArray(this.props.references);
-        var sorted, unsorted;
-        /* by default return all results */
-        var searchResultsFilter = function (e) { return true; };
+    mkSearchResultsFilter: function () {
         if (this.state.filterText) {
             var resultHash = {};
             idx.search(this.state.filterText).map(function (res) {
                 return resultHash[res['ref']] = res['score'];
             });
-            searchResultsFilter = function (e) {
+            return function (e) {
                 return (resultHash[getReferenceId(e)] != null);
             };
-        } 
-        /* Index is special, we just use the original sort order. */
-        if (this.state.sort.by === 'index') {
-            sorted = refsArray.filter(searchResultsFilter);
-            unsorted = [];
         } else {
-            var unsortableFilter = mkUnsortableFilter(this.state.sort.by, this.props.json);
-            var sortableFilter = function (el) { return !unsortableFilter(el); };
-            var sortFunc = mkSortRefListFunction(this.state.sort.by, this.props.json);
-            unsorted = refsArray.filter(unsortableFilter).
-                filter(searchResultsFilter);
-            sorted = refsArray.filter(sortableFilter).sort(sortFunc).
-                filter(searchResultsFilter);
+            /* by default return all results */
+            return function (e) { return true; };
         }
-        
-        if (this.state.sort.order == "desc") { sorted = sorted.reverse(); }
-
-        /* Build elements for react */
-        var mkElementFunc = function (h) {
-            return <Reference html={$(h).html()} key={$(h).children("a").attr("id")} />;
-        };
-        var sortedElements = sorted.map(mkElementFunc);
-        var unsortedElements = unsorted.map(mkElementFunc);
-
+    },
+    render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
             <ul>
@@ -202,9 +213,7 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Author" by="author" current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Year"   by="year"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
-            <ol className="references">{ sortedElements }</ol>
-            <h5>Unsortable</h5>
-            <ol className="references">{ unsortedElements }</ol>
+            <SortedReferencesList current={this.state.sort} references={this.props.references} searchResultsFilter={this.mkSearchResultsFilter()} json={this.props.json}/>
             </div>;
     }
 });
