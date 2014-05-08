@@ -154,7 +154,7 @@ var SearchBar = React.createClass({
     },
     render: function() {
         return (
-            <form onSubmit={this.handleSubmit}>
+            <form onSubmit={function(){return false;}}>
                 <input
                     type="text"
                     placeholder="Search..."
