@@ -9,15 +9,36 @@ var idx = lunr(function () {
     this.field('body');
 });
 
-function buildIndex(references, json) {
-    var refs = getRefListById(json);
-    jQuery.makeArray(references).map(function (el) {
-        var id = getReferenceId(el);
-        var doc = { "title" : refs[id].info.title,
-                    "body"  : $(el).text(),
-                    "id" : id};
+function buildIndex(references) {
+    $.makeArray(references['_ordered']).map(function (ref) {
+        var doc = { id:    ref.id,
+                    title: ref.info.title,
+                    body:  ref.text };
         idx.add(doc);
     });
+}
+
+/** 
+ * Merge citation reference li elements and JSON data.
+ */
+function buildReferenceData(json, elements) {
+    var retval = {};
+    /* first we need a quick lookup of the html elements by id */
+    var elementsById = {};
+    $("ol.references li").each(function (el) {
+        elementsById[getReferenceId($(this))] = $(this);
+    });
+    /* now get each thing from the JSON */
+    $.each(json['references'], function (ignore, v) {
+        retval[v.id] = v;
+        retval[v.id]['html'] = $(elementsById[v.id]).html();
+        retval[v.id]['text'] = $(elementsById[v.id]).text();
+    });
+    retval['_ordered'] = [];
+    $("ol.references li").each(function (el) {
+        retval['_ordered'].push(retval[getReferenceId($(this))]);
+    });
+    return retval;
 }
 
 function getRefListById(json) {
@@ -210,14 +231,14 @@ $(document).ready(function () {
     var doi = $('meta[name=citation_doi]').attr("content");
     /* now fetch the JSON describing the paper */
     $.getJSON("/papers/" + doi + "?format=json", function(data) {
-        var references = $("ol.references li");
+        var references = buildReferenceData(data);
         /* build full-text index */
-        buildIndex(references, data);
+        buildIndex(references);
         /* insert the container */
         $("<div id='richcites'></div>").insertBefore("#references");
         /* and drop into react */
         React.renderComponent(
-            <ReferencesApp references={references} json={data}/>,
+            <ReferencesApp references={$("ol.references li")} json={data}/>,
             $("ol.references").get(0)
         );
     });
