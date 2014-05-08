@@ -178,8 +178,13 @@ var SearchBar = React.createClass({
 });
 
 var Sorter = React.createClass({
+    getDefaultProps: function() {
+        return {
+            defaultOrder: "asc"
+        };
+    },
     handleClick: function() {
-        this.props.onClick(this.props.by);
+        this.props.onClick(this.props.by, this.props.defaultOrder);
         return false;
     },
     render: function() {
@@ -201,10 +206,10 @@ var ReferencesApp = React.createClass({
             filterText: filterText
         });
     },
-    handleSorterClick: function(by) {
+    handleSorterClick: function(by, defaultOrder) {
         var newSortOrder = (this.state.sort.order == "asc") ? "desc" : "asc";
         if (this.state.sort.by != by) {
-            newSortOrder = "asc";
+            newSortOrder = defaultOrder;
         }
         this.setState({sort: { by: by, order: newSortOrder }});
     },
