@@ -103,9 +103,7 @@ module Plos
         add_co_citation_counts(cited_num, groups, cited_info, all_references)
         add_section_summaries(groups, cited_info)
 
-        add_citing_word_positions(groups, citing_info, paper_info[:paper][:word_count])
-        add_citing_contexts(groups, citing_info)
-        add_citing_section_summaries(groups, citing_info)
+        add_citing_groups(groups, citing_info, paper_info)
       end
 
       cited_info.compact!
@@ -136,34 +134,22 @@ module Plos
       info
     end
 
-    def add_citing_word_positions(groups, citing_info, paper_word_count)
-      positions = citing_info[:word_positions] ||= []
+    def add_citing_groups(groups, citing_info, paper_info)
+      citations = citing_info[:citations] ||= []
 
       groups.each do |group|
-        positions << "#{group[:word_position]}/#{paper_word_count}"
+        citations << {
+            citing_doi:    paper_info[:doi],
+            section:       group[:section],
+            word_position: "#{group[:word_position]}/#{paper_info[:paper][:word_count]}",
+            context:       group[:context],
+        }
       end
-    end
 
-    def add_citing_contexts(groups, citing_info)
-      contexts = citing_info[:contexts] ||= []
-
-      groups.each do |group|
-        contexts << group[:context]
-      end
     end
 
     def add_section_summaries(groups, cited_info)
       sections  = cited_info[:sections]
-
-      groups.each do |group|
-        # Aggregate section counts
-        section = group[:section]
-        sections[section] = sections[section].to_s.to_i + 1
-      end
-    end
-
-    def add_citing_section_summaries(groups, citing_info)
-      sections  = citing_info[:sections] ||= {}
 
       groups.each do |group|
         # Aggregate section counts
