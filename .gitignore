@@ -20,5 +20,3 @@
 *.pyc
 *.pickle
 
-# big file
-xslt/saxon9he.jar
