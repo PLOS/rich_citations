@@ -39,6 +39,7 @@ group :doc do
 end
 
 group :development do
+  gem 'sqlite3'
   gem 'quiet_assets'
 end
 
