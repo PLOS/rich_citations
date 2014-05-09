@@ -39,13 +39,33 @@ function buildReferenceData(json, elements) {
         retval[v.id]['html'] = $(elementsById[v.id]).html();
         retval[v.id]['text'] = $(elementsById[v.id]).text();
     });
+
     var i = 0;
     $("ol.references li").each(function (el) {
         var id = getReferenceId($(this));
         retval[id]['index'] = i;
         i = i + 1;
     });
-    return retval;
+
+    /* make fields for sorting */
+    var pipeline = new lunr.Pipeline();
+    pipeline.add(lunr.trimmer,
+                 lunr.stopWordFilter);
+    function mkSortString(s) {
+        if (!s) { return null; }
+        else { return pipeline.run(lunr.tokenizer(s)).join(" "); }
+    }
+    $.each(retval, function (ignore, v) {
+        v['sortfields'] = {};
+        v['sortfields']['title'] = mkSortString(v.info.title);
+        v['sortfields']['index'] = v.index;
+        v['sortfields']['journal'] = mkSortString(v.info.journal);
+        v['sortfields']['year'] = mkSortString(v.info.year);
+        v['sortfields']['mentions'] = v.mentions;
+        console.log(v);
+    });
+
+return retval;
 }
 
 var Reference = React.createClass({
@@ -56,91 +76,44 @@ var Reference = React.createClass({
 
 var SortedReferencesList = React.createClass({
     /**
-     * Build a function that can be passed to filter to remove items that
+     * Function that can be passed to filter to remove items that
      * cannot be sorted.
      */
-    mkUnsortableFilter: function(extractor) {
-        return function (el) {
-            var v = extractor(el);
-            if (typeof(v) === "undefined" || v === null || v === "") {
-                return true;
-            } else {
-                return false;
-            }
+    sortableFilter: function(ref) {
+        console.log(ref.sortfields[this.props.current.by]);
+        var v = ref.sortfields[this.props.current.by];
+        if (typeof(v) === "undefined" || v === null || v === "") {
+            return false;
+        } else {
+            return true;
+        }
+    },
+    /**
+     * Function to pass to filter to remove items that can be sorted.
+     */
+    unsortableFilter: function (ref) {
+        return !this.sortableFilter(ref);
+    },
+    /**
+     * Function to sort by the curre
+     */
+    sorter: function(a, b) {
+        var aval = a.sortfields[this.props.current.by];
+        var bval = b.sortfields[this.props.current.by];
+        console.log(aval);
+        if (typeof(aval) === "number") {
+            return aval - bval;
+        } else {
+            return aval.localeCompare(bval);
         };
     },
-    /**
-     * sort definitions, consists of a function to extract the field
-     * to sort and a type, either "numeric" or "alphabetic"
-     */
-    sorts: {
-        index: {
-            extractor: function (ref) {
-                return ref.index;
-            },
-            sortStyle: "numeric"
-        },
-        title: {
-            extractor: function (ref) {
-                return ref.info.title;
-            },
-            sortStyle: "alphabetic"
-        },
-        year: {
-            extractor: function (ref) {
-                return parseInt(ref.info.year);
-            },
-            sortStyle: "numeric"
-        },
-        author: {
-            extractor: function(ref) {
-                return ref.info.authors[0].fullname;
-            },
-            sortStyle: "alphabetic"
-        },
-        mentions: {
-            extractor: function(ref) {
-                return ref.mentions;
-            },
-            sortStyle: "numeric"
-        },
-        journal: {
-            extractor: function(ref) {
-                return ref.info.journal;
-            },
-            sortStyle: "alphabetic"
-        }
-        
-    },
-    /**
-     * Build a sort function from a sort definition, as defined in `sorts` above.
-     */
-    mkSortFunc: function(o) {
-        var extractor = o.extractor;
-        if (o.sortStyle === "numeric") {
-            return function (a,b) {
-                return extractor(a) - extractor(b);
-            };
-        } else {
-            var pipeline = new lunr.Pipeline();
-            pipeline.add(lunr.trimmer,
-                         lunr.stopWordFilter);
-            return function (a, b) {
-                var aval = pipeline.run(lunr.tokenizer(extractor(a))).join(" ");
-                var bval = pipeline.run(lunr.tokenizer(extractor(b))).join(" ");
-                return aval.localeCompare(bval);
-            };
-        }
-    },
     render: function() {
-        var refsArray = $.map(this.props.references, function(val, key) { return val; });
-        var unsortableFilter = this.mkUnsortableFilter(this.sorts[this.props.current.by].extractor);
-        var sortableFilter = function (el) { return !unsortableFilter(el); };
-        var unsorted = refsArray.filter(unsortableFilter).
-            filter(this.props.searchResultsFilter);
-        var sorted = refsArray.filter(sortableFilter).
-                sort(this.mkSortFunc(this.sorts[this.props.current.by])).
+        var refs = $.map(this.props.references, function(val, key) { return val; }).
                 filter(this.props.searchResultsFilter);
+
+        var unsorted = refs.filter(this.unsortableFilter);
+        var sorted = refs.filter(this.sortableFilter).
+                sort(this.sorter);
         
         if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
 
