@@ -231,5 +231,25 @@ $(document).ready(function () {
             <ReferencesApp references={references} />,
             $("ol.references").get(0)
         );
+
+        /* set up popover references */
+        $(document).ready(function() {
+            /* extract the final part of the DOI used for reference anchors */
+            var anchorPrefix = doi.match(/^10.1371\/journal\.(.*)$/)[1];
+            var anchorSelector = "a[href^='#" + anchorPrefix + "']";
+            $(anchorSelector).each(function() {
+                var refid = $(this).attr('href').substring(1);
+                var html = references[refid] && references[refid].html;
+                $(this).qtip({
+                    content: {
+                        text: html
+                    },
+                    position: {
+                        viewport: $(window)
+                    },
+                    style: 'qtip-wiki'
+                });
+            });
+        });
     });
 });
