@@ -62,7 +62,6 @@ function buildReferenceData(json, elements) {
         v['sortfields']['journal'] = mkSortString(v.info.journal);
         v['sortfields']['year'] = mkSortString(v.info.year);
         v['sortfields']['mentions'] = v.mentions;
-        console.log(v);
         // TODO: use lastname, first name when available
         v['sortfields']['author'] = v.info.authors && mkSortString(v.info.authors[0]['fullname'] );
     });
@@ -82,7 +81,6 @@ var SortedReferencesList = React.createClass({
      * cannot be sorted.
      */
     sortableFilter: function(ref) {
-        console.log(ref.sortfields[this.props.current.by]);
         var v = ref.sortfields[this.props.current.by];
         if (typeof(v) === "undefined" || v === null || v === "") {
             return false;
@@ -102,7 +100,6 @@ var SortedReferencesList = React.createClass({
     sorter: function(a, b) {
         var aval = a.sortfields[this.props.current.by];
         var bval = b.sortfields[this.props.current.by];
-        console.log(aval);
         if (typeof(aval) === "number") {
             return aval - bval;
         } else {
