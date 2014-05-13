@@ -71,7 +71,15 @@ return retval;
 
 var Reference = React.createClass({
     render: function () {
-        return <li dangerouslySetInnerHTML={{__html:this.props.html}} />;
+        var self_cite_flag = null;
+        if (this.props.ref.self_citations) {
+            self_cite_flag = <span className="selfcitation">Self-citation</span>;
+        }
+        
+        return <li>
+            <span dangerouslySetInnerHTML={{__html:this.props.ref.html}} />
+            {self_cite_flag}
+            </li>;
     }
 });
 
@@ -118,7 +126,7 @@ var SortedReferencesList = React.createClass({
 
         /* Build elements for react */
         var mkElementFunc = function (ref) {
-            return <Reference html={ref.html} key={ref.id} />;
+            return <Reference ref={ref} key={ref.id} />;
         };
         return <div>
             <ol className="references">{ sorted.map(mkElementFunc) }</ol>
