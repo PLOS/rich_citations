@@ -72,14 +72,14 @@ return retval;
 var Reference = React.createClass({
     render: function () {
         var self_cite_flag = null;
-        if (this.props.ref.self_citations) {
+        if (this.props.reference.self_citations) {
             self_cite_flag = <span className="selfcitation">Self-citation</span>;
         }
         
-        return <li>
-            <span dangerouslySetInnerHTML={{__html:this.props.ref.html}} />
+        return <span id={'reference-' + this.props.reference.id}>
+            <span dangerouslySetInnerHTML={{__html:this.props.reference.html}} />
             {self_cite_flag}
-            </li>;
+        </span>;
     }
 });
 
@@ -126,7 +126,7 @@ var SortedReferencesList = React.createClass({
 
         /* Build elements for react */
         var mkElementFunc = function (ref) {
-            return <Reference ref={ref} key={ref.id} />;
+            return <li key={ref.id}><Reference reference={ref} /></li>;
         };
         return <div>
             <ol className="references">{ sorted.map(mkElementFunc) }</ol>
@@ -176,6 +176,15 @@ var Sorter = React.createClass({
     }
 });
 
+var ReferencePopup = React.createClass({
+    getInitialState: function() {
+        return {};
+    },
+    render: function() {
+        return <div><Reference reference={this.props.reference}/></div>;
+    }
+});
+        
 var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "index", order: "asc" },
@@ -245,18 +254,27 @@ $(document).ready(function () {
             /* extract the final part of the DOI used for reference anchors */
             var anchorPrefix = doi.match(/^10.1371\/journal\.(.*)$/)[1];
             var anchorSelector = "a[href^='#" + anchorPrefix + "']";
+            var popoverCounter = 1;
             $(anchorSelector).each(function() {
                 var refid = $(this).attr('href').substring(1);
-                var html = references[refid] && references[refid].html;
+                var elementid = 'popup' + popoverCounter;
+                var selector = '#' + elementid;
                 $(this).qtip({
                     content: {
-                        text: html
+                        text: function(event, api) {
+                            setTimeout(function (){
+                                React.renderComponent(<ReferencePopup reference={references[refid]} />,
+                                                      $(selector).get(0));
+                            }.bind(this), 1);
+                            return "<div id='" + elementid + "'>Loading...</div>";
+                        }
                     },
                     position: {
                         viewport: $(window)
                     },
                     style: 'qtip-wiki'
                 });
+                popoverCounter = popoverCounter + 1;
             });
         });
     });
