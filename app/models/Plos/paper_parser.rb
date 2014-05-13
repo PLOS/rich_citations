@@ -42,6 +42,7 @@ module Plos
           },
           references: references,
           groups:     citation_groups,
+          title:      title,
           authors:    authors,
       }
     end
@@ -238,6 +239,10 @@ module Plos
       @authors
     end
 
+    def title
+      @title ||= xml.css('article-title')[0].text.strip
+    end
+    
     def author_fullname(node)
       (node.css('given-names').text.strip + ' ' + node.css('surname').text.strip).strip
     end
