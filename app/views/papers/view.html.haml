@@ -1,7 +1,17 @@
-#page-wrap
+#page-wrap  
   #pagebdy-wrap
-    #article-block.cf
-      #pjax-container.main.cf
-        .article
-          - cache do
-            = render(partial: "transform").html_safe
+    #pagebdy
+      #article-block.cf
+        .article-meta.cf
+          .header#hdr-article
+            .article-kicker
+              %span#article-type-heading Research Article
+            %h1= @paper.references[:title]
+            %p.authors
+              - @paper.references[:authors].each do |author|
+                %span.author
+                  %span.person= author[:fullname] + if (author == @paper.references[:authors][-1]) then "" else ", " end
+        #pjax-container.main.cf
+          .article
+            - cache do
+              = render(partial: "transform").html_safe
