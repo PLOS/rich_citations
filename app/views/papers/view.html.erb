@@ -1,17 +1,45 @@
-#page-wrap  
-  #pagebdy-wrap
-    #pagebdy
-      #article-block.cf
-        .article-meta.cf
-          .header#hdr-article
-            .article-kicker
-              %span#article-type-heading Research Article
-            %h1= @paper.references[:title]
-            %p.authors
-              - @paper.references[:authors].each do |author|
-                %span.author
-                  %span.person= author[:fullname] + if (author == @paper.references[:authors][-1]) then "" else ", " end
-        #pjax-container.main.cf
-          .article
-            - cache do
-              = render(partial: "transform").html_safe
+<div id="page-wrap">
+  <div id="pagebdy-wrap">
+    <div id="pagebdy">
+      <div id="article-block" class="cf">
+        <div class="article-meta cf">
+          <ul id="almSignPost" style="display: none;"></ul>
+          <div class="article-type">
+            <span class="type oa">Open Access</span>
+            <span class="type pr">Peer-Reviewed</span>
+          </div>
+        </div>
+        <div class="header" id="hdr-article">
+          <div class="article-kicker">
+            <span id="article-type-heading">
+              Research Article
+            </span>
+          </div>
+          <h1 property="dc:title" datatype="" rel="dc:type" href="http://purl.org/dc/dcmitype/Text">
+            <%= @paper.references[:title] %>
+          </h1>
+          <ul class="authors">
+            <% @xml.xpath("//article-meta/contrib-group/contrib[@contrib-type='author']").each do |author_node| %>
+              <li>
+                <span rel="dc:creator" class="author">
+                  <span class="person" property="foaf:name" typeof="foaf:Person">
+                    <%= author_node.xpath("name/given-names").text().strip() -%>
+                    <%= author_node.xpath("name/surname").text().strip() -%><% if !(author_node / "xref[@ref-type='corresp']").empty? then %><span class="corresponding">mail</span><% end %><% if !(author_node / "./following-sibling::contrib").empty? %>,<% end %></span>
+                </span>
+              </li>
+            <% end %>
+          </ul>
+        </div>
+        <div class="main cf" id="pjax-container">
+          <div id="pjax-container" class="main cf">
+            <div class="article">
+              <% cache do %>
+                <%= render(partial: "transform").html_safe %>
+              <% end %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
