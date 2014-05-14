@@ -128,6 +128,14 @@ var SortedReferencesList = React.createClass({
         var mkElementFunc = function (ref) {
             return <li key={ref.id}><Reference reference={ref} /></li>;
         };
+
+        /* after rendering, highlight filtered text */
+        if (this.props.filterText) {
+            setTimeout(function () {
+                $("ol.references").unhighlight();
+                $("ol.references").highlight(this.props.filterText);
+            }.bind(this), 1);
+        }
         return <div>
             <ol className="references">{ sorted.map(mkElementFunc) }</ol>
             <h5>Unsortable</h5>
@@ -223,7 +231,11 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
-            <SortedReferencesList current={this.state.sort} references={this.props.references} searchResultsFilter={this.mkSearchResultsFilter()} />
+            <SortedReferencesList
+              current={this.state.sort}
+              references={this.props.references}
+              filterText={this.state.filterText}
+              searchResultsFilter={this.mkSearchResultsFilter()} />
             </div>;
     }
 });
