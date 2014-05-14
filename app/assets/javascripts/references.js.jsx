@@ -160,19 +160,19 @@ var SearchBar = React.createClass({
 var Sorter = React.createClass({
     getDefaultProps: function() {
         return {
-            defaultOrder: "asc"
+            order: "asc"
         };
     },
     handleClick: function() {
-        this.props.onClick(this.props.by, this.props.defaultOrder);
+        this.props.onClick(this.props.by, this.props.order);
         return false;
     },
     render: function() {
-        var sortorderstr = "";
         if (this.props.current.by === this.props.by) {
-            sortorderstr = this.props.current.order == "asc" ? "↑" : "↓";
+            return <span>{this.props.name}</span>;
+        } else {
+            return <a href="#" onClick={this.handleClick}>{this.props.name}</a>;
         }
-        return <a href="#" onClick={this.handleClick}>{this.props.name}{sortorderstr}</a>;
     }
 });
 
@@ -195,12 +195,8 @@ var ReferencesApp = React.createClass({
             filterText: filterText
         });
     },
-    handleSorterClick: function(by, defaultOrder) {
-        var newSortOrder = (this.state.sort.order == "asc") ? "desc" : "asc";
-        if (this.state.sort.by != by) {
-            newSortOrder = defaultOrder;
-        }
-        this.setState({sort: { by: by, order: newSortOrder }});
+    handleSorterClick: function(by, order) {
+        this.setState({sort: { by: by, order: order }});
     },
     mkSearchResultsFilter: function () {
         if (this.state.filterText) {
@@ -224,7 +220,7 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/></li>
+            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             <SortedReferencesList current={this.state.sort} references={this.props.references} searchResultsFilter={this.mkSearchResultsFilter()} />
