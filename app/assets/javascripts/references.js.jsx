@@ -129,10 +129,13 @@ var SortedReferencesList = React.createClass({
             return <li key={ref.id}><Reference reference={ref} /></li>;
         };
 
+        /* clear old highlights */
+        setTimeout(function () {
+            $("ol.references").unhighlight();
+        }.bind(this), 1);
         /* after rendering, highlight filtered text */
         if (this.props.filterText) {
             setTimeout(function () {
-                $("ol.references").unhighlight();
                 $("ol.references").highlight(this.props.filterText);
             }.bind(this), 1);
         }
