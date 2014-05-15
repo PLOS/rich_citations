@@ -4,6 +4,10 @@
 
 var doi = $('meta[name=citation_doi]').attr("content");
 
+/* selector that can be used to match all the a elements that are citation links */
+
+var citationSelector = "a[href^='#" + doi.match(/^10.1371\/journal\.(.*)$/)[1] + "']";
+
 var idx = lunr(function () {
     this.field('title', { boost: 10 });
     this.field('body');
@@ -207,6 +211,11 @@ var ReferencesApp = React.createClass({
         return {sort: { by: "index", order: "asc" },
                 filterText: ''};
     },
+    componentWillMount: function() {
+        $(citationSelector).on( "click", function() {
+            this.setState({ filterText: "" });
+        }.bind(this));
+    },
     handleSearchUpdate: function(filterText) {
         this.setState({
             filterText: filterText
@@ -249,9 +258,9 @@ var ReferencesApp = React.createClass({
     }
 });
 
+
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
-    var doi = $('meta[name=citation_doi]').attr("content");
     /* now fetch the JSON describing the paper */
     $.getJSON("/papers/" + doi + "?format=json", function(data) {
         /* build main data structure */
@@ -268,11 +277,8 @@ $(document).ready(function () {
 
         /* set up popover references */
         $(document).ready(function() {
-            /* extract the final part of the DOI used for reference anchors */
-            var anchorPrefix = doi.match(/^10.1371\/journal\.(.*)$/)[1];
-            var anchorSelector = "a[href^='#" + anchorPrefix + "']";
             var popoverCounter = 1;
-            $(anchorSelector).each(function() {
+            $(citationSelector).each(function() {
                 var refid = $(this).attr('href').substring(1);
                 var elementid = 'popup' + popoverCounter;
                 var selector = '#' + elementid;
