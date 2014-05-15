@@ -79,11 +79,12 @@ var Reference = React.createClass({
         if (this.props.reference.self_citations) {
             self_cite_flag = <span className="selfcitation">Self-citation</span>;
         }
-        
+        var mentionCount = <span>Appears { this.props.reference.mentions } times in this paper.</span>;
         return <span id={'reference-' + this.props.reference.id}>
             <span dangerouslySetInnerHTML={{__html:this.props.reference.html}} />
             {self_cite_flag}
-        </span>;
+            {mentionCount}
+          </span>;
     }
 });
 
