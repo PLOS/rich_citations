@@ -69,22 +69,42 @@ function buildReferenceData(json, elements) {
         // TODO: use lastname, first name when available
         v['sortfields']['author'] = v.info.authors && mkSortString(v.info.authors[0]['fullname'] );
     });
-
-return retval;
+    return retval;
 }
 
 var Reference = React.createClass({
+    getInitialState: function() {
+        return { showAppearances: false };
+    },
+    handleClick: function() {
+        this.setState( { showAppearances: !this.state.showAppearances });
+        return false;
+    },
     render: function () {
-        var self_cite_flag = null;
-        if (this.props.reference.self_citations) {
-            self_cite_flag = <span className="selfcitation">Self-citation</span>;
+        var ref = this.props.reference;
+        var selfCiteFlag = null;
+        if (ref.self_citations) {
+            selfCiteFlag = <span className="selfcitation">Self-citation</span>;
         }
-        var mentionCount = <span>Appears { this.props.reference.mentions } times in this paper.</span>;
-        return <span id={'reference-' + this.props.reference.id}>
-            <span dangerouslySetInnerHTML={{__html:this.props.reference.html}} />
-            {self_cite_flag}
-            {mentionCount}
-          </span>;
+        var appearanceList;
+        if (this.state.showAppearances) {
+            var citationGroupsBySection = _.groupBy(ref.citation_groups, function(g) { return g.section; });
+                appearanceList = _.map(citationGroupsBySection, function(value, key) {
+                    var mentions = _.map(value, function (mention) {
+                        return <p key={ "mention" + mention.word_position } >{ mention.context }</p>;
+                    });
+                    return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
+                        { mentions }
+                    </div>;
+                });
+        }
+        return <div id={ 'reference_' + this.props.reference.id }>
+            <span dangerouslySetInnerHTML={{__html:ref.html}} />
+            { selfCiteFlag }
+            <a onClick={this.handleClick} href="#">Appears { ref.mentions } times in this paper.
+            { this.state.showAppearances ? "▼" : "▶" }</a>
+            { appearanceList }
+            </div>;
     }
 });
 
