@@ -139,9 +139,15 @@ var SortedReferencesList = React.createClass({
                 $("ol.references").highlight(this.props.filterText);
             }.bind(this), 1);
         }
+        var unsortableLink, unsortableHeader;
+        if (unsorted.length > 0) {
+            unsortableLink = <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p>;
+            unsortableHeader = <h5 id="unsortable">Unsortable</h5>;
+        }
         return <div>
+            { unsortableLink }
             <ol className="references">{ sorted.map(mkElementFunc) }</ol>
-            <h5>Unsortable</h5>
+            { unsortableHeader }
             <ol className="references">{ unsorted.map(mkElementFunc) }</ol>
             </div>;
     }
