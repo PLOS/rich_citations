@@ -144,25 +144,38 @@ var SortedReferencesList = React.createClass({
             return aval.localeCompare(bval);
         };
     },
-    render: function() {
-        var refs = $.map(this.props.references, function(val, key) { return val; }).
-                filter(this.props.searchResultsFilter);
-
-        var unsorted = refs.filter(this.unsortableFilter);
-        var sorted = refs.filter(this.sortableFilter).
-                sort(this.sorter);
-        
-        if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
-
-        /* Build elements for react */
-        var mkElementFunc = function (ref) {
-            return <li key={ref.id}><Reference reference={ref} /></li>;
-        };
-
+    isGrouped: function() {
+        return ["year", "journal"].indexOf(this.props.current.by) !== -1;
+    },
+    grouper: function (ref) {
+        var by = this.props.current.by;
+        if (by === "year") {
+            return ref.info.year;
+        } else if (by === "journal") {
+            return ref.info.journal;
+        } else if (by === "index") {
+            // TODO: group when displaying repeated cites
+            return null;
+        } else {
+            return null;
+        }
+    },
+    renderGroupedReferenceList: function(refs) {
+        var grouped = _.groupBy(refs, this.grouper);
+        var retval = _.map(grouped, function (value, key) {
+            return <div key={ "citation_group_" + key }>
+                <p><strong>{ key }</strong></p>
+                <ol> { _.map(value, this.renderReferenceItem) } </ol>
+                </div>;
+        }.bind(this));
+        return retval;
+    },
+    updateHighlighting: function () {
         /* clear old highlights */
         setTimeout(function () {
             $("ol.references").unhighlight();
         }.bind(this), 1);
+
         /* after rendering, highlight filtered text */
         if (this.props.filterText) {
             setTimeout(function () {
@@ -171,6 +184,31 @@ var SortedReferencesList = React.createClass({
                 });
             }.bind(this), 1);
         }
+    },
+    renderReferenceItem: function(ref) {
+        /* Build elements for react */
+        return <li key={ref.id}><Reference reference={ref} /></li>;
+    },
+    renderSortedReferenceList: function (refs) {
+        var sorted = refs.filter(this.sortableFilter).
+                sort(this.sorter);
+
+        if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
+
+        if (this.isGrouped()) {
+            return <div> { this.renderGroupedReferenceList(sorted) }</div>;
+        } else {
+            return <ol className="references">{ sorted.map(this.renderReferenceItem) }</ol>;
+        }
+    },
+    render: function() {
+        var refs = $.map(this.props.references, function(val, key) { return val; }).
+                filter(this.props.searchResultsFilter);
+
+        var unsorted = refs.filter(this.unsortableFilter);
+
+        this.updateHighlighting();
+
         var unsortableLink, unsortableHeader;
         if (unsorted.length > 0) {
             unsortableLink = <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p>;
@@ -178,9 +216,9 @@ var SortedReferencesList = React.createClass({
         }
         return <div>
             { unsortableLink }
-            <ol className="references">{ sorted.map(mkElementFunc) }</ol>
+            { this.renderSortedReferenceList(refs) }
             { unsortableHeader }
-            <ol className="references">{ unsorted.map(mkElementFunc) }</ol>
+            <ol className="references">{ unsorted.map(this.renderReferenceItem) }</ol>
             </div>;
     }
 });
