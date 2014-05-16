@@ -311,7 +311,7 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Index"    by="index"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
             <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
