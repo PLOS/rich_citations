@@ -76,6 +76,11 @@ var Reference = React.createClass({
     getInitialState: function() {
         return { showAppearances: false };
     },
+    componentDidUpdate: function() {
+        if (this.props.qtip) {
+            this.props.qtip.reposition();
+        }
+    },
     handleClick: function() {
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
@@ -223,7 +228,7 @@ var ReferencePopup = React.createClass({
         return {};
     },
     render: function() {
-        return <div><Reference reference={this.props.reference}/></div>;
+        return <div><Reference reference={this.props.reference} qtip={this.props.qtip} /></div>;
     }
 });
         
@@ -307,7 +312,7 @@ $(document).ready(function () {
                     content: {
                         text: function(event, api) {
                             setTimeout(function (){
-                                React.renderComponent(<ReferencePopup reference={references[refid]} />,
+                                React.renderComponent(<ReferencePopup reference={ references[refid] } qtip={ api } />,
                                                       $(selector).get(0));
                             }.bind(this), 1);
                             return "<div id='" + elementid + "'>Loading...</div>";
