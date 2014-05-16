@@ -52,12 +52,9 @@ function buildReferenceData(json, elements) {
     });
 
     /* make fields for sorting */
-    var pipeline = new lunr.Pipeline();
-    pipeline.add(lunr.trimmer,
-                 lunr.stopWordFilter);
     function mkSortString(s) {
         if (!s) { return null; }
-        else { return pipeline.run(lunr.tokenizer(s)).join(" "); }
+        else { return idx.pipeline.run(lunr.tokenizer(s)).join(" "); }
     }
     $.each(retval, function (ignore, v) {
         v['sortfields'] = {};
@@ -179,7 +176,7 @@ var SortedReferencesList = React.createClass({
         /* after rendering, highlight filtered text */
         if (this.props.filterText) {
             setTimeout(function () {
-                _.each(lunr.tokenizer(this.props.filterText), function (s) {
+                _.each(idx.pipeline.run(lunr.tokenizer(this.props.filterText)), function (s) {
                     $("ol.references").highlight(s);
                 });
             }.bind(this), 1);
