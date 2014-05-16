@@ -166,7 +166,9 @@ var SortedReferencesList = React.createClass({
         /* after rendering, highlight filtered text */
         if (this.props.filterText) {
             setTimeout(function () {
-                $("ol.references").highlight(this.props.filterText);
+                _.each(lunr.tokenizer(this.props.filterText), function (s) {
+                    $("ol.references").highlight(s);
+                });
             }.bind(this), 1);
         }
         var unsortableLink, unsortableHeader;
