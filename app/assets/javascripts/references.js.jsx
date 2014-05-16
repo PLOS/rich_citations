@@ -313,9 +313,11 @@ $(document).ready(function () {
                             return "<div id='" + elementid + "'>Loading...</div>";
                         }
                     },
-                    position: {
-                        viewport: $(window)
+                    hide: {
+                        fixed: true,
+                        delay: 1000
                     },
+                    position: { viewport: $(window) },
                     style: 'qtip-wiki'
                 });
                 popoverCounter = popoverCounter + 1;
