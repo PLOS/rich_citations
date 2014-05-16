@@ -187,16 +187,15 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        return <li key={ref.id}><Reference reference={ref} /></li>;
+        return <li key={ref.id}><Reference reference={ ref } /></li>;
     },
     renderSortedReferenceList: function (refs) {
-        var sorted = refs.filter(this.sortableFilter).
-                sort(this.sorter);
+        var sorted = refs.filter(this.sortableFilter).sort(this.sorter);
 
         if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
 
         if (this.isGrouped()) {
-            return <div> { this.renderGroupedReferenceList(sorted) }</div>;
+            return <div>{ this.renderGroupedReferenceList(sorted) }</div>;
         } else {
             return <ol className="references">{ sorted.map(this.renderReferenceItem) }</ol>;
         }
