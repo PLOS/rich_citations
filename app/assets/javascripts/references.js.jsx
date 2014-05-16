@@ -147,13 +147,11 @@ var SortedReferencesList = React.createClass({
         };
     },
     isGrouped: function() {
-        return ["year", "journal"].indexOf(this.props.current.by) !== -1;
+        return ["journal"].indexOf(this.props.current.by) !== -1;
     },
     grouper: function (ref) {
         var by = this.props.current.by;
-        if (by === "year") {
-            return ref.info.year;
-        } else if (by === "journal") {
+        if (by === "journal") {
             return ref.info.journal;
         } else if (by === "index") {
             // TODO: group when displaying repeated cites
