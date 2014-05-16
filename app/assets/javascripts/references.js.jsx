@@ -32,16 +32,15 @@ function getReferenceId (el) {
  */
 function buildReferenceData(json, elements) {
     var retval = {};
-    /* first we need a quick lookup of the html elements by id */
-    var elementsById = {};
-    $("ol.references li").each(function (el) {
-        elementsById[getReferenceId($(this))] = $(this);
-    });
-    /* now get each thing from the JSON */
     $.each(json['references'], function (ignore, v) {
         retval[v.id] = v;
-        retval[v.id]['html'] = $(elementsById[v.id]).html();
-        retval[v.id]['text'] = $(elementsById[v.id]).text();
+        // id lookup not working?
+        var selector = "[name='" + v.id + "']";
+        var html = $(selector).parent().first().remove("span.label").html();
+        // cannot get this to work properly in jquery
+        html = html.replace(/<span class="label">[^<]+<\/span>/, '');
+        retval[v.id]['html'] = html;
+        retval[v.id]['text'] = $(selector).parent().first().text();
     });
 
     var i = 0;
@@ -100,8 +99,14 @@ var Reference = React.createClass({
                     </div>;
                 });
         }
+        var label;
+        if (!this.props.qtip) {
+            /* not in popover */
+            label = <span className="label">{ ref.index }.</span>;
+        }
         return <div id={ 'reference_' + this.props.reference.id }>
-            <span dangerouslySetInnerHTML={{__html:ref.html}} />
+            { label }
+            <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { selfCiteFlag }
             <a onClick={this.handleClick} href="#">Appears { ref.mentions } times in this paper.
             { this.state.showAppearances ? "▼" : "▶" }</a>
