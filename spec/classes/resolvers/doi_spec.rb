@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Plos::DoiResolver do
-  Resolver = Plos::DoiResolver
+describe Resolvers::Doi do
+  Resolver = Resolvers::Doi
   
   describe '#extract_doi' do
 
