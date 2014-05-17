@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe Paper do
+describe PaperResult do
 end
