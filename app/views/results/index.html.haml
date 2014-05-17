@@ -5,11 +5,11 @@
     = render partial:'search_form'
 
   .span4
-    = render partial:'analyze_form'
+    = render partial:'list_query_form'
 
 %h3 Previous Searches
 
-- @available_results.each do |r|
+- @available_result_sets.each do |r|
   %div
     - if ! r.ready?
       Analyzing

@@ -1,4 +1,4 @@
-class Result < ActiveRecord::Base
+class ResultSet < ActiveRecord::Base
   before_create :set_token
   before_save   :normalize_fields
 
@@ -14,19 +14,18 @@ class Result < ActiveRecord::Base
     self.where(find_params).first || self.new(params)
   end
 
-  def self.find_or_new_for_analyze(params)
-    list = Plos::DoiResolver.extract_doi_list(params[:query])
+  def self.find_or_new_for_list(list)
+    list = Resolvers::Doi.extract_doi_list(list[:query])
     return nil if list.empty?
 
     limit = list.count
-    query = list[0..1].join(',')
+    query = list[0..1].join(',').downcase
     query += '…' if limit > 2
-    query_result = list.map { |i| { id:i }  }
 
     find_params = {
-        query:        query,
-        limit:        limit,
-        query_result: JSON.generate(query_result),
+        query: query,
+        limit: limit,
+        dois:  JSON.generate(list),
     }
 
     self.where(find_params).first || self.new(find_params)
@@ -37,11 +36,11 @@ class Result < ActiveRecord::Base
   end
 
   def ready?
-    analysis_json.present?
+    results_json.present?
   end
 
   def has_matches?
-    ready? && analysis_results[:match_count] && analysis_results[:match_count] > 0
+    ready? && results[:match_count] && results[:match_count] > 0
   end
 
   def start_analysis!
@@ -58,12 +57,12 @@ class Result < ActiveRecord::Base
 
   end
 
-  def analysis_results
-    @analysis_results ||= ready? ? JSON.parse(analysis_json).symbolize_keys_recursive! : nil
+  def results
+    @results ||= ready? ? JSON.parse(results_json).symbolize_keys_recursive! : nil
   end
 
   def matches
-    analysis_results[:matches]
+    results[:matches]
   end
 
   private
@@ -71,31 +70,34 @@ class Result < ActiveRecord::Base
   def analyze!
     matching_dois = search_dois
 
-    database = Plos::PaperDatabase.new
+    database = PaperDatabase.new
 
     matching_dois.each do |doi|
-      paper = Paper.calculate_for(doi)
-      database.add_paper(doi, paper.references)
+      paper = PaperResult.calculate_for(doi)
+      database.add_paper(doi, paper.info)
     end
     Rails.logger.info("Completed Analysis")
 
     results = JSON.generate(database.results)
-    update_attributes!(analysis_json:results)
+    update_attributes!(results_json:results)
   end
 
   def search_dois
-    if self.query_result.blank?
+    if self.dois.blank?
       Rails.logger.info("Searching for #{self.query.inspect} (limit:#{self.limit}")
       matching = Plos::Api.search(self.query, query_type: "subject", rows: self.limit)
       self.update_attributes!(query_result: JSON.generate(matching))
       Rails.logger.info("Found #{matching.count} results")
 
+      doi_list = matching.map { |r| r['id'] }
+      update_attributes!( dois: JSON.generate(doi_list) )
+
     else
-      matching = JSON.parse(self.query_result)
-      Rails.logger.info("Using #{matching.count} cached query results")
+      doi_list = JSON.parse(self.dois)
+      Rails.logger.info("Using #{doi_list.count} cached query results")
     end
 
-    matching.map { |r| r['id'] }
+    doi_list
   end
 
   def set_token
@@ -103,7 +105,7 @@ class Result < ActiveRecord::Base
   end
 
   def normalize_fields
-    unless self.query_result.present? # Analysis
+    unless self.dois.present? # Analysis
       self.query &&= self.query.downcase
     end
   end

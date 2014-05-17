@@ -10,7 +10,7 @@ CitationTools::Application.routes.draw do
     end
     collection do
       post :search
-      post :analyze
+      post :list
     end
   end
 

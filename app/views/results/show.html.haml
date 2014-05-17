@@ -1,7 +1,7 @@
 - content_for :title do
-  Results for '#{@result.query}'
+  Results for '#{@result_set.query}'
 
-- if @result.ready?
+- if @result_set.ready?
   = render partial:'display_form'
 - else
   = render partial:'waiting_form'

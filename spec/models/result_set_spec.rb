@@ -1,4 +1,4 @@
 require 'spec_helper'
 
-describe Result do
+describe ResultSet do
 end

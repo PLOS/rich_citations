@@ -1,4 +1,4 @@
-= simple_form_for @analyze_result, html:{class:'form-horizontal analyze-form'}, url:analyze_results_path  do |f|
+= simple_form_for @list_result_set, html:{class:'form-horizontal analyze-form'}, url:list_results_path  do |f|
   = f.error_notification
   = f.input  :query, label:'DOIs', as: :text, input_html: { placeholder:'Enter a list of PLOS DOIs' }
   .form-actions
