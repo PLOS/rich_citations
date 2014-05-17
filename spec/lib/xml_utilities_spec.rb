@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Plos::XmlUtilities do
-  subject { Plos::XmlUtilities }
+describe XmlUtilities do
+  subject { XmlUtilities }
 
   def x(text)
     Nokogiri::XML(text)
@@ -103,6 +103,61 @@ describe Plos::XmlUtilities do
 
     it "it should return nil if node is not found" do
       expect( subject.text_after( @xml.css('body'), @xml.css('other').first ) ).to be_nil
+    end
+
+  end
+
+  describe "#text_between" do
+
+    before do
+      @xml = x(<<-EOX.strip_heredoc
+             <root>
+             one
+             <before />
+             before
+             <body><a>A</a> <b>B</b> <c>C</c> <d>D</d> <e>E</e></body>
+             after
+             <after />
+             ninety-nine
+             </root>
+      EOX
+      )
+    end
+
+    it "should return nil if the first node is nil" do
+      expect( subject.text_between( nil, @xml.css('b').first )).to be_nil
+    end
+
+    it "should return the text for a range of nodes" do
+      expect( subject.text_between( @xml.css('b').first, @xml.css('d').first) ).to eq('B C D')
+    end
+
+    it "should work if the first and last nodes are the same" do
+      expect( subject.text_between( @xml.css('b').first, @xml.css('b').first) ).to eq('B')
+    end
+
+    it "should work if the first node is the first in the parent" do
+      expect( subject.text_between( @xml.css('a').first, @xml.css('c').first) ).to eq('A B C')
+    end
+
+    it "should work if the last node is the last in the parent" do
+      expect( subject.text_between( @xml.css('c').first, @xml.css('e').first) ).to eq('C D E')
+    end
+
+    it "should get all of the remaining text if the last node is nil" do
+      expect( subject.text_between( @xml.css('c').first, nil) ).to eq('C D E')
+    end
+
+    it "should get all of the remaining text if the last node is before the first node" do
+      expect( subject.text_between( @xml.css('d').first, @xml.css('b').first) ).to eq('D E')
+    end
+
+    it "should fail if the first and last node don't have the same parent" do
+      expect { subject.text_between( @xml.css('before').first, @xml.css('e').first) }.to raise_error ArgumentError
+    end
+
+    it "should fail if the first and last node don't have the same parent (2)" do
+      expect { subject.text_between( @xml.css('a').first, @xml.css('after').first) }.to raise_error ArgumentError
     end
 
   end
