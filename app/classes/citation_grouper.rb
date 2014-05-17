@@ -1,5 +1,5 @@
 # class to help in grouping citations
-class Plos::CitationGrouper
+class CitationGrouper
 
   HYPHEN_SEPARATORS = ["-", "\u2013", "\u2014"]
   ALL_SEPARATORS    = [',', ''] + HYPHEN_SEPARATORS
@@ -20,8 +20,10 @@ class Plos::CitationGrouper
     number = parser.reference_number(citation)
 
     if @hyphen_found
+      add_node(citation)
       add_range(number)
     else
+      add_node(citation)
       add(number)
     end
 
@@ -40,11 +42,16 @@ class Plos::CitationGrouper
     (range_start..range_end).each { |n| add(n) }
   end
 
+  def add_node(node)
+    @current_group[:nodes].push node
+  end
+
   def start_group!(node)
     @current_group =  {
         count:         0,
         references:    [],
-    }.merge( parser.citation_group_info(node) )
+        nodes:         [],
+    }
 
     @groups        << @current_group
     @last_node     =  :none
