@@ -13,12 +13,12 @@ class RemoveOldSearches
 
   def remove_old_papers
     expiry_date = 4.days.ago
-    Paper.where('updated_at < ?', expiry_date ).delete_all
+    PaperResult.where('updated_at < ?', expiry_date ).delete_all
   end
 
   def remove_old_results
     expiry_date = 3.days.ago
-    Result.where('updated_at < ?', expiry_date ).delete_all
+    ResultSet.where('updated_at < ?', expiry_date ).delete_all
   end
 
 end

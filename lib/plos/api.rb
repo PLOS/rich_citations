@@ -97,6 +97,8 @@ module Plos
       redirect_count = 0
       redirects = []
       http = Net::HTTP::Persistent.new
+      # http.debug_output = $stdout
+      http.retry_change_requests = true
 
       loop do
         uri = URI.parse(url)

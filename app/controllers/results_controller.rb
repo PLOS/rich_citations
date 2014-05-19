@@ -1,22 +1,22 @@
 class ResultsController < ApplicationController
 
   def index
-    @search_result ||= Result.new(
+    @search_result_set ||= ResultSet.new(
         query: 'Circadian Rhythms',
         limit: 50
     )
-    @analyze_result ||= Result.new
+    @list_result_set ||= ResultSet.new
 
-    @available_results = Result.order(updated_at: :desc)
+    @available_result_sets = ResultSet.order(updated_at: :desc)
 
     render :index
   end
 
   def search
-    @search_result = Result.find_or_new_for_search( search_params )
-    if @search_result.save
-      @search_result.start_analysis!
-      redirect_to result_path(@search_result.token)
+    @search_result_set = ResultSet.find_or_new_for_search( search_params )
+    if @search_result_set.save
+      @search_result_set.start_analysis!
+      redirect_to result_path(@search_result_set.token)
 
     else
       index
@@ -24,16 +24,17 @@ class ResultsController < ApplicationController
     end
   end
 
-  def analyze
-    @analyze_result = Result.find_or_new_for_analyze( analyze_params )
-    if @analyze_result.nil?
-      @analyze_result = Result.new(analyze_params)
-      @analyze_result.errors.add(:query, 'must be valid')
+  def list
+    @list_result_set = ResultSet.find_or_new_for_list( list_params )
+    if @list_result_set.nil?
+      # Fake an object to keep form builders happy
+      @list_result_set = ResultSet.new(list_params)
+      @list_result_set.errors.add(:query, 'must be valid')
       index
 
-    elsif @analyze_result.save
-      @analyze_result.start_analysis!
-      redirect_to result_path(@analyze_result.token)
+    elsif @list_result_set.save
+      @list_result_set.start_analysis!
+      redirect_to result_path(@list_result_set.token)
 
     else
       index
@@ -42,23 +43,23 @@ class ResultsController < ApplicationController
   end
 
   def show
-    @result = Result.for_token( params.require(:id) )
+    @result_set = ResultSet.for_token( params.require(:id) )
 
     respond_to do |format|
 
       format.html {
-        if @result.ready?
+        if @result_set.ready?
           @sort_col  = params[:sort].to_sym
           @sort_desc = params[:dir] == 'desc'
-          @citations = @result.analysis_results[:citations] || {}
+          @citations = @result_set.results[:citations] || {}
           @citations = sort_citations(@citations, @sort_col, @sort_desc)
         end
       }
 
       format.json {
         response.content_type = Mime::JSON
-        headers['Content-Disposition'] = %Q{attachment; filename="#{@result.query}.js"}
-        render json: @result.analysis_results
+        headers['Content-Disposition'] = %Q{attachment; filename="#{@result_set.query}.js"}
+        render json: @result_set.results
       }
 
       # format.xml  { render xml:  @result.analysis_results.to_xml }
@@ -67,9 +68,9 @@ class ResultsController < ApplicationController
   end
 
   def cited
-    @result = Result.for_token( params.require(:id) )
+    @result_set = ResultSet.for_token( params.require(:id) )
     @doi    = params[:doi]
-    @cited  = @result.analysis_results[:citations][ @doi.to_sym ]
+    @cited  = @result_set.results[:citations][ @doi.to_sym ]
     raise ActiveRecord::RecordNotFound unless @cited
 
     respond_to do |format|
@@ -95,18 +96,18 @@ class ResultsController < ApplicationController
       options[:dir] = @sort_desc ? nil : 'desc'
     end
 
-    view_context.link_to(text, result_path(@result.token, options))
+    view_context.link_to(text, result_path(@result_set.token, options))
   end
   helper_method :sort_link
 
   private
 
   def search_params
-    params.require(:result).permit(:query, :limit)
+    params.require(:result_set).permit(:query, :limit)
   end
 
-  def analyze_params
-    params.require(:result).permit(:query)
+  def list_params
+    params.require(:result_set).permit(:query)
   end
 
   def sort_citations(citations, column, descending)

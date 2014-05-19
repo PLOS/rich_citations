@@ -1,5 +1,7 @@
 #!/usr/bin/env ./bin/rails runner
 
+raise "Out of date"
+
 Rails.logger = Logger.new($stdout)
 
 require 'pp'
@@ -8,9 +10,9 @@ require 'benchmark'
 DOI ='10.1371/journal.pone.0046843'
 
 xml = Plos::Api.document( DOI )
-parser = Plos::PaperParser.new(xml)
+parser = PaperParser.new(xml)
 
-class Plos::PaperParser
+class PaperParser
   def reference_nodes_text
     @reference_nodes_text ||= reference_nodes.map { |n| n.text }
   end

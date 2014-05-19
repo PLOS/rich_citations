@@ -7,7 +7,7 @@ require 'pp'
 SEARCH_SUBJECT = "circadian rhythms"
 MAX_PAPERS = 5
 
-pp Plos::PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
+pp PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
 
 #
 ## Find information about a bunch of PLOS papers!
@@ -16,13 +16,13 @@ pp Plos::PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
 #puts "Retrieving #{results.count}  papers from PLOS journals..."
 #dois = results.map { |r| r['id'] }
 #
-#database = Plos::PaperDatabase.new
+#database = PaperDatabase.new
 #
 #dois.each do |doi|
 #  puts "Fetching ... #{doi}"
 #  xml = Plos::Api.document( doi )
 #  #puts "Parsing ..."
-#  parser = Plos::PaperParser.new(xml)
+#  parser = PaperParser.new(xml)
 #  database.add_paper(doi, parser.paper_info)
 #end
 #

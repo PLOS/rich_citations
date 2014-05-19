@@ -1,7 +1,7 @@
 class PapersController < ApplicationController
 
   def show
-    @paper = Paper.find_by_doi!( params[:id] )
+    @paper = PaperResult.find_by_doi!( params[:id] )
 
     respond_to do |format|
 
@@ -10,7 +10,7 @@ class PapersController < ApplicationController
       format.json {
         response.content_type = Mime::JSON
         headers['Content-Disposition'] = %Q{attachment; filename="#{@paper.doi}.js"}
-        render json: @paper.references
+        render json: @paper.result
       }
 
       # format.xml  { render xml:  @result.analysis_results.to_xml }

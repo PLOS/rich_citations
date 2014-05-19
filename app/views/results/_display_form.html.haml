@@ -1,15 +1,15 @@
-%h3 Results for '#{@result.query}' (limit #{@result.limit}, matches #{@result.matches.count})
+%h3 Results for '#{@result_set.query}' (limit #{@result_set.limit}, matches #{@result_set.matches.count})
 
 .results
 
   .span4
-    - if @result.has_matches?
+    - if @result_set.has_matches?
       %table.citing
         %thead
           %tr
             %th Search Result / Citing Paper
         %tbody
-          - @result.matches.each do |doi|
+          - @result_set.matches.each do |doi|
             %tr
               %td= link_to doi, paper_path(doi)
 
@@ -20,11 +20,11 @@
 
     .json
       %h5 JSON Output
-      = text_area_tag :analysis_json, JSON.pretty_generate(@result.analysis_results), readonly:true
-      = link_to 'Download JSON', result_path(@result.token, format:'json'), class:'btn btn-primary pull-right'
+      = text_area_tag :analysis_json, JSON.pretty_generate(@result_set.results), readonly:true
+      = link_to 'Download JSON', result_path(@result_set.token, format:'json'), class:'btn btn-primary pull-right'
 
   .span8
-    - if @result.has_matches?
+    - if @result_set.has_matches?
       %table.cited
         %thead
           %tr
@@ -34,7 +34,7 @@
         %tbody
           - @citations.each do |doi, info|
             %tr
-              %td= link_to doi, cited_result_path(@result.token, url_encode(doi) )
+              %td= link_to doi, cited_result_path(@result_set.token, url_encode(doi) )
               %td.number= info[:citations]
               %td.number= info[:intra_paper_mentions]
 
