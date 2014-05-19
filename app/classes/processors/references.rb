@@ -4,34 +4,28 @@ module Processors
 
     def process
 
-      references = {}
+      references = result[:references] = {}
 
-      reference_nodes.each do |index, ref|
-        info = info_for_reference[index]
+      reference_nodes.each do |index, node|
 
         reference   = {
-            id:   ref[:id],
-            info: info,
-            doi:  info && info[:doi],
+            id:   node[:id],
+            node: node,       # for other processors
         }
 
         references[index] = reference
       end
 
-      result[:references] = references
     end
 
     def cleanup
       references.each do |index, ref|
+        ref.delete(:node)
         ref.compact!
       end
     end
 
     protected
-
-    def info_for_reference
-      @info_for_reference ||= ReferenceResolver.resolve(reference_nodes)
-    end
 
     def reference_nodes
       @reference_nodes ||= begin
