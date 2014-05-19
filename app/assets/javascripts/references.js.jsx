@@ -122,9 +122,9 @@ var Reference = React.createClass({
             /* not in popover */
             /* check if this is the selected anchor */
             if ($.param.fragment() === ref.id) {
-                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
+                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index + 1 }</a>.</span>;
             } else {
-                label = <span className="label">{ ref.index }.</span>;
+                label = <span className="label">{ ref.index + 1 }.</span>;
             }
         }
         return <div id={ 'reference_' + this.props.reference.id }>
