@@ -33,7 +33,7 @@ module Spec
       @result_set = result
 
       processor_classes << described_class unless described_class.in?(processor_classes)
-      processor_classes.map { |klass| klass.new(@xml, @result_set) }
+      processors = processor_classes.map { |klass| klass.new(@xml, @result_set) }
 
       processors.each(&:cleanup)
       @result_set

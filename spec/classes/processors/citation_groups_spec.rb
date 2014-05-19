@@ -38,4 +38,20 @@ describe Processors::CitationGroups do
     expect( result[:groups] ).to eq( [ {:count=>8, :references=>[1, 3,4,5, 7, 9,10,11]} ] )
   end
 
+  it "should remove nil items during cleanup" do
+    cleanup( { groups: [
+        { a:1, b:nil, c:3}
+    ] } )
+
+    expect(result[:groups]).to eq( [ { a:1, c:3 } ] )
+  end
+
+  it "should remove nodes during cleanup" do
+    cleanup( { groups: [
+                           { a:1, nodes:999}
+                       ] } )
+
+    expect(result[:groups]).to eq( [ { a:1 } ] )
+  end
+
 end
