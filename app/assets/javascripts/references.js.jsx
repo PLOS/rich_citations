@@ -109,7 +109,7 @@ var Reference = React.createClass({
             appearanceList = _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     return <p key={ "mention" + mention.word_position } >
-                        <a href="#" onClick={ this.mkSelectAppearanceFunction(ref.id, mention.index) } >{ mention.context }</a>
+                        <a href={ "#citation_" + ref.id + "_" + mention.index } >{ mention.context }</a>
                         </p>;
                 }.bind(this));
                 return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
@@ -359,6 +359,18 @@ $(document).ready(function () {
             $("ol.references").get(0)
         );
 
+        /* set up monitor to check if we are accessing a "citation_ID_n" 
+         fragment identifier, which will point to the nth citation of reference ID */
+        $(window).bind('hashchange', function(e) {
+            var url = $.param.fragment();
+            var md;
+            if ((md = url.match("^citation_(.*)_([0-9]+)$"))) {
+                var n = parseInt(md[2], 10);
+                var targetSelector = "a[href='#" + md[1] + "']";
+                $(document).scrollTop( $($(targetSelector)[n]).offset().top);
+            }
+        });
+        
         /* set up popover references */
         $(document).ready(function() {
             var popoverCounter = 1;
