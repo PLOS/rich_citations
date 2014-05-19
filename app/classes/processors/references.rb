@@ -7,19 +7,21 @@ module Processors
       references = result[:references] = {}
 
       reference_nodes.each do |index, node|
+         id = node[:id]
 
         reference   = {
-            id:   node[:id],
-            node: node,       # for other processors
+            id:    id,
+            index: index,
+            node:  node,       # for other processors
         }
 
-        references[index] = reference
+        references[id] = reference
       end
 
     end
 
     def cleanup
-      references.each do |index, ref|
+      references.each do |id, ref|
         ref.delete(:node)
         ref.compact!
       end

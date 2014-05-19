@@ -9,15 +9,15 @@ describe Processors::ReferencesZeroMentions do
   end
 
   it "should include zero citations" do
-    expect(result[:references][4][:zero_mentions]).to eq true
+    expect(result[:references]['ref-4'][:zero_mentions]).to eq true
   end
 
   it "should not include zero citations for cited works" do
-    expect(result[:references][2][:zero_mentions]).to be_falsey
+    expect(result[:references]['ref-2'][:zero_mentions]).to be_falsey
   end
 
   it "should not include zero citations if they are cited on their own" do
-    expect(result[:references][1][:zero_mentions]).to be_falsey
+    expect(result[:references]['ref-1'][:zero_mentions]).to be_falsey
   end
 
 end

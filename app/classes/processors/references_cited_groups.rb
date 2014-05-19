@@ -5,8 +5,8 @@ module Processors
     include Helpers
 
     def process
-      references.each do |ref_num, info|
-        info[:citation_groups] = cited_groups(ref_num)
+      references.each do |id, info|
+        info[:citation_groups] = cited_groups(id)
       end
     end
 
@@ -16,8 +16,8 @@ module Processors
 
     protected
 
-    def cited_groups(ref_num)
-      groups = citation_groups.select { |g| g[:references].include?(ref_num) }
+    def cited_groups(id)
+      groups = citation_groups.select { |g| g[:references].include?(id) }
       groups.present? ? groups : nil
     end
 

@@ -18,7 +18,7 @@ describe Processors::SelfCitations do
   end
 
   def resolve_author!(author)
-    expect(ReferenceResolver).to receive(:resolve).and_return(1 => { authors:[author] })
+    expect(ReferenceResolver).to receive(:resolve).and_return('ref-1' => { authors:[author] })
   end
 
   def reference

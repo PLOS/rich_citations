@@ -3,8 +3,8 @@ module Processors
     include Helpers
 
     def process
-      references.each do |index, ref|
-        info = info_for_reference[index]
+      references.each do |id, ref|
+        info = info_for_reference[id]
 
         ref[:info] = info
         ref[:doi]  = info && info[:doi]
@@ -19,7 +19,7 @@ module Processors
     protected
 
     def info_for_reference
-      reference_nodes = references.map { |index, ref| [index, ref[:node]] }.to_h
+      reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
       @info_for_reference ||= ReferenceResolver.resolve(reference_nodes)
     end
 

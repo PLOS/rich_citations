@@ -2,7 +2,7 @@ module Processors
   class SelfCitations < Base
 
     def process
-      result[:references].each do |index, ref|
+      result[:references].each do |id, ref|
         ref[:self_citations] = self_citations_for( ref[:info] )
       end
     end

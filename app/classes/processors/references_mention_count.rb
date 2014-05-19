@@ -18,8 +18,8 @@ module Processors
     # aka ipm_dictionary
     def add_citation_counts
       all_citations = citation_groups.map{|g| g[:references] }.flatten
-      all_citations.group_by {|n| n }.each do |num, references|
-        reference_by_number(num)[:mentions] = references.count
+      all_citations.group_by {|id| id }.each do |id, references|
+        reference_by_id(id)[:mentions] = references.count
       end
     end
 

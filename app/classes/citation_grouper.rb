@@ -17,14 +17,15 @@ class CitationGrouper
     start_group!(citation) if citation.previous_sibling != @last_node
 
     @last_node = citation
-    number = parser.reference_number(citation)
+    index = parser.index_for_citation_node(citation)
 
     if @hyphen_found
       add_node(citation)
-      add_range(number)
+      add_range(index)
     else
       add_node(citation)
-      add(number)
+      add(index)
+      @last_index = index
     end
 
     parse_text_separators(citation)
@@ -32,14 +33,15 @@ class CitationGrouper
 
   private
 
-  def add(number)
+  def add(index)
     @current_group[:count] += 1
-    @current_group[:references].push number
+    id = parser.reference_id_for_index(index)
+    @current_group[:references].push(id)
   end
 
   def add_range(range_end)
-    range_start = @current_group[:references].last+1
-    (range_start..range_end).each { |n| add(n) }
+    range_start = @last_index + 1
+    (range_start..range_end).each { |index| add(index) }
   end
 
   def add_node(node)

@@ -9,7 +9,7 @@ describe Processors::ReferencesSection do
 
   it "should be limited to the nearest paragraph" do
     body "<sec><title>Title 1</title>Some text #{cite(1)} More text<sec>"
-    expect(result[:references][1][:sections]).to eq('Title 1' => 1)
+    expect(result[:references]['ref-1'][:sections]).to eq('Title 1' => 1)
   end
 
 end
