@@ -120,7 +120,12 @@ var Reference = React.createClass({
         var label;
         if (!this.props.qtip) {
             /* not in popover */
-            label = <span className="label">{ ref.index }.</span>;
+            /* check if this is the selected anchor */
+            if ($.param.fragment() === ref.id) {
+                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
+            } else {
+                label = <span className="label">{ ref.index }.</span>;
+            }
         }
         return <div id={ 'reference_' + this.props.reference.id }>
             { label }
@@ -298,6 +303,12 @@ var ReferencesApp = React.createClass({
     componentWillMount: function() {
         $(citationSelector).on( "click", function() {
             this.setState({ filterText: "" });
+        }.bind(this));
+    },
+    componentDidMount: function() {
+        $(window).bind('hashchange', function(e) {
+            /* redraw when the fragment URL changes, to faciliate the link to the back button */
+            this.setState({});
         }.bind(this));
     },
     handleSearchUpdate: function(filterText) {
