@@ -81,6 +81,16 @@ var Reference = React.createClass({
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
     },
+    /**
+     * Return a function to jump to the nth (0-index) appearance of a citation.
+     */
+    mkSelectAppearanceFunction: function (refId, n) {
+        return function () {
+            var targetSelector = "a[href='#" + refId + "']";
+            $(document).scrollTop( $($(targetSelector)[n]).offset().top);
+            return false;
+        };
+    },
     render: function () {
         var ref = this.props.reference;
         var selfCiteFlag = null;
@@ -89,15 +99,23 @@ var Reference = React.createClass({
         }
         var appearanceList;
         if (this.state.showAppearances) {
-            var citationGroupsBySection = _.groupBy(ref.citation_groups, function(g) { return g.section; });
-                appearanceList = _.map(citationGroupsBySection, function(value, key) {
-                    var mentions = _.map(value, function (mention) {
-                        return <p key={ "mention" + mention.word_position } >{ mention.context }</p>;
-                    });
-                    return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
-                        { mentions }
-                    </div>;
-                });
+            /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
+            var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
+                group['index'] = index;
+                return group;
+            });
+            /* group each citation group by the section it is in */
+            var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
+            appearanceList = _.map(citationGroupsBySection, function(value, key) {
+                var mentions = _.map(value, function (mention) {
+                    return <p key={ "mention" + mention.word_position } >
+                        <a href="#" onClick={ this.mkSelectAppearanceFunction(ref.id, mention.index) } >{ mention.context }</a>
+                        </p>;
+                }.bind(this));
+                return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
+                    { mentions }
+                </div>;
+            }.bind(this));
         }
         var label;
         if (!this.props.qtip) {
@@ -109,7 +127,8 @@ var Reference = React.createClass({
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { selfCiteFlag }
             <a onClick={this.handleClick} href="#">Appears { ref.mentions } times in this paper.
-            { this.state.showAppearances ? "▼" : "▶" }</a>
+            { this.state.showAppearances ? "▼" : "▶" }
+            </a>
             { appearanceList }
             </div>;
     }
