@@ -118,16 +118,21 @@ var Reference = React.createClass({
             }.bind(this));
         }
         var label;
+        var isSelected = ($.param.fragment() === ref.id);
         if (!this.props.qtip) {
             /* not in popover */
             /* check if this is the selected anchor */
-            if ($.param.fragment() === ref.id) {
+            if (isSelected) {
                 label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index + 1 }</a>.</span>;
             } else {
                 label = <span className="label">{ ref.index + 1 }.</span>;
             }
         }
-        return <div id={ 'reference_' + this.props.reference.id }>
+        var className = "reference";
+        if (isSelected) {
+            className = className + " selected";
+        }
+        return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { label }
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { selfCiteFlag }
