@@ -21,7 +21,7 @@ class PapersController < ApplicationController
 
   def view
     @doi = params[:id]
-    @paper = Paper.calculate_for(@doi)
+    @paper = PaperResult.calculate_for(@doi)
     @xml = Plos::Api.document(@doi)
     render layout: 'viewer'
   end

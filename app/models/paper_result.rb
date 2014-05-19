@@ -39,4 +39,24 @@ class PaperResult < ActiveRecord::Base
     info_json.present?
   end
 
+  def journal_url
+    case doi
+    when /journal\.pone/
+      "http://www.plosone.org"
+    when /journal\.pbio/
+      "http://www.plosbiology.org"
+    when /journal\.pmed/
+      "http://www.plosmedicine.org"
+    when /journal\.pgen/
+      "http://www.plosgenetics.org"
+    when /journal\.pbci/
+      "http://www.ploscompbio.org"
+    when /journal\.ppat/
+      "http://www.plospathogens.org"
+    when /journal\.pntd/
+      "http://www.plosntds.org"
+    else
+      raise Exception.new("Unknown journal found in #{doi}")
+    end
+  end
 end
