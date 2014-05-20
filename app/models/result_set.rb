@@ -15,7 +15,7 @@ class ResultSet < ActiveRecord::Base
   end
 
   def self.find_or_new_for_list(list)
-    list = Resolvers::Doi.extract_doi_list(list[:query])
+    list = Plos::Doi.extract_list(list[:query])
     return nil if list.empty?
 
     limit = list.count
