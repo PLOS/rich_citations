@@ -375,18 +375,14 @@ $(document).ready(function () {
             $("ol.references").get(0)
         );
 
-        /* set up monitor to check if we are accessing a "citation_ID_n" 
-         fragment identifier, which will point to the nth citation of reference ID */
-        $(window).bind('hashchange', function(e) {
-            var url = $.param.fragment();
-            var md;
-            if ((md = url.match("^citation_(.*)_([0-9]+)$"))) {
-                var n = parseInt(md[2], 10);
-                var targetSelector = "a[href='#" + md[1] + "']";
-                $(document).scrollTop( $($(targetSelector)[n]).offset().top);
-            }
+        /* set up anchors for each of the in-text citations 
+         of the form: citation_id_n */
+        _.each(references, function (reference, id) {
+            $("a[href='#" + id + "']").each(function (n) {
+                $(this).attr("id", 'citation_' + id + '_' + n);
+            });
         });
-        
+
         /* set up popover references */
         $(document).ready(function() {
             var popoverCounter = 1;
