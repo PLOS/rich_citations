@@ -275,15 +275,20 @@ var SearchBar = React.createClass({
 var Sorter = React.createClass({
     getDefaultProps: function() {
         return {
-            order: "asc"
+            defaultOrder: "asc",
+            toggleable: false
         };
     },
     handleClick: function() {
-        this.props.onClick(this.props.by, this.props.order);
+        var order = this.props.defaultOrder;
+        if (this.props.toggleable && (this.props.current.by === this.props.by)) {
+            order = (this.props.current.order === "asc") ? "desc" : "asc";
+        }
+        this.props.onClick(this.props.by, order);
         return false;
     },
     render: function() {
-        if (this.props.current.by === this.props.by) {
+        if (!this.props.toggleable && (this.props.current.by === this.props.by)) {
             return <span>{this.props.name}</span>;
         } else {
             return <a href="#" onClick={this.handleClick}>{this.props.name}</a>;
@@ -348,8 +353,8 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Index"    by="index"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
-            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} order="desc"/></li>
+            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /></li>
+            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             <SortedReferencesList
