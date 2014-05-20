@@ -296,7 +296,10 @@ var ReferencePopup = React.createClass({
         return {};
     },
     render: function() {
-        return <div><Reference reference={this.props.reference} qtip={this.props.qtip} /></div>;
+        var references = _.map(this.props.references, function(ref) {
+            return <Reference reference={ ref } qtip={ this.props.qtip } key={ ref.id } />;
+        }.bind(this));
+        return <div>{ references }</div>;
     }
 });
         
@@ -394,7 +397,7 @@ $(document).ready(function () {
                     content: {
                         text: function(event, api) {
                             setTimeout(function (){
-                                React.renderComponent(<ReferencePopup reference={ references[refid] } qtip={ api } />,
+                                React.renderComponent(<ReferencePopup references={ [references[refid]] } qtip={ api } />,
                                                       $(selector).get(0));
                             }.bind(this), 1);
                             return "<div id='" + elementid + "'>Loading...</div>";
