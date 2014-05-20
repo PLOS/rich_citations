@@ -42,11 +42,11 @@ module Resolvers
     end
 
     def self.extract_info(result)
-      return nil # unless result['match']
+      return unless result['match']
 
       info = {
           source: :crossref,
-          doi:    Resolvers::Doi.extract_doi( result['doi'] ),
+          doi:    Plos::Doi.extract( result['doi'] ),
           score:  result['score'].to_f,
       }
 

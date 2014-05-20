@@ -5,7 +5,7 @@ module Resolvers
 
     def resolve
       unresolved_dois = unresolved_references.map{ |index, node|
-        doi = extract_doi(node.text)
+        doi = Plos::Doi.extract(node.text)
         [index, doi] if doi
       }.compact.to_h
       return if unresolved_dois.empty?
@@ -25,29 +25,6 @@ module Resolvers
         root.set_result(index, :doi, info)
       end
     end
-
-    # (^|\s)doi:?\s*(?<result>10\.([[:punct:]]*[^[[:punct:]][[:space:]]]+)+)
-    DOI_REGEX = '10\.\S+\/\S+'
-    DOI_PREFIX_REGEX = /(^|\s)doi:?\s*(?<result>#{DOI_REGEX}(?<!#{Plos::Utilities::PUNCT}))/io
-    DOI_URL_REGEX    = /(^|\W)doi\.org\/(?<result>#{DOI_REGEX}(?<!#{Plos::Utilities::PUNCT}))/io
-    DOI_ALONE_REGEX  = /^(#{Plos::Utilities::PUNCT}|\s)*(?<result>#{DOI_REGEX}(?<!#{Plos::Utilities::PUNCT}))/io
-
-    def self.extract_doi(text)
-      Plos::Utilities.match_regexes(text, { DOI_URL_REGEX    => true,
-                                            DOI_PREFIX_REGEX => false,
-                                            DOI_ALONE_REGEX  => false  })
-    end
-
-    def self.extract_doi_list(text)
-      list = (text || '').split(/(",|',|`,|\s)\s*/)
-      list.map!{|i| Resolvers::Doi.extract_doi(i) }
-      list.select(&:present?)
-    end
-
-    def extract_doi(text)
-      self.class.extract_doi(text)
-    end
-
     private
 
     DOI_KEY_MAP = {
