@@ -12,7 +12,8 @@ module Processors
       [CitationGroups]
     end
 
-    CITATION_CONTEXT_LENGTH = 60
+    CITATION_CONTEXT_WORDS_BEFORE = 20
+    CITATION_CONTEXT_WORDS_AFTER  = 10
 
     protected
 
@@ -21,21 +22,13 @@ module Processors
       citation_text = XmlUtilities.text_between(nodes.first, nodes.last)
 
       text_before = XmlUtilities.text_before(context_node, nodes.first)
+      text_before = text_before.word_truncate_beginning(CITATION_CONTEXT_WORDS_BEFORE, "\u2026")
+
       text_after  = XmlUtilities.text_after(context_node, nodes.last)
-
-      length_before = (CITATION_CONTEXT_LENGTH - citation_text.length) / 2
-      text_before = text_before.truncate_beginning(length_before, separator:/\s+/, omission:"\u2026")
-
-      length_after = CITATION_CONTEXT_LENGTH - citation_text.length - text_before.length
-      text_after = text_after.truncate(length_after, separator:/\s+/, omission:"\u2026")
-
-      # Recalculate before in case the citation turned out to be near the end of the text
-      length_before2 = CITATION_CONTEXT_LENGTH - citation_text.length - text_after.length
-      if length_before2 > length_before
-        text_before = text_before.truncate_beginning(length_before2, separator:/\s+/, omission:"\u2026")
-      end
+      text_after  = text_after.word_truncate(CITATION_CONTEXT_WORDS_AFTER, "\u2026")
 
       "#{text_before}#{citation_text}#{text_after}"
+
     end
 
   end
