@@ -24,14 +24,16 @@ module Resolvers
     MIN_CROSSREF_SCORE = 2.5 #@TODO: Keeping this value high to force skips for testing
 
     CROSSREF_KEY_MAP = {
-        'rft.atitle' => 'title',
-        'rft.jtitle' => 'journal',
-        'rft.date'   => 'year',
-        'rft.volume' => 'volume',
-        'rft.issue'  => 'issue',
-        'rft.spage'  => 'start_page',
-        'rft.epage'  => 'end_page',
-        'rft.au'     => 'authors[]',
+        'rft.atitle'  => 'title',
+        'rft.jtitle'  => 'journal',
+        'rft.date'    => 'year',
+        'rft.volume'  => 'volume',
+        'rft.issue'   => 'issue',
+        'rft.spage'   => 'start_page',
+        'rft.epage'   => 'end_page',
+        'rft.aufirst' => 'first_author[first_name]',
+        'rft.aulast'  => 'first_author[last_name]',
+        'rft.au'      => 'authors[]',
     }
 
     def extract_info(result)
@@ -40,7 +42,7 @@ module Resolvers
     end
 
     def self.extract_info(result)
-      return nil unless result['match']
+      return nil # unless result['match']
 
       info = {
           source: :crossref,

@@ -51,16 +51,18 @@ module Resolvers
     private
 
     DOI_KEY_MAP = {
-        'doi'        => 'journal_article doi_data doi',
-        'journal'    => 'journal_metadata full_title',
-        'issn'       => 'journal_metadata issn[media_type=print]',
-        'title'      => 'journal_article titles title',
-        'year'       => 'journal_issue publication_date year',
-        'volume'     => 'journal_issue journal_volume volume',
-        'issue'      => 'journal_issue issue',
-        'start_page' => 'journal_article pages first_page',
-        'end_page'   => 'journal_article pages last_page',
-        'authors[]'  => 'journal_article contributors person_name[contributor_role=author]',
+        'doi'                         => 'journal_article doi_data doi',
+        'journal'                     => 'journal_metadata full_title',
+        'issn'                        => 'journal_metadata issn[media_type=print]',
+        'title'                       => 'journal_article titles title',
+        'year'                        => 'journal_issue publication_date year',
+        'volume'                      => 'journal_issue journal_volume volume',
+        'issue'                       => 'journal_issue issue',
+        'start_page'                  => 'journal_article pages first_page',
+        'end_page'                    => 'journal_article pages last_page',
+        'first_author[first_name]'    => 'journal_article contributors person_name[contributor_role=author][sequence=first] given_name',
+        'first_author[last_name]'     => 'journal_article contributors person_name[contributor_role=author][sequence=first] surname',
+        'authors[]'                   => 'journal_article contributors person_name[contributor_role=author]',
     }
 
     def extract_info(result)
