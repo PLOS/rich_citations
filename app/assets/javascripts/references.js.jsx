@@ -291,7 +291,7 @@ var Sorter = React.createClass({
     }
 });
 
-var ReferencePopup = React.createClass({
+var ReferencePopover = React.createClass({
     getInitialState: function() {
         return {};
     },
@@ -361,7 +361,6 @@ var ReferencesApp = React.createClass({
     }
 });
 
-
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -388,16 +387,29 @@ $(document).ready(function () {
 
         /* set up popover references */
         $(document).ready(function() {
+            var groups = data.groups;
+            var groupCounter = 0;
             var popoverCounter = 1;
             $(citationSelector).each(function() {
-                var refid = $(this).attr('href').substring(1);
-                var elementid = 'popup' + popoverCounter;
+                var referenceIds = groups[groupCounter].references;
+                if (referenceIds.length === 1) {
+                    groupCounter = groupCounter + 1;
+                } else {
+                    /* citation group */
+                    var refid = $(this).attr('href').substring(1);
+                    if (refid == referenceIds[referenceIds.length-1]) {
+                        /* at the last reference in the group, increment */
+                        groupCounter = groupCounter + 1;
+                    }
+                }
+                var elementid = 'popover' + popoverCounter;
                 var selector = '#' + elementid;
                 $(this).qtip({
                     content: {
                         text: function(event, api) {
+                            var references = _.map(referenceIds, function(id) { return data.references[id]; });
                             setTimeout(function (){
-                                React.renderComponent(<ReferencePopup references={ [references[refid]] } qtip={ api } />,
+                                React.renderComponent(<ReferencePopover references={ references } qtip={ api } />,
                                                       $(selector).get(0));
                             }.bind(this), 1);
                             return "<div id='" + elementid + "'>Loading...</div>";
