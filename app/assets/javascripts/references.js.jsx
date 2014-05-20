@@ -32,15 +32,15 @@ function getReferenceId (el) {
  */
 function buildReferenceData(json, elements) {
     var retval = {};
-    $.each(json['references'], function (ignore, v) {
-        retval[v.id] = v;
+    $.each(json.references, function (k, v) {
+        retval[k] = v;
         // id lookup not working?
         var selector = "[name='" + v.id + "']";
         var html = $(selector).parent().first().remove("span.label").html();
         // cannot get this to work properly in jquery
         html = html.replace(/<span class="label">[^<]+<\/span>/, '');
-        retval[v.id]['html'] = html;
-        retval[v.id]['text'] = $(selector).parent().first().text();
+        retval[k]['html'] = html;
+        retval[k]['text'] = $(selector).parent().first().text();
     });
 
     var i = 0;
