@@ -13,13 +13,17 @@ describe Processors::CitationGroupContext do
   end
 
   it "should provide the correct text for a group with multiple references context" do
-    body "Some text #{cite(1)}, #{cite(3)} - #{cite(5)} More text"
+    body "  Some text #{cite(1)}, #{cite(3)} - #{cite(5)} More text  "
     expect(result[:groups][0][:context]).to eq('Some text [1], [3] - [5] More text')
   end
 
   it "should truncate ellipses" do
-    body "A lot of very long text before the citation #{cite(1)} and then more very long text after the citation."
-    expect(result[:groups][0][:context]).to eq("\u2026text before the citation [1] and then more very long text\u2026")
+    before = (1..25).to_a.reverse.join(" ")
+    after  = (1..15).to_a.join(" ")
+    body "#{before} #{cite(1)} #{after}."
+    expected_before = (1..20).to_a.reverse.join(" ")
+    expected_after  = (1..10).to_a.join(" ")
+    expect(result[:groups][0][:context]).to eq("\u2026#{expected_before} [1] #{expected_after}\u2026")
   end
 
   it "should be limited to the nearest section" do

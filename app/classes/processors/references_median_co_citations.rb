@@ -5,7 +5,7 @@ module Processors
     include Helpers
 
     def process
-      references.each do |_, info|
+      references.each do |id, info|
         info[:median_co_citations] = median_co_citations(info)
       end
     end

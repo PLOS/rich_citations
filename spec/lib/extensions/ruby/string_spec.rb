@@ -50,4 +50,60 @@ describe String do
 
   end
 
+  describe "#word_truncate" do
+
+    it "should truncate" do
+      expect('Hello Big World!'.word_truncate(1)).to eq('Hello...')
+      expect('Hello Big World!'.word_truncate(2)).to eq('Hello Big...')
+    end
+
+    it "should not truncate if there are fewer words than requested" do
+      expect('Hello Big World!'.word_truncate(3)).to eq('Hello Big World!')
+      expect('Hello Big World!'.word_truncate(4)).to eq('Hello Big World!')
+    end
+
+    it "should not truncate if there is trailing whitespace" do
+      expect('Hello Big World! '.word_truncate(3)).to eq('Hello Big World!')
+      expect('Hello Big World! '.word_truncate(4)).to eq('Hello Big World!')
+    end
+
+    it "should not count beginning whitespace" do
+      expect('  Hello Big World!'.word_truncate(2)).to eq('  Hello Big...')
+      expect('  Hello Big World!'.word_truncate(3)).to eq('  Hello Big World!')
+    end
+
+    it "should accept an omission string" do
+      expect('Hello Big World!'.word_truncate(2, '[...]')).to eq('Hello Big[...]')
+    end
+
+  end
+
+  describe "#word_truncate_beginning" do
+
+    it "should truncate" do
+      expect('Hello Big World!'.word_truncate_beginning(1)).to eq('...World!')
+      expect('Hello Big World!'.word_truncate_beginning(2)).to eq('...Big World!')
+    end
+
+    it "should not truncate if there are fewer words than requested" do
+      expect('Hello Big World!'.word_truncate_beginning(3)).to eq('Hello Big World!')
+      expect('Hello Big World!'.word_truncate_beginning(4)).to eq('Hello Big World!')
+    end
+
+    it "should not truncate if there is beginning whitespace" do
+      expect(' Hello Big World!'.word_truncate_beginning(3)).to eq('Hello Big World!')
+      expect(' Hello Big World!'.word_truncate_beginning(4)).to eq('Hello Big World!')
+    end
+
+    it "should not count ending whitespace" do
+      expect('Hello Big World!  '.word_truncate_beginning(2)).to eq('...Big World!  ')
+      expect('Hello Big World!  '.word_truncate_beginning(3)).to eq('Hello Big World!  ')
+    end
+
+    it "should accept an omission string" do
+      expect('Hello Big World!'.word_truncate_beginning(2, '[...]')).to eq('[...]Big World!')
+    end
+
+  end
+
 end

@@ -15,7 +15,7 @@ xml = Plos::Api.document( DOI )
 # r = xml.css('body')
 # puts r.to_xml; exit
 
-info = PaperParser.parse(xml)
+info = PaperParser.parse_xml(xml)
 
 if info
   pp info

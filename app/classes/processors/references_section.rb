@@ -5,8 +5,8 @@ module Processors
     include Helpers
 
     def process
-      references.each do |num, info|
-        add_sections_for_reference(num, info)
+      references.each do |id, info|
+        add_sections_for_reference(id, info)
       end
     end
 
@@ -16,9 +16,9 @@ module Processors
 
     protected
 
-    def add_sections_for_reference(num, ref)
+    def add_sections_for_reference(id, ref)
       citation_groups.each do |group|
-        add_section(ref, group) if num.in?(group[:references])
+        add_section(ref, group) if id.in?(group[:references])
       end
     end
 

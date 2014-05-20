@@ -11,18 +11,12 @@ module Processors::Helpers
     @references ||= result[:references]
   end
 
-  def reference_by_number(num)
-    references[num]
+  def reference_by_id(id)
+    references[id]
   end
 
-  def reference_by_id(refid)
-    references.find { |index, ref| ref[:id] == refid }.second
-  end
-
-  def reference_for_citation_node(node)
-    # Find the reference number for an XREF node
-    refid = node['rid']
-    references.find { |index, ref| ref[:id] == refid } || warn("There was an error getting the reference for #{refid}") || 0
+  def reference_by_index(index)
+    references.find { |id, ref| ref[:index] == index }.second
   end
 
   def citation_groups

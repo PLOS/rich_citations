@@ -2,13 +2,13 @@ module Processors
   class SelfCitations < Base
 
     def process
-      result[:references].each do |index, ref|
+      result[:references].each do |id, ref|
         ref[:self_citations] = self_citations_for( ref[:info] )
       end
     end
 
     def self.dependencies
-      [Authors, References]
+      [Authors, ReferencesInfo]
     end
 
     protected
@@ -22,7 +22,7 @@ module Processors
         "#{cited[:fullname]} [#{reason}]" if reason
       end.compact
 
-      self_citations.present? ? self_citations : nil
+      self_citations.presence
     end
 
     def is_self_citation?(cited, citing)

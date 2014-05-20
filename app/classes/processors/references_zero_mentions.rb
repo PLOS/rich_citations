@@ -5,7 +5,7 @@ module Processors
     include Helpers
 
     def process
-      references.each do |_, info|
+      references.each do |id, info|
         info[:zero_mentions] = has_zero_mentions(info)
       end
     end

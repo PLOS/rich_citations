@@ -25,11 +25,15 @@ module Processors
     ####################################################do
     # Callbacks for CitationGrouper
 
-    #@mro rewrite to
-    # Find the reference number for an XREF node
-    def reference_number(xref_node)
-      index, ref = reference_for_citation_node(xref_node)
-      index
+    def index_for_citation_node(xref_node)
+      refid = xref_node['rid']
+      ref   = reference_by_id(refid)
+      ref && ref[:index]
+    end
+
+    def reference_id_for_index(index)
+      ref = reference_by_index(index)
+      ref && ref[:id]
     end
 
     protected

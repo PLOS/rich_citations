@@ -14,7 +14,7 @@ class PaperDatabase
       Rails.logger.info("Fetching #{doi} ...")
       xml = Plos::Api.document( doi )
       Rails.logger.info("Parsing #{doi} ...")
-      info= PaperParser.parse(xml)
+      info= PaperParser.parse_xml(xml)
       database.add_paper(doi, info)
     end
 
@@ -69,23 +69,23 @@ class PaperDatabase
   def add_references(citing_doi, paper_info, all_references)
     @results[:citations] ||= {}
 
-    all_references.each do |cited_num, cited_ref|
-      cited_num = cited_num.to_s.to_i
+    all_references.each do |cited_id, cited_ref|
+      cited_id  = cited_id.to_s
       cited_doi = cited_ref[:doi]
       next unless cited_doi
 
-      add_reference(all_references, cited_doi, cited_num, cited_ref, citing_doi, paper_info)
+      add_reference(all_references, cited_doi, cited_id, cited_ref, citing_doi, paper_info)
     end
 
     @recalculate = true
   end
 
-  def add_reference(all_references, cited_doi, cited_num, cited_ref, citing_doi, paper_info)
+  def add_reference(all_references, cited_doi, cited_id, cited_ref, citing_doi, paper_info)
     cited_info                        = cited_doi_info(cited_doi)
 
     # cited_info[:id]                 ||= id
     cited_info[:citations]            += 1
-    cited_info[:info]                  =  cited_ref[:info] unless cited_info[:info]
+    cited_info[:info]                  = cited_ref[:info] unless cited_info[:info]
     cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
 
     citing_info                            = new_citing_info(cited_ref)
@@ -99,7 +99,7 @@ class PaperDatabase
 
     groups = cited_ref[:citation_groups]
     if groups.present?
-      add_co_citation_counts(cited_num, groups, cited_info, all_references)
+      add_co_citation_counts(cited_id, groups, cited_info, all_references)
       add_section_summaries(groups, cited_info)
 
       add_citing_groups(groups, citing_info, paper_info)
@@ -157,16 +157,16 @@ class PaperDatabase
     end
   end
 
-  def add_co_citation_counts(cited_num, groups, cited_info, all_references)
+  def add_co_citation_counts(cited_id, groups, cited_info, all_references)
     co_citation_counts = cited_info[:co_citation_counts]
 
     groups.each do |group|
 
       # Aggregate co-citation counts
-      group[:references].each do |co_citation_num|
-        next if co_citation_num == cited_num
+      group[:references].each do |co_citation_id|
+        next if co_citation_id == cited_id
 
-        cc_ref = all_references[co_citation_num] || all_references[co_citation_num.to_s.to_sym]
+        cc_ref = all_references[co_citation_id] || all_references[co_citation_id.to_s.to_sym]
         co_citation_doi = cc_ref[:doi] || 'No-DOI'
         co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
       end
