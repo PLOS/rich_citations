@@ -137,7 +137,7 @@ var Reference = React.createClass({
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { selfCiteFlag }
             <a onClick={this.handleClick} href="#">Appears { ref.mentions } times in this paper.
-            { this.state.showAppearances ? "▼" : "▶" }
+            { this.state.showAppearances ? " ▼ " : " ▶ " }
             </a>
             { appearanceList }
             </div>;
