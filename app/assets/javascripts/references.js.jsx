@@ -62,8 +62,8 @@ function buildReferenceData(json, elements) {
         v['sortfields']['journal'] = mkSortString(v.info.journal);
         v['sortfields']['year'] = mkSortString(v.info.year);
         v['sortfields']['mentions'] = v.mentions;
-        // TODO: use lastname, first name when available
-        v['sortfields']['author'] = v.info.authors && mkSortString(v.info.authors[0]['fullname'] );
+        var first_author = v.info.first_author;
+        v['sortfields']['author'] = first_author && mkSortString(first_author.last_name + ", " + first_author.first_name);
     });
     return retval;
 }
