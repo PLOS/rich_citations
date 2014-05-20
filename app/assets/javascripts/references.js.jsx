@@ -43,7 +43,7 @@ function buildReferenceData(json, elements) {
         retval[k]['text'] = $(selector).parent().first().text();
     });
 
-    var i = 0;
+    var i = 1;
     $("ol.references li").each(function (el) {
         var id = getReferenceId($(this));
         retval[id]['index'] = i;
@@ -123,9 +123,9 @@ var Reference = React.createClass({
             /* not in popover */
             /* check if this is the selected anchor */
             if (isSelected) {
-                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index + 1 }</a>.</span>;
+                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
             } else {
-                label = <span className="label">{ ref.index + 1 }.</span>;
+                label = <span className="label">{ ref.index }.</span>;
             }
         }
         var className = "reference";
