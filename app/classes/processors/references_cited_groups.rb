@@ -18,7 +18,7 @@ module Processors
 
     def cited_groups(id)
       groups = citation_groups.select { |g| g[:references].include?(id) }
-      groups.present? ? groups : nil
+      groups.presence
     end
 
   end

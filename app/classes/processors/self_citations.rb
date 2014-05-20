@@ -22,7 +22,7 @@ module Processors
         "#{cited[:fullname]} [#{reason}]" if reason
       end.compact
 
-      self_citations.present? ? self_citations : nil
+      self_citations.presence
     end
 
     def is_self_citation?(cited, citing)
