@@ -119,8 +119,7 @@ var Reference = React.createClass({
         }
         var label;
         var isSelected = ($.param.fragment() === ref.id);
-        if (!this.props.qtip) {
-            /* not in popover */
+        if (this.props.showLabel) {
             /* check if this is the selected anchor */
             if (isSelected) {
                 label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
@@ -216,7 +215,7 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        return <li key={ref.id}><Reference reference={ ref } /></li>;
+        return <li key={ref.id}><Reference reference={ ref } showLabel={ true } /></li>;
     },
     renderSortedReferenceList: function (refs) {
         var sorted = refs.filter(this.sortableFilter).sort(this.sorter);
@@ -302,7 +301,7 @@ var ReferencePopover = React.createClass({
     },
     render: function() {
         var references = _.map(this.props.references, function(ref) {
-            return <Reference reference={ ref } qtip={ this.props.qtip } key={ ref.id } />;
+            return <Reference reference={ ref } qtip={ this.props.qtip } key={ ref.id } showLabel = { this.props.references.length > 1 } />;
         }.bind(this));
         return <div>{ references }</div>;
     }
