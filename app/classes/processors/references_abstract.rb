@@ -16,7 +16,8 @@ module Processors
     protected
 
     def add_abstracts(references)
-      results = fetch_abstracts(references)
+      dois    = references.map { |ref| ref[:doi] }
+      results = Plos::Api.search_dois(dois)
 
       results.each_with_index do |result, index|
         if result['abstract']
@@ -24,20 +25,6 @@ module Processors
           info[:abstract] = result['abstract'].first.strip
         end
       end
-    end
-
-    def fetch_abstracts(references)
-      dois = references.map { |ref| ref[:doi] }
-      dois = dois.map { |doi| %("#{URI.encode_www_form_component(doi)}") }
-      query = "q=id:(#{dois.join('+OR+')})"
-      url = Plos::Api::SEARCH_URL + "?rows=#{references.count}&wt=json&api_key=#{Rails.configuration.app.plos_api_key}"
-
-      response = Plos::Api.http_post(url,
-                                     query,
-                                     'Accept'       => 'application/json',
-                                     'Content-Type' => 'application/x-www-form-urlencoded')
-      json = JSON.parse(response)
-      json['response']['docs']
     end
 
   end

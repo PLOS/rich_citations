@@ -4,8 +4,7 @@ describe Processors::ReferencesAbstract do
   include Spec::ProcessorHelper
 
   it "should query the plos search API" do
-    expected_query = 'q=id:("10.1371%2F11111"+OR+"10.1371%2F33333")'
-    expect(Plos::Api).to receive(:http_post).with(anything, expected_query, anything).and_return('{"response":{"docs":[]}}')
+    expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111','10.1371/33333']).and_return([])
 
     input = { references: {
       'ref-1' => { doi:'10.1371/11111'},
@@ -16,11 +15,11 @@ describe Processors::ReferencesAbstract do
   end
 
   it "should add abstracts" do
-    json = { response: { docs: [
-      { abstract: [' abstract 1 '] },
-      { abstract: [' abstract 2 '] },
-    ] } }
-    expect(Plos::Api).to receive(:http_post).and_return( JSON.generate(json) )
+    search_results = [
+      { 'abstract' => [' abstract 1 '] },
+      { 'abstract' => [' abstract 2 '] },
+    ]
+    expect(Plos::Api).to receive(:search_dois).and_return( search_results )
 
     input = { references: {
         'ref-1' => { doi:'10.1371/11111'},
