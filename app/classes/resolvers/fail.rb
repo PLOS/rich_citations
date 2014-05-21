@@ -4,13 +4,15 @@ module Resolvers
   class Fail < Base
 
     def resolve
-      unresolved_references.each do |index, node|
-        info = {
-            text: node.text,
-            score: nil,
-        }
-        if ! root.results[index]
-          root.set_result(index, nil, info )
+      unresolved_references.each do |id, node|
+        if ! root.results[id]
+
+          info = {
+              text:  node.text,
+              score: nil,
+          }
+
+          root.set_result(id, nil, info )
         end
       end
     end
