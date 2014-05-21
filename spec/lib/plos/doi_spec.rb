@@ -73,4 +73,42 @@ describe Plos::Doi do
 
   end
 
+  describe '#prefix' do
+
+    it "should extract a list of DOIs" do
+      expect( Plos::Doi.prefix("10.1234.5678/abcd.efgfh") ).to eq('10.1234.5678')
+    end
+
+  end
+
+  describe '#prefix' do
+
+    it "should get the doi prefix" do
+      expect( Plos::Doi.prefix("10.1234.5678/abcd.efgfh") ).to eq('10.1234.5678')
+    end
+
+    it "should return nil for a nil or empty input" do
+      expect( Plos::Doi.prefix(nil) ).to be_nil
+      expect( Plos::Doi.prefix("") ).to be_nil
+      expect( Plos::Doi.prefix("  ") ).to be_nil
+    end
+
+  end
+
+  describe '#is_plos_doi?' do
+
+    it "should return true for a Plos DOI" do
+      expect( Plos::Doi.is_plos_doi?("10.1371/abcd.efgfh") ).to eq(true)
+    end
+
+    it "should return false for a non-Plos DOI" do
+      expect( Plos::Doi.is_plos_doi?("10.13712/abcd.efgfh") ).to eq(false)
+    end
+
+    it "should return false for a nil or empty input" do
+      expect( Plos::Doi.is_plos_doi?('') ).to eq(false)
+    end
+
+  end
+
 end
