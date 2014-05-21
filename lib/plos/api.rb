@@ -23,13 +23,13 @@ module Plos
     def self.search(query, query_type:nil, rows:20, more_parameters:nil, fq:'doc_type:full AND article_type_facet:"Research Article"', output: :json)
       params = {}
 
-      query = URI.encode("\"#{query}\"")
+      query = "\"#{encode_www_form_component(query)}\""
       query = "#{query_type}:#{query}" if query_type
       params[:q] = query
 
       if more_parameters
         more_parameters.each do |k,v|
-          params[k] = URI.encode(v)
+          params[k] = URI.encode_www_form_component(v)
         end
       end
 
@@ -125,12 +125,14 @@ module Plos
     def self.parse_headers(original)
       case original
         when :xml
-          { 'Content-Type' => 'application/xml' }
+          { 'Accept' => 'application/xml' }
         when :json
-          { 'Content-Type' => 'application/json' }
+          { 'Accept' => 'application/json' }
         when :js
-          { 'Content-Type' => 'application/javascript' }
-        ekse
+          { 'Accept' => 'application/javascript' }
+        when Symbol
+          { 'Accept' => "application/#{original}" }
+        else
           original
       end
     end
