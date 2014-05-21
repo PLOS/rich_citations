@@ -5,17 +5,9 @@ module Resolvers
     API_URL = 'http://search.crossref.org/links'
 
     def resolve
-      unresolved_values = unresolved_references.values.map(&:text)
-      texts = JSON.generate( unresolved_values )
-      response = Plos::Api::http_post(API_URL, texts, :xml)
-      results = JSON.parse(response)['results']
-      root.state[:crossref_results] = results
-
-      results.each_with_index do |result, i|
-        index = unresolved_references.keys[i]
-        info  = extract_info(result)
-        root.set_result(index, :doi, info)
-      end
+      unresolved_texts = unresolved_references.map { |id, data| [id, data.text] }.to_h
+      @crossref_infos = root.state[:crossref_infos] = {}
+      unresolved_texts.each_slice(50) do |group| resolve_group(group.to_h) end
     end
 
     private
@@ -36,8 +28,27 @@ module Resolvers
         'rft.au'      => 'authors[]',
     }
 
+    def resolve_group(references)
+      texts    = JSON.generate( references.values )
+      response = Plos::Api::http_post(API_URL, texts, :xml)
+      results  = JSON.parse(response)['results']
+
+      results.each_with_index do |result, i|
+        id    = references.keys[i]
+        info  = extract_info(result)
+        next unless info
+
+        @crossref_infos[id] = info
+        root.set_result(id, :doi, info) if include_info?(info)
+
+      end
+    end
+
+    def include_info?(info)
+      info && info[:score] && info[:score] >= MIN_CROSSREF_SCORE
+    end
+
     def extract_info(result)
-      return nil unless result['score'].to_f >= MIN_CROSSREF_SCORE
       self.class.extract_info(result)
     end
 
