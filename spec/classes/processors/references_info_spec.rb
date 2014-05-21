@@ -18,4 +18,20 @@ describe Processors::ReferencesInfo do
     expect(result[:references]['ref-1'][:doi]).to eq('10.12345/12345')
   end
 
+  it "should remove nil info entries during cleanup" do
+    cleanup( { references: {
+        ref1: { info: { a:1, b:nil, c:3} }
+    } } )
+
+    expect(result[:references][:ref1]).to eq( info: { a:1, c:3 } )
+  end
+
+  it "should remove nil info during cleanup" do
+    cleanup( { references: {
+        ref1: { a:1, info: { b:nil} }
+    } } )
+
+    expect(result[:references][:ref1]).to eq( { a:1 } )
+  end
+
 end
