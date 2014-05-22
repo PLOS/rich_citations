@@ -27,6 +27,26 @@ function getReferenceId (el) {
     return $("a:first", el).attr('id');
 }
 
+/**
+ * Generate random UUID that can be use as an id for generated nodes.
+ */
+function guid() {
+    function s4() {
+        return Math.floor((1 + Math.random()) * 0x10000)
+            .toString(16)
+            .substring(1);
+    }
+    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+        s4() + '-' + s4() + s4() + s4();
+}
+
+/**
+ * Create a quoted selector for a given id.
+ */
+function jq(myid) {
+    return "#" + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
+}
+
 /** 
  * Merge citation reference li elements and JSON data.
  */
