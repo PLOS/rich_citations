@@ -10,8 +10,8 @@ var doi_local_part = doi.match(/^10.1371\/journal\.(.*)$/)[1];
 
 var citationSelector = "a[href^='#" + doi_local_part + "']";
 var citationFilter = function (el) {
-    /* need to filter out figures, etc. */
-    return $(this).attr("href").match('^#' + doi_local_part + '-[A-Z].*$');
+    /* need to filter out figures */
+    return !$(this).attr("href").match('^#' + doi_local_part + '-g[0-9][0-9][0-9]$');
 };
 
 var idx = lunr(function () {
