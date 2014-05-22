@@ -273,14 +273,18 @@ var SortedReferencesList = React.createClass({
 
         this.updateHighlighting();
 
-        var unsortableLink, unsortableHeader;
+        var unsortableLink, unsortableHeader, noResults;
         if (unsorted.length > 0) {
             unsortableLink = <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p>;
             unsortableHeader = <h5 id="unsortable">Unsortable</h5>;
         }
+        if (refs.length === 0) {
+            noResults = <div>No results found.</div>;
+        }
         return <div>
             { unsortableLink }
             { this.renderSortedReferenceList(refs) }
+            { noResults }
             { unsortableHeader }
             <ol className="references">{ unsorted.map(this.renderReferenceItem) }</ol>
             </div>;
