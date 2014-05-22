@@ -119,16 +119,6 @@ var Reference = React.createClass({
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
     },
-    /**
-     * Return a function to jump to the nth (0-index) appearance of a citation.
-     */
-    mkSelectAppearanceFunction: function (refId, n) {
-        return function () {
-            var targetSelector = "a[href='#" + refId + "']";
-            $(document).scrollTop( $($(targetSelector)[n]).offset().top);
-            return false;
-        };
-    },
     render: function () {
         var ref = this.props.reference;
         var selfCiteFlag = null;
