@@ -70,10 +70,19 @@ function buildReferenceData(json, elements) {
         i = i + 1;
     });
 
+    /* custom pipeline with more limited stop words & no stemming for sorting*/
+    var pipeline = new lunr.Pipeline();
+    pipeline.add(
+        lunr.trimmer,
+        function (token) {
+            if (["the","a","an"].indexOf(token) === -1) return token;
+        }
+    );
+    
     /* make fields for sorting */
     function mkSortString(s) {
         if (!s) { return null; }
-        else { return idx.pipeline.run(lunr.tokenizer(s)).join(" "); }
+        else { return pipeline.run(lunr.tokenizer(s)).join(" "); }
     }
     $.each(retval, function (ignore, v) {
         v['sortfields'] = {};
