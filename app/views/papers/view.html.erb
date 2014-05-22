@@ -1,5 +1,6 @@
+<% title = @xml.xpath("//article-meta/title-group/article-title").text().strip() %>
 <% content_for :title do %>
-  <%= @paper.info[:title] %>
+  <%= title %>
 <% end %>
 <div id="page-wrap">
   <div id="pagebdy-wrap">
@@ -19,7 +20,7 @@
             </span>
           </div>
           <h1 property="dc:title" datatype="" rel="dc:type" href="http://purl.org/dc/dcmitype/Text">
-            <%= @paper.info[:title] %>
+            <%= title %>
           </h1>
           <ul class="authors">
             <% @xml.xpath("//article-meta/contrib-group/contrib[@contrib-type='author']").each do |author_node| %>
