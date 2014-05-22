@@ -14,6 +14,9 @@ var citationFilter = function (el) {
     return !$(this).attr("href").match('^#' + doi_local_part + '-g[0-9][0-9][0-9]$');
 };
 
+/* hash for looking up ids of citation in the documents */
+var citationAnchorIds = {};
+
 var idx = lunr(function () {
     this.field('title', { boost: 10 });
     this.field('body');
@@ -144,7 +147,7 @@ var Reference = React.createClass({
             appearanceList = _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     return <p key={ "mention" + mention.word_position } >
-                        <a href={ "#citation_" + ref.id + "_" + mention.index } >{ mention.context }</a>
+                        <a href={ "#" + citationAnchorIds[ref.id][mention.index] } >{ mention.context }</a>
                         </p>;
                 }.bind(this));
                 return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
@@ -463,6 +466,17 @@ function mkReferencePopover(id, references) {
     });
 }
 
+/**
+ * append a value to our hash keeping track of the anchor id of
+ * citations to a given reference 
+ */
+function pushCitationAnchorId(refId, citationId) {
+    if (citationAnchorIds[refId] === undefined) {
+        citationAnchorIds[refId] = [];
+    }
+    citationAnchorIds[refId].push(citationId);
+}
+
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -479,44 +493,58 @@ $(document).ready(function () {
             $("ol.references").get(0)
         );
 
-        /* set up anchors for each of the in-text citations 
-         of the form: citation_id_n */
-        _.each(references, function (reference, id) {
-            $("a[href='#" + id + "']").each(function (n) {
-                $(this).attr("id", 'citation_' + id + '_' + n);
-            });
-        });
-
         /* set up popover references */
         $(document).ready(function() {
             var groups = data.groups;
             var groupCounter = 0;
+            /* track the citations encountered in a multi-citation
+             group, so that we add those elided */
+            var citationsEncountered = null;
+            /* track the starting citation id */
             var startId;
             $(citationSelector).filter(citationFilter).each(function() {
+                /* give this a unique id */
+                var citationId = guid();
+                $(this).attr("id", citationId);
                 /* the list of reference id for the current citation group */
                 var currentGroupRefIds = groups[groupCounter].references;
                 /* the id of the current reference */
                 var refId = $(this).attr('href').substring(1);
-                /* the id of the current in-text citation */
-                var citationId = $(this).attr('id');
                 if (currentGroupRefIds.length === 1) {
+                    pushCitationAnchorId(refId, citationId);
                     groupCounter = groupCounter + 1;
                     mkReferencePopover(citationId, [data.references[refId]]);
                 } else {
                     /* in a multi-citation group */
-                    if (refId === currentGroupRefIds[0]) {
+                    if (citationsEncountered === null) {
                         /* first */
+                        citationsEncountered = [refId];
                         startId = citationId;
+                        pushCitationAnchorId(refId, citationId);
                     } else if (refId === currentGroupRefIds[currentGroupRefIds.length-1]) {
                         /* last */
+                        citationsEncountered.push(refId);
+                        pushCitationAnchorId(refId, citationId);
+                        /* add targets for elided references */
+                        var elidedReferences = _.filter(currentGroupRefIds, function (id) {
+                            return (citationsEncountered.indexOf(id) == -1);
+                        });
+                        _.each(elidedReferences, function (refId) {
+                            var anchorId = guid();
+                            pushCitationAnchorId(refId, anchorId);
+                            $("<a id='" + anchorId + "'/>").insertAfter(jq(startId));
+                        });
                         groupCounter = groupCounter + 1;
                         var spanId = guid();
                         var references = _.map(currentGroupRefIds, function(id) { return data.references[id]; });
                         wrapSpan(startId, citationId, spanId);
                         mkReferencePopover(spanId, references);
+                        citationsEncountered = null;
                     } else {
-                        /* in the middle, do nothing */
-                   } 
+                        /* in the middle */
+                        citationsEncountered.push(refId);
+                        pushCitationAnchorId(refId, citationId);
+                   }
                 }
             });
         });
