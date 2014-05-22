@@ -9,8 +9,9 @@ DOI='10.1371/journal.pbio.0050222xxx'
 DOI='10.1371/journal.pone.0032408' # The Paper from Hell
 DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pone.0047692'
+DOI='10.1371/journal.pone.0098172'
 
-xml = Plos::Api.document( DOI )
+xml = r = Plos::Api.document( DOI )
 # r = xml.css('ref-list')
 # r = xml.css('body')
 # puts r.to_xml; exit

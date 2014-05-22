@@ -12,6 +12,14 @@ module Processors
 
     end
 
+    def cleanup
+      references.each do |id, ref|
+        info = ref[:info]
+        info.compact! if info
+        ref.delete(:info) if info.blank?
+      end
+    end
+
     def self.dependencies
       References
     end

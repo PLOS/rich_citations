@@ -2,7 +2,7 @@ class ReferenceResolver
 
   attr_reader :references
   attr_reader :results
-  attr_reader :unresolved_indexes
+  attr_reader :unresolved_ids
   attr_reader :state
 
   def self.resolve(references)
@@ -11,7 +11,7 @@ class ReferenceResolver
 
   def initialize(references)
     @references = create_references_hash(references)
-    @unresolved_indexes = @references.keys
+    @unresolved_ids = @references.keys
 
     @state = {}
   end
@@ -27,21 +27,21 @@ class ReferenceResolver
   end
 
   # key is hte name of the main/unique key
-  def set_result(index, key, info)
+  def set_result(id, key, info)
     return unless info
 
     info[:score] = Resolvers::CrossRef::MIN_CROSSREF_SCORE unless info.has_key?(:score)
     hash_author_names(info)
-    # info[:text] = references[index][:text]
+    # info[:text] = references[id][:text]
 
-    unresolved_indexes.delete(index)
-    results[index] = info.compact
+    unresolved_ids.delete(id)
+    results[id] = info.compact
 
-    # [#69951266] flag_duplicates_for_more_resolving(key, index, info[key])
+    # [#69951266] flag_duplicates_for_more_resolving(key, id, info[key])
   end
 
   def unresolved_references
-    references.slice(*unresolved_indexes)
+    references.slice(*unresolved_ids)
   end
 
   private
@@ -50,19 +50,19 @@ class ReferenceResolver
     self.class.resolvers.each { |resolver| resolver.resolve(self) }
   end
 
-  def flag_duplicates_for_more_resolving(key, current_index, value)
+  def flag_duplicates_for_more_resolving(key, current_id, value)
     return false unless key && value
 
     found = false
-    results.each do |index, result|
-      if index != current_index && result && result[key] && result[key].casecmp(value)==0
+    results.each do |id, result|
+      if id != current_id && result && result[key] && result[key].casecmp(value)==0
         found = true
-        unresolved_indexes << index
+        unresolved_ids << id
       end
     end
 
     if found
-      unresolved_indexes << current_index
+      unresolved_ids << current_id
     end
   end
 
@@ -73,11 +73,11 @@ class ReferenceResolver
   def fixup_duplicates_for_key(key)
     duplicates = find_duplicates_for_key(key)
 
-    duplicates.each do |_, duplicate_indexes|
-      best_index = best_result_index(duplicate_indexes)
+    duplicates.each do |_, duplicate_ids|
+      best_id = best_result_id(duplicate_ids)
 
-      duplicate_indexes.each do |index|
-        mark_as_duplicate(key, index, best_index) if index != best_index
+      duplicate_ids.each do |id|
+        mark_as_duplicate(key, id, best_id) if id != best_id
       end
 
     end
@@ -95,38 +95,38 @@ class ReferenceResolver
     end
   end
 
-  def mark_as_duplicate(key, index, duplicate_of)
-    result = results[index]
+  def mark_as_duplicate(key, id, duplicate_of)
+    result = results[id]
     result[:duplicate_of] = duplicate_of
     result["_#{key}".to_sym] = result[key]
     result.delete(key)
   end
 
-  def best_result_index(indexes)
-    indexes.max_by { |index| results[index][:score] }
+  def best_result_id(ids)
+    ids.max_by { |id| results[id][:score] }
   end
 
   def find_duplicates_for_key(key)
-    groups = results.group_by{|index, result| result[key] && result[key].downcase }
+    groups = results.group_by{|id, result| result[key] && result[key].downcase }
     groups.delete(nil)
     # Only keep those with duplicate
     groups.keep_if { |v, results| results.length > 1 }
-    # Just keep the indexes
+    # Just keep the ids
     groups = groups.map { |value, results| [value, results.map(&:first) ] }.to_h
   end
 
   def create_references_hash(references)
-    references.map do |index, node|
-      [index,
+    references.map.with_index do | (id, node), i|
+      [id,
        Hashie::Mash.new(
            node: node,
-           text: normalized_node_text(index, node)
+           text: normalized_node_text(node, i+1)
        )
       ]
     end.to_h
   end
 
-  def normalized_node_text(index, node)
+  def normalized_node_text(node, index)
     clean_text = XmlUtilities.spaced_text(node)
     remove_index_from_text(index, clean_text)
   end

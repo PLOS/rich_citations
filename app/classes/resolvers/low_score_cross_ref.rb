@@ -4,24 +4,15 @@ module Resolvers
   class LowScoreCrossRef < Base
 
     def resolve
-      unresolved_indexes = root.unresolved_indexes
-      results = root.state[:crossref_results]
+      unresolved_ids = root.unresolved_ids
+      crossref_infos = root.state[:crossref_infos]
 
-      results.each_with_index do |result, i|
-        index = i + 1 # This assumes that the CrossRefResolver was first and indexes match
-        if ! root.results[index]
-          info  = extract_info(result)
-          root.set_result(index, :doi, info)
+      crossref_infos.each do |id, info|
+        if ! root.results[id]
+          info[:source] = :crossref_lowscore
+          root.set_result(id, :doi, info)
         end
       end
-    end
-
-    private
-
-    def extract_info(result)
-      result = Resolvers::CrossRef.extract_info(result)
-      result[:source] = :crossref_lowscore if result
-      result
     end
 
   end

@@ -4,9 +4,9 @@ module Resolvers
     API_URL = 'http://doi.crossref.org/servlet/query'
 
     def resolve
-      unresolved_dois = unresolved_references.map{ |index, node|
+      unresolved_dois = unresolved_references.map{ |id, node|
         doi = Plos::Doi.extract(node.text)
-        [index, doi] if doi
+        [id, doi] if doi
       }.compact.to_h
       return if unresolved_dois.empty?
 
@@ -20,9 +20,9 @@ module Resolvers
       results = Nokogiri::XML(response).css('doi_records doi_record')
 
       results.each_with_index do |result, i|
-        index = unresolved_dois.keys[i]
+        id    = unresolved_dois.keys[i]
         info  = extract_info(result)
-        root.set_result(index, :doi, info)
+        root.set_result(id, :doi, info)
       end
     end
     private

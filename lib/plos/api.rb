@@ -23,17 +23,17 @@ module Plos
     def self.search(query, query_type:nil, rows:20, more_parameters:nil, fq:'doc_type:full AND article_type_facet:"Research Article"', output: :json)
       params = {}
 
-      query = URI.encode("\"#{query}\"")
+      query = URI.encode_www_form_component("\"#{query}\"")
       query = "#{query_type}:#{query}" if query_type
       params[:q] = query
 
       if more_parameters
         more_parameters.each do |k,v|
-          params[k] = URI.encode(v)
+          params[k] = URI.encode_www_form_component(v)
         end
       end
 
-      params[:fq]      = URI.encode(fq) if fq
+      params[:fq]      = URI.encode_www_form_component(fq) if fq
       params[:wt]      = output
       params[:rows]    = rows
       params[:api_key] = Rails.configuration.app.plos_api_key
@@ -41,6 +41,20 @@ module Plos
       query_string = params.map{ |k,v| "#{k}=#{v}"}.join('&')
       url = SEARCH_URL + '?'+query_string
       response = http_get(url, output)
+      json = JSON.parse(response)
+      json['response']['docs']
+    end
+
+    def self.search_dois(dois)
+      dois = dois.map { |doi| %("#{URI.encode_www_form_component(doi)}") }
+      query = "q=id:(#{dois.join('+OR+')})"
+      url = SEARCH_URL + "?rows=#{dois.count}&wt=json&api_key=#{Rails.configuration.app.plos_api_key}"
+
+      response = http_post(url,
+                           query,
+                           'Accept'       => 'application/json',
+                           'Content-Type' => 'application/x-www-form-urlencoded')
+
       json = JSON.parse(response)
       json['response']['docs']
     end
@@ -127,12 +141,14 @@ module Plos
     def self.parse_headers(original)
       case original
         when :xml
-          { 'Content-Type' => 'application/xml' }
+          { 'Accept' => 'application/xml' }
         when :json
-          { 'Content-Type' => 'application/json' }
+          { 'Accept' => 'application/json' }
         when :js
-          { 'Content-Type' => 'application/javascript' }
-        ekse
+          { 'Accept' => 'application/javascript' }
+        when Symbol
+          { 'Accept' => "application/#{original}" }
+        else
           original
       end
     end
