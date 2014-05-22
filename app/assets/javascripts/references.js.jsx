@@ -207,7 +207,9 @@ var SortedReferencesList = React.createClass({
         /* after rendering, highlight filtered text */
         if (this.props.filterText) {
             setTimeout(function () {
-                _.each(idx.pipeline.run(lunr.tokenizer(this.props.filterText)), function (s) {
+                var tokens = lunr.tokenizer(this.props.filterText);
+                /* highlight raw tokens & stemmed */
+                _.each($.unique(tokens.concat(idx.pipeline.run(tokens))), function (s) {
                     $("ol.references").highlight(s);
                 });
             }.bind(this), 1);
