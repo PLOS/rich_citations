@@ -13,26 +13,6 @@ var idx = lunr(function () {
     this.field('body');
 });
 
-/**
- * Generate random UUID that can be use as an id for generated nodes.
- */
-function guid() {
-  function s4() {
-    return Math.floor((1 + Math.random()) * 0x10000)
-               .toString(16)
-               .substring(1);
-  }
-    return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
-        s4() + '-' + s4() + s4() + s4();
-}
-
-/**
- * Create a quoted selector for a given id.
- */
-function jq(myid) {
-    return "#" + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
-}
-
 function buildIndex(references) {
     for (var id in references) {
         var ref = references[id];
@@ -385,67 +365,6 @@ var ReferencesApp = React.createClass({
     }
 });
 
-/**
- * Function that wraps nodes between startId and endId in a span with
- * a given id.
- */
-function wrapSpan(startId, endId, spanId) {
-    if (startId === endId) {
-        $(jq(startId)).wrapAll("<span id='" + popoverSpanId + "'/>");
-    } else {
-        var startSelector = jq(startId);
-        var endSelector = jq(endId);
-        $(startSelector).parent().children().each(function(){
-            var set = $();
-            var nxt = this;
-            var inSpan = false;
-            while(nxt) {
-                if (!inSpan) {
-                    if ($(nxt).is(startSelector)) {
-                        set.push(nxt);
-                        inSpan = true;
-                    }
-                } else {
-                    set.push(nxt);
-                    if ($(nxt).is(endSelector)) {
-                        break;
-                    }
-                }
-                nxt = nxt.nextSibling;
-            }
-            set.wrapAll("<span id='" + spanId + "'/>");
-        });
-    }
-}
-
-/**
- * Attach a popover to an element with a given ID containing
- * references.
- */
-function mkReferencePopover(id, references) {
-    var popoverId = guid();
-    $(jq(id)).qtip({
-        content: {
-            text: function(event, api) {
-                setTimeout(function (){
-                    React.renderComponent(<ReferencePopover references={ references } qtip={ api } />,
-                                          $(jq(popoverId)).get(0));
-                }.bind(this), 1);
-                return "<div id='" + popoverId + "'>Loading...</div>";
-            }
-        },
-        hide: {
-            fixed: true,
-            delay: 1000
-        },
-        position: {
-            target: 'mouse', // Track the mouse as the positioning target
-            adjust: { x: 5, y: 5 } // Offset it slightly from under the mouse
-        },
-        style: 'qtip-wiki'
-    });
-}
-
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -474,33 +393,40 @@ $(document).ready(function () {
         $(document).ready(function() {
             var groups = data.groups;
             var groupCounter = 0;
-            var startId;
+            var popoverCounter = 1;
             $(citationSelector).each(function() {
-                /* the list of reference id for the current citation group */
-                var currentGroupRefIds = groups[groupCounter].references;
-                /* the id of the current reference */
-                var refId = $(this).attr('href').substring(1);
-                /* the id of the current in-text citation */
-                var citationId = $(this).attr('id');
-                if (currentGroupRefIds.length === 1) {
+                var referenceIds = groups[groupCounter].references;
+                if (referenceIds.length === 1) {
                     groupCounter = groupCounter + 1;
-                    mkReferencePopover(citationId, [data.references[refId]]);
                 } else {
-                    /* in a multi-citation group */
-                    if (refId === currentGroupRefIds[0]) {
-                        /* first */
-                        startId = citationId;
-                    } else if (refId === currentGroupRefIds[currentGroupRefIds.length-1]) {
-                        /* last */
+                    /* citation group */
+                    var refid = $(this).attr('href').substring(1);
+                    if (refid == referenceIds[referenceIds.length-1]) {
+                        /* at the last reference in the group, increment */
                         groupCounter = groupCounter + 1;
-                        var spanId = guid();
-                        var references = _.map(currentGroupRefIds, function(id) { return data.references[id]; });
-                        wrapSpan(startId, citationId, spanId);
-                        mkReferencePopover(spanId, references);
-                    } else {
-                        /* in the middle, do nothing */
-                   } 
+                    }
                 }
+                var elementid = 'popover' + popoverCounter;
+                var selector = '#' + elementid;
+                $(this).qtip({
+                    content: {
+                        text: function(event, api) {
+                            var references = _.map(referenceIds, function(id) { return data.references[id]; });
+                            setTimeout(function (){
+                                React.renderComponent(<ReferencePopover references={ references } qtip={ api } />,
+                                                      $(selector).get(0));
+                            }.bind(this), 1);
+                            return "<div id='" + elementid + "'>Loading...</div>";
+                        }
+                    },
+                    hide: {
+                        fixed: true,
+                        delay: 1000
+                    },
+                    position: { viewport: $(window) },
+                    style: 'qtip-wiki'
+                });
+                popoverCounter = popoverCounter + 1;
             });
         });
     });
