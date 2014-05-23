@@ -5,9 +5,9 @@
 var doi = $('meta[name=citation_doi]').attr("content");
 
 /* local part of the doi */
-var doi_local_part = doi.match(/^10.1371\/journal\.(.*)$/)[1];
-/* selector that can be used to match all the a elements that are citation links */
+var doi_local_part = doi && doi.match(/^10.1371\/journal\.(.*)$/)[1];
 
+/* selector that can be used to match all the a elements that are citation links */
 var citationSelector = "a[href^='#" + doi_local_part + "']";
 var citationFilter = function (el) {
     /* need to filter out figures */
