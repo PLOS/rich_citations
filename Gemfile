@@ -46,6 +46,8 @@ end
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem "teaspoon"
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 group :production do
