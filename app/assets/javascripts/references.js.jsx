@@ -14,9 +14,6 @@ var citationFilter = function (el) {
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
-/* hash for looking up ids of citation in the documents */
-var citationAnchorIds = {};
-
 var idx = lunr(function () {
     this.field('title', { boost: 10 });
     this.field('body');
@@ -137,7 +134,7 @@ var Reference = React.createClass({
             appearanceList = _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     return <p key={ "mention" + mention.word_position } >
-                        <a href={ "#" + citationAnchorIds[ref.id][mention.index] } >{ mention.context }</a>
+                        <a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a>
                         </p>;
                 }.bind(this));
                 return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
@@ -456,17 +453,6 @@ function mkReferencePopover(id, references) {
     });
 }
 
-/**
- * append a value to our hash keeping track of the anchor id of
- * citations to a given reference 
- */
-function pushCitationAnchorId(refId, citationId) {
-    if (citationAnchorIds[refId] === undefined) {
-        citationAnchorIds[refId] = [];
-    }
-    citationAnchorIds[refId].push(citationId);
-}
-
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -492,16 +478,26 @@ $(document).ready(function () {
             var citationsEncountered = null;
             /* track the starting citation id */
             var startId;
+            /* track the current count for each citation */
+            var citationCounters = {};
+            function incCitationCounter(referenceId) {
+                if (citationCounters[referenceId] === undefined) {
+                    citationCounters[referenceId] = 0;
+                } else {
+                    citationCounters[referenceId] = citationCounters[referenceId] + 1;
+                }
+            }
             $(citationSelector).filter(citationFilter).each(function() {
+                /* the id of the current reference */
+                var refId = $(this).attr('href').substring(1);
+                incCitationCounter(refId);
                 /* give this a unique id */
-                var citationId = guid();
+                var citationId = "ref_" + refId + "_" + citationCounters[refId];
+                console.log(citationId);
                 $(this).attr("id", citationId);
                 /* the list of reference id for the current citation group */
                 var currentGroupRefIds = groups[groupCounter].references;
-                /* the id of the current reference */
-                var refId = $(this).attr('href').substring(1);
                 if (currentGroupRefIds.length === 1) {
-                    pushCitationAnchorId(refId, citationId);
                     groupCounter = groupCounter + 1;
                     mkReferencePopover(citationId, [data.references[refId]]);
                 } else {
@@ -510,18 +506,16 @@ $(document).ready(function () {
                         /* first */
                         citationsEncountered = [refId];
                         startId = citationId;
-                        pushCitationAnchorId(refId, citationId);
                     } else if (refId === currentGroupRefIds[currentGroupRefIds.length-1]) {
                         /* last */
                         citationsEncountered.push(refId);
-                        pushCitationAnchorId(refId, citationId);
                         /* add targets for elided references */
                         var elidedReferences = _.filter(currentGroupRefIds, function (id) {
                             return (citationsEncountered.indexOf(id) == -1);
                         });
                         _.each(elidedReferences, function (refId) {
                             var anchorId = guid();
-                            pushCitationAnchorId(refId, anchorId);
+                            incCitationCounter(refId);
                             $("<a id='" + anchorId + "'/>").insertAfter(jq(startId));
                         });
                         groupCounter = groupCounter + 1;
@@ -533,7 +527,6 @@ $(document).ready(function () {
                     } else {
                         /* in the middle */
                         citationsEncountered.push(refId);
-                        pushCitationAnchorId(refId, citationId);
                    }
                 }
             });
