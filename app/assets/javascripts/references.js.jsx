@@ -138,9 +138,13 @@ var Reference = React.createClass({
             var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
             appearanceList = _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
-                    return <p key={ "mention" + mention.word_position } >
-                        <a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a>
-                        </p>;
+                    if (this.props.suppressMention === mention.index) {
+                        return <p key={ "mention" + mention.word_position } ><i>current location</i></p>;
+                    } else {
+                        return <p key={ "mention" + mention.word_position } >
+                            <a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a>
+                            </p>;
+                    }
                 }.bind(this));
                 return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
                     { mentions }
