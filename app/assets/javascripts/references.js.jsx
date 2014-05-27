@@ -341,6 +341,20 @@ var Sorter = React.createClass({
     }
 });
 
+var Toggle = React.createClass({
+    handleClick: function() {
+        this.props.onClick();
+        return false;
+    },
+    render: function () {
+        var toggle = "☐";
+        if (this.props.checkStatus()) {
+            toggle = "☑";
+        }
+        return <p><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
+    }
+});
+
 var ReferencePopover = React.createClass({
     getInitialState: function() {
         return {};
@@ -361,7 +375,8 @@ var ReferencePopover = React.createClass({
 var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "index", order: "asc" },
-                filterText: ''};
+                filterText: '',
+                showDuplicates: false};
     },
     componentWillMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -396,6 +411,10 @@ var ReferencesApp = React.createClass({
             return function (e) { return true; };
         }
     },
+    toggleShowDuplicates: function() {
+        this.setState({showDuplicates: !this.state.showDuplicates});
+        return false;
+    },
     render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
@@ -407,6 +426,9 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
+            <Toggle onClick={ this.toggleShowDuplicates } checkStatus={ function() { return this.state.showDuplicates; }.bind(this) }>
+            Show duplicates
+        </Toggle>
             <SortedReferencesList
               current={this.state.sort}
               references={this.props.references}
