@@ -533,9 +533,8 @@ $(document).ready(function () {
                             return (citationsEncountered.indexOf(id) == -1);
                         });
                         _.each(elidedReferences, function (refId) {
-                            var anchorId = guid();
                             incCitationCounter(refId);
-                            $("<a id='" + anchorId + "'/>").insertAfter(jq(startId));
+                            $("<a id='" + "ref_" + refId + "_" + citationCounters[refId] + "'/>").insertAfter(jq(startId));
                         });
                         groupCounter = groupCounter + 1;
                         var spanId = guid();
