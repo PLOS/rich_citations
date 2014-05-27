@@ -107,6 +107,11 @@ var Reference = React.createClass({
     getInitialState: function() {
         return { showAppearances: false };
     },
+    getDefaultProps: function() {
+        return {
+            suppressMention: null
+        };
+    },
     componentDidUpdate: function() {
         if (this.props.qtip) {
             this.props.qtip.reposition();
@@ -156,13 +161,20 @@ var Reference = React.createClass({
         if (isSelected) {
             className = className + " selected";
         }
+        var appearanceToggle;
+        var times = ref.mentions === 1 ? "time" : "times";
+        if (ref.mentions === 1 && this.props.suppressMention !== null) {
+            appearanceToggle = <span>Appears { ref.mentions} { times } in this paper.</span>;
+        } else {
+            appearanceToggle = <a onClick={this.handleClick} href="#">Appears { ref.mentions } { times }  in this paper.
+                { this.state.showAppearances ? " ▼ " : " ▶ " }
+            </a>;
+        }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { label }
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { selfCiteFlag }
-            <a onClick={this.handleClick} href="#">Appears { ref.mentions } times in this paper.
-            { this.state.showAppearances ? " ▼ " : " ▶ " }
-            </a>
+            { appearanceToggle }
             { appearanceList }
             </div>;
     }
@@ -331,8 +343,13 @@ var ReferencePopover = React.createClass({
         return {};
     },
     render: function() {
-        var references = _.map(this.props.references, function(ref) {
-            return <Reference reference={ ref } qtip={ this.props.qtip } key={ ref.id } showLabel = { this.props.references.length > 1 } />;
+        var references = _.map(_.zip(this.props.references, this.props.suppressMentions), function(d) {
+            return <Reference
+              reference={ d[0] }
+              qtip={ this.props.qtip }
+              key={ d[0].id }
+              showLabel={ this.props.references.length > 1 }
+              suppressMention={ d[1] } />;
         }.bind(this));
         return <div>{ references }</div>;
     }
@@ -433,13 +450,13 @@ function wrapSpan(startId, endId, spanId) {
  * Attach a popover to an element with a given ID containing
  * references.
  */
-function mkReferencePopover(id, references) {
+function mkReferencePopover(id, references, suppressMentions) {
     var popoverId = guid();
     $(jq(id)).qtip({
         content: {
             text: function(event, api) {
                 setTimeout(function (){
-                    React.renderComponent(<ReferencePopover references={ references } qtip={ api } />,
+                    React.renderComponent(<ReferencePopover references={ references } qtip={ api } suppressMentions={ suppressMentions }/>,
                                           $(jq(popoverId)).get(0));
                 }.bind(this), 1);
                 return "<div id='" + popoverId + "'>Loading...</div>";
@@ -493,13 +510,12 @@ $(document).ready(function () {
                 incCitationCounter(refId);
                 /* give this a unique id */
                 var citationId = "ref_" + refId + "_" + citationCounters[refId];
-                console.log(citationId);
                 $(this).attr("id", citationId);
                 /* the list of reference id for the current citation group */
                 var currentGroupRefIds = groups[groupCounter].references;
                 if (currentGroupRefIds.length === 1) {
                     groupCounter = groupCounter + 1;
-                    mkReferencePopover(citationId, [data.references[refId]]);
+                    mkReferencePopover(citationId, [data.references[refId]], [citationCounters[refId]]);
                 } else {
                     /* in a multi-citation group */
                     if (citationsEncountered === null) {
@@ -520,9 +536,10 @@ $(document).ready(function () {
                         });
                         groupCounter = groupCounter + 1;
                         var spanId = guid();
-                        var references = _.map(currentGroupRefIds, function(id) { return data.references[id]; });
                         wrapSpan(startId, citationId, spanId);
-                        mkReferencePopover(spanId, references);
+                        var references = _.map(currentGroupRefIds, function(refId) { return data.references[refId]; });
+                        var suppressMentions = _.map(currentGroupRefIds, function(refId) { return citationCounters[refId]; });
+                        mkReferencePopover(spanId, references, suppressMentions);
                         citationsEncountered = null;
                     } else {
                         /* in the middle */
