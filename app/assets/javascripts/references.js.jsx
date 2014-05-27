@@ -10,8 +10,8 @@ var doi_local_part = doi && doi.match(/^10.1371\/journal\.(.*)$/)[1];
 /* selector that can be used to match all the a elements that are citation links */
 var citationSelector = "a[href^='#" + doi_local_part + "']";
 var citationFilter = function (el) {
-    /* need to filter out figures */
-    return !$(this).attr("href").match('^#' + doi_local_part + '-g[0-9][0-9][0-9]$');
+    /* return true for refs that link to a target in the references section */
+    return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
 /* hash for looking up ids of citation in the documents */
