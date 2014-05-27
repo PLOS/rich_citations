@@ -216,15 +216,14 @@ var SortedReferencesList = React.createClass({
         };
     },
     isGrouped: function() {
-        return ["journal"].indexOf(this.props.current.by) !== -1;
+        return ["journal","index"].indexOf(this.props.current.by) !== -1;
     },
     grouper: function (ref) {
         var by = this.props.current.by;
         if (by === "journal") {
             return ref.info.journal;
         } else if (by === "index") {
-            // TODO: group when displaying repeated cites
-            return null;
+            return ref.citation_groups[0].section;
         } else {
             return null;
         }
