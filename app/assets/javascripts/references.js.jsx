@@ -68,12 +68,12 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === 'journal') {
         return info && mkSortString(info.journal);
     } else if (fieldname === 'year') {
-        return info && info.year;
+        return (info && info.year) || null;
     } else if (fieldname === 'mentions') {
         return ref.mentions;
     } else if (fieldname === 'author') {
         var first_author = info && info.first_author;
-        return first_author && mkSortString(first_author.last_name + " " + first_author.first_name);
+        return (first_author && mkSortString(first_author.last_name + " " + first_author.first_name)) || null;
     } else if (fieldname === "index") {
         return ref.index;
     } else {

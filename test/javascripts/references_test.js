@@ -1,10 +1,10 @@
 //= require jquery
 
-fixture.preload("journal.pone.0067380.html");
+fixture.preload("journal.pone.0067380.html", "journal.pone.0067380.json");
 
 module("rich citations javascript", {
   setup: function() {
-    this.fixtures = fixture.load("journal.pone.0067380.html", true);
+      this.fixtures = fixture.load("journal.pone.0067380.html", "journal.pone.0067380.json", true);
   }
 });
 
@@ -35,54 +35,8 @@ test("mkSortString", function () {
 });
 
 test("mkSortField", function () {
-    var ref =  {
-      "sections": {
-        "Discussion": 1
-      },
-      "doi": "10.1098\/rsif.2007.1189",
-      "info": {
-        "authors": [
-          {
-            "fullname": "D. Lowry"
-          },
-          {
-            "fullname": "P. J Motta"
-          }
-        ],
-        "first_author": {
-          "last_name": "Lowry",
-          "first_name": "D."
-        },
-        "end_page": "652",
-        "start_page": "641",
-        "issue": "23",
-        "volume": "5",
-        "year": "2008",
-        "journal": "Journal of The Royal Society Interface",
-        "title": "Relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny",
-        "score": 4.2480526,
-        "doi": "10.1098\/rsif.2007.1189",
-        "source": "crossref"
-      },
-      "mentions": 1,
-      "median_co_citations": 2.0,
-      "citation_groups": [
-        {
-          "word_position": 6487,
-          "section": "Discussion",
-          "context": "\u2026thresher shark's body that are sequentially involved in the tail-slapping process increase in size and length throughout a shark's ontogeny [53]\u2013[55]. Larger sharks with longer tails are likely to require\u2026",
-          "references": [
-            "pone.0067380-Mollet1",
-            "pone.0067380-LinghamSoliar1",
-            "pone.0067380-Lowry1"
-          ],
-          "count": 3
-        }
-      ],
-      "index": 55,
-      "id": "pone.0067380-Lowry1"
-    };
-    var refNoInfo = { mentions: 10, index: 1, citation_groups: [ { word_position: 83 }] };
+    var ref = this.fixtures[1].references["pone.0067380-Lowry1"];
+    var refNoInfo = this.fixtures[1].references["pone.0067380-Wahnbaeck1"];
     strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
     strictEqual(1, mkSortField(ref, "mentions"));
     strictEqual(6487, mkSortField(ref, "appearance"));

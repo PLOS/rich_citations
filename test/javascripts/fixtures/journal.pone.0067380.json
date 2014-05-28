@@ -1,0 +1,3063 @@
+{
+  "paper": {
+    "word_count": 7166,
+    "authors": [
+      {
+        "affiliation": "The Thresher Shark Research and Conservation Project, Malapascua Island, Cebu, The Philippines",
+        "email": "s.p.oliver@liverpool.ac.uk",
+        "fullname": "Simon P. Oliver"
+      },
+      {
+        "affiliation": "School of Ocean Sciences, Bangor University, Menai Bridge, Anglesey, Wales, United Kingdom",
+        "fullname": "John R. Turner"
+      },
+      {
+        "affiliation": "The Thresher Shark Research and Conservation Project, Malapascua Island, Cebu, The Philippines",
+        "fullname": "Klemens Gann"
+      },
+      {
+        "affiliation": "The Thresher Shark Research and Conservation Project, Malapascua Island, Cebu, The Philippines",
+        "fullname": "Medel Silvosa"
+      },
+      {
+        "affiliation": "School of Ocean Sciences, Bangor University, Menai Bridge, Anglesey, Wales, United Kingdom",
+        "fullname": "Tim D'Urban Jackson"
+      }
+    ]
+  },
+  "groups": [
+    {
+      "word_position": 23,
+      "section": "Introduction",
+      "context": "\u2026aggregations of prey fishes, commonly termed \u2018bait balls\u2019, attract large marine predators to areas of high productivity across the globe [1]. Killer whales, Orcinus orca, visit fjords in Norway where\u2026",
+      "references": [
+        "pone.0067380-Clua1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 43,
+      "section": "Introduction",
+      "context": "\u2026[1]. Killer whales, Orcinus orca, visit fjords in Norway where they use specialist techniques to hunt schooling herring Clupea harengus [2], [3], and dolphins are known to migrate through the central\u2026",
+      "references": [
+        "pone.0067380-Simil1",
+        "pone.0067380-Domenici1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 58,
+      "section": "Introduction",
+      "context": "\u2026hunt schooling herring Clupea harengus [2], [3], and dolphins are known to migrate through the central Azores for similar purposes [1]. The seasonal run of the sardine Sardinops sagax in\u2026",
+      "references": [
+        "pone.0067380-Clua1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 76,
+      "section": "Introduction",
+      "context": "\u2026similar purposes [1]. The seasonal run of the sardine Sardinops sagax in the nearshore waters of the South African coastline [4] has a strong influence over the abundance and distribution of\u2026",
+      "references": [
+        "pone.0067380-ODonoghue1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 100,
+      "section": "Introduction",
+      "context": "\u2026influence over the abundance and distribution of carcharhinid and lamnid sharks that go there to satisfy part of their diets [5], [6]. In this study it is shown that pelagic thresher\u2026",
+      "references": [
+        "pone.0067380-Dudley1",
+        "pone.0067380-Dudley2"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 161,
+      "section": "Introduction",
+      "context": "\u2026which comprises a scythe-like elongate tail fin, A. pelagicus are the smallest of the three recognised thresher shark (Alopiidae) species [7]. Described as cosmopolitan sharks that frequent warm and temperate\u2026",
+      "references": [
+        "pone.0067380-Compagno1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 174,
+      "section": "Introduction",
+      "context": "\u2026the three recognised thresher shark (Alopiidae) species [7]. Described as cosmopolitan sharks that frequent warm and temperate offshore waters circumglobally [8], [9], pelagic thresher sharks mature late, have low fecundity and\u2026",
+      "references": [
+        "pone.0067380-Liu1",
+        "pone.0067380-Baum1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 204,
+      "section": "Introduction",
+      "context": "\u2026and are classed as \u2018vulnerable\u2019 by the International Union for the Conservation of Nature and Natural Resources' (IUCN) Red List [10]. Since the summer of 2010, pelagic thresher sharks have\u2026",
+      "references": [
+        "pone.0067380-Wahnbaeck1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 249,
+      "section": "Introduction",
+      "context": "\u2026prey upon Indian sardines, Sardonella longiceps. Sardines are believed to constitute an important component in the diet of thresher sharks [7] (Oliver unpublished data), and it is proposed that they visit\u2026",
+      "references": [
+        "pone.0067380-Compagno1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 281,
+      "section": "Introduction",
+      "context": "Predation strategies employed by sharks are diverse and vary among species and individuals [11]\u2013[13]. Unique to their taxa, it has long been speculated\u2026",
+      "references": [
+        "pone.0067380-Bres1",
+        "pone.0067380-Motta1",
+        "pone.0067380-Heithaus1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 303,
+      "section": "Introduction",
+      "context": "\u2026to their taxa, it has long been speculated that thresher sharks use their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was\u2026",
+      "references": [
+        "pone.0067380-Allen1",
+        "pone.0067380-Breder1",
+        "pone.0067380-Stillwell1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 315,
+      "section": "Introduction",
+      "context": "\u2026their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was recently quantified [17] though descriptions of the behaviour remain vague. Under controlled conditions\u2026",
+      "references": [
+        "pone.0067380-Aalbers1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 363,
+      "section": "Introduction",
+      "context": "\u2026tethered bait using their caudal fins. Thresher sharks have also been frequently foul-hooked in the tails by fishermen longlining them [9], [18]. While it has been suggested that bigeye (Alopias supersiliosus)\u2026",
+      "references": [
+        "pone.0067380-Baum1",
+        "pone.0067380-Strasburg1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 390,
+      "section": "Introduction",
+      "context": "\u2026that bigeye (Alopias supersiliosus) and pelagic thresher sharks may employ similar methods of hunting to those described for A. vulpinus [7], [17], the kinematics that structure alopiid predatory behaviours in the\u2026",
+      "references": [
+        "pone.0067380-Compagno1",
+        "pone.0067380-Aalbers1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 433,
+      "section": "Introduction",
+      "context": "\u2026range of marine predators. Humpback and sperm whales (Megaptera novaeanglia and Physeter catodon) communicate over great distances with \u2018aerial\u2019 tail-slaps [19]\u2013[21], and a similar surface behaviour was described as an\u2026",
+      "references": [
+        "pone.0067380-Whitehead1",
+        "pone.0067380-Waters1",
+        "pone.0067380-Lema1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 460,
+      "section": "Introduction",
+      "context": "\u2026described as an agonistic threat to reduce resource competition among white sharks (Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by\u2026",
+      "references": [
+        "pone.0067380-Klimley1",
+        "pone.0067380-Klimley2",
+        "pone.0067380-Sperone1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 472,
+      "section": "Introduction",
+      "context": "\u2026(Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by bait-attracted individuals [25]. Dolphins (Delphinus delphis) control the shape and density of\u2026",
+      "references": [
+        "pone.0067380-Sperone2"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 488,
+      "section": "Introduction",
+      "context": "\u2026conducted by bait-attracted individuals [25]. Dolphins (Delphinus delphis) control the shape and density of schooling prey fish using their tails [1], and killer whales tail-slap bait balls with such ferocity\u2026",
+      "references": [
+        "pone.0067380-Clua1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 509,
+      "section": "Introduction",
+      "context": "\u2026and killer whales tail-slap bait balls with such ferocity that they produce sound and shockwaves powerful enough to stun fish [2], [3], [26], [27].",
+      "references": [
+        "pone.0067380-Simil1",
+        "pone.0067380-Domenici1",
+        "pone.0067380-Deecke1",
+        "pone.0067380-Simon1"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 551,
+      "section": "Introduction",
+      "context": "\u2026enabled the predator to stun up to 33 prey fish with one strike alone. Since sardines school in dense aggregations [4] it can be predicted that thresher sharks employing tail-slaps to\u2026",
+      "references": [
+        "pone.0067380-ODonoghue1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 1285,
+      "section": "Methods",
+      "context": "\u2026using Final Cut Pro 7 (Apple Inc., CA) to document behaviours, and video still images were used to construct diagrams [28]. Examples of the video data are available in the\u2026",
+      "references": [
+        "pone.0067380-Oliver1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 1319,
+      "section": "Methods",
+      "context": "The terms \u2018motion\u2019, \u2018mechanics\u2019 and \u2018kinematics\u2019 were adapted from their standard uses in the literature [12]. Motion referred to a change in position of the\u2026",
+      "references": [
+        "pone.0067380-Motta1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 1398,
+      "section": "Methods",
+      "context": "Protocols developed by Slater for categorising behaviour [29] were used to differentiate the behavioural patterns observed in thresher\u2026",
+      "references": [
+        "pone.0067380-Slater1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5409,
+      "section": "Discussion",
+      "context": "Thresher sharks are physiologically adapted for thermo-tolerance and demonstrate distinct crepuscular vertical migrations [30] by spending their days well below the thermocline (200\u2013700 m),\u2026",
+      "references": [
+        "pone.0067380-Weng1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5428,
+      "section": "Discussion",
+      "context": "\u2026migrations [30] by spending their days well below the thermocline (200\u2013700 m), and their nights in surface waters (0\u2013200 m) [31]. Patterns of vertical movements in sharks can reflect foraging,\u2026",
+      "references": [
+        "pone.0067380-Stevens1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5445,
+      "section": "Discussion",
+      "context": "\u2026waters (0\u2013200 m) [31]. Patterns of vertical movements in sharks can reflect foraging, thermoregulation, predator avoidance, energetics and reproduction behaviours [32], [33]. Since thresher sharks are nocturnally active and feed primarily\u2026",
+      "references": [
+        "pone.0067380-Nakano1",
+        "pone.0067380-Shepard1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 5475,
+      "section": "Discussion",
+      "context": "\u2026primarily on small fish and cephalopods, their vertical movements at night are presumed to be related to their hunting strategy [27], [28]. Yet in contrast to what was known previously, observations\u2026",
+      "references": [
+        "pone.0067380-Simon1",
+        "pone.0067380-Oliver1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 5528,
+      "section": "Discussion",
+      "context": "\u2026the surface waters of the Philippines at all times of the day. The sharks regularly visit cleaning stations by day [28], and they are taken as by-catch by fishermen targeting\u2026",
+      "references": [
+        "pone.0067380-Oliver1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5606,
+      "section": "Discussion",
+      "context": "\u2026preparation phase, may position a thresher shark within reach of the sardines it is preying upon to facilitate stunning them [3]. Lunges may also generate enough forward momentum to aid\u2026",
+      "references": [
+        "pone.0067380-Domenici1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5724,
+      "section": "Discussion",
+      "context": "\u2026successful, a thresher shark consumed more than one sardine. Carnivorous oceanic sharks generally pursue one prey item at a time [7], [12], [34], [35]. Prey capture is however, infrequent compared to the time\u2026",
+      "references": [
+        "pone.0067380-Compagno1",
+        "pone.0067380-Motta1",
+        "pone.0067380-Motta2",
+        "pone.0067380-Martin1"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 5751,
+      "section": "Discussion",
+      "context": "\u2026however, infrequent compared to the time spent searching, and energy expenditure can be high since many prey items are elusive [11], [34]\u2013[36]. It has been suggested that large marine predators are\u2026",
+      "references": [
+        "pone.0067380-Bres1",
+        "pone.0067380-Motta2",
+        "pone.0067380-Martin1",
+        "pone.0067380-Klimley3"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 5773,
+      "section": "Discussion",
+      "context": "\u2026It has been suggested that large marine predators are particularly inefficient chase feeders when they prey upon small schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling,\u2026",
+      "references": [
+        "pone.0067380-Webb1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5791,
+      "section": "Discussion",
+      "context": "\u2026schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39].",
+      "references": [
+        "pone.0067380-Hain1",
+        "pone.0067380-Domenici2"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 5809,
+      "section": "Discussion",
+      "context": "While the manoeuverability of small schooling fish can make individuals elusive to predators chasing them individually [3], they become vulnerable in numbers to tail-slaps adapted to\u2026",
+      "references": [
+        "pone.0067380-Domenici1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5828,
+      "section": "Discussion",
+      "context": "\u2026individually [3], they become vulnerable in numbers to tail-slaps adapted to hunt them, and the shockwaves associated with the behaviour [2], [3], [40]. Being able to stun more than one prey item\u2026",
+      "references": [
+        "pone.0067380-Simil1",
+        "pone.0067380-Domenici1",
+        "pone.0067380-Saila1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 5929,
+      "section": "Discussion",
+      "context": "\u2026in the water may occur locally, due to the acceleration of flow around the leading edge of the caudal fin [41]. At sufficient velocity the pressure around the leading edge\u2026",
+      "references": [
+        "pone.0067380-Iosilevskii1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 5955,
+      "section": "Discussion",
+      "context": "\u2026around the leading edge may be so high that the corresponding turbulent pressure may drop below the saturated vapour pressure [42], [43], causing dissolved gas to diffuse out of the water\u2026",
+      "references": [
+        "pone.0067380-Batchelor1",
+        "pone.0067380-Herbert1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 5976,
+      "section": "Discussion",
+      "context": "\u2026[43], causing dissolved gas to diffuse out of the water column into small bubbles that entrain and grow in size [39], [44]\u2013[46].",
+      "references": [
+        "pone.0067380-Domenici1",
+        "pone.0067380-Versluis1",
+        "pone.0067380-Patek1",
+        "pone.0067380-Guerra1"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 6070,
+      "section": "Discussion",
+      "context": "\u2026known stalling threshold that occurs in a hydrofoil suggesting that overhead tail-slaps occurred at least in part, under stalling conditions [3], [47]. Because the bait ball at Pescador Island does not\u2026",
+      "references": [
+        "pone.0067380-Domenici1",
+        "pone.0067380-Sarrafa1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 6180,
+      "section": "Discussion",
+      "context": "\u2026(Chiloscyllium plagiosum) sharks, being initiated by acute angular adjustments of their aplesodic pectoral fins, which generate negative and positive lift [48], [49]. In contrast, thresher sharks possess plesodic pectoral fins that\u2026",
+      "references": [
+        "pone.0067380-Wilga1",
+        "pone.0067380-Wilga2"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 6204,
+      "section": "Discussion",
+      "context": "\u2026thresher sharks possess plesodic pectoral fins that are straight, broad-tipped and long, with radials extending far into their fin webs [7]. In addition to being specialised for fast cruising [50],\u2026",
+      "references": [
+        "pone.0067380-Compagno1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 6213,
+      "section": "Discussion",
+      "context": "\u2026broad-tipped and long, with radials extending far into their fin webs [7]. In addition to being specialised for fast cruising [50], a thresher shark's pectoral fins may be ideally adapted\u2026",
+      "references": [
+        "pone.0067380-Wilga3"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 6258,
+      "section": "Discussion",
+      "context": "\u2026records showed that the dorsal margin of a thresher shark's caudal fin, which is flexible and narrows to the tip [7], [8], [17], [28], contributed most to the angular excursion of a tail-slap.\u2026",
+      "references": [
+        "pone.0067380-Compagno1",
+        "pone.0067380-Liu1",
+        "pone.0067380-Aalbers1",
+        "pone.0067380-Oliver1"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 6438,
+      "section": "Discussion",
+      "context": "\u2026momentum are transferred from one body segment to another, in a sequential manner, all the way to the distal segment [51], [52]. If two distal segments of different lengths are rotated\u2026",
+      "references": [
+        "pone.0067380-Fedak1",
+        "pone.0067380-Cross1"
+      ],
+      "count": 2
+    },
+    {
+      "word_position": 6487,
+      "section": "Discussion",
+      "context": "\u2026thresher shark's body that are sequentially involved in the tail-slapping process increase in size and length throughout a shark's ontogeny [53]\u2013[55]. Larger sharks with longer tails are likely to require\u2026",
+      "references": [
+        "pone.0067380-Mollet1",
+        "pone.0067380-LinghamSoliar1",
+        "pone.0067380-Lowry1"
+      ],
+      "count": 3
+    },
+    {
+      "word_position": 6756,
+      "section": "Discussion",
+      "context": "\u2026a dead seal floating in the vicinity \u201cif the vigor and frequency of its tail-slap were greater than its opponent\u201d [22]. Other studies have shown that large marine predators will\u2026",
+      "references": [
+        "pone.0067380-Klimley1"
+      ],
+      "count": 1
+    },
+    {
+      "word_position": 6780,
+      "section": "Discussion",
+      "context": "\u2026shown that large marine predators will hunt socially, using their tails to control the shape and density of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use\u2026",
+      "references": [
+        "pone.0067380-Clua1",
+        "pone.0067380-Simil1",
+        "pone.0067380-Domenici1",
+        "pone.0067380-Deecke1"
+      ],
+      "count": 4
+    },
+    {
+      "word_position": 6797,
+      "section": "Discussion",
+      "context": "\u2026of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use the technique to corral schooling prey [7], [13]. Since field reports of two or more thresher sharks\u2026",
+      "references": [
+        "pone.0067380-Compagno1",
+        "pone.0067380-Heithaus1"
+      ],
+      "count": 2
+    }
+  ],
+  "references": {
+    "pone.0067380-Lowry1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1098\/rsif.2007.1189",
+      "info": {
+        "authors": [
+          {
+            "fullname": "D. Lowry"
+          },
+          {
+            "fullname": "P. J Motta"
+          }
+        ],
+        "first_author": {
+          "last_name": "Lowry",
+          "first_name": "D."
+        },
+        "end_page": "652",
+        "start_page": "641",
+        "issue": "23",
+        "volume": "5",
+        "year": "2008",
+        "journal": "Journal of The Royal Society Interface",
+        "title": "Relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny",
+        "score": 4.2480526,
+        "doi": "10.1098\/rsif.2007.1189",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 6487,
+          "section": "Discussion",
+          "context": "\u2026thresher shark's body that are sequentially involved in the tail-slapping process increase in size and length throughout a shark's ontogeny [53]\u2013[55]. Larger sharks with longer tails are likely to require\u2026",
+          "references": [
+            "pone.0067380-Mollet1",
+            "pone.0067380-LinghamSoliar1",
+            "pone.0067380-Lowry1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 55,
+      "id": "pone.0067380-Lowry1"
+    },
+    "pone.0067380-LinghamSoliar1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1007\/s00114-005-0614-4",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Theagarten Lingham-Soliar"
+          }
+        ],
+        "first_author": {
+          "last_name": "Lingham-Soliar",
+          "first_name": "Theagarten"
+        },
+        "end_page": "236",
+        "start_page": "231",
+        "issue": "5",
+        "volume": "92",
+        "year": "2005",
+        "journal": "Naturwissenschaften",
+        "title": "Caudal fin allometry in the white shark Carcharodon carcharias: implications for locomotory performance and ecology",
+        "score": 6.1322613,
+        "doi": "10.1007\/s00114-005-0614-4",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 6487,
+          "section": "Discussion",
+          "context": "\u2026thresher shark's body that are sequentially involved in the tail-slapping process increase in size and length throughout a shark's ontogeny [53]\u2013[55]. Larger sharks with longer tails are likely to require\u2026",
+          "references": [
+            "pone.0067380-Mollet1",
+            "pone.0067380-LinghamSoliar1",
+            "pone.0067380-Lowry1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 54,
+      "id": "pone.0067380-LinghamSoliar1"
+    },
+    "pone.0067380-Mollet1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "53 Mollet HF, Caillet GM, Klimley AP, Ebert DA, Testi AD, et al .. (1996). A review of length validation methods and protocols to measure large white sharks. In: Klimley AP, Ainley DG, editors. Great White Sharks: The Biology of Carcharodon carcharias . Academic Press, San Diego. 91\u2013108."
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 6487,
+          "section": "Discussion",
+          "context": "\u2026thresher shark's body that are sequentially involved in the tail-slapping process increase in size and length throughout a shark's ontogeny [53]\u2013[55]. Larger sharks with longer tails are likely to require\u2026",
+          "references": [
+            "pone.0067380-Mollet1",
+            "pone.0067380-LinghamSoliar1",
+            "pone.0067380-Lowry1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 53,
+      "id": "pone.0067380-Mollet1"
+    },
+    "pone.0067380-Cross1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1119\/1.1634964",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Rod Cross"
+          }
+        ],
+        "first_author": {
+          "last_name": "Cross",
+          "first_name": "Rod"
+        },
+        "start_page": "305",
+        "issue": "3",
+        "volume": "72",
+        "year": "2004",
+        "journal": "American Journal of Physics",
+        "title": "Physics of overarm throwing",
+        "score": 3.4644864,
+        "doi": "10.1119\/1.1634964",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 6438,
+          "section": "Discussion",
+          "context": "\u2026momentum are transferred from one body segment to another, in a sequential manner, all the way to the distal segment [51], [52]. If two distal segments of different lengths are rotated\u2026",
+          "references": [
+            "pone.0067380-Fedak1",
+            "pone.0067380-Cross1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 52,
+      "id": "pone.0067380-Cross1"
+    },
+    "pone.0067380-Fedak1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "51 Fedak MA , Heglund NC , Taylor CR ( 1981 ) Energetics and mechanics of terrestrial locomotion . J Exp Biol 79 : 23 \u2013 40 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 6438,
+          "section": "Discussion",
+          "context": "\u2026momentum are transferred from one body segment to another, in a sequential manner, all the way to the distal segment [51], [52]. If two distal segments of different lengths are rotated\u2026",
+          "references": [
+            "pone.0067380-Fedak1",
+            "pone.0067380-Cross1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 51,
+      "id": "pone.0067380-Fedak1"
+    },
+    "pone.0067380-Wilga3": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "50 Wilga CAD, Lauder GV (2004) Biomechanics of locomotion in sharks, rays and chimeras. In: Carrier JC, Musick JA, Heithaus MR, editors. Biology of Sharks and their Relatives. CRC Press. 148\u2013157."
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 6213,
+          "section": "Discussion",
+          "context": "\u2026broad-tipped and long, with radials extending far into their fin webs [7]. In addition to being specialised for fast cruising [50], a thresher shark's pectoral fins may be ideally adapted\u2026",
+          "references": [
+            "pone.0067380-Wilga3"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 50,
+      "id": "pone.0067380-Wilga3"
+    },
+    "pone.0067380-Wilga2": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1002\/jmor.1049",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Cheryl D. Wilga"
+          },
+          {
+            "fullname": "George V. Lauder"
+          }
+        ],
+        "first_author": {
+          "last_name": "Wilga",
+          "first_name": "Cheryl D."
+        },
+        "end_page": "209",
+        "start_page": "195",
+        "issue": "3",
+        "volume": "249",
+        "year": "2001",
+        "journal": "Journal of Morphology",
+        "title": "Functional morphology of the pectoral fins in bamboo sharks,Chiloscyllium plagiosum: Benthic vs. Pelagic station-holding",
+        "score": 5.3367434,
+        "doi": "10.1002\/jmor.1049",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 6180,
+          "section": "Discussion",
+          "context": "\u2026(Chiloscyllium plagiosum) sharks, being initiated by acute angular adjustments of their aplesodic pectoral fins, which generate negative and positive lift [48], [49]. In contrast, thresher sharks possess plesodic pectoral fins that\u2026",
+          "references": [
+            "pone.0067380-Wilga1",
+            "pone.0067380-Wilga2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 49,
+      "id": "pone.0067380-Wilga2"
+    },
+    "pone.0067380-Wilga1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "48 Wilga CAD , Lauder GV ( 2000 ) Three-dimensional kinematics and wake structure of the pectoral fins during locomotion in leopard sharks Triakis semifasciata . J Exp Biol 203 : 2261 \u2013 2278 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 6180,
+          "section": "Discussion",
+          "context": "\u2026(Chiloscyllium plagiosum) sharks, being initiated by acute angular adjustments of their aplesodic pectoral fins, which generate negative and positive lift [48], [49]. In contrast, thresher sharks possess plesodic pectoral fins that\u2026",
+          "references": [
+            "pone.0067380-Wilga1",
+            "pone.0067380-Wilga2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 48,
+      "id": "pone.0067380-Wilga1"
+    },
+    "pone.0067380-Sarrafa1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "47 Sarrafa C , Djeridib H , Prothina S , Billarda JY ( 2010 ) Thickness effect of NACA foils on hydrodynamic global parameters, boundary layer states and stall establishment . J Fluid Struct 26 : 559 \u2013 578 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 6070,
+          "section": "Discussion",
+          "context": "\u2026known stalling threshold that occurs in a hydrofoil suggesting that overhead tail-slaps occurred at least in part, under stalling conditions [3], [47]. Because the bait ball at Pescador Island does not\u2026",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Sarrafa1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 47,
+      "id": "pone.0067380-Sarrafa1"
+    },
+    "pone.0067380-Guerra1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1017\/s0025315407058225",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Angel Guerra"
+          },
+          {
+            "fullname": "Xavier Martinell"
+          },
+          {
+            "fullname": "Angel F. Gonz\u00e1lez"
+          },
+          {
+            "fullname": "Michael Vecchione"
+          },
+          {
+            "fullname": "Joaquin Gracia"
+          },
+          {
+            "fullname": "Jordi Martinell"
+          }
+        ],
+        "first_author": {
+          "last_name": "Guerra",
+          "first_name": "Angel"
+        },
+        "issue": "05",
+        "volume": "87",
+        "year": "2007",
+        "journal": "Journal of the Marine Biological Association of the UK",
+        "title": "A new noise detected in the ocean",
+        "score": 4.497925,
+        "doi": "10.1017\/s0025315407058225",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5976,
+          "section": "Discussion",
+          "context": "\u2026[43], causing dissolved gas to diffuse out of the water column into small bubbles that entrain and grow in size [39], [44]\u2013[46].",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Versluis1",
+            "pone.0067380-Patek1",
+            "pone.0067380-Guerra1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 46,
+      "id": "pone.0067380-Guerra1"
+    },
+    "pone.0067380-Patek1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1242\/jeb.01831",
+      "info": {
+        "authors": [
+          {
+            "fullname": "S. N. Patek"
+          }
+        ],
+        "first_author": {
+          "last_name": "Patek",
+          "first_name": "S. N."
+        },
+        "end_page": "3664",
+        "start_page": "3655",
+        "issue": "19",
+        "volume": "208",
+        "year": "2005",
+        "journal": "Journal of Experimental Biology",
+        "title": "Extreme impact and cavitation forces of a biological hammer: strike forces of the peacock mantis shrimp Odontodactylus scyllarus",
+        "score": 4.8541493,
+        "doi": "10.1242\/jeb.01831",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5976,
+          "section": "Discussion",
+          "context": "\u2026[43], causing dissolved gas to diffuse out of the water column into small bubbles that entrain and grow in size [39], [44]\u2013[46].",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Versluis1",
+            "pone.0067380-Patek1",
+            "pone.0067380-Guerra1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 45,
+      "id": "pone.0067380-Patek1"
+    },
+    "pone.0067380-Versluis1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1126\/science.289.5487.2114",
+      "info": {
+        "authors": [
+          {
+            "fullname": "M. Versluis"
+          }
+        ],
+        "first_author": {
+          "last_name": "Versluis",
+          "first_name": "M."
+        },
+        "end_page": "2117",
+        "start_page": "2114",
+        "issue": "5487",
+        "volume": "289",
+        "year": "2000",
+        "journal": "Science",
+        "title": "How Snapping Shrimp Snap: Through Cavitating Bubbles",
+        "score": 4.600892,
+        "doi": "10.1126\/science.289.5487.2114",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5976,
+          "section": "Discussion",
+          "context": "\u2026[43], causing dissolved gas to diffuse out of the water column into small bubbles that entrain and grow in size [39], [44]\u2013[46].",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Versluis1",
+            "pone.0067380-Patek1",
+            "pone.0067380-Guerra1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 44,
+      "id": "pone.0067380-Versluis1"
+    },
+    "pone.0067380-Herbert1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1103\/physreve.74.041603",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Eric Herbert"
+          },
+          {
+            "fullname": "S\u00e9bastien Balibar"
+          },
+          {
+            "fullname": "Fr\u00e9d\u00e9ric Caupin"
+          }
+        ],
+        "first_author": {
+          "last_name": "Herbert",
+          "first_name": "Eric"
+        },
+        "issue": "4",
+        "volume": "74",
+        "year": "2006",
+        "journal": "Physical Review E",
+        "title": "Cavitation pressure in water",
+        "score": 3.658042,
+        "doi": "10.1103\/physreve.74.041603",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5955,
+          "section": "Discussion",
+          "context": "\u2026around the leading edge may be so high that the corresponding turbulent pressure may drop below the saturated vapour pressure [42], [43], causing dissolved gas to diffuse out of the water\u2026",
+          "references": [
+            "pone.0067380-Batchelor1",
+            "pone.0067380-Herbert1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 43,
+      "id": "pone.0067380-Herbert1"
+    },
+    "pone.0067380-Batchelor1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "42 Batchelor GK (1990) Introduction to fluid dynamics. Cambridge University Press, UK. 481\u2013506."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5955,
+          "section": "Discussion",
+          "context": "\u2026around the leading edge may be so high that the corresponding turbulent pressure may drop below the saturated vapour pressure [42], [43], causing dissolved gas to diffuse out of the water\u2026",
+          "references": [
+            "pone.0067380-Batchelor1",
+            "pone.0067380-Herbert1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 42,
+      "id": "pone.0067380-Batchelor1"
+    },
+    "pone.0067380-Iosilevskii1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1098\/rsif.2007.1073",
+      "info": {
+        "authors": [
+          {
+            "fullname": "G Iosilevskii"
+          },
+          {
+            "fullname": "D Weihs"
+          }
+        ],
+        "first_author": {
+          "last_name": "Iosilevskii",
+          "first_name": "G"
+        },
+        "end_page": "338",
+        "start_page": "329",
+        "issue": "20",
+        "volume": "5",
+        "year": "2008",
+        "journal": "Journal of The Royal Society Interface",
+        "title": "Speed limits on swimming of fishes and cetaceans",
+        "score": 2.7344112,
+        "doi": "10.1098\/rsif.2007.1073",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 5929,
+          "section": "Discussion",
+          "context": "\u2026in the water may occur locally, due to the acceleration of flow around the leading edge of the caudal fin [41]. At sufficient velocity the pressure around the leading edge\u2026",
+          "references": [
+            "pone.0067380-Iosilevskii1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 41,
+      "id": "pone.0067380-Iosilevskii1"
+    },
+    "pone.0067380-Saila1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.3354\/meps094051",
+      "info": {
+        "authors": [
+          {
+            "fullname": "SB Saila"
+          },
+          {
+            "fullname": "VLj Kocic"
+          },
+          {
+            "fullname": "JW McManus"
+          }
+        ],
+        "first_author": {
+          "last_name": "Saila",
+          "first_name": "SB"
+        },
+        "end_page": "60",
+        "start_page": "51",
+        "volume": "94",
+        "year": "1993",
+        "journal": "Marine Ecology Progress Series",
+        "title": "Modelling the effects of destructive fishing practices on tropical coral reefs",
+        "score": 6.4211144,
+        "doi": "10.3354\/meps094051",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 5828,
+          "section": "Discussion",
+          "context": "\u2026individually [3], they become vulnerable in numbers to tail-slaps adapted to hunt them, and the shockwaves associated with the behaviour [2], [3], [40]. Being able to stun more than one prey item\u2026",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Saila1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 40,
+      "id": "pone.0067380-Saila1"
+    },
+    "pone.0067380-Domenici2": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "39 Domenici, P. & Blake, R. W. 1997. The kinematics and performance of fish fast-start swimming . J Exp Biol 200 : 1165 \u2013 1178 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5791,
+          "section": "Discussion",
+          "context": "\u2026schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39].",
+          "references": [
+            "pone.0067380-Hain1",
+            "pone.0067380-Domenici2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 39,
+      "id": "pone.0067380-Domenici2"
+    },
+    "pone.0067380-Hain1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "38 Hain JHW , Carter GR , Kraus SD , Mayo CA , Winn HE ( 1982 ) Feeding behaviour of the humpback whale, Megaptera novaeangliae , in the western North Atlantic . Fish Bull 80 : 259 \u2013 268 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5791,
+          "section": "Discussion",
+          "context": "\u2026schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39].",
+          "references": [
+            "pone.0067380-Hain1",
+            "pone.0067380-Domenici2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 38,
+      "id": "pone.0067380-Hain1"
+    },
+    "pone.0067380-Webb1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "37 Webb PW , de Buffrenil V ( 1990 ) Locomotion in the biology of large aquatic vertebrates. Trans Am Fish Soc . 119 : 629 \u2013 641 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 5773,
+          "section": "Discussion",
+          "context": "\u2026It has been suggested that large marine predators are particularly inefficient chase feeders when they prey upon small schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling,\u2026",
+          "references": [
+            "pone.0067380-Webb1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 37,
+      "id": "pone.0067380-Webb1"
+    },
+    "pone.0067380-Klimley3": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1007\/s002270000489",
+      "info": {
+        "authors": [
+          {
+            "fullname": "A. Peter Klimley"
+          },
+          {
+            "fullname": "Burney J. Le Boeuf"
+          },
+          {
+            "fullname": "Kelly M. Cantara"
+          },
+          {
+            "fullname": "John E. Richert"
+          },
+          {
+            "fullname": "Scott F. Davis"
+          },
+          {
+            "fullname": "Sean Van Sommeran"
+          },
+          {
+            "fullname": "John T. Kelly"
+          }
+        ],
+        "first_author": {
+          "last_name": "Klimley",
+          "first_name": "A. Peter"
+        },
+        "end_page": "636",
+        "start_page": "617",
+        "issue": "3",
+        "volume": "138",
+        "year": "2001",
+        "journal": "Marine Biology",
+        "title": "The hunting strategy of white sharks ( Carcharodon carcharias ) near a seal colony",
+        "score": 2.620195,
+        "doi": "10.1007\/s002270000489",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5751,
+          "section": "Discussion",
+          "context": "\u2026however, infrequent compared to the time spent searching, and energy expenditure can be high since many prey items are elusive [11], [34]\u2013[36]. It has been suggested that large marine predators are\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1",
+            "pone.0067380-Klimley3"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 36,
+      "id": "pone.0067380-Klimley3"
+    },
+    "pone.0067380-Martin1": {
+      "sections": {
+        "Discussion": 2
+      },
+      "doi": "10.1017\/s002531540501218x",
+      "info": {
+        "authors": [
+          {
+            "fullname": "R. Aidan Martin"
+          },
+          {
+            "fullname": "Neil Hammerschlag"
+          },
+          {
+            "fullname": "Ralph S. Collier"
+          },
+          {
+            "fullname": "Chris Fallows"
+          }
+        ],
+        "first_author": {
+          "last_name": "Martin",
+          "first_name": "R. Aidan"
+        },
+        "start_page": "1121",
+        "issue": "05",
+        "volume": "85",
+        "year": "2005",
+        "journal": "Journal of the Marine Biological Association of the UK",
+        "title": "Predatory behaviour of white sharks ( Carcharodon carcharias ) at Seal Island, South Africa",
+        "score": 5.1665,
+        "doi": "10.1017\/s002531540501218x",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5724,
+          "section": "Discussion",
+          "context": "\u2026successful, a thresher shark consumed more than one sardine. Carnivorous oceanic sharks generally pursue one prey item at a time [7], [12], [34], [35]. Prey capture is however, infrequent compared to the time\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 5751,
+          "section": "Discussion",
+          "context": "\u2026however, infrequent compared to the time spent searching, and energy expenditure can be high since many prey items are elusive [11], [34]\u2013[36]. It has been suggested that large marine predators are\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1",
+            "pone.0067380-Klimley3"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 35,
+      "id": "pone.0067380-Martin1"
+    },
+    "pone.0067380-Motta2": {
+      "sections": {
+        "Discussion": 2
+      },
+      "info": {
+        "text": "34 Motta JP (2004) Prey capture behavior and feeding mechanics of elasmobranchs In: Carrier JC, Musick JA, Heithaus MR, editors. Biology of Sharks and their Relatives. CRC Press. 165\u2013202."
+      },
+      "mentions": 2,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 5724,
+          "section": "Discussion",
+          "context": "\u2026successful, a thresher shark consumed more than one sardine. Carnivorous oceanic sharks generally pursue one prey item at a time [7], [12], [34], [35]. Prey capture is however, infrequent compared to the time\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 5751,
+          "section": "Discussion",
+          "context": "\u2026however, infrequent compared to the time spent searching, and energy expenditure can be high since many prey items are elusive [11], [34]\u2013[36]. It has been suggested that large marine predators are\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1",
+            "pone.0067380-Klimley3"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 34,
+      "id": "pone.0067380-Motta2"
+    },
+    "pone.0067380-Shepard1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.3354\/meps328205",
+      "info": {
+        "authors": [
+          {
+            "fullname": "ELC Shepard"
+          },
+          {
+            "fullname": "MZ Ahmed"
+          },
+          {
+            "fullname": "EJ Southall"
+          },
+          {
+            "fullname": "MJ Witt"
+          },
+          {
+            "fullname": "JD Metcalfe"
+          },
+          {
+            "fullname": "DW Sims"
+          }
+        ],
+        "first_author": {
+          "last_name": "Shepard",
+          "first_name": "ELC"
+        },
+        "end_page": "213",
+        "start_page": "205",
+        "volume": "328",
+        "year": "2006",
+        "journal": "Marine Ecology Progress Series",
+        "title": "Diel and tidal rhythms in diving behaviour of pelagic sharks identified by signal processing of archival tagging data",
+        "score": 6.5083046,
+        "doi": "10.3354\/meps328205",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5445,
+          "section": "Discussion",
+          "context": "\u2026waters (0\u2013200 m) [31]. Patterns of vertical movements in sharks can reflect foraging, thermoregulation, predator avoidance, energetics and reproduction behaviours [32], [33]. Since thresher sharks are nocturnally active and feed primarily\u2026",
+          "references": [
+            "pone.0067380-Nakano1",
+            "pone.0067380-Shepard1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 33,
+      "id": "pone.0067380-Shepard1"
+    },
+    "pone.0067380-Nakano1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.3354\/meps265255",
+      "info": {
+        "authors": [
+          {
+            "fullname": "H Nakano"
+          },
+          {
+            "fullname": "H Matsunaga"
+          },
+          {
+            "fullname": "H Okamoto"
+          },
+          {
+            "fullname": "M Okazaki"
+          }
+        ],
+        "first_author": {
+          "last_name": "Nakano",
+          "first_name": "H"
+        },
+        "end_page": "261",
+        "start_page": "255",
+        "volume": "265",
+        "year": "2003",
+        "journal": "Marine Ecology Progress Series",
+        "title": "Acoustic tracking of bigeye thresher shark Alopias superciliosus in the eastern Pacific Ocean",
+        "score": 6.5772552,
+        "doi": "10.3354\/meps265255",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 5445,
+          "section": "Discussion",
+          "context": "\u2026waters (0\u2013200 m) [31]. Patterns of vertical movements in sharks can reflect foraging, thermoregulation, predator avoidance, energetics and reproduction behaviours [32], [33]. Since thresher sharks are nocturnally active and feed primarily\u2026",
+          "references": [
+            "pone.0067380-Nakano1",
+            "pone.0067380-Shepard1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 32,
+      "id": "pone.0067380-Nakano1"
+    },
+    "pone.0067380-Stevens1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "doi": "10.1007\/s00227-009-1343-6",
+      "info": {
+        "authors": [
+          {
+            "fullname": "John D. Stevens"
+          },
+          {
+            "fullname": "Russell W. Bradford"
+          },
+          {
+            "fullname": "Grant J. West"
+          }
+        ],
+        "first_author": {
+          "last_name": "Stevens",
+          "first_name": "John D."
+        },
+        "end_page": "591",
+        "start_page": "575",
+        "issue": "3",
+        "volume": "157",
+        "year": "2010",
+        "journal": "Marine Biology",
+        "title": "Satellite tagging of blue sharks (Prionace glauca) and other pelagic sharks off eastern Australia: depth behaviour, temperature experience and movements",
+        "score": 5.175506,
+        "doi": "10.1007\/s00227-009-1343-6",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 5428,
+          "section": "Discussion",
+          "context": "\u2026migrations [30] by spending their days well below the thermocline (200\u2013700 m), and their nights in surface waters (0\u2013200 m) [31]. Patterns of vertical movements in sharks can reflect foraging,\u2026",
+          "references": [
+            "pone.0067380-Stevens1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 31,
+      "id": "pone.0067380-Stevens1"
+    },
+    "pone.0067380-Weng1": {
+      "sections": {
+        "Discussion": 1
+      },
+      "info": {
+        "text": "30 Weng KC , Block BA ( 2004 ) Diel vertical migration of the bigeye thresher shark ( Alopias superciliosus ) a species possessing orbital retia mirabilia . Fish Bull 102 : 221 \u2013 229 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 5409,
+          "section": "Discussion",
+          "context": "Thresher sharks are physiologically adapted for thermo-tolerance and demonstrate distinct crepuscular vertical migrations [30] by spending their days well below the thermocline (200\u2013700 m),\u2026",
+          "references": [
+            "pone.0067380-Weng1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 30,
+      "id": "pone.0067380-Weng1"
+    },
+    "pone.0067380-Slater1": {
+      "sections": {
+        "Methods": 1
+      },
+      "info": {
+        "text": "29 Slater PJB (1978) Data Collection. In: Colgan P editor. Quantitative Ethology. Wiley-Interscience. 15\u201316."
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 1398,
+          "section": "Methods",
+          "context": "Protocols developed by Slater for categorising behaviour [29] were used to differentiate the behavioural patterns observed in thresher\u2026",
+          "references": [
+            "pone.0067380-Slater1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 29,
+      "id": "pone.0067380-Slater1"
+    },
+    "pone.0067380-Oliver1": {
+      "self_citations": [
+        "Simon P. Oliver [name]",
+        "John R. Turner [name]"
+      ],
+      "sections": {
+        "Discussion": 3,
+        "Methods": 1
+      },
+      "doi": "10.1371\/journal.pone.0014755.s008",
+      "info": {
+        "score": 2.5,
+        "authors": [
+          {
+            "fullname": "Simon P. Oliver"
+          },
+          {
+            "fullname": "Nigel E. Hussey"
+          },
+          {
+            "fullname": "John R. Turner"
+          },
+          {
+            "fullname": "Alison J. Beckett"
+          }
+        ],
+        "first_author": {
+          "last_name": "Oliver",
+          "first_name": "Simon P."
+        },
+        "start_page": "e14755",
+        "issue": "3",
+        "volume": "6",
+        "year": "2011",
+        "title": "Oceanic Sharks Clean at Coastal Seamount",
+        "journal": "PLoS ONE",
+        "doi": "10.1371\/journal.pone.0014755.s008",
+        "source": "doi"
+      },
+      "mentions": 4,
+      "median_co_citations": 0.5,
+      "citation_groups": [
+        {
+          "word_position": 1285,
+          "section": "Methods",
+          "context": "\u2026using Final Cut Pro 7 (Apple Inc., CA) to document behaviours, and video still images were used to construct diagrams [28]. Examples of the video data are available in the\u2026",
+          "references": [
+            "pone.0067380-Oliver1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 5475,
+          "section": "Discussion",
+          "context": "\u2026primarily on small fish and cephalopods, their vertical movements at night are presumed to be related to their hunting strategy [27], [28]. Yet in contrast to what was known previously, observations\u2026",
+          "references": [
+            "pone.0067380-Simon1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 5528,
+          "section": "Discussion",
+          "context": "\u2026the surface waters of the Philippines at all times of the day. The sharks regularly visit cleaning stations by day [28], and they are taken as by-catch by fishermen targeting\u2026",
+          "references": [
+            "pone.0067380-Oliver1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 6258,
+          "section": "Discussion",
+          "context": "\u2026records showed that the dorsal margin of a thresher shark's caudal fin, which is flexible and narrows to the tip [7], [8], [17], [28], contributed most to the angular excursion of a tail-slap.\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Liu1",
+            "pone.0067380-Aalbers1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 28,
+      "id": "pone.0067380-Oliver1"
+    },
+    "pone.0067380-Simon1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "doi": "10.1242\/jeb.01619",
+      "info": {
+        "authors": [
+          {
+            "fullname": "M. Simon"
+          }
+        ],
+        "first_author": {
+          "last_name": "Simon",
+          "first_name": "M."
+        },
+        "end_page": "2466",
+        "start_page": "2459",
+        "issue": "12",
+        "volume": "208",
+        "year": "2005",
+        "journal": "Journal of Experimental Biology",
+        "title": "Acoustic characteristics of underwater tail slaps used by Norwegian and Icelandic killer whales (Orcinus orca) to debilitate herring (Clupea harengus)",
+        "score": 5.2215505,
+        "doi": "10.1242\/jeb.01619",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 509,
+          "section": "Introduction",
+          "context": "\u2026and killer whales tail-slap bait balls with such ferocity that they produce sound and shockwaves powerful enough to stun fish [2], [3], [26], [27].",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1",
+            "pone.0067380-Simon1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 5475,
+          "section": "Discussion",
+          "context": "\u2026primarily on small fish and cephalopods, their vertical movements at night are presumed to be related to their hunting strategy [27], [28]. Yet in contrast to what was known previously, observations\u2026",
+          "references": [
+            "pone.0067380-Simon1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 27,
+      "id": "pone.0067380-Simon1"
+    },
+    "pone.0067380-Deecke1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "doi": "10.3354\/ab00353",
+      "info": {
+        "authors": [
+          {
+            "fullname": "VB Deecke"
+          },
+          {
+            "fullname": "M Nyk\u00e4nen"
+          },
+          {
+            "fullname": "AD Foote"
+          },
+          {
+            "fullname": "VM Janik"
+          }
+        ],
+        "first_author": {
+          "last_name": "Deecke",
+          "first_name": "VB"
+        },
+        "end_page": "88",
+        "start_page": "79",
+        "issue": "1",
+        "volume": "13",
+        "year": "2011",
+        "journal": "Aquatic Biology",
+        "title": "Vocal behaviour and feeding ecology of killer whales Orcinus orca around Shetland, UK",
+        "score": 6.379734,
+        "doi": "10.3354\/ab00353",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 3.0,
+      "citation_groups": [
+        {
+          "word_position": 509,
+          "section": "Introduction",
+          "context": "\u2026and killer whales tail-slap bait balls with such ferocity that they produce sound and shockwaves powerful enough to stun fish [2], [3], [26], [27].",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1",
+            "pone.0067380-Simon1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 6780,
+          "section": "Discussion",
+          "context": "\u2026shown that large marine predators will hunt socially, using their tails to control the shape and density of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use\u2026",
+          "references": [
+            "pone.0067380-Clua1",
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 26,
+      "id": "pone.0067380-Deecke1"
+    },
+    "pone.0067380-Sperone2": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1080\/17451000.2012.708043",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Emilio Sperone"
+          },
+          {
+            "fullname": "Primo Micarelli"
+          },
+          {
+            "fullname": "Sara Andreotti"
+          },
+          {
+            "fullname": "Pietro Brandmayr"
+          },
+          {
+            "fullname": "Ilaria Bernab\u00f2"
+          },
+          {
+            "fullname": "Elvira Brunelli"
+          },
+          {
+            "fullname": "Sandro Tripepi"
+          }
+        ],
+        "first_author": {
+          "last_name": "Sperone",
+          "first_name": "Emilio"
+        },
+        "end_page": "991",
+        "start_page": "982",
+        "issue": "10",
+        "volume": "8",
+        "year": "2012",
+        "journal": "Marine Biology Research",
+        "title": "Surface behaviour of bait-attracted white sharks at Dyer Island (South Africa)",
+        "score": 4.9133496,
+        "doi": "10.1080\/17451000.2012.708043",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 472,
+          "section": "Introduction",
+          "context": "\u2026(Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by bait-attracted individuals [25]. Dolphins (Delphinus delphis) control the shape and density of\u2026",
+          "references": [
+            "pone.0067380-Sperone2"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 25,
+      "id": "pone.0067380-Sperone2"
+    },
+    "pone.0067380-Sperone1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1080\/17451000903078648",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Emilio Sperone"
+          },
+          {
+            "fullname": "Primo Micarelli"
+          },
+          {
+            "fullname": "Sara Andreotti"
+          },
+          {
+            "fullname": "Sara Spinetti"
+          },
+          {
+            "fullname": "Andrea Andreani"
+          },
+          {
+            "fullname": "Fabrizio Serena"
+          },
+          {
+            "fullname": "Elvira Brunelli"
+          },
+          {
+            "fullname": "Sandro Tripepi"
+          }
+        ],
+        "first_author": {
+          "last_name": "Sperone",
+          "first_name": "Emilio"
+        },
+        "end_page": "414",
+        "start_page": "408",
+        "issue": "4",
+        "volume": "6",
+        "year": "2010",
+        "journal": "Marine Biology Research",
+        "title": "Social interactions among bait-attracted white sharks at Dyer Island (South Africa)",
+        "score": 3.8507109,
+        "doi": "10.1080\/17451000903078648",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 460,
+          "section": "Introduction",
+          "context": "\u2026described as an agonistic threat to reduce resource competition among white sharks (Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by\u2026",
+          "references": [
+            "pone.0067380-Klimley1",
+            "pone.0067380-Klimley2",
+            "pone.0067380-Sperone1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 24,
+      "id": "pone.0067380-Sperone1"
+    },
+    "pone.0067380-Klimley2": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1016\/b978-012415031-7\/50017-3",
+      "info": {
+        "authors": [
+          {
+            "fullname": "A KLIMLEY"
+          },
+          {
+            "fullname": "P PYLE"
+          },
+          {
+            "fullname": "S ANDERSON"
+          }
+        ],
+        "first_author": {
+          "last_name": "KLIMLEY",
+          "first_name": "A"
+        },
+        "end_page": "191",
+        "start_page": "175",
+        "year": "1996",
+        "journal": "Great White Sharks",
+        "title": "The Behavior of White Sharks and Their Pinniped Prey during Predatory Attacks",
+        "score": 3.4138856,
+        "doi": "10.1016\/b978-012415031-7\/50017-3",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 460,
+          "section": "Introduction",
+          "context": "\u2026described as an agonistic threat to reduce resource competition among white sharks (Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by\u2026",
+          "references": [
+            "pone.0067380-Klimley1",
+            "pone.0067380-Klimley2",
+            "pone.0067380-Sperone1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 23,
+      "id": "pone.0067380-Klimley2"
+    },
+    "pone.0067380-Klimley1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "info": {
+        "text": "22 Klimley AP, Pyle P, Anderson SD (1996) Tail slap and breach: agonistic display signals in white sharks. In: Klimley AP, Ainley DG, editors. Great White Sharks: The Biology of Carcharodon carcharias . Academic Press, San Diego. 241\u2013255."
+      },
+      "mentions": 2,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 460,
+          "section": "Introduction",
+          "context": "\u2026described as an agonistic threat to reduce resource competition among white sharks (Carcharodon carcharias) in close proximity to each other [22]\u2013[24], though the behaviour was less interpretable when conducted by\u2026",
+          "references": [
+            "pone.0067380-Klimley1",
+            "pone.0067380-Klimley2",
+            "pone.0067380-Sperone1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 6756,
+          "section": "Discussion",
+          "context": "\u2026a dead seal floating in the vicinity \u201cif the vigor and frequency of its tail-slap were greater than its opponent\u201d [22]. Other studies have shown that large marine predators will\u2026",
+          "references": [
+            "pone.0067380-Klimley1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 22,
+      "id": "pone.0067380-Klimley1"
+    },
+    "pone.0067380-Lema1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1037\/0735-7036.116.2.145",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Sean C. Lema"
+          },
+          {
+            "fullname": "John T. Kelly"
+          }
+        ],
+        "first_author": {
+          "last_name": "Lema",
+          "first_name": "Sean C."
+        },
+        "end_page": "150",
+        "start_page": "145",
+        "issue": "2",
+        "volume": "116",
+        "year": "2002",
+        "journal": "Journal of Comparative Psychology",
+        "title": "The production of communication signals at the air-water and water-substrate boundaries.",
+        "score": 2.6994905,
+        "doi": "10.1037\/0735-7036.116.2.145",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 433,
+          "section": "Introduction",
+          "context": "\u2026range of marine predators. Humpback and sperm whales (Megaptera novaeanglia and Physeter catodon) communicate over great distances with \u2018aerial\u2019 tail-slaps [19]\u2013[21], and a similar surface behaviour was described as an\u2026",
+          "references": [
+            "pone.0067380-Whitehead1",
+            "pone.0067380-Waters1",
+            "pone.0067380-Lema1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 21,
+      "id": "pone.0067380-Lema1"
+    },
+    "pone.0067380-Waters1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1139\/z90-289",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Susan Waters"
+          },
+          {
+            "fullname": "Hal Whitehead"
+          }
+        ],
+        "first_author": {
+          "last_name": "Waters",
+          "first_name": "Susan"
+        },
+        "end_page": "2082",
+        "start_page": "2076",
+        "issue": "10",
+        "volume": "68",
+        "year": "1990",
+        "journal": "Canadian Journal of Zoology",
+        "title": "Aerial behaviour in sperm whales",
+        "score": 4.385276,
+        "doi": "10.1139\/z90-289",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 433,
+          "section": "Introduction",
+          "context": "\u2026range of marine predators. Humpback and sperm whales (Megaptera novaeanglia and Physeter catodon) communicate over great distances with \u2018aerial\u2019 tail-slaps [19]\u2013[21], and a similar surface behaviour was described as an\u2026",
+          "references": [
+            "pone.0067380-Whitehead1",
+            "pone.0067380-Waters1",
+            "pone.0067380-Lema1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 20,
+      "id": "pone.0067380-Waters1"
+    },
+    "pone.0067380-Whitehead1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1038\/scientificamerican0385-84",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Hal Whitehead"
+          }
+        ],
+        "first_author": {
+          "last_name": "Whitehead",
+          "first_name": "Hal"
+        },
+        "end_page": "93",
+        "start_page": "84",
+        "issue": "3",
+        "volume": "252",
+        "year": "1985",
+        "journal": "Scientific American",
+        "title": "Why Whales Leap",
+        "score": 4.729584,
+        "doi": "10.1038\/scientificamerican0385-84",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 433,
+          "section": "Introduction",
+          "context": "\u2026range of marine predators. Humpback and sperm whales (Megaptera novaeanglia and Physeter catodon) communicate over great distances with \u2018aerial\u2019 tail-slaps [19]\u2013[21], and a similar surface behaviour was described as an\u2026",
+          "references": [
+            "pone.0067380-Whitehead1",
+            "pone.0067380-Waters1",
+            "pone.0067380-Lema1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 19,
+      "id": "pone.0067380-Whitehead1"
+    },
+    "pone.0067380-Strasburg1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "info": {
+        "text": "18 Strasburg DW ( 1958 ) Distribution, abundance, and habits of pelagic sharks in the Central Pacific Ocean . US Fish Bull Fish Wild S 58 : 335 \u2013 361 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 363,
+          "section": "Introduction",
+          "context": "\u2026tethered bait using their caudal fins. Thresher sharks have also been frequently foul-hooked in the tails by fishermen longlining them [9], [18]. While it has been suggested that bigeye (Alopias supersiliosus)\u2026",
+          "references": [
+            "pone.0067380-Baum1",
+            "pone.0067380-Strasburg1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 18,
+      "id": "pone.0067380-Strasburg1"
+    },
+    "pone.0067380-Aalbers1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 2
+      },
+      "doi": "10.1111\/j.1095-8649.2010.02616.x",
+      "info": {
+        "authors": [
+          {
+            "fullname": "S. A. Aalbers"
+          },
+          {
+            "fullname": "D. Bernal"
+          },
+          {
+            "fullname": "C. A. Sepulveda"
+          }
+        ],
+        "first_author": {
+          "last_name": "Aalbers",
+          "first_name": "S. A."
+        },
+        "end_page": "1868",
+        "start_page": "1863",
+        "issue": "7",
+        "volume": "76",
+        "journal": "Journal of Fish Biology",
+        "title": "The functional role of the caudal fin in the feeding ecology of the common thresher shark Alopias vulpinus",
+        "score": 4.9308424,
+        "doi": "10.1111\/j.1095-8649.2010.02616.x",
+        "source": "crossref"
+      },
+      "mentions": 3,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 315,
+          "section": "Introduction",
+          "context": "\u2026their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was recently quantified [17] though descriptions of the behaviour remain vague. Under controlled conditions\u2026",
+          "references": [
+            "pone.0067380-Aalbers1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 390,
+          "section": "Introduction",
+          "context": "\u2026that bigeye (Alopias supersiliosus) and pelagic thresher sharks may employ similar methods of hunting to those described for A. vulpinus [7], [17], the kinematics that structure alopiid predatory behaviours in the\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Aalbers1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 6258,
+          "section": "Discussion",
+          "context": "\u2026records showed that the dorsal margin of a thresher shark's caudal fin, which is flexible and narrows to the tip [7], [8], [17], [28], contributed most to the angular excursion of a tail-slap.\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Liu1",
+            "pone.0067380-Aalbers1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 17,
+      "id": "pone.0067380-Aalbers1"
+    },
+    "pone.0067380-Stillwell1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "info": {
+        "text": "16 Stillwell CE , Casey JG ( 1976 ) Observations of the bigeye thresher shark, Alopias superciliosus , in the Western North Atlantic . Fish Bull 74 : 221 \u2013 225 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 303,
+          "section": "Introduction",
+          "context": "\u2026to their taxa, it has long been speculated that thresher sharks use their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was\u2026",
+          "references": [
+            "pone.0067380-Allen1",
+            "pone.0067380-Breder1",
+            "pone.0067380-Stillwell1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 16,
+      "id": "pone.0067380-Stillwell1"
+    },
+    "pone.0067380-Breder1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "info": {
+        "text": "15 Breder CM Jr ( 1929 ) Certain effects in the habits of schooling fishes, as based on the observation of Jenkinsia . Am Mus Novit 382 : 1 \u2013 5 ."
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 303,
+          "section": "Introduction",
+          "context": "\u2026to their taxa, it has long been speculated that thresher sharks use their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was\u2026",
+          "references": [
+            "pone.0067380-Allen1",
+            "pone.0067380-Breder1",
+            "pone.0067380-Stillwell1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 15,
+      "id": "pone.0067380-Breder1"
+    },
+    "pone.0067380-Allen1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.1126\/science.58.1489.31-a",
+      "info": {
+        "authors": [
+          {
+            "fullname": "W. E. Allen"
+          }
+        ],
+        "first_author": {
+          "last_name": "Allen",
+          "first_name": "W. E."
+        },
+        "end_page": "32",
+        "start_page": "31",
+        "issue": "1489",
+        "volume": "58",
+        "year": "1923",
+        "journal": "Science",
+        "title": "BEHAVIOR OF THE THRESHER SHARK",
+        "score": 3.7278562,
+        "doi": "10.1126\/science.58.1489.31-a",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 303,
+          "section": "Introduction",
+          "context": "\u2026to their taxa, it has long been speculated that thresher sharks use their tails to corral and stun their prey [14]\u2013[16]. Some empirical evidence for this unusual hunting strategy was\u2026",
+          "references": [
+            "pone.0067380-Allen1",
+            "pone.0067380-Breder1",
+            "pone.0067380-Stillwell1"
+          ],
+          "count": 3
+        }
+      ],
+      "index": 14,
+      "id": "pone.0067380-Allen1"
+    },
+    "pone.0067380-Heithaus1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "info": {
+        "text": "13 Heithaus MR (2004) Predator-Prey Interactions. In: Carrier JC, Musick JA, Heithaus MR, editors. Biology of Sharks and their Relatives. CRC Press. 524\u2013551. CRC Press."
+      },
+      "mentions": 2,
+      "median_co_citations": 1.5,
+      "citation_groups": [
+        {
+          "word_position": 281,
+          "section": "Introduction",
+          "context": "Predation strategies employed by sharks are diverse and vary among species and individuals [11]\u2013[13]. Unique to their taxa, it has long been speculated\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Heithaus1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 6797,
+          "section": "Discussion",
+          "context": "\u2026of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use the technique to corral schooling prey [7], [13]. Since field reports of two or more thresher sharks\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Heithaus1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 13,
+      "id": "pone.0067380-Heithaus1"
+    },
+    "pone.0067380-Motta1": {
+      "sections": {
+        "Discussion": 1,
+        "Methods": 1,
+        "Introduction": 1
+      },
+      "info": {
+        "text": "12 Motta PJ , Wilga CD ( 2001 ) Advances in the study of feeding behaviors, mechanisms, and mechanics of sharks . Environ Biol Fish 60 : 131 \u2013 156 ."
+      },
+      "mentions": 3,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 281,
+          "section": "Introduction",
+          "context": "Predation strategies employed by sharks are diverse and vary among species and individuals [11]\u2013[13]. Unique to their taxa, it has long been speculated\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Heithaus1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 1319,
+          "section": "Methods",
+          "context": "The terms \u2018motion\u2019, \u2018mechanics\u2019 and \u2018kinematics\u2019 were adapted from their standard uses in the literature [12]. Motion referred to a change in position of the\u2026",
+          "references": [
+            "pone.0067380-Motta1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 5724,
+          "section": "Discussion",
+          "context": "\u2026successful, a thresher shark consumed more than one sardine. Carnivorous oceanic sharks generally pursue one prey item at a time [7], [12], [34], [35]. Prey capture is however, infrequent compared to the time\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 12,
+      "id": "pone.0067380-Motta1"
+    },
+    "pone.0067380-Bres1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "doi": "10.1007\/bf00045229",
+      "info": {
+        "authors": [
+          {
+            "fullname": "M. Bres"
+          }
+        ],
+        "first_author": {
+          "last_name": "Bres",
+          "first_name": "M."
+        },
+        "end_page": "159",
+        "start_page": "133",
+        "issue": "2",
+        "volume": "3",
+        "year": "1993",
+        "journal": "Reviews in Fish Biology and Fisheries",
+        "title": "The behaviour of sharks",
+        "score": 2.933986,
+        "doi": "10.1007\/bf00045229",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 2.5,
+      "citation_groups": [
+        {
+          "word_position": 281,
+          "section": "Introduction",
+          "context": "Predation strategies employed by sharks are diverse and vary among species and individuals [11]\u2013[13]. Unique to their taxa, it has long been speculated\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Heithaus1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 5751,
+          "section": "Discussion",
+          "context": "\u2026however, infrequent compared to the time spent searching, and energy expenditure can be high since many prey items are elusive [11], [34]\u2013[36]. It has been suggested that large marine predators are\u2026",
+          "references": [
+            "pone.0067380-Bres1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1",
+            "pone.0067380-Klimley3"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 11,
+      "id": "pone.0067380-Bres1"
+    },
+    "pone.0067380-Wahnbaeck1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "info": {
+        "text": "10 Wahnbaeck C, Fordham F, Gibson C (2007) More oceanic sharks added to the IUCN Red List. IUCN press release Feb 22, 2007. Available: http:\/\/www.iucn.org\/news_events\/news\/?103\/More-oceanic-sharks-added-to-the-IUCN-Red-List . Accessed 2012 May 3."
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 204,
+          "section": "Introduction",
+          "context": "\u2026and are classed as \u2018vulnerable\u2019 by the International Union for the Conservation of Nature and Natural Resources' (IUCN) Red List [10]. Since the summer of 2010, pelagic thresher sharks have\u2026",
+          "references": [
+            "pone.0067380-Wahnbaeck1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 10,
+      "id": "pone.0067380-Wahnbaeck1"
+    },
+    "pone.0067380-Baum1": {
+      "sections": {
+        "Introduction": 2
+      },
+      "info": {
+        "text": "9 Baum JK , Myers RA , Kehler DG , Worm B , Harley SJ , et al . ( 2003 ) Collapse and conservation of shark populations in the northwest Atlantic . Science 299 : 389 \u2013 392 ."
+      },
+      "mentions": 2,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 174,
+          "section": "Introduction",
+          "context": "\u2026the three recognised thresher shark (Alopiidae) species [7]. Described as cosmopolitan sharks that frequent warm and temperate offshore waters circumglobally [8], [9], pelagic thresher sharks mature late, have low fecundity and\u2026",
+          "references": [
+            "pone.0067380-Liu1",
+            "pone.0067380-Baum1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 363,
+          "section": "Introduction",
+          "context": "\u2026tethered bait using their caudal fins. Thresher sharks have also been frequently foul-hooked in the tails by fishermen longlining them [9], [18]. While it has been suggested that bigeye (Alopias supersiliosus)\u2026",
+          "references": [
+            "pone.0067380-Baum1",
+            "pone.0067380-Strasburg1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 9,
+      "id": "pone.0067380-Baum1"
+    },
+    "pone.0067380-Liu1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 1
+      },
+      "doi": "10.2307\/1447386",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Kwang-Ming Liu"
+          },
+          {
+            "fullname": "Che-Tsung Chen"
+          },
+          {
+            "fullname": "Tai-Hsiang Liao"
+          },
+          {
+            "fullname": "Shoou-Jeng Joung"
+          }
+        ],
+        "first_author": {
+          "last_name": "Liu",
+          "first_name": "Kwang-Ming"
+        },
+        "start_page": "68",
+        "issue": "1",
+        "volume": "1999",
+        "year": "1999",
+        "journal": "Copeia",
+        "title": "Age, Growth, and Reproduction of the Pelagic Thresher Shark, Alopias pelagicus in the Northwestern Pacific",
+        "score": 4.28957,
+        "doi": "10.2307\/1447386",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 2.0,
+      "citation_groups": [
+        {
+          "word_position": 174,
+          "section": "Introduction",
+          "context": "\u2026the three recognised thresher shark (Alopiidae) species [7]. Described as cosmopolitan sharks that frequent warm and temperate offshore waters circumglobally [8], [9], pelagic thresher sharks mature late, have low fecundity and\u2026",
+          "references": [
+            "pone.0067380-Liu1",
+            "pone.0067380-Baum1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 6258,
+          "section": "Discussion",
+          "context": "\u2026records showed that the dorsal margin of a thresher shark's caudal fin, which is flexible and narrows to the tip [7], [8], [17], [28], contributed most to the angular excursion of a tail-slap.\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Liu1",
+            "pone.0067380-Aalbers1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 8,
+      "id": "pone.0067380-Liu1"
+    },
+    "pone.0067380-Compagno1": {
+      "sections": {
+        "Discussion": 4,
+        "Introduction": 3
+      },
+      "doi": "10.1002\/iroh.19860710229",
+      "info": {
+        "authors": [
+          {
+            "fullname": "D. H. H. K\u00fchlmann"
+          }
+        ],
+        "first_author": {
+          "last_name": "K\u00fchlmann",
+          "first_name": "D. H. H."
+        },
+        "end_page": "295",
+        "start_page": "295",
+        "issue": "2",
+        "volume": "71",
+        "year": "1986",
+        "journal": "Internationale Revue der gesamten Hydrobiologie und Hydrographie",
+        "title": "L. J. V. Compagno: FAO Species Catalogue. Vol. 4, Sharks of the world. An Annotated and Illustrated Catalogue of Shark Species Known to Date. Part 1 \u2014 Hexanchiformes to Lamniformes. = FAO Fisheries Synopsis No. 125, Vol. 4, Part 1, 249 S., Rome: Food and Agriculture Organization of the United Nations. 1984. ISBN 92-5-101384-5",
+        "score": 4.16382,
+        "doi": "10.1002\/iroh.19860710229",
+        "source": "crossref"
+      },
+      "mentions": 7,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 161,
+          "section": "Introduction",
+          "context": "\u2026which comprises a scythe-like elongate tail fin, A. pelagicus are the smallest of the three recognised thresher shark (Alopiidae) species [7]. Described as cosmopolitan sharks that frequent warm and temperate\u2026",
+          "references": [
+            "pone.0067380-Compagno1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 249,
+          "section": "Introduction",
+          "context": "\u2026prey upon Indian sardines, Sardonella longiceps. Sardines are believed to constitute an important component in the diet of thresher sharks [7] (Oliver unpublished data), and it is proposed that they visit\u2026",
+          "references": [
+            "pone.0067380-Compagno1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 390,
+          "section": "Introduction",
+          "context": "\u2026that bigeye (Alopias supersiliosus) and pelagic thresher sharks may employ similar methods of hunting to those described for A. vulpinus [7], [17], the kinematics that structure alopiid predatory behaviours in the\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Aalbers1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 5724,
+          "section": "Discussion",
+          "context": "\u2026successful, a thresher shark consumed more than one sardine. Carnivorous oceanic sharks generally pursue one prey item at a time [7], [12], [34], [35]. Prey capture is however, infrequent compared to the time\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Motta1",
+            "pone.0067380-Motta2",
+            "pone.0067380-Martin1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 6204,
+          "section": "Discussion",
+          "context": "\u2026thresher sharks possess plesodic pectoral fins that are straight, broad-tipped and long, with radials extending far into their fin webs [7]. In addition to being specialised for fast cruising [50],\u2026",
+          "references": [
+            "pone.0067380-Compagno1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 6258,
+          "section": "Discussion",
+          "context": "\u2026records showed that the dorsal margin of a thresher shark's caudal fin, which is flexible and narrows to the tip [7], [8], [17], [28], contributed most to the angular excursion of a tail-slap.\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Liu1",
+            "pone.0067380-Aalbers1",
+            "pone.0067380-Oliver1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 6797,
+          "section": "Discussion",
+          "context": "\u2026of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use the technique to corral schooling prey [7], [13]. Since field reports of two or more thresher sharks\u2026",
+          "references": [
+            "pone.0067380-Compagno1",
+            "pone.0067380-Heithaus1"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 7,
+      "id": "pone.0067380-Compagno1"
+    },
+    "pone.0067380-Dudley2": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.2989\/1814232x.2010.502641",
+      "info": {
+        "authors": [
+          {
+            "fullname": "S FJ Dudley"
+          },
+          {
+            "fullname": "G Cliff"
+          }
+        ],
+        "first_author": {
+          "last_name": "Dudley",
+          "first_name": "S FJ"
+        },
+        "end_page": "397",
+        "start_page": "383",
+        "issue": "2",
+        "volume": "32",
+        "year": "2010",
+        "journal": "African Journal of Marine Science",
+        "title": "Influence of the annual sardine run on catches of large sharks in the protective gillnets off KwaZulu-Natal, South Africa, and the occurrence of sardine in shark diet",
+        "score": 4.6340437,
+        "doi": "10.2989\/1814232x.2010.502641",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 100,
+          "section": "Introduction",
+          "context": "\u2026influence over the abundance and distribution of carcharhinid and lamnid sharks that go there to satisfy part of their diets [5], [6]. In this study it is shown that pelagic thresher\u2026",
+          "references": [
+            "pone.0067380-Dudley1",
+            "pone.0067380-Dudley2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 6,
+      "id": "pone.0067380-Dudley2"
+    },
+    "pone.0067380-Dudley1": {
+      "sections": {
+        "Introduction": 1
+      },
+      "doi": "10.2989\/18142320509504072",
+      "info": {
+        "authors": [
+          {
+            "fullname": "SFJ Dudley"
+          },
+          {
+            "fullname": "G Cliff"
+          },
+          {
+            "fullname": "MP Zungu"
+          },
+          {
+            "fullname": "MJ Smale"
+          }
+        ],
+        "first_author": {
+          "last_name": "Dudley",
+          "first_name": "SFJ"
+        },
+        "end_page": "127",
+        "start_page": "107",
+        "issue": "1",
+        "volume": "27",
+        "year": "2005",
+        "journal": "African Journal of Marine Science",
+        "title": "Sharks caught in the protective gill nets off KwaZulu-Natal, South Africa. 10. The dusky shark Carcharhinus obscurus (Lesueur 1818)",
+        "score": 5.2007866,
+        "doi": "10.2989\/18142320509504072",
+        "source": "crossref"
+      },
+      "mentions": 1,
+      "median_co_citations": 1.0,
+      "citation_groups": [
+        {
+          "word_position": 100,
+          "section": "Introduction",
+          "context": "\u2026influence over the abundance and distribution of carcharhinid and lamnid sharks that go there to satisfy part of their diets [5], [6]. In this study it is shown that pelagic thresher\u2026",
+          "references": [
+            "pone.0067380-Dudley1",
+            "pone.0067380-Dudley2"
+          ],
+          "count": 2
+        }
+      ],
+      "index": 5,
+      "id": "pone.0067380-Dudley1"
+    },
+    "pone.0067380-ODonoghue1": {
+      "sections": {
+        "Introduction": 2
+      },
+      "doi": "10.2989\/1814232x.2010.501587",
+      "info": {
+        "authors": [
+          {
+            "fullname": "S H O\u2019Donoghue"
+          },
+          {
+            "fullname": "L Drapeau"
+          },
+          {
+            "fullname": "S FJ Dudley"
+          },
+          {
+            "fullname": "V M Peddemors"
+          }
+        ],
+        "first_author": {
+          "last_name": "O\u2019Donoghue",
+          "first_name": "S H"
+        },
+        "end_page": "307",
+        "start_page": "293",
+        "issue": "2",
+        "volume": "32",
+        "year": "2010",
+        "journal": "African Journal of Marine Science",
+        "title": "The KwaZulu-Natal sardine run: shoal distribution in relation to nearshore environmental conditions, 1997\u20132007",
+        "score": 3.3378541,
+        "doi": "10.2989\/1814232x.2010.501587",
+        "source": "crossref"
+      },
+      "mentions": 2,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 76,
+          "section": "Introduction",
+          "context": "\u2026similar purposes [1]. The seasonal run of the sardine Sardinops sagax in the nearshore waters of the South African coastline [4] has a strong influence over the abundance and distribution of\u2026",
+          "references": [
+            "pone.0067380-ODonoghue1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 551,
+          "section": "Introduction",
+          "context": "\u2026enabled the predator to stun up to 33 prey fish with one strike alone. Since sardines school in dense aggregations [4] it can be predicted that thresher sharks employing tail-slaps to\u2026",
+          "references": [
+            "pone.0067380-ODonoghue1"
+          ],
+          "count": 1
+        }
+      ],
+      "index": 4,
+      "id": "pone.0067380-ODonoghue1"
+    },
+    "pone.0067380-Domenici1": {
+      "sections": {
+        "Discussion": 6,
+        "Introduction": 2
+      },
+      "info": {
+        "text": "3 Domenici P , Batty RS , Simila T , Ogam E ( 1999 ) Killer whales ( Orcinus orca ) feeding on schooling herring ( Clupea harengus ) using underwater tail-slaps: kinematic analyses of field observations . J Exp Biol 203 : 283 \u2013 294 ."
+      },
+      "mentions": 8,
+      "median_co_citations": 1.5,
+      "citation_groups": [
+        {
+          "word_position": 43,
+          "section": "Introduction",
+          "context": "\u2026[1]. Killer whales, Orcinus orca, visit fjords in Norway where they use specialist techniques to hunt schooling herring Clupea harengus [2], [3], and dolphins are known to migrate through the central\u2026",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 509,
+          "section": "Introduction",
+          "context": "\u2026and killer whales tail-slap bait balls with such ferocity that they produce sound and shockwaves powerful enough to stun fish [2], [3], [26], [27].",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1",
+            "pone.0067380-Simon1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 5606,
+          "section": "Discussion",
+          "context": "\u2026preparation phase, may position a thresher shark within reach of the sardines it is preying upon to facilitate stunning them [3]. Lunges may also generate enough forward momentum to aid\u2026",
+          "references": [
+            "pone.0067380-Domenici1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 5809,
+          "section": "Discussion",
+          "context": "While the manoeuverability of small schooling fish can make individuals elusive to predators chasing them individually [3], they become vulnerable in numbers to tail-slaps adapted to\u2026",
+          "references": [
+            "pone.0067380-Domenici1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 5828,
+          "section": "Discussion",
+          "context": "\u2026individually [3], they become vulnerable in numbers to tail-slaps adapted to hunt them, and the shockwaves associated with the behaviour [2], [3], [40]. Being able to stun more than one prey item\u2026",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Saila1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 5976,
+          "section": "Discussion",
+          "context": "\u2026[43], causing dissolved gas to diffuse out of the water column into small bubbles that entrain and grow in size [39], [44]\u2013[46].",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Versluis1",
+            "pone.0067380-Patek1",
+            "pone.0067380-Guerra1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 6070,
+          "section": "Discussion",
+          "context": "\u2026known stalling threshold that occurs in a hydrofoil suggesting that overhead tail-slaps occurred at least in part, under stalling conditions [3], [47]. Because the bait ball at Pescador Island does not\u2026",
+          "references": [
+            "pone.0067380-Domenici1",
+            "pone.0067380-Sarrafa1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 6780,
+          "section": "Discussion",
+          "context": "\u2026shown that large marine predators will hunt socially, using their tails to control the shape and density of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use\u2026",
+          "references": [
+            "pone.0067380-Clua1",
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 3,
+      "id": "pone.0067380-Domenici1"
+    },
+    "pone.0067380-Simil1": {
+      "sections": {
+        "Discussion": 2,
+        "Introduction": 2
+      },
+      "doi": "10.1139\/z93-210",
+      "info": {
+        "authors": [
+          {
+            "fullname": "Tiu Simil\u00e4"
+          },
+          {
+            "fullname": "Fernando Ugarte"
+          }
+        ],
+        "first_author": {
+          "last_name": "Simil\u00e4",
+          "first_name": "Tiu"
+        },
+        "end_page": "1499",
+        "start_page": "1494",
+        "issue": "8",
+        "volume": "71",
+        "year": "1993",
+        "journal": "Canadian Journal of Zoology",
+        "title": "Surface and underwater observations of cooperatively feeding killer whales in northern Norway",
+        "score": 5.8579392,
+        "doi": "10.1139\/z93-210",
+        "source": "crossref"
+      },
+      "mentions": 4,
+      "median_co_citations": 2.5,
+      "citation_groups": [
+        {
+          "word_position": 43,
+          "section": "Introduction",
+          "context": "\u2026[1]. Killer whales, Orcinus orca, visit fjords in Norway where they use specialist techniques to hunt schooling herring Clupea harengus [2], [3], and dolphins are known to migrate through the central\u2026",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1"
+          ],
+          "count": 2
+        },
+        {
+          "word_position": 509,
+          "section": "Introduction",
+          "context": "\u2026and killer whales tail-slap bait balls with such ferocity that they produce sound and shockwaves powerful enough to stun fish [2], [3], [26], [27].",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1",
+            "pone.0067380-Simon1"
+          ],
+          "count": 4
+        },
+        {
+          "word_position": 5828,
+          "section": "Discussion",
+          "context": "\u2026individually [3], they become vulnerable in numbers to tail-slaps adapted to hunt them, and the shockwaves associated with the behaviour [2], [3], [40]. Being able to stun more than one prey item\u2026",
+          "references": [
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Saila1"
+          ],
+          "count": 3
+        },
+        {
+          "word_position": 6780,
+          "section": "Discussion",
+          "context": "\u2026shown that large marine predators will hunt socially, using their tails to control the shape and density of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use\u2026",
+          "references": [
+            "pone.0067380-Clua1",
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 2,
+      "id": "pone.0067380-Simil1"
+    },
+    "pone.0067380-Clua1": {
+      "sections": {
+        "Discussion": 1,
+        "Introduction": 3
+      },
+      "info": {
+        "text": "1 Clua E , Grosvalet F ( 2000 ) Mixed-species feeding aggregation of dolphins, large tunas and seabirds in the Azores. Aquat. Living Resour . 14 : 11 \u2013 18 ."
+      },
+      "mentions": 4,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 23,
+          "section": "Introduction",
+          "context": "\u2026aggregations of prey fishes, commonly termed \u2018bait balls\u2019, attract large marine predators to areas of high productivity across the globe [1]. Killer whales, Orcinus orca, visit fjords in Norway where\u2026",
+          "references": [
+            "pone.0067380-Clua1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 58,
+          "section": "Introduction",
+          "context": "\u2026hunt schooling herring Clupea harengus [2], [3], and dolphins are known to migrate through the central Azores for similar purposes [1]. The seasonal run of the sardine Sardinops sagax in\u2026",
+          "references": [
+            "pone.0067380-Clua1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 488,
+          "section": "Introduction",
+          "context": "\u2026conducted by bait-attracted individuals [25]. Dolphins (Delphinus delphis) control the shape and density of schooling prey fish using their tails [1], and killer whales tail-slap bait balls with such ferocity\u2026",
+          "references": [
+            "pone.0067380-Clua1"
+          ],
+          "count": 1
+        },
+        {
+          "word_position": 6780,
+          "section": "Discussion",
+          "context": "\u2026shown that large marine predators will hunt socially, using their tails to control the shape and density of bait balls [1]\u2013[3], [26], and it has been speculated that thresher sharks use\u2026",
+          "references": [
+            "pone.0067380-Clua1",
+            "pone.0067380-Simil1",
+            "pone.0067380-Domenici1",
+            "pone.0067380-Deecke1"
+          ],
+          "count": 4
+        }
+      ],
+      "index": 1,
+      "id": "pone.0067380-Clua1"
+    }
+  },
+  "doi": "10.1371\/journal.pone.0067380"
+}
