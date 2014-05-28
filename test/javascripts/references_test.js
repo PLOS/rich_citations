@@ -33,3 +33,28 @@ test("mkSortString", function () {
     strictEqual(mkSortString("Hello, world"), "hello world");
     strictEqual(mkSortString("the standard hello world of computing"), "standard hello world of computing");
 });
+
+test("mkSortField", function () {
+    var ref = {
+        mentions: 5,
+        index: 2,
+        citation_groups: [
+            { word_position: 13 }
+        ],
+        info: {
+            title: "Hello, world",
+            first_author: {
+                last_name: "Doe",
+                first_name: "John"
+            },
+            year: 2013
+        }
+    };
+    strictEqual("hello world", mkSortField(ref, "title"));
+    strictEqual(5, mkSortField(ref, "mentions"));
+    strictEqual(13, mkSortField(ref, "appearance"));
+    strictEqual("doe john", mkSortField(ref, "author"));
+    strictEqual(2013, mkSortField(ref, "year"));
+    /* anything else should return index */
+    strictEqual(2, mkSortField(ref, "foobar"));
+});

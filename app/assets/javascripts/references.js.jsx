@@ -56,6 +56,25 @@ function arraySorter(a, b) {
     }
 }
 
+function mkSortField(ref, fieldname) {
+    if (fieldname === 'title') {
+        return mkSortString(ref.info.title);
+    } else if (fieldname === 'appearance') {
+        return ref.citation_groups[0].word_position;
+    } else if (fieldname === 'journal') {
+        return mkSortString(ref.info.journal);
+    } else if (fieldname === 'year') {
+        return ref.info.year;
+    } else if (fieldname === 'mentions') {
+        return ref.mentions;
+    } else if (fieldname === 'author') {
+        var first_author = ref.info.first_author;
+        return mkSortString(first_author.last_name + " " + first_author.first_name);
+    } else {
+        return ref.index;
+    }
+}
+
 /**
  * Generate random UUID that can be use as an id for generated nodes.
  */
