@@ -47,14 +47,25 @@ test("mkSortField", function () {
                 last_name: "Doe",
                 first_name: "John"
             },
+            journal: "Journal of Silly Studies",
             year: 2013
         }
     };
+    var refNoInfo = { mentions: 10, index: 1, citation_groups: [ { word_position: 83 }] };
     strictEqual("hello world", mkSortField(ref, "title"));
     strictEqual(5, mkSortField(ref, "mentions"));
     strictEqual(13, mkSortField(ref, "appearance"));
     strictEqual("doe john", mkSortField(ref, "author"));
     strictEqual(2013, mkSortField(ref, "year"));
-    /* anything else should return index */
-    strictEqual(2, mkSortField(ref, "foobar"));
+    strictEqual(2, mkSortField(ref, "index"));
+    strictEqual("journal of silly studies", mkSortField(ref, "journal"));
+
+    /* reference with no info */
+    strictEqual(null, mkSortField(refNoInfo, "author"));
+    strictEqual(null, mkSortField(refNoInfo, "year"));
+    strictEqual(null, mkSortField(refNoInfo, "title"));
+    strictEqual(null, mkSortField(refNoInfo, "journal"));
+    
+    /* anything else should return null */
+    strictEqual(null, mkSortField(ref, "foobar"));
 });

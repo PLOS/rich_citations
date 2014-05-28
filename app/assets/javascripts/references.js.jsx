@@ -57,21 +57,27 @@ function arraySorter(a, b) {
 }
 
 function mkSortField(ref, fieldname) {
+    var info = ref.info;
+    if (info === undefined) {
+        info = null;
+    }
     if (fieldname === 'title') {
-        return mkSortString(ref.info.title);
+        return info && mkSortString(info.title);
     } else if (fieldname === 'appearance') {
         return ref.citation_groups[0].word_position;
     } else if (fieldname === 'journal') {
-        return mkSortString(ref.info.journal);
+        return info && mkSortString(info.journal);
     } else if (fieldname === 'year') {
-        return ref.info.year;
+        return info && info.year;
     } else if (fieldname === 'mentions') {
         return ref.mentions;
     } else if (fieldname === 'author') {
-        var first_author = ref.info.first_author;
-        return mkSortString(first_author.last_name + " " + first_author.first_name);
-    } else {
+        var first_author = info && info.first_author;
+        return first_author && mkSortString(first_author.last_name + " " + first_author.first_name);
+    } else if (fieldname === "index") {
         return ref.index;
+    } else {
+        return null;
     }
 }
 
