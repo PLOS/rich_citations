@@ -34,6 +34,29 @@ function getReferenceId (el) {
 }
 
 /**
+ * Function to sort two array by their sort field, which is an array
+ * of comparable things (numbers or strings) starting with the most
+ * signficant.
+ */
+function arraySorter(a, b) {
+    var retval = _.chain(_.zip(a.sort, b.sort)).map(function (x) {
+        var aval = x[0];
+        var bval = x[1];
+        if (typeof(aval) === "number") {
+            return aval - bval;
+        } else {
+            return aval.localeCompare(bval);
+        };
+    }).find(function(n) { return n !== 0; }).value();
+    if (retval === undefined) {
+        /* all the same, return 0 */
+        return 0;
+    } else {
+        return retval;
+    }
+}
+
+/**
  * Generate random UUID that can be use as an id for generated nodes.
  */
 function guid() {
