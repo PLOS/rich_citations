@@ -76,6 +76,21 @@ function jq(myid) {
     return "#" + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
 }
 
+/* custom pipeline with more limited stop words & no stemming for sorting */
+var sortPipeline = new lunr.Pipeline();
+sortPipeline.add(
+    lunr.trimmer,
+    function (token) {
+        if (["the","a","an"].indexOf(token) === -1) return token;
+    }
+);
+
+/* make fields for sorting */
+function mkSortString(s) {
+    if (!s) { return null; }
+    else { return sortPipeline.run(lunr.tokenizer(s)).join(" "); }
+}
+
 /** 
  * Merge citation reference li elements and JSON data.
  */

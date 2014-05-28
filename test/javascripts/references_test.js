@@ -28,3 +28,8 @@ test("arraySorter", function () {
     var beta =  {sort: ["a", 1, 1, 1]};
     equal([beta, alpha].sort(arraySorter)[0], alpha);
 });
+
+test("mkSortString", function () {
+    strictEqual(mkSortString("Hello, world"), "hello world");
+    strictEqual(mkSortString("the standard hello world of computing"), "standard hello world of computing");
+});
