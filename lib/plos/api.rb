@@ -52,8 +52,8 @@ module Plos
 
       response = http_post(url,
                            query,
-                           'Accept'       => 'application/json',
-                           'Content-Type' => 'application/x-www-form-urlencoded')
+                           'Accept'       => Mime::JSON,
+                           'Content-Type' => Mime::URL_ENCODED_FORM )
 
       json = JSON.parse(response)
       json['response']['docs']
@@ -139,13 +139,15 @@ module Plos
     def self.parse_headers(original)
       case original
         when :xml
-          { 'Accept' => 'application/xml' }
+          { 'Accept' => Mime::XML.to_s }
         when :json
-          { 'Accept' => 'application/json' }
+          { 'Accept' => Mime::JSON.to_s }
         when :js
-          { 'Accept' => 'application/javascript' }
+          { 'Accept' => Mime::JS.to_s }
         when Symbol
           { 'Accept' => "application/#{original}" }
+        when Hash
+          original.each { |k,v| original[k] = v.to_s }
         else
           original
       end

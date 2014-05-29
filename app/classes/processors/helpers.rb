@@ -16,7 +16,11 @@ module Processors::Helpers
   end
 
   def reference_by_index(index)
-    references.find { |id, ref| ref[:index] == index }.second
+    references.find { |id, ref| ref[:index] == index }.try(:second)
+  end
+
+  def reference_by_identifier(identifier)
+    references.find { |id, ref| ref[:doi] == identifier }.try(:second)
   end
 
   def citation_groups
