@@ -1,5 +1,5 @@
 module Processors
-  class Paper < Base
+  class PaperInfo < Base
     include Helpers
 
     def process
