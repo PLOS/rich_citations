@@ -60,21 +60,18 @@ function arraySorter(a, b) {
 
 function mkSortField(ref, fieldname) {
     var info = ref.info;
-    if (info === undefined) {
-        info = null;
-    }
     if (fieldname === 'title') {
-        return info && mkSortString(info.title);
+        return mkSortString(info.title);
     } else if (fieldname === 'appearance') {
         return ref.citation_groups[0].word_position;
     } else if (fieldname === 'journal') {
-        return info && mkSortString(info.journal);
+        return mkSortString(info.journal);
     } else if (fieldname === 'year') {
-        return (info && info.year) || null;
+        return info.year || null;
     } else if (fieldname === 'mentions') {
         return ref.mentions;
     } else if (fieldname === 'author') {
-        var first_author = info && info.first_author;
+        var first_author = info.first_author;
         return (first_author && mkSortString(first_author.last_name + " " + first_author.first_name)) || null;
     } else if (fieldname === "index") {
         return ref.index;
