@@ -101,6 +101,21 @@ function sortReferences (refs, by) {
             _.pluck(unsortable.sort(arraySorter), 'data')];
 }
 
+function mkSearchResultsFilter(idx, filterText) {
+    if (filterText) {
+        var resultHash = {};
+        idx.search(filterText).map(function (res) {
+            resultHash[res['ref']] = res['score'];
+        });
+        return function (ref) {
+            return (resultHash[ref.id] != null);
+        };
+    } else {
+        /* by default return all results */
+        return function (e) { return true; };
+    }
+}
+
 /**
  * Generate random UUID that can be use as an id for generated nodes.
  */

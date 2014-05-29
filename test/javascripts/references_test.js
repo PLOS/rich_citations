@@ -50,6 +50,18 @@ test("mkSortField", function () {
         });
 });
 
+test("mkSearchResultsFilter", function () {
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            var filter = mkSearchResultsFilter(buildIndex(fixture.references), "odontodactylus");
+            var results = _.filter(fixture.references, filter);
+            strictEqual(results.length, 1);
+            strictEqual(results[0].id, "pone.0067380-Patek1");
+            start();
+        });
+});
+
 test("buildIndex", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
