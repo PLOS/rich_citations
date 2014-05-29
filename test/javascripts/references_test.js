@@ -1,21 +1,12 @@
 //= require jquery
 
-fixture.preload("journal.pone.0067380.html", "journal.pone.0067380.json");
-
-module("rich citations javascript", {
-  setup: function() {
-      this.fixtures = fixture.load("journal.pone.0067380.html", "journal.pone.0067380.json", true);
-  }
-});
+var fixture = 
+console.log(fixture);
 
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");
     equal(jq("hello:world"), "#hello\\:world");
     equal(jq("hello_world"), "#hello_world");
-});
-
-test("loads fixtures", function() {
-  ok(document.getElementById("references").tagName === "A", "is in the dom");
 });
 
 test("arraySorter", function () {
@@ -37,38 +28,48 @@ test("mkSortString", function () {
 });
 
 test("mkSortField", function () {
-    var ref = this.fixtures[1].references["pone.0067380-Lowry1"];
-    var refNoInfo = this.fixtures[1].references["pone.0067380-Wahnbaeck1"];
-    strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
-    strictEqual(1, mkSortField(ref, "mentions"));
-    strictEqual(6487, mkSortField(ref, "appearance"));
-    strictEqual("lowry d", mkSortField(ref, "author"));
-    strictEqual("2008", mkSortField(ref, "year"));
-    strictEqual(55, mkSortField(ref, "index"));
-    strictEqual("journal of royal society interface", mkSortField(ref, "journal"));
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            var ref = fixture.references["pone.0067380-Lowry1"];
+            var refNoInfo = fixture.references["pone.0067380-Wahnbaeck1"];
+            strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
+            strictEqual(1, mkSortField(ref, "mentions"));
+            strictEqual(6487, mkSortField(ref, "appearance"));
+            strictEqual("lowry d", mkSortField(ref, "author"));
+            strictEqual("2008", mkSortField(ref, "year"));
+            strictEqual(55, mkSortField(ref, "index"));
+            strictEqual("journal of royal society interface", mkSortField(ref, "journal"));
 
-    /* reference with no info */
-    strictEqual(null, mkSortField(refNoInfo, "author"));
-    strictEqual(null, mkSortField(refNoInfo, "year"));
-    strictEqual(null, mkSortField(refNoInfo, "title"));
-    strictEqual(null, mkSortField(refNoInfo, "journal"));
-    
-    /* anything else should return null */
-    strictEqual(null, mkSortField(ref, "foobar"));
+            /* reference with no info */
+            strictEqual(null, mkSortField(refNoInfo, "author"));
+            strictEqual(null, mkSortField(refNoInfo, "year"));
+            strictEqual(null, mkSortField(refNoInfo, "title"));
+            strictEqual(null, mkSortField(refNoInfo, "journal"));
+            
+            /* anything else should return null */
+            strictEqual(null, mkSortField(ref, "foobar"));
+            start();
+        });
 });
 
 test("sortReferences", function () {
-    _.each([{by: "index",
-             first: "pone.0067380-Clua1",
-             last: "pone.0067380-Lowry1",
-             unsortableCount: 0}],
-           function (d) {
-               var refs = this.fixtures[1].references;
-               var results = sortReferences(refs, d.by);
-               var sorted = results[0],
-                   unsorted = results[1];
-               strictEqual(d.unsortableCount, unsorted.length, "unos");
-               strictEqual(sorted[0].id, d.first, "ayr");
-               strictEqual(sorted[sorted.length-1].id, d.last, "yar");
-             }.bind(this));
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            _.each([{by: "index",
+                     first: "pone.0067380-Clua1",
+                     last: "pone.0067380-Lowry1",
+                     unsortableCount: 0}],
+                   function (d) {
+                       var refs = fixture.references;
+                       var results = sortReferences(refs, d.by);
+                       var sorted = results[0],
+                           unsorted = results[1];
+                       strictEqual(d.unsortableCount, unsorted.length, "unos");
+                       strictEqual(sorted[0].id, d.first, "ayr");
+                       strictEqual(sorted[sorted.length-1].id, d.last, "yar");
+                   }.bind(this));
+            start();
+        });
 });
