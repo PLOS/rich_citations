@@ -252,7 +252,7 @@ var Reference = React.createClass({
 
 var SortedReferencesList = React.createClass({
     isGrouped: function() {
-        return false;
+        return ["journal","appearance"].indexOf(this.props.current.by) !== -1;
     },
     grouper: function (ref) {
         var by = this.props.current.by;
@@ -296,10 +296,11 @@ var SortedReferencesList = React.createClass({
         return <li key={ref.id}><Reference reference={ ref } showLabel={ true } /></li>;
     },
     renderSortedReferenceList: function (sorted) {
-        if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
-
+        if (this.props.current.order == "desc") {
+            sorted = sorted.reverse();
+        }
         if (this.isGrouped()) {
-            return <div>{ this.renderGroupedReferenceList(_.chain(sorted).pluck('data').value()) }</div>;
+            return <div>{ this.renderGroupedReferenceList(sorted) }</div>;
         } else {
             return <ol className="references">{ _.map(sorted, this.renderReferenceItem) }</ol>;
         }
