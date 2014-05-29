@@ -20,6 +20,8 @@ test("loads fixtures", function() {
 
 test("arraySorter", function () {
     equal(0, arraySorter({sort: ["a"]}, {sort: ["a"]}));
+    equal(0, arraySorter({sort: [null]}, {sort: ["a"]}));
+    equal(0, arraySorter({sort: ["a"]}, {sort: [null]}));
     equal(-1, arraySorter({sort: ["a"]}, {sort: ["b"]}));
     equal(0, arraySorter({sort: ["a", 1]}, {sort: ["a", 1]}));
     equal(-1, arraySorter({sort: ["a", 1]}, {sort: ["a", 2]}));

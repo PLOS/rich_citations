@@ -42,7 +42,9 @@ function arraySorter(a, b) {
     var retval = _.chain(_.zip(a.sort, b.sort)).map(function (x) {
         var aval = x[0];
         var bval = x[1];
-        if (typeof(aval) === "number") {
+        if (aval === null || bval === null) {
+            return 0;
+        } else if (typeof(aval) === "number") {
             return aval - bval;
         } else {
             return aval.localeCompare(bval);
