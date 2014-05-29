@@ -81,6 +81,27 @@ function mkSortField(ref, fieldname) {
 }
 
 /**
+ * Sorts references by the given fieldname. Returns an array
+ * containing two entries, the first a sorted list of sortable
+ * elements, the second the unsortable elements.
+ */
+function sortReferences (refs, by) {
+    /* data structure to use for sorting */
+    var t = _.map(refs, function(ref) {
+        return { data: ref,
+                 sort: [mkSortField(ref, by), ref.index] };
+    });
+    var d =  _.partition(t, function (ref) {
+        return (ref.sort[0] !== null);
+    });
+    var sortable = d[0],
+        unsortable = d[1];
+
+    return [_.pluck(sortable.sort(arraySorter), 'data'),
+            _.pluck(unsortable.sort(arraySorter), 'data')];
+}
+
+/**
  * Generate random UUID that can be use as an id for generated nodes.
  */
 function guid() {

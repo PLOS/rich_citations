@@ -56,3 +56,19 @@ test("mkSortField", function () {
     /* anything else should return null */
     strictEqual(null, mkSortField(ref, "foobar"));
 });
+
+test("sortReferences", function () {
+    _.each([{by: "index",
+             first: "pone.0067380-Clua1",
+             last: "pone.0067380-Lowry1",
+             unsortableCount: 0}],
+           function (d) {
+               var refs = this.fixtures[1].references;
+               var results = sortReferences(refs, d.by);
+               var sorted = results[0],
+                   unsorted = results[1];
+               strictEqual(d.unsortableCount, unsorted.length, "unos");
+               strictEqual(sorted[0].id, d.first, "ayr");
+               strictEqual(sorted[sorted.length-1].id, d.last, "yar");
+             }.bind(this));
+});
