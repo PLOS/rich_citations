@@ -166,38 +166,6 @@ function buildReferenceData(json, elements) {
         retval[k]['html'] = html;
         retval[k]['text'] = $(selector).parent().first().text();
     });
-
-    var i = 1;
-    $("ol.references li").each(function (el) {
-        var id = getReferenceId($(this));
-        retval[id]['index'] = i;
-        i = i + 1;
-    });
-
-    /* custom pipeline with more limited stop words & no stemming for sorting*/
-    var pipeline = new lunr.Pipeline();
-    pipeline.add(
-        lunr.trimmer,
-        function (token) {
-            if (["the","a","an"].indexOf(token) === -1) return token;
-        }
-    );
-    
-    /* make fields for sorting */
-    function mkSortString(s) {
-        if (!s) { return null; }
-        else { return pipeline.run(lunr.tokenizer(s)).join(" "); }
-    }
-    $.each(retval, function (ignore, v) {
-        v['sortfields'] = {};
-        v['sortfields']['title'] = mkSortString(v.info.title);
-        v['sortfields']['index'] = v.index;
-        v['sortfields']['journal'] = mkSortString(v.info.journal);
-        v['sortfields']['year'] = mkSortString(v.info.year);
-        v['sortfields']['mentions'] = v.mentions;
-        var first_author = v.info.first_author;
-        v['sortfields']['author'] = first_author && mkSortString(first_author.last_name + ", " + first_author.first_name);
-    });
     return retval;
 }
 
@@ -283,44 +251,14 @@ var Reference = React.createClass({
 });
 
 var SortedReferencesList = React.createClass({
-    /**
-     * Function that can be passed to filter to remove items that
-     * cannot be sorted.
-     */
-    sortableFilter: function(ref) {
-        var v = ref.sortfields[this.props.current.by];
-        if (typeof(v) === "undefined" || v === null || v === "") {
-            return false;
-        } else {
-            return true;
-        }
-    },
-    /**
-     * Function to pass to filter to remove items that can be sorted.
-     */
-    unsortableFilter: function (ref) {
-        return !this.sortableFilter(ref);
-    },
-    /**
-     * Function to sort by the curre
-     */
-    sorter: function(a, b) {
-        var aval = a.sortfields[this.props.current.by];
-        var bval = b.sortfields[this.props.current.by];
-        if (typeof(aval) === "number") {
-            return aval - bval;
-        } else {
-            return aval.localeCompare(bval);
-        };
-    },
     isGrouped: function() {
-        return ["journal","index"].indexOf(this.props.current.by) !== -1;
+        return false;
     },
     grouper: function (ref) {
         var by = this.props.current.by;
         if (by === "journal") {
             return ref.info.journal;
-        } else if (by === "index") {
+        } else if (by === "appearance") {
             return ref.citation_groups[0].section;
         } else {
             return null;
@@ -347,7 +285,7 @@ var SortedReferencesList = React.createClass({
             setTimeout(function () {
                 var tokens = lunr.tokenizer(this.props.filterText);
                 /* highlight raw tokens & stemmed */
-                _.each($.unique(tokens.concat(idx.pipeline.run(tokens))), function (s) {
+                _.each($.unique(tokens.concat(this.idx.pipeline.run(tokens))), function (s) {
                     $("ol.references").highlight(s);
                 });
             }.bind(this), 1);
@@ -357,38 +295,26 @@ var SortedReferencesList = React.createClass({
         /* Build elements for react */
         return <li key={ref.id}><Reference reference={ ref } showLabel={ true } /></li>;
     },
-    renderSortedReferenceList: function (refs) {
-        var sorted = refs.filter(this.sortableFilter).sort(this.sorter);
-
+    renderSortedReferenceList: function (sorted) {
         if (this.props.current.order == "desc") { sorted = sorted.reverse(); }
 
         if (this.isGrouped()) {
-            return <div>{ this.renderGroupedReferenceList(sorted) }</div>;
+            return <div>{ this.renderGroupedReferenceList(_.chain(sorted).pluck('data').value()) }</div>;
         } else {
-            return <ol className="references">{ sorted.map(this.renderReferenceItem) }</ol>;
+            return <ol className="references">{ _.map(sorted, this.renderReferenceItem) }</ol>;
         }
     },
     render: function() {
-        var refs = $.map(this.props.references, function(val, key) { return val; }).
-                filter(this.props.searchResultsFilter);
-
-        var unsorted = refs.filter(this.unsortableFilter);
-
+        var t = sortReferences(_.filter(this.props.references, this.props.searchResultsFilter), this.props.current.by);
+        var sorted   = t[0],
+            unsorted = t[1];
         this.updateHighlighting();
 
-        var unsortableLink, unsortableHeader, noResults;
-        if (unsorted.length > 0) {
-            unsortableLink = <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p>;
-            unsortableHeader = <h5 id="unsortable">Unsortable</h5>;
-        }
-        if (refs.length === 0) {
-            noResults = <div>No results found.</div>;
-        }
         return <div>
-            { unsortableLink }
-            { this.renderSortedReferenceList(refs) }
-            { noResults }
-            { unsortableHeader }
+            { (unsorted.length > 0) ? <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p> : ""}
+            { this.renderSortedReferenceList(sorted) }
+            { (sorted.length === 0 && unsorted.length === 0) ? <div>No results found.</div> : "" }
+            { (unsorted.length > 0 ) ? <h5 id="unsortable">Unsortable</h5> : ""}
             <ol className="references">{ unsorted.map(this.renderReferenceItem) }</ol>
             </div>;
     }
@@ -472,7 +398,7 @@ var ReferencePopover = React.createClass({
         
 var ReferencesApp = React.createClass({
     getInitialState: function() {
-        return {sort: { by: "index", order: "asc" },
+        return {sort: { by: "appearance", order: "asc" },
                 filterText: '',
                 showDuplicates: false};
     },
@@ -482,6 +408,9 @@ var ReferencesApp = React.createClass({
         }.bind(this));
     },
     componentDidMount: function() {
+        /* build full-text index */
+        this.idx = buildIndex(this.props.references);
+
         $(window).bind('hashchange', function(e) {
             /* redraw when the fragment URL changes, to faciliate the link to the back button */
             this.setState({});
@@ -495,20 +424,6 @@ var ReferencesApp = React.createClass({
     handleSorterClick: function(by, order) {
         this.setState({sort: { by: by, order: order }});
     },
-    mkSearchResultsFilter: function () {
-        if (this.state.filterText) {
-            var resultHash = {};
-            idx.search(this.state.filterText).map(function (res) {
-                resultHash[res['ref']] = res['score'];
-            });
-            return function (ref) {
-                return (resultHash[ref.id] != null);
-            };
-        } else {
-            /* by default return all results */
-            return function (e) { return true; };
-        }
-    },
     toggleShowDuplicates: function() {
         this.setState({showDuplicates: !this.state.showDuplicates});
         return false;
@@ -517,7 +432,7 @@ var ReferencesApp = React.createClass({
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
             <ul>
-            <li><Sorter name="Index"    by="index"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Appearance"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
             <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /></li>
@@ -531,7 +446,8 @@ var ReferencesApp = React.createClass({
               current={this.state.sort}
               references={this.props.references}
               filterText={this.state.filterText}
-              searchResultsFilter={this.mkSearchResultsFilter()} />
+              searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
+              showDuplicates={ this.state.showDuplicates }/>
             </div>;
     }
 });
@@ -599,8 +515,6 @@ $(document).ready(function () {
     $.getJSON("/papers/" + doi + "?format=json", function(data) {
         /* build main data structure */
         var references = buildReferenceData(data);
-        /* build full-text index */
-        buildIndex(references);
         /* insert the container */
         $("<div id='richcites'></div>").insertBefore("#references");
         /* and drop into react */
