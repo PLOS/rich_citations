@@ -1,8 +1,5 @@
 //= require jquery
 
-var fixture = 
-console.log(fixture);
-
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");
     equal(jq("hello:world"), "#hello\\:world");
@@ -49,6 +46,18 @@ test("mkSortField", function () {
             
             /* anything else should return null */
             strictEqual(null, mkSortField(ref, "foobar"));
+            start();
+        });
+});
+
+test("buildIndex", function () {
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            var idx = buildIndex(fixture.references);
+            var results = idx.search("odontodactylus");
+            strictEqual(results.length, 1);
+            strictEqual(results[0].ref, "pone.0067380-Patek1");
             start();
         });
 });

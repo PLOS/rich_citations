@@ -14,12 +14,11 @@ var citationFilter = function (el) {
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
-var idx = lunr(function () {
-    this.field('title', { boost: 10 });
-    this.field('body');
-});
-
 function buildIndex(references) {
+    var idx = lunr(function () {
+        this.field('title', { boost: 10 });
+        this.field('body');
+    });
     for (var id in references) {
         var ref = references[id];
         var doc = { id:    ref.id,
@@ -27,6 +26,7 @@ function buildIndex(references) {
                     body:  ref.text };
         idx.add(doc);
     }
+    return idx;
 }
 
 function getReferenceId (el) {
