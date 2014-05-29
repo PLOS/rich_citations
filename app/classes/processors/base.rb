@@ -16,6 +16,11 @@ module Processors
       # nothing
     end
 
+    # lower priority execute sooner
+    def self.priority
+      50
+    end
+
     def self.dependencies
      nil
     end
