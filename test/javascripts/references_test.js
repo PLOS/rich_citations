@@ -60,15 +60,19 @@ test("sortReferences", function () {
             _.each([{by: "index",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Lowry1",
-                     unsortableCount: 0}],
+                     unsortableCount: 0},
+                    {by: "title",
+                     first: "pone.0067380-Simon1",
+                     last: "pone.0067380-Whitehead1",
+                     unsortableCount: 22}],
                    function (d) {
                        var refs = fixture.references;
                        var results = sortReferences(refs, d.by);
                        var sorted = results[0],
                            unsorted = results[1];
-                       strictEqual(d.unsortableCount, unsorted.length, "unos");
-                       strictEqual(sorted[0].id, d.first, "ayr");
-                       strictEqual(sorted[sorted.length-1].id, d.last, "yar");
+                       strictEqual(unsorted.length, d.unsortableCount);
+                       strictEqual(sorted[0].id, d.first);
+                       strictEqual(sorted[sorted.length-1].id, d.last);
                    }.bind(this));
             start();
         });
