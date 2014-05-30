@@ -275,10 +275,10 @@ var Reference = React.createClass({
 });
 
 var SortedReferencesList = React.createClass({
-    isGrouped: function() {
+    useHeadings: function() {
         return ["journal","appearance"].indexOf(this.props.current.by) !== -1;
     },
-    grouper: function (ref) {
+    headingGrouper: function (ref) {
         var by = this.props.current.by;
         if (by === "journal") {
             return ref.data.info.journal;
@@ -330,8 +330,8 @@ var SortedReferencesList = React.createClass({
         if (this.props.current.order == "desc") {
             sorted = sorted.reverse();
         }
-        if (this.isGrouped()) {
-            sorted = _.groupBy(sorted, this.grouper);
+        if (this.useHeadings()) {
+            sorted = _.groupBy(sorted, this.headingGrouper);
         }
         return <div>{ this.renderReferenceList(sorted) }</div>;
     },
