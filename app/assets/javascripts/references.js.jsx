@@ -288,15 +288,22 @@ var SortedReferencesList = React.createClass({
             return null;
         }
     },
-    renderGroupedReferenceList: function(refs) {
-        var grouped = _.groupBy(refs, this.grouper);
-        var retval = _.map(grouped, function (value, key) {
-            return <div key={ "citation_group_" + key }>
-                <p><strong>{ key }</strong></p>
-                <ol> { _.map(value, this.renderReferenceItem) } </ol>
+    renderReferenceList: function(refs) {
+        if ($.type(refs) === 'array') {
+            if ($.type(refs[0]) === 'array') {
+                /* grouped citations */
+                return <div>{ _.map(refs, this.renderReferenceList) }</div>
+            } else {
+                return <ol className="references">{ _.map(refs, this.renderReferenceItem) }</ol>;
+            }
+        } else {
+            return _.map(refs, function (value, key) {
+                return <div key={ "citation_group_" + key }>
+                    <p><strong>{ key }</strong></p>
+                    { this.renderReferenceList(value) }
                 </div>;
-        }.bind(this));
-        return retval;
+            }.bind(this));
+        }
     },
     updateHighlighting: function () {
         /* clear old highlights */
@@ -324,10 +331,9 @@ var SortedReferencesList = React.createClass({
             sorted = sorted.reverse();
         }
         if (this.isGrouped()) {
-            return <div>{ this.renderGroupedReferenceList(sorted) }</div>;
-        } else {
-            return <ol className="references">{ _.map(sorted, this.renderReferenceItem) }</ol>;
+            sorted = _.groupBy(sorted, this.grouper);
         }
+        return <div>{ this.renderReferenceList(sorted) }</div>;
     },
     render: function() {
         var filtered = _.filter(this.props.references, this.props.searchResultsFilter);
