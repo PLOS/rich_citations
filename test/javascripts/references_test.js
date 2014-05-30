@@ -78,20 +78,31 @@ test("sortReferences", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
-            _.each([{by: "index",
+            _.each([{by: "appearance",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Lowry1",
-                     unsortableCount: 0},
+                     sortableCount: 55,
+                     unsortableCount: 0,
+                     showRepeated: false},
+                    {by: "appearance",
+                     first: "pone.0067380-Clua1",
+                     last: "pone.0067380-Heithaus1",
+                     sortableCount: 91,
+                     unsortableCount: 0,
+                     showRepeated: true},
                     {by: "title",
                      first: "pone.0067380-Simon1",
                      last: "pone.0067380-Whitehead1",
-                     unsortableCount: 22}],
+                     sortableCount: 33,
+                     unsortableCount: 22,
+                     showRepeated: false}],
                    function (d) {
                        var refs = fixture.references;
-                       var results = sortReferences(refs, d.by);
+                       var results = sortReferences(refs, d.by, d.showRepeated);
                        var sorted = results[0],
                            unsorted = results[1];
                        strictEqual(unsorted.length, d.unsortableCount);
+                       strictEqual(sorted.length, d.sortableCount);
                        strictEqual(sorted[0].data.id, d.first);
                        strictEqual(sorted[sorted.length-1].data.id, d.last);
                    }.bind(this));
