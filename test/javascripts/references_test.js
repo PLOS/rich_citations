@@ -92,8 +92,8 @@ test("sortReferences", function () {
                        var sorted = results[0],
                            unsorted = results[1];
                        strictEqual(unsorted.length, d.unsortableCount);
-                       strictEqual(sorted[0].id, d.first);
-                       strictEqual(sorted[sorted.length-1].id, d.last);
+                       strictEqual(sorted[0].data.id, d.first);
+                       strictEqual(sorted[sorted.length-1].data.id, d.last);
                    }.bind(this));
             start();
         });

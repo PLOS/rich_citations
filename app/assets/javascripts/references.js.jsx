@@ -58,6 +58,9 @@ function arraySorter(a, b) {
     }
 }
 
+/**
+ * Make a sort field for this reference.
+ */
 function mkSortField(ref, fieldname) {
     var info = ref.info;
     if (fieldname === 'title') {
@@ -85,20 +88,31 @@ function mkSortField(ref, fieldname) {
  * containing two entries, the first a sorted list of sortable
  * elements, the second the unsortable elements.
  */
-function sortReferences (refs, by) {
+function sortReferences (refs, by, showRepeated) {
     /* data structure to use for sorting */
-    var t = _.map(refs, function(ref) {
-        return { data: ref,
-                 sort: [mkSortField(ref, by), ref.index] };
-    });
-    var d =  _.partition(t, function (ref) {
+    var t = [];
+    if (showRepeated && by === 'appearance') {
+        /* special case, show repeated citations in order of appearance */
+        _.each(refs, function(ref) {
+            _.each(ref.citation_groups, function (group) {
+                t.push({ data: ref,
+                         group: group,
+                         sort: [group.word_position, ref.index]});
+                  
+            });
+        });
+    } else {
+        t = _.map(refs, function(ref) {
+            return { data: ref,
+                     group: ref.citation_groups[0],
+                     sort: [mkSortField(ref, by), ref.index] };
+        });
+    }
+    return _.partition(t, function (ref) {
         return (ref.sort[0] !== null);
+    }).map(function(a) {
+        return a.sort(arraySorter);
     });
-    var sortable = d[0],
-        unsortable = d[1];
-
-    return [_.pluck(sortable.sort(arraySorter), 'data'),
-            _.pluck(unsortable.sort(arraySorter), 'data')];
 }
 
 function mkSearchResultsFilter(idx, filterText) {
