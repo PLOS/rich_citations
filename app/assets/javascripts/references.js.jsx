@@ -87,9 +87,8 @@ function mkSortField(ref, fieldname) {
 }
 
 /**
- * Sorts references by the given fieldname. Returns an array
- * containing two entries, the first a sorted list of sortable
- * elements, the second the unsortable elements.
+ * Sorts references by the given fieldname. Returns an object
+ * containing two values, sorted and unsortable.
  */
 function sortReferences (refs, by, showRepeated) {
     /* data structure to use for sorting */
@@ -111,11 +110,13 @@ function sortReferences (refs, by, showRepeated) {
                      sort: [mkSortField(ref, by), ref.index] };
         });
     }
-    return _.partition(t, function (ref) {
+    var retval = _.partition(t, function (ref) {
         return (ref.sort[0] !== null); // split into sortable, unsortable
     }).map(function(a) {
         return a.sort(arraySorter); // sort both (unsortable will be sorted by index)
     });
+    return {sorted:     retval[0],
+            unsortable: retval[1]};
 }
 
 /**
@@ -330,17 +331,15 @@ var SortedReferencesList = React.createClass({
     },
     render: function() {
         var filtered = _.filter(this.props.references, this.props.searchResultsFilter);
-        var t = sortReferences(filtered, this.props.current.by, this.props.showRepeated);
-        var sorted   = t[0],
-            unsorted = t[1];
+        var results = sortReferences(filtered, this.props.current.by, this.props.showRepeated);
         this.updateHighlighting();
 
         return <div>
-            { (unsorted.length > 0) ? <p>And <a href="#unsortable">{ unsorted.length } unsortable items</a></p> : ""}
-            { this.renderSortedReferenceList(sorted) }
-            { (sorted.length === 0 && unsorted.length === 0) ? <div>No results found.</div> : "" }
-            { (unsorted.length > 0 ) ? <h5 id="unsortable">Unsortable</h5> : ""}
-            <ol className="references">{ unsorted.map(this.renderReferenceItem) }</ol>
+            { (results.unsortable.length > 0) ? <p>And <a href="#unsortable">{ results.unsortable.length } unsortable items</a></p> : ""}
+            { this.renderSortedReferenceList(results.sorted) }
+            { (results.sorted.length === 0 && results.unsortable.length === 0) ? <div>No results found.</div> : "" }
+            { (results.unsortable.length > 0 ) ? <h5 id="unsortable">Unsortable</h5> : ""}
+            <ol className="references">{ results.unsortable.map(this.renderReferenceItem) }</ol>
             </div>;
     }
 });
