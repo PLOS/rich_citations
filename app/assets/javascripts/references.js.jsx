@@ -14,6 +14,9 @@ var citationFilter = function (el) {
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
+/**
+ * Build a full-text index from an array of references.
+ */
 function buildIndex(references) {
     var idx = lunr(function () {
         this.field('title', { boost: 10 });
@@ -109,12 +112,16 @@ function sortReferences (refs, by, showRepeated) {
         });
     }
     return _.partition(t, function (ref) {
-        return (ref.sort[0] !== null);
+        return (ref.sort[0] !== null); // split into sortable, unsortable
     }).map(function(a) {
-        return a.sort(arraySorter);
+        return a.sort(arraySorter); // sort both (unsortable will be sorted by index)
     });
 }
 
+/**
+ * Make a function suitable for filtering a reference list from a
+ * given index and a search string.
+ */
 function mkSearchResultsFilter(idx, filterText) {
     if (filterText) {
         var resultHash = {};
@@ -159,7 +166,9 @@ sortPipeline.add(
     }
 );
 
-/* make fields for sorting */
+/**
+ * Process a string for sorting.
+ */
 function mkSortString(s) {
     if (!s) { return null; }
     else { return sortPipeline.run(lunr.tokenizer(s)).join(" "); }
