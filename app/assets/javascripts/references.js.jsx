@@ -271,9 +271,9 @@ var SortedReferencesList = React.createClass({
     grouper: function (ref) {
         var by = this.props.current.by;
         if (by === "journal") {
-            return ref.info.journal;
+            return ref.data.info.journal;
         } else if (by === "appearance") {
-            return ref.citation_groups[0].section;
+            return ref.group.section;
         } else {
             return null;
         }
@@ -307,7 +307,7 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        return <li key={ref.id}><Reference reference={ ref } showLabel={ true } /></li>;
+        return <li key={ "" + ref.data.id + ref.group.word_position }><Reference reference={ ref.data } showLabel={ true } /></li>;
     },
     renderSortedReferenceList: function (sorted) {
         if (this.props.current.order == "desc") {
@@ -320,7 +320,8 @@ var SortedReferencesList = React.createClass({
         }
     },
     render: function() {
-        var t = sortReferences(_.filter(this.props.references, this.props.searchResultsFilter), this.props.current.by);
+        var filtered = _.filter(this.props.references, this.props.searchResultsFilter);
+        var t = sortReferences(filtered, this.props.current.by, this.props.showRepeated);
         var sorted   = t[0],
             unsorted = t[1];
         this.updateHighlighting();
@@ -415,7 +416,7 @@ var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "appearance", order: "asc" },
                 filterText: '',
-                showDuplicates: false};
+                showRepeated: false};
     },
     componentWillMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -439,8 +440,8 @@ var ReferencesApp = React.createClass({
     handleSorterClick: function(by, order) {
         this.setState({sort: { by: by, order: order }});
     },
-    toggleShowDuplicates: function() {
-        this.setState({showDuplicates: !this.state.showDuplicates});
+    toggleShowRepeated: function() {
+        this.setState({showRepeated: !this.state.showRepeated});
         return false;
     },
     render: function() {
@@ -454,15 +455,16 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/></li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
-            <Toggle onClick={ this.toggleShowDuplicates } checkStatus={ function() { return this.state.showDuplicates; }.bind(this) }>
-            Show duplicates
-        </Toggle>
+            { (this.state.sort.by === 'appearance') ?
+              <Toggle onClick={ this.toggleShowRepeated } checkStatus={ function() { return this.state.showRepeated; }.bind(this) }>
+                Show repeated citations
+              </Toggle> : "" }
             <SortedReferencesList
               current={this.state.sort}
               references={this.props.references}
               filterText={this.state.filterText}
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
-              showDuplicates={ this.state.showDuplicates }/>
+              showRepeated={ this.state.showRepeated }/>
             </div>;
     }
 });
