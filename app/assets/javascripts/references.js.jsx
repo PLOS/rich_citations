@@ -395,10 +395,7 @@ var Toggle = React.createClass({
         return false;
     },
     render: function () {
-        var toggle = "☐";
-        if (this.props.checkStatus()) {
-            toggle = "☑";
-        }
+        var toggle = this.props.enabled ? "☑" : "☐";
         return <p><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
     }
 });
@@ -424,7 +421,8 @@ var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "appearance", order: "asc" },
                 filterText: '',
-                showRepeated: false};
+                showRepeated: false,
+                groupCitations: false};
     },
     componentWillMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -452,6 +450,10 @@ var ReferencesApp = React.createClass({
         this.setState({showRepeated: !this.state.showRepeated});
         return false;
     },
+    toggleGroupCitations: function() {
+        this.setState({groupCitations: !this.state.groupCitations});
+        return false;
+    },
     render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
@@ -464,9 +466,15 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             { (this.state.sort.by === 'appearance') ?
-              <Toggle onClick={ this.toggleShowRepeated } checkStatus={ function() { return this.state.showRepeated; }.bind(this) }>
-                Show repeated citations
-              </Toggle> : "" }
+              <div>
+                <Toggle onClick={ this.toggleShowRepeated } enabled={ this.state.showRepeated } >
+                  Show repeated citations
+                </Toggle>
+                <Toggle onClick={ this.toggleGroupCitations } enabled={ this.state.groupCitations } >
+                  Group citations
+                </Toggle>
+              </div>
+              : "" }
             <SortedReferencesList
               current={this.state.sort}
               references={this.props.references}
