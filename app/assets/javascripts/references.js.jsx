@@ -280,6 +280,10 @@ var SortedReferencesList = React.createClass({
     },
     headingGrouper: function (ref) {
         var by = this.props.current.by;
+        /* handle reference groups */
+        if ($.type(ref) === 'array') {
+            ref = ref[0];
+        }
         if (by === "journal") {
             return ref.data.info.journal;
         } else if (by === "appearance") {
@@ -292,7 +296,11 @@ var SortedReferencesList = React.createClass({
         if ($.type(refs) === 'array') {
             if ($.type(refs[0]) === 'array') {
                 /* grouped citations */
-                return <div>{ _.map(refs, this.renderReferenceList) }</div>
+                return _.map(refs, function (group) {
+                    var key = "citation_group_" + group[0].group.word_position;
+                    console.log(key);
+                    return <div className="citationGroup" key={ key }>{this.renderReferenceList(group) }</div>;
+                }.bind(this));
             } else {
                 return <ol className="references">{ _.map(refs, this.renderReferenceItem) }</ol>;
             }
@@ -329,6 +337,13 @@ var SortedReferencesList = React.createClass({
     renderSortedReferenceList: function (sorted) {
         if (this.props.current.order == "desc") {
             sorted = sorted.reverse();
+        }
+        if (this.props.showRepeated && this.props.groupCitations ) {
+            sorted = _.chain(sorted).groupBy(function(ref) {
+                return ref.group.word_position;
+            }).values().sortBy(function (refs) {
+                return refs[0].group.word_position;
+            }).value();
         }
         if (this.useHeadings()) {
             sorted = _.groupBy(sorted, this.headingGrouper);
@@ -486,7 +501,9 @@ var ReferencesApp = React.createClass({
               references={this.props.references}
               filterText={this.state.filterText}
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
-              showRepeated={ this.state.showRepeated }/>
+              showRepeated={ this.state.showRepeated }
+              groupCitations={ this.state.groupCitations }
+            />
             </div>;
     }
 });
