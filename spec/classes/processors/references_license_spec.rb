@@ -33,14 +33,14 @@ describe Processors::ReferencesLicense do
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
-  it "should not set a license if no result is returned" do
-    licenses = { results: []}
+  it "should add inactive licenses license" do
+    licenses = { results: [make_license('10.222/222', 'inactive-license-2', nil) ]}
     expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to be_nil
+    expect( result[:references]['ref-2'][:info][:license] ).to eq('inactive-license-2')
   end
 
-  it "should not set a license if no active license is returned" do
-    licenses = { results: [make_license('10.222/222', 'test-license', nil)]}
+  it "should not set a license if no result is returned" do
+    licenses = { results: []}
     expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to be_nil
   end
@@ -75,18 +75,17 @@ describe Processors::ReferencesLicense do
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
-  it "should only choose from active licenses" do
+  it "should prioritize active licenses over inactive ones" do
     license  = {
         identifier:[ {type:'doi', id:'10.222/222'} ],
         license:[
-                       {status:'active',  type:'test-license-1', provenance:{date: 3.days.ago.as_json} },
-                       {status:'inactive',type:'test-license-2', provenance:{date: 2.days.ago.as_json} },
-                       {status:'active',  type:'test-license-3', provenance:{date: 4.days.ago.as_json} },
+                       {status:'inactive',type:'inactive-license-1', provenance:{date: 2.days.ago.as_json} },
+                       {status:'active',  type:'test-license-2',     provenance:{date: 4.days.ago.as_json} },
                    ]
     }
     licenses = { results: [license]}
     expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-1')
+    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
 end

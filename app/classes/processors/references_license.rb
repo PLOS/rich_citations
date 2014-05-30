@@ -10,6 +10,11 @@ module Processors
       add_licenses(results)
     end
 
+    # Execute as soon as possible to maximize the time between this and DelayedReferencesLicense
+    def self.priority
+      0
+    end
+
     def self.dependencies
       [ ReferencesInfo ]
     end
@@ -17,6 +22,10 @@ module Processors
     protected
 
     API_URL = 'http://howopenisit.org/lookup/12345,67890'
+
+    def is_delayed?
+      self.class != ReferencesLicense
+    end
 
     def references_without_licenses
       references.select { |id, ref| ref[:doi] && ! ref[:info][:license] }.to_h
@@ -48,8 +57,11 @@ module Processors
     end
 
     def get_license( licenses )
-      valid_licenses = licenses.select { |license| license['status']=='active' }
-      prioritized_licenses = valid_licenses.sort_by { |license| Time.parse( license['provenance']['date'] ) }
+      prioritized_licenses = licenses.sort_by { |license|
+        date = Time.parse( license['provenance']['date'] )
+        # Prioritize active licenses
+        license['status']=='active' ? date : date - 1000.years
+      }
       prioritized_licenses.last
     end
 
