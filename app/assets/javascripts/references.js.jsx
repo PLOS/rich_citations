@@ -410,13 +410,22 @@ var Sorter = React.createClass({
 });
 
 var Toggle = React.createClass({
+    getDefaultProps: function() {
+        return {
+            available: true
+        };
+    },
     handleClick: function() {
         this.props.onClick();
         return false;
     },
     render: function () {
-        var toggle = this.props.enabled ? "☑" : "☐";
-        return <p><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
+        var toggle = this.props.toggleState ? "☑" : "☐";
+        if (this.props.available) {
+            return <p><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
+        } else {
+            return <p className="toggle disabled">{ toggle } { this.props.children }</p>;
+        }
     }
 });
 
@@ -477,7 +486,7 @@ var ReferencesApp = React.createClass({
     render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
-            <div class="sorter">
+            <div className="sorter">
             <strong>Sort by:</strong>
             <ul className="sorters">
             <li><Sorter name="Appearance"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
@@ -490,10 +499,10 @@ var ReferencesApp = React.createClass({
             </div>
             { (this.state.sort.by === 'appearance') ?
               <div>
-                <Toggle onClick={ this.toggleShowRepeated } enabled={ this.state.showRepeated } >
+                <Toggle onClick={ this.toggleShowRepeated } toggleState={ this.state.showRepeated } >
                   Show repeated citations
                 </Toggle>
-                <Toggle onClick={ this.toggleGroupCitations } enabled={ this.state.groupCitations } >
+              <Toggle onClick={ this.toggleGroupCitations } toggleState={ this.state.groupCitations } available={ this.state.showRepeated }>
                   Group citations
                 </Toggle>
               </div>
