@@ -13,7 +13,7 @@ describe "reference viewing", :type => :feature, :js => true do
     expect(page.first(:xpath, '//ol[@class="references"]/li').text).to eq("3. Domenici P, Batty RS, Simila T, Ogam E (1999) Killer whales (Orcinus orca) feeding on schooling herring (Clupea harengus) using underwater tail-slaps: kinematic analyses of field observations. J Exp Biol 203: 283–294. Appears 8 times in this paper. ▶")
 
     page.click_link("Year")
-    expect(page.first(:xpath, '//ol[@class="references"]/li').text).to eq("25. Sperone E, Micarelli P, Andreotti S, Brandmayr P, Bernabo I, et al. (2012) Surface behaviour of bait-attracted white sharks at Dyer Island (South Africa). Mar Biol Res 8: 982–991. Appears 1 times in this paper. ▶")
+    expect(page.first(:xpath, '//ol[@class="references"]/li').text).to eq("25. Sperone E, Micarelli P, Andreotti S, Brandmayr P, Bernabo I, et al. (2012) Surface behaviour of bait-attracted white sharks at Dyer Island (South Africa). Mar Biol Res 8: 982–991. Appears 1 time in this paper. ▶")
 
     page.click_link("Author")
     expect(page.first(:xpath, '//ol[@class="references"]/li').text).to eq("17. Aalbers SA, Bernal D, Sepulveda CA (2010) The functional role of the caudal fin in the feeding ecology of the common thresher shark Alopias vulpinus. J Fish Biol 76: 1863–1868. Appears 3 times in this paper. ▶")
