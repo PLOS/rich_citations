@@ -211,6 +211,22 @@ var Reference = React.createClass({
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
     },
+    isSelected: function () {
+        return ($.param.fragment() === this.props.reference.id);
+    },
+    renderLabel: function() {
+        if (this.props.showLabel) {
+            /* check if this is the selected anchor */
+            var ref = this.props.reference;
+            if (this.isSelected()) {
+                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
+            } else {
+                return <span className="label">{ ref.index }.</span>;
+            }
+        } else {
+            return "";
+        }
+    },
     renderSelfCiteFlag: function() {
         var selfCiteFlag = null;
         if (this.props.reference.self_citations) {
@@ -245,18 +261,8 @@ var Reference = React.createClass({
                 </div>;
             }.bind(this));
         }
-        var label;
-        var isSelected = ($.param.fragment() === ref.id);
-        if (this.props.showLabel) {
-            /* check if this is the selected anchor */
-            if (isSelected) {
-                label = <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
-            } else {
-                label = <span className="label">{ ref.index }.</span>;
-            }
-        }
         var className = "reference";
-        if (isSelected) {
+        if (this.isSelected()) {
             className = className + " selected";
         }
         var appearanceToggle;
@@ -269,7 +275,7 @@ var Reference = React.createClass({
             </a>;
         }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
-            { label }
+            { this.renderLabel() }
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { this.renderSelfCiteFlag() }
             { appearanceToggle }
