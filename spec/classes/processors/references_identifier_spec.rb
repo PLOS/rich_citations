@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Processors::ReferencesInfo do
+describe Processors::ReferencesIdentifier do
   include Spec::ProcessorHelper
 
   it "should include info in references" do
@@ -13,7 +13,7 @@ describe Processors::ReferencesInfo do
 
   it "should include a doi in references" do
     refs 'Some Reference', 'Another Reference'
-    expect(ReferenceResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.12345/12345' })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.12345/12345' })
 
     expect(result[:references]['ref-1'][:doi]).to eq('10.12345/12345')
   end

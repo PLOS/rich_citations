@@ -1,6 +1,6 @@
 # Fills in non-results with low-scoring results from crossref
 
-module Resolvers
+module IdentifierResolvers
   class LowScoreCrossRef < Base
 
     def resolve

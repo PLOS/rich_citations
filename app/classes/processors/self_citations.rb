@@ -8,7 +8,7 @@ module Processors
     end
 
     def self.dependencies
-      [Authors, ReferencesInfo]
+      [Authors, ReferencesIdentifier]
     end
 
     protected

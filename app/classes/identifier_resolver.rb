@@ -1,4 +1,4 @@
-class ReferenceResolver
+class IdentifierResolver
 
   attr_reader :references
   attr_reader :results
@@ -151,14 +151,14 @@ class ReferenceResolver
   ]
 
   ALL_RESOLVERS = [
-      Resolvers::CrossRef,
-      Resolvers::Doi,
-      Resolvers::LowScoreCrossRef,
-      Resolvers::Fail,     # When nothing else has worked
+      IdentifierResolvers::CrossRef,
+      IdentifierResolvers::Doi,
+      IdentifierResolvers::LowScoreCrossRef,
+      IdentifierResolvers::Fail,     # When nothing else has worked
   ]
 
   TEST_RESOLVERS = [
-      Resolvers::Fail,     # When nothing else has worked
+      IdentifierResolvers::Fail,     # When nothing else has worked
   ]
 
 end

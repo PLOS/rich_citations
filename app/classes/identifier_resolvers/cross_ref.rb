@@ -1,4 +1,4 @@
-module Resolvers
+module IdentifierResolvers
   class CrossRef < Base
 
     # cf  http://search.crossref.org/help/api#match

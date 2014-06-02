@@ -1,6 +1,6 @@
 # Used if no other resolvers succeed
 
-module Resolvers
+module IdentifierResolvers
   class Fail < Base
 
     def resolve

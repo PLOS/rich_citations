@@ -1,10 +1,10 @@
 module Processors
-  class ReferencesInfo < Base
+  class ReferencesIdentifier < Base
     include Helpers
 
     def process
       references.each do |id, ref|
-        info = info_for_reference[id]
+        info = identifier_for_reference[id]
 
         ref[:info] = info
         ref[:doi]  = info && info[:doi]
@@ -26,9 +26,11 @@ module Processors
 
     protected
 
-    def info_for_reference
-      reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
-      @info_for_reference ||= ReferenceResolver.resolve(reference_nodes)
+    def identifier_for_reference
+      @identifier_for_reference ||= begin
+        reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
+        IdentifierResolver.resolve(reference_nodes)
+      end
     end
 
   end

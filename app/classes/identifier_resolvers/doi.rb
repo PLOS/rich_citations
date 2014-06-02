@@ -1,4 +1,4 @@
-module Resolvers
+module IdentifierResolvers
   class Doi < Base
 
     API_URL = 'http://doi.crossref.org/servlet/query'
