@@ -211,12 +211,16 @@ var Reference = React.createClass({
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
     },
+    renderSelfCiteFlag: function() {
+        var selfCiteFlag = null;
+        if (this.props.reference.self_citations) {
+            return <span className="selfcitation">Self-citation</span>;
+        } else {
+            return "";
+        }
+    },
     render: function () {
         var ref = this.props.reference;
-        var selfCiteFlag = null;
-        if (ref.self_citations) {
-            selfCiteFlag = <span className="selfcitation">Self-citation</span>;
-        }
         var appearanceList;
         if (this.state.showAppearances) {
             /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
@@ -267,7 +271,7 @@ var Reference = React.createClass({
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { label }
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
-            { selfCiteFlag }
+            { this.renderSelfCiteFlag() }
             { appearanceToggle }
             { appearanceList }
             </div>;
