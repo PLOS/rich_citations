@@ -416,10 +416,15 @@ var Sorter = React.createClass({
         return false;
     },
     render: function() {
-        if (!this.props.toggleable && (this.props.current.by === this.props.by)) {
+        var isCurrent = (this.props.current.by === this.props.by);
+        if (!this.props.toggleable && isCurrent) {
             return <span>{this.props.name}</span>;
         } else {
-            return <a href="#" onClick={this.handleClick}>{this.props.name}</a>;
+            var orderStr = "";
+            if (this.props.toggleable && isCurrent) {
+                orderStr = (this.props.current.order === "asc") ? "↑ " : "↓ ";
+            }
+            return <a href="#" onClick={this.handleClick}>{orderStr}{this.props.name}</a>;
         }
     }
 });
