@@ -424,6 +424,12 @@ var Sorter = React.createClass({
     }
 });
 
+/**
+ * Class to handle a toggleable thing. The current status is passed in
+ * using the toggleState property. If the property available is false,
+ * the toggle will be grayed out. On click, the function passed in as
+ * onClick will be called.
+ */
 var Toggle = React.createClass({
     getDefaultProps: function() {
         return {
