@@ -298,7 +298,10 @@ var SortedReferencesList = React.createClass({
                 /* grouped citations */
                 return _.map(refs, function (group) {
                     var key = "citation_group_" + group[0].group.word_position;
-                    return <div className="citationGroup" key={ key }>{this.renderReferenceList(group) }</div>;
+                    return <div className="citationGroup" key={ key }>
+                        <p>{ group[0].group.context }</p>
+                        { this.renderReferenceList(group) }
+                    </div>;
                 }.bind(this));
             } else {
                 return <ol className="references">{ _.map(refs, this.renderReferenceItem) }</ol>;
