@@ -109,3 +109,11 @@ test("sortReferences", function () {
             start();
         });
 });
+
+test("guid generator", function() {
+    var guid1 = guid();
+    var guid2 = guid();
+    notEqual(guid1, guid2);
+    ok(guid1.match("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"));
+    ok(guid2.match("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"));
+});
