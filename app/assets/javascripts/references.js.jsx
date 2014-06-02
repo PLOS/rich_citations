@@ -445,9 +445,6 @@ var Toggle = React.createClass({
 });
 
 var ReferencePopover = React.createClass({
-    getInitialState: function() {
-        return {};
-    },
     render: function() {
         var references = _.map(_.zip(this.props.references, this.props.suppressMentions), function(d) {
             return <Reference
