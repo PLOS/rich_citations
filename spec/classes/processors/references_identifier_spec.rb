@@ -13,9 +13,10 @@ describe Processors::ReferencesIdentifier do
 
   it "should include a doi in references" do
     refs 'Some Reference', 'Another Reference'
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.12345/12345' })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.12345/12345', source:'test', score:1.23 })
 
     expect(result[:references]['ref-1'][:doi]).to eq('10.12345/12345')
+    expect(result[:references]['ref-1'][:info]).to eq(doi:'10.12345/12345', source:'test', score:1.23)
   end
 
   it "should remove nil info entries during cleanup" do

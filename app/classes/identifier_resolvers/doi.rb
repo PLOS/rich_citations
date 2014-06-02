@@ -25,43 +25,20 @@ module IdentifierResolvers
         root.set_result(id, :doi, info)
       end
     end
-    private
 
-    DOI_KEY_MAP = {
-        'doi'                         => 'journal_article doi_data doi',
-        'journal'                     => 'journal_metadata full_title',
-        'issn'                        => 'journal_metadata issn[media_type=print]',
-        'title'                       => 'journal_article titles title',
-        'year'                        => 'journal_issue publication_date year',
-        'volume'                      => 'journal_issue journal_volume volume',
-        'issue'                       => 'journal_issue issue',
-        'start_page'                  => 'journal_article pages first_page',
-        'end_page'                    => 'journal_article pages last_page',
-        'first_author[first_name]'    => 'journal_article contributors person_name[contributor_role=author][sequence=first] given_name',
-        'first_author[last_name]'     => 'journal_article contributors person_name[contributor_role=author][sequence=first] surname',
-        'authors[]'                   => 'journal_article contributors person_name[contributor_role=author]',
-    }
+    private
 
     def extract_info(result)
       journal = result.css('crossref journal')
       return nil unless journal.present?
 
-      info = {
-          source: :doi
+      doi = journal.css('journal_article doi_data doi')
+      return nil unless doi.present?
+
+      {
+          source: :doi,
+          doi:    cleanup_node(doi.first),
       }
-
-      DOI_KEY_MAP.each do |key, selector|
-        matches = journal.css(selector)
-        next unless matches.present?
-
-        matches.each do |match|
-          value = cleanup_node(match)
-          next if value.blank?
-          Rack::Utils.normalize_params(info, key, value)
-        end
-      end
-
-      info.symbolize_keys!
     end
 
     def cleanup_node(node)

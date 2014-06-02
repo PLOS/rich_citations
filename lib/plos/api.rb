@@ -146,6 +146,8 @@ module Plos
           { 'Accept' => Mime::JS.to_s }
         when Symbol
           { 'Accept' => "application/#{original}" }
+        when String
+          { 'Accept' => original }
         when Hash
           original.each { |k,v| original[k] = v.to_s }
         else

@@ -31,7 +31,6 @@ class IdentifierResolver
     return unless info
 
     info[:score] = Resolvers::CrossRef::MIN_CROSSREF_SCORE unless info.has_key?(:score)
-    hash_author_names(info)
     # info[:text] = references[id][:text]
 
     unresolved_ids.delete(id)
@@ -80,18 +79,6 @@ class IdentifierResolver
         mark_as_duplicate(key, id, best_id) if id != best_id
       end
 
-    end
-  end
-
-  def hash_author_names(info)
-    return unless info[:authors]
-
-    info[:authors].map! do |i|
-       if i.is_a?(String)
-         { fullname: i }
-       else
-         i
-      end
     end
   end
 
