@@ -245,10 +245,9 @@ var Reference = React.createClass({
             </a>;
         }
     },
-    render: function () {
-        var ref = this.props.reference;
-        var appearanceList;
+    renderAppearanceList: function() {
         if (this.state.showAppearances) {
+            var ref = this.props.reference;
             /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
             var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
                 group['index'] = index;
@@ -256,7 +255,7 @@ var Reference = React.createClass({
             });
             /* group each citation group by the section it is in */
             var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
-            appearanceList = _.map(citationGroupsBySection, function(value, key) {
+            return _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     if (this.props.suppressMention === mention.index) {
                         return <p key={ "mention" + mention.word_position } ><i>current location</i></p>;
@@ -270,17 +269,19 @@ var Reference = React.createClass({
                     { mentions }
                 </div>;
             }.bind(this));
+        } else {
+            return "";
         }
-        var className = "reference";
-        if (this.isSelected()) {
-            className = className + " selected";
-        }
+    },
+    render: function () {
+        var className = "reference"
+        if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
-            <span dangerouslySetInnerHTML={ {__html: ref.html} } />
+            <span dangerouslySetInnerHTML={ {__html: this.props.reference.html} } />
             { this.renderSelfCiteFlag() }
             { this.renderAppearanceToggle() }
-            { appearanceList }
+            { this.renderAppearanceList() }
             </div>;
     }
 });
