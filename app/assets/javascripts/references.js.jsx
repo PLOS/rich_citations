@@ -235,6 +235,16 @@ var Reference = React.createClass({
             return "";
         }
     },
+    renderAppearanceToggle: function() {
+        var ref = this.props.reference;
+        var text = "Appears " +  ref.mentions + (ref.mentions === 1 ? " time" : " times") + " in this paper.";
+        if (ref.mentions === 1 && this.props.suppressMention !== null) {
+            return <span>{ text }</span>;
+        } else {
+            return <a onClick={this.handleClick} href="#">{ text }{ this.state.showAppearances ? " ▼ " : " ▶ " }
+            </a>;
+        }
+    },
     render: function () {
         var ref = this.props.reference;
         var appearanceList;
@@ -265,20 +275,11 @@ var Reference = React.createClass({
         if (this.isSelected()) {
             className = className + " selected";
         }
-        var appearanceToggle;
-        var times = ref.mentions === 1 ? "time" : "times";
-        if (ref.mentions === 1 && this.props.suppressMention !== null) {
-            appearanceToggle = <span>Appears { ref.mentions} { times } in this paper.</span>;
-        } else {
-            appearanceToggle = <a onClick={this.handleClick} href="#">Appears { ref.mentions } { times }  in this paper.
-                { this.state.showAppearances ? " ▼ " : " ▶ " }
-            </a>;
-        }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
             <span dangerouslySetInnerHTML={ {__html: ref.html} } />
             { this.renderSelfCiteFlag() }
-            { appearanceToggle }
+            { this.renderAppearanceToggle() }
             { appearanceList }
             </div>;
     }
