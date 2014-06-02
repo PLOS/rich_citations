@@ -4,31 +4,28 @@ module Processors
 
     def process
       references.each do |id, ref|
-        info = info_for_reference[id]
-
-        ref[:info] = info
-        ref[:doi]  = info && info[:doi]
-      end
-
-    end
-
-    def cleanup
-      references.each do |id, ref|
-        info = ref[:info]
-        info.compact! if info
-        ref.delete(:info) if info.blank?
+        doi = ref[:doi]
+        get_doi_info(doi, ref) if doi
       end
     end
 
     def self.dependencies
-      References
+      ReferencesIdentifier
     end
 
     protected
 
-    def info_for_reference
-      reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
-      @info_for_reference ||= ReferenceResolver.resolve(reference_nodes)
+    # cf http://www.crosscite.org/cn/
+
+    def get_doi_info(doi, ref)
+      result = get_result(doi)
+      result = result.except(:DOI, :source, :score)
+      ref[:info].merge!(result)
+    end
+
+    def get_result(doi)
+      json   = Plos::Api.http_get("http://dx.doi.org/#{doi}", 'application/citeproc+json')
+      JSON.parse(json, symbolize_names:true)
     end
 
   end

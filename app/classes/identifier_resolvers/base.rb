@@ -1,4 +1,4 @@
-module Resolvers
+module IdentifierResolvers
   class Base
 
     attr_reader :root, :unresolved_references

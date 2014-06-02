@@ -3,8 +3,8 @@ module Processors
 
     def process
       result[:paper] ||= {}
-      # result[:paper][:affilitations] = affiliations
-      result[:paper][:authors] = authors
+      # result[:paper][:affiliations] = affiliations
+      result[:paper][:author] = authors
     end
 
     protected
@@ -12,15 +12,20 @@ module Processors
     def authors
       author_nodes.map do |node|
         {
-            fullname:    author_fullname(node),
+            given:       author_given_name(node),
+            family:      author_family_name(node),
             email:       author_email(node),
             affiliation: author_affiliation(node),
         }.compact
       end
     end
 
-    def author_fullname(node)
-      (node.css('given-names').text.strip + ' ' + node.css('surname').text.strip).strip
+    def author_given_name(node)
+      node.css('given-names').text.strip
+    end
+
+    def author_family_name(node)
+      node.css('surname').text.strip
     end
 
     def author_email(node)

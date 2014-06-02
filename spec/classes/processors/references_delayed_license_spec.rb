@@ -5,7 +5,7 @@ describe Processors::ReferencesDelayedLicense do
 
   before do
     refs 'First', 'Second'
-    allow(ReferenceResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' }, 'ref-2' => { doi:'10.222/222' })
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' }, 'ref-2' => { doi:'10.222/222' })
   end
 
   def make_license(doi, type, status='active', date=Time.now)

@@ -18,7 +18,7 @@ describe Processors::SelfCitations do
   end
 
   def resolve_author!(author)
-    expect(ReferenceResolver).to receive(:resolve).and_return('ref-1' => { authors:[author] })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author:[author] })
   end
 
   def reference
@@ -26,42 +26,42 @@ describe Processors::SelfCitations do
   end
 
   it "should identify a self citation" do
-    resolve_author!(fullname:'Angelina Jolie')
+    resolve_author!(family:'Jolie', given:'Angelina')
     expect(reference[:self_citations]).to eq(['Angelina Jolie [name]'])
   end
 
   it "should return nil if there are no self citations" do
-    resolve_author!(fullname:'Audrey Hepburn')
+    resolve_author!(given:'Audrey', family:'Hepburn')
     expect(reference[:self_citations]).to be_nil
   end
 
   it "should identify a self citation if the affiliations are different" do
-    resolve_author!(fullname:'Angelina Jolie', affiliation:'Baseball')
+    resolve_author!(family:'Jolie', given:'Angelina', affiliation:'Baseball')
     expect(reference[:self_citations]).to be_nil
   end
 
   it "should note a self citation if the affiliations are the same" do
-    resolve_author!(fullname:'Angelina Jolie', affiliation:'Hollywood')
+    resolve_author!(family:'Jolie', given:'Angelina', affiliation:'Hollywood')
     expect(reference[:self_citations]).to eq(['Angelina Jolie [name,affiliation]'])
   end
 
   it "should match self citations based on email" do
-    resolve_author!(fullname:'A Jolie', email:'a.jolie@hollywood.com')
-    expect(reference[:self_citations]).to eq(['A Jolie [email]'])
+    resolve_author!(family:'Jolie', given:'A.', email:'a.jolie@hollywood.com')
+    expect(reference[:self_citations]).to eq(['A. Jolie [email]'])
   end
 
   it "should not match self citations with differing emails" do
-    resolve_author!(fullname:'A Jolie', email:'jolie@hollywood.com')
+    resolve_author!(family:'Jolie', given:'A.', email:'jolie@hollywood.com')
     expect(reference[:self_citations]).to be_nil
   end
 
   it "should match self citations based on name and email" do
-    resolve_author!(fullname:'Angelina Jolie', email:'a.jolie@hollywood.com')
+    resolve_author!(family:'Jolie', given:'Angelina', email:'a.jolie@hollywood.com')
     expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email]'])
   end
 
   it "should note self citations based on name and email with the same affiliation" do
-    resolve_author!(fullname:'Angelina Jolie', email:'a.jolie@hollywood.com', affiliation:'Hollywood')
+    resolve_author!(family:'Jolie', given:'Angelina', email:'a.jolie@hollywood.com', affiliation:'Hollywood')
     expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email,affiliation]'])
   end
 

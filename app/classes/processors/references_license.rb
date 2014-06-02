@@ -16,7 +16,7 @@ module Processors
     end
 
     def self.dependencies
-      [ ReferencesInfo ]
+      [ ReferencesIdentifier ]
     end
 
     protected

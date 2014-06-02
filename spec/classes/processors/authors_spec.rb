@@ -4,7 +4,7 @@ describe Processors::Authors do
   include Spec::ProcessorHelper
 
   def authors
-    result[:paper][:authors]
+    result[:paper][:author]
   end
 
   it "should parse out the authors" do
@@ -17,8 +17,8 @@ describe Processors::Authors do
       </contrib>
     EOS
 
-    expect(authors).to eq([ {fullname:'Angelina Jolie'},
-                                     {fullname: 'Julia Roberts' }  ])
+    expect(authors).to eq([ {family: 'Jolie',   given:'Angelina'},
+                            {family: 'Roberts', given:'Julia'   }  ])
   end
 
   it "should ignore non-authors" do
@@ -31,7 +31,7 @@ describe Processors::Authors do
       </contrib>
     EOS
 
-    expect(authors).to eq([ {fullname:'Angelina Jolie'}  ])
+    expect(authors).to eq([ {family: 'Jolie',   given:'Angelina'}  ])
   end
 
   it "should include emails if available" do
@@ -43,7 +43,7 @@ describe Processors::Authors do
       <corresp id="cor1">* E-mail: <email xlink:type="simple">a.jolie@plos.org</email></corresp>
     EOS
 
-    expect(authors).to eq([ {fullname:'Angelina Jolie', email:'a.jolie@plos.org'}  ])
+    expect(authors).to eq([ {family: 'Jolie',   given:'Angelina', email:'a.jolie@plos.org'}  ])
   end
 
   it "should include affilitions if available" do
@@ -55,7 +55,7 @@ describe Processors::Authors do
       <aff id="aff1"><addr-line>Hollywood</addr-line></aff>
     EOS
 
-    expect(authors).to eq([ {fullname:'Angelina Jolie', affiliation:'Hollywood'}  ])
+    expect(authors).to eq([ {family: 'Jolie',   given:'Angelina', affiliation:'Hollywood'}  ])
   end
 
 end

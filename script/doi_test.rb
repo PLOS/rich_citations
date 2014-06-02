@@ -11,6 +11,9 @@ DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pone.0047692'
 DOI='10.1371/journal.pone.0098172'
 
+start_time = Time.now
+puts "Starting at ----------------- #{start_time}"
+
 xml = r = Plos::Api.document( DOI )
 # r = xml.css('ref-list')
 # r = xml.css('body')
@@ -23,3 +26,6 @@ if info
 else
   puts "\n*************** Document #{DOI} could not be retrieved\n"
 end
+
+end_time = Time.now
+puts "Finished at ----------------- #{end_time} == #{end_time - start_time}"

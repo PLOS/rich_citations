@@ -7,7 +7,7 @@ module Spec
       include Spec::XmlBuilder
 
       before do
-        allow(ReferenceResolver).to receive(:resolvers).and_return(ReferenceResolver::TEST_RESOLVERS)
+        allow(IdentifierResolver).to receive(:resolvers).and_return(IdentifierResolver::TEST_RESOLVERS)
       end
 
     end

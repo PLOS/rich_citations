@@ -3,35 +3,51 @@ require 'spec_helper'
 describe Processors::ReferencesInfo do
   include Spec::ProcessorHelper
 
-  it "should include info in references" do
-    refs 'Some Reference', 'Another Reference'
+  it "should call the API" do
+    refs 'First', 'Secpmd', 'Third'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' }, 'ref-2' => { source:'none'}, 'ref-3' => { doi:'10.333/333' })
 
-    expect(result[:references]).to have(2).items
-    expect(result[:references]['ref-1'][:info]).to eq({text: "Some Reference"},    )
-    expect(result[:references]['ref-2'][:info]).to eq({text: "Another Reference"}  )
+    expect(Plos::Api).to receive(:http_get).with('http://dx.doi.org/10.111/111', anything).and_return('{}')
+    expect(Plos::Api).to receive(:http_get).with('http://dx.doi.org/10.333/333', anything).and_return('{}')
+
+    process
   end
 
-  it "should include a doi in references" do
-    refs 'Some Reference', 'Another Reference'
-    expect(ReferenceResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.12345/12345' })
+  it "should merge in the API results" do
+    refs 'First', 'Secpmd', 'Third'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', score:1.23, source:'test' } )
 
-    expect(result[:references]['ref-1'][:doi]).to eq('10.12345/12345')
+    info = {
+        author: [ {given:'C.', family:'Theron'} ],
+        title:  'A Title',
+    }
+    expect(Plos::Api).to receive(:http_get).with('http://dx.doi.org/10.111/111', anything).and_return(JSON.generate(info))
+
+    expect(result[:references]['ref-1'][:info]).to eq({
+                                                          doi:    '10.111/111',
+                                                          source:  'test',
+                                                          score:  1.23,
+                                                          author: [ {given:'C.', family:'Theron'} ],
+                                                          title:  'A Title',
+                                                      })
   end
 
-  it "should remove nil info entries during cleanup" do
-    cleanup( { references: {
-        ref1: { info: { a:1, b:nil, c:3} }
-    } } )
+  it "should not overwrite the DOI, score or source" do
+    refs 'First', 'Secpmd', 'Third'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', score:1.23, source:'test' } )
 
-    expect(result[:references][:ref1]).to eq( info: { a:1, c:3 } )
-  end
+    info = {
+        DOI:    '10.xxx/xxx',
+        score:  99,
+        source: 'ignored',
+    }
+    expect(Plos::Api).to receive(:http_get).with('http://dx.doi.org/10.111/111', anything).and_return(JSON.generate(info))
 
-  it "should remove nil info during cleanup" do
-    cleanup( { references: {
-        ref1: { a:1, info: { b:nil} }
-    } } )
-
-    expect(result[:references][:ref1]).to eq( { a:1 } )
+    expect(result[:references]['ref-1'][:info]).to eq({
+                                                          doi:    '10.111/111',
+                                                          source:  'test',
+                                                          score:  1.23,
+                                                      })
   end
 
 end
