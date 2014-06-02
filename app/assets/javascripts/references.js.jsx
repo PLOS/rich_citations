@@ -478,14 +478,17 @@ var ReferencesApp = React.createClass({
     render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
-            <ul>
-            <li><Sorter name="Appearance"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/></li>
-            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /></li>
-            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/></li>
+            <div class="sorter">
+            <strong>Sort by:</strong>
+            <ul className="sorters">
+            <li><Sorter name="Appearance"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /> | </li>
+            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/> | </li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
+            </div>
             { (this.state.sort.by === 'appearance') ?
               <div>
                 <Toggle onClick={ this.toggleShowRepeated } enabled={ this.state.showRepeated } >

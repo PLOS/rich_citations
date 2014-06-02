@@ -21,3 +21,12 @@ div.citationGroup {
     border-width: 1pt;
     margin: .5em;
 }
+
+ul.sorters {
+    display: inline
+}
+
+ul.sorters li {
+    display: inline;
+    list-style-type: none;
+}
