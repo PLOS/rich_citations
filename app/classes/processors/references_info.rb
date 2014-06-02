@@ -18,10 +18,14 @@ module Processors
     # cf http://www.crosscite.org/cn/
 
     def get_doi_info(doi, ref)
-      json   = Plos::Api.http_get("http://dx.doi.org/#{doi}", 'application/citeproc+json')
-      result = JSON.parse(json, symbolize_names:true)
+      result = get_result(doi)
       result = result.except(:DOI, :source, :score)
       ref[:info].merge!(result)
+    end
+
+    def get_result(doi)
+      json   = Plos::Api.http_get("http://dx.doi.org/#{doi}", 'application/citeproc+json')
+      JSON.parse(json, symbolize_names:true)
     end
 
   end
