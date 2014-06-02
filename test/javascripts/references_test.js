@@ -99,12 +99,10 @@ test("sortReferences", function () {
                    function (d) {
                        var refs = fixture.references;
                        var results = sortReferences(refs, d.by, d.showRepeated);
-                       var sorted = results[0],
-                           unsorted = results[1];
-                       strictEqual(unsorted.length, d.unsortableCount);
-                       strictEqual(sorted.length, d.sortableCount);
-                       strictEqual(sorted[0].data.id, d.first);
-                       strictEqual(sorted[sorted.length-1].data.id, d.last);
+                       strictEqual(results.unsortable.length, d.unsortableCount);
+                       strictEqual(results.sorted.length, d.sortableCount);
+                       strictEqual(results.sorted[0].data.id, d.first);
+                       strictEqual(results.sorted[results.sorted.length-1].data.id, d.last);
                    }.bind(this));
             start();
         });
