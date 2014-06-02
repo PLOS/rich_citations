@@ -497,16 +497,14 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             </div>
-            { (this.state.sort.by === 'appearance') ?
-              <div>
-                <Toggle onClick={ this.toggleShowRepeated } toggleState={ this.state.showRepeated } >
-                  Show repeated citations
-                </Toggle>
+            <div>
+              <Toggle onClick={ this.toggleShowRepeated } toggleState={ this.state.showRepeated } available= { this.state.sort.by === 'appearance' }>
+                Show repeated citations
+              </Toggle>
               <Toggle onClick={ this.toggleGroupCitations } toggleState={ this.state.groupCitations } available={ this.state.showRepeated }>
-                  Group citations
-                </Toggle>
-              </div>
-              : "" }
+                Group citations
+              </Toggle>
+            </div>
             <SortedReferencesList
               current={this.state.sort}
               references={this.props.references}
