@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Processors::Paper do
+describe Processors::PaperInfo do
   include Spec::ProcessorHelper
 
   it "should have a title" do

@@ -64,7 +64,7 @@ class PaperParser
   end
 
   def self.resolve_dependencies(klasses)
-    add_dependencies = Proc.new do |resolved, klasses|
+    add_dependencies = lambda do |resolved, klasses|
                          klasses.each do |klass|
                            if !klass.in?(resolved)
                              add_dependencies.(resolved, Array(klass.dependencies) )
@@ -74,6 +74,7 @@ class PaperParser
                        end
 
     resolved = []
+    klasses = klasses.sort_by { |klass| klass.priority }
     add_dependencies.(resolved, klasses)
     resolved
   end
@@ -83,15 +84,13 @@ class PaperParser
   end
 
   def self.load_processor_classes
-    base = Processors::Base
 
     @classes ||= Dir[Rails.root.join( File.dirname(__FILE__), 'processors', '*.rb')].map do |fn|
       name  = File.basename(fn, '.rb')
       klass = "processors/#{name}".camelcase.constantize
-      klass.is_a?(Class) && klass.superclass == base ? klass : nil
+      klass if klass < Processors::Base
     end.compact
 
-    @classes
   end
 
 end

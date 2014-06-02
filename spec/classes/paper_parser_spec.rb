@@ -24,13 +24,13 @@ describe PaperParser do
 
   describe "#parse" do
 
-    def klass
-      o = double(:processor, process:nil, cleanup:nil)
-      k = double(:processor_klass, new:o, object:o, dependencies:nil)
+    def klass(i)
+      o = double("processor #{i}", process:nil, cleanup:nil)
+      k = double("processor_klass #{i}", new:o, object:o, dependencies:nil, priority:50)
     end
 
     before do
-      @klasses = 4.times.map { klass }
+      @klasses = 4.times.map { |i| klass(i+1) }
       @parser = PaperParser.new(:some_xml)
       allow(PaperParser).to receive(:processor_classes).and_return(@klasses)
     end
@@ -69,6 +69,29 @@ describe PaperParser do
       expect(@klasses.third.object).to receive(:process).ordered
       expect(@klasses.first.object).to receive(:process).ordered
       expect(@klasses.fourth.object).to receive(:process).ordered
+      @parser.parse
+    end
+
+    it "should order dependencies by priority" do
+      allow(@klasses.first).to receive(:priority).and_return(100)
+      allow(@klasses.third).to receive(:priority).and_return(0)
+
+      expect(@klasses.third.object).to receive(:process).ordered
+      expect(@klasses.second.object).to receive(:process).ordered
+      expect(@klasses.fourth.object).to receive(:process).ordered
+      expect(@klasses.first.object).to receive(:process).ordered
+      @parser.parse
+    end
+
+    it "should combine dependencies and priorities" do
+      allow(@klasses.first).to receive(:priority).and_return(100)
+      allow(@klasses.third).to receive(:priority).and_return(0)
+      allow(@klasses.third).to receive(:dependencies).and_return( @klasses.second )
+
+      expect(@klasses.second.object).to receive(:process).ordered
+      expect(@klasses.third.object).to receive(:process).ordered
+      expect(@klasses.fourth.object).to receive(:process).ordered
+      expect(@klasses.first.object).to receive(:process).ordered
       @parser.parse
     end
 
