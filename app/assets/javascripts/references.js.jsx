@@ -274,7 +274,7 @@ var Reference = React.createClass({
         }
     },
     render: function () {
-        var className = "reference"
+        var className = "reference";
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
