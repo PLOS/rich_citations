@@ -71,14 +71,14 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === 'appearance') {
         return ref.citation_groups[0].word_position;
     } else if (fieldname === 'journal') {
-        return mkSortString(info.journal);
+        return mkSortString(info['container-title']);
     } else if (fieldname === 'year') {
-        return info.year || null;
+        return (info.issued && info.issued["date-parts"] && info.issued["date-parts"][0][0]) || null;
     } else if (fieldname === 'mentions') {
         return ref.mentions;
     } else if (fieldname === 'author') {
-        var first_author = info.first_author;
-        return (first_author && mkSortString(first_author.last_name + " " + first_author.first_name)) || null;
+        var first_author = info.author && info.author[0];
+        return (first_author && mkSortString(first_author.family + " " + first_author.given)) || null;
     } else if (fieldname === "index") {
         return ref.index;
     } else {
@@ -297,7 +297,7 @@ var SortedReferencesList = React.createClass({
             ref = ref[0];
         }
         if (by === "journal") {
-            return ref.data.info.journal;
+            return ref.data.info['container-title'];
         } else if (by === "appearance") {
             return ref.group.section;
         } else {
