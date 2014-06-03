@@ -448,7 +448,7 @@ var Toggle = React.createClass({
     render: function () {
         var toggle = this.props.toggleState ? "☑" : "☐";
         if (this.props.available) {
-            return <p><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
+            return <p className="toggle"><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
         } else {
             return <p className="toggle disabled">{ toggle } { this.props.children }</p>;
         }
