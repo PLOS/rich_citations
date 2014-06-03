@@ -207,6 +207,11 @@ var Reference = React.createClass({
             this.props.qtip.reposition();
         }
     },
+    componentDidMount: function() {
+        if (this.props.qtip) {
+            this.props.qtip.reposition();
+        }
+    }, 
     handleClick: function() {
         this.setState( { showAppearances: !this.state.showAppearances });
         return false;
@@ -593,7 +598,10 @@ function mkReferencePopover(id, references, suppressMentions) {
             fixed: true,
             delay: 1000
         },
-        style: 'qtip-wiki'
+        style: 'qtip-wiki',
+        position: {
+            viewport: $(window),
+        }
     });
 }
 
