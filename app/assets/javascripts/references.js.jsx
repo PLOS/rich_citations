@@ -601,6 +601,9 @@ function mkReferencePopover(id, references, suppressMentions) {
         style: 'qtip-wiki',
         position: {
             viewport: $(window),
+            adjust: {
+                method: 'shift shift'
+            }
         }
     });
 }
