@@ -30,7 +30,7 @@ class IdentifierResolver
   def set_result(id, key, info)
     return unless info
 
-    info[:score] = Resolvers::CrossRef::MIN_CROSSREF_SCORE unless info.has_key?(:score)
+    info[:score] = IdentifierResolvers::CrossRef::MIN_CROSSREF_SCORE unless info.has_key?(:score)
     # info[:text] = references[id][:text]
 
     unresolved_ids.delete(id)
