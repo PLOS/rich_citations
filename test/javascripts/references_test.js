@@ -34,7 +34,7 @@ test("mkSortField", function () {
             strictEqual(1, mkSortField(ref, "mentions"));
             strictEqual(6487, mkSortField(ref, "appearance"));
             strictEqual("lowry d", mkSortField(ref, "author"));
-            strictEqual("2008", mkSortField(ref, "year"));
+            strictEqual(2008, mkSortField(ref, "year"));
             strictEqual(55, mkSortField(ref, "index"));
             strictEqual("journal of royal society interface", mkSortField(ref, "journal"));
 
@@ -93,8 +93,8 @@ test("sortReferences", function () {
                     {by: "title",
                      first: "pone.0067380-Simon1",
                      last: "pone.0067380-Whitehead1",
-                     sortableCount: 33,
-                     unsortableCount: 22,
+                     sortableCount: 39,
+                     unsortableCount: 16,
                      showRepeated: false}],
                    function (d) {
                        var refs = fixture.references;
