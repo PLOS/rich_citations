@@ -1,3 +1,5 @@
+require 'uri'
+
 module Processors
   class ReferencesInfo < Base
     include Helpers
@@ -24,7 +26,8 @@ module Processors
     end
 
     def get_result(doi)
-      json   = Plos::Api.http_get("http://dx.doi.org/#{doi}", 'application/citeproc+json')
+      uri_s = "http://data.crossref.org/#{URI.encode_www_form_component(doi)}"
+      json   = Plos::Api.http_get(uri_s, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
     end
 
