@@ -280,7 +280,6 @@ var Reference = React.createClass({
     },
     renderReferenceAuthors: function(info) {
         var authorString = _.map(info.author, function (author) {
-            console.log(author.family);
             return author.family + " " + author.given;
         }).join(", ");
         return <span className="reference-authors">{ authorString }</span>;
