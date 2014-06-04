@@ -26,7 +26,7 @@ module Processors
     end
 
     def get_result(doi)
-      uri_s = "http://data.crossref.org/#{URI.escape(doi)}"
+      uri_s = "http://data.crossref.org/#{URI.encode_www_form_component(doi)}"
       json   = Plos::Api.http_get(uri_s, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
     end
