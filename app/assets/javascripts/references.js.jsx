@@ -611,7 +611,9 @@ function mkReferencePopover(id, references, suppressMentions) {
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
-    $.getJSON("/papers/" + doi + "?format=json", function(data) {
+    $.ajax({
+        url: "/papers/" + doi + "?format=json&inline=t"
+    }).done(function(data) {
         /* build main data structure */
         var references = buildReferenceData(data);
         /* insert the container */
