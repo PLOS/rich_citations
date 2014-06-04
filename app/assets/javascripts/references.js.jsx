@@ -662,9 +662,6 @@ $(document).ready(function () {
                 }
             }
             $(citationSelector).filter(citationFilter).each(function() {
-                var anchorTopPadding = "100px";
-                /* hack to get anchors to work better by giving a little padding on the top */
-                $(this).css("padding-top", anchorTopPadding);
                 /* the id of the current reference */
                 var refId = $(this).attr('href').substring(1);
                 incCitationCounter(refId);
@@ -691,7 +688,7 @@ $(document).ready(function () {
                         });
                         _.each(elidedReferences, function (refId) {
                             incCitationCounter(refId);
-                            $("<a id='" + "ref_" + refId + "_" + citationCounters[refId] + "' style='padding-top: " + anchorTopPadding + "'/>").insertAfter(jq(startId));
+                            $("<a id='" + "ref_" + refId + "_" + citationCounters[refId] + "'/>").insertAfter(jq(startId));
                         });
                         groupCounter = groupCounter + 1;
                         var spanId = guid();
