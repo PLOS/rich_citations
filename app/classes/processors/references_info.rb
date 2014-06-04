@@ -27,9 +27,6 @@ module Processors
 
     def get_result(doi)
       uri_s = "http://data.crossref.org/#{URI.escape(doi)}"
-      # hack - requires double encoding
-      uri_s = uri_s.gsub(/%3E/, "%253E")
-      uri_s = uri_s.gsub(/%3C/, "%253C")
       json   = Plos::Api.http_get(uri_s, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
     end
