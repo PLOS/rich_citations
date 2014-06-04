@@ -284,15 +284,17 @@ var Reference = React.createClass({
         }).join(", ");
         return <span className="reference-authors">{ authorString }</span>;
     },
-    renderReference: function (info) {
+    renderReference: function (ref) {
+        var info = ref.info;
         if (info.title) {
-            return <span>
+                return <span><a id={ ref.id } name={ this.props.id }></a>
                 { this.renderReferenceAuthors(info) } ({ info.issued['date-parts'][0][0] })<br/>
                 <span className="reference-title"><a href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a></span><br/>
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 </span>;
+
         } else {
-            return <span dangerouslySetInnerHTML={ {__html: this.props.reference.html} } />;
+            return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
         }
     },
     render: function () {
@@ -300,7 +302,7 @@ var Reference = React.createClass({
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
-            { this.renderReference(this.props.reference.info) }
+            { this.renderReference(this.props.reference) }
             { this.renderSelfCiteFlag() }
             { this.renderAppearanceToggle() }
             { this.renderAppearanceList() }
