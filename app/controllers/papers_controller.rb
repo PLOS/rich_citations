@@ -9,7 +9,7 @@ class PapersController < ApplicationController
 
       format.json {
         response.content_type = Mime::JSON
-        headers['Content-Disposition'] = %Q{attachment; filename="#{@paper.doi}.js"}
+        headers['Content-Disposition'] = %Q{attachment; filename="#{@paper.doi}.js"} if !params[:inline]
         render json: @paper.result
       }
 
