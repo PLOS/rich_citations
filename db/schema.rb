@@ -11,10 +11,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140517013518) do
+ActiveRecord::Schema.define(version: 20140604231116) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "paper_info_caches", force: true do |t|
+    t.string "identifier", null: false
+    t.text   "info_json"
+  end
 
   create_table "paper_results", force: true do |t|
     t.string   "doi",        null: false
