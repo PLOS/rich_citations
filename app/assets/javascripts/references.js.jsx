@@ -625,6 +625,19 @@ function mkReferencePopover(id, references, suppressMentions) {
     });
 }
 
+/**
+ * Functions to manage citation refernce ids. Of the form ref_ID_COUNT.
+ * 
+ */
+function extractCitationReferenceId(id) {
+    var md = id.match(/^ref_([^_]+)_[0-9]+$/);
+    return (md && md[1]) || null;
+}
+
+function generateCitationReferenceId(id, count) {
+    return "ref_" + id + "_" + count;
+}
+
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -664,7 +677,7 @@ $(document).ready(function () {
                 var refId = $(this).attr('href').substring(1);
                 incCitationCounter(refId);
                 /* give this a unique id */
-                var citationId = "ref_" + refId + "_" + citationCounters[refId];
+                var citationId = generateCitationReferenceId(refId, citationCounters[refId]);
                 $(this).attr("id", citationId);
                 /* the list of reference id for the current citation group */
                 var currentGroupRefIds = groups[groupCounter].references;
@@ -686,7 +699,7 @@ $(document).ready(function () {
                         });
                         _.each(elidedReferences, function (refId) {
                             incCitationCounter(refId);
-                            $("<a id='" + "ref_" + refId + "_" + citationCounters[refId] + "'/>").insertAfter(jq(startId));
+                            $("<a id='" + generateCitationReferenceId(refId, citationCounters[refId]) + "'/>").insertAfter(jq(startId));
                         });
                         groupCounter = groupCounter + 1;
                         var spanId = guid();
