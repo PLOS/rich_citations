@@ -5,6 +5,8 @@ source 'https://rubygems.org'
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '4.1.0'
 
+gem 'react-rails', '~> 0.10.0.0'
+
 gem 'unicorn'
 
 gem 'pg'
@@ -37,11 +39,15 @@ group :doc do
 end
 
 group :development do
+  gem 'sqlite3'
   gem 'quiet_assets'
 end
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
+  gem "qunit-rails"
+  gem 'capybara'
+  gem 'selenium-webdriver'
 end
 
 group :production do

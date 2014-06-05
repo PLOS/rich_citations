@@ -1,0 +1,40 @@
+span.selfcitation {
+    border-radius: 5px;
+    padding: 5px;
+    background: #bbbbbb;
+}
+
+span.highlight {
+    background-color: #fff700;
+}
+
+div.reference.selected {
+    background-color: #ffd8bd;
+}
+
+div.reference {
+    margin-bottom: 1.5em;
+}
+
+div.citationGroup {
+    border-style: dashed;
+    border-width: 1pt;
+    margin: .5em;
+}
+
+ul.sorters {
+    display: inline
+}
+
+ul.sorters li {
+    display: inline;
+    list-style-type: none;
+}
+
+p.toggle.disabled {
+    color: #c0c0c0;
+}
+
+span.reference-journal {
+    font-weight: bold;
+}
