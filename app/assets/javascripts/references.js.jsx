@@ -360,9 +360,8 @@ var SortedReferencesList = React.createClass({
             setTimeout(function () {
                 var tokens = lunr.tokenizer(this.props.filterText);
                 /* highlight raw tokens & stemmed */
-                _.each($.unique(tokens.concat(this.idx.pipeline.run(tokens))), function (s) {
-                    $("ol.references").highlight(s);
-                });
+                var allTokens = $.unique(tokens.concat(this.props.idx.pipeline.run(tokens)));
+                $("ol.references").highlight(allTokens);
             }.bind(this), 1);
         }
     },
@@ -554,6 +553,7 @@ var ReferencesApp = React.createClass({
               current={this.state.sort}
               references={this.props.references}
               filterText={this.state.filterText}
+              idx={ this.idx }
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
               showRepeated={ this.state.showRepeated }
               groupCitations={ this.state.groupCitations }
