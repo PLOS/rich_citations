@@ -182,13 +182,11 @@ function buildReferenceData(json, elements) {
     var retval = {};
     $.each(json.references, function (k, v) {
         retval[k] = v;
-        // id lookup not working?
-        var selector = "[name='" + v.id + "']";
-        var html = $(selector).parent().first().remove("span.label").html();
+        var html = $(jq(v.id)).parent().first().remove("span.label").html();
         // cannot get this to work properly in jquery
         html = html.replace(/<span class="label">[^<]+<\/span>/, '');
         retval[k]['html'] = html;
-        retval[k]['text'] = $(selector).parent().first().text();
+        retval[k]['text'] = $(jq(v.id)).parent().first().text();
     });
     return retval;
 }
