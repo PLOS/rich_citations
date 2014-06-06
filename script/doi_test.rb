@@ -2,6 +2,8 @@
 
 Rails.logger = Logger.new($stdout)
 
+# Rails.configuration.app.use_cached_info = false
+
 require 'pp'
 
 DOI='10.1371/journal.pone.0046843'

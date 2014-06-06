@@ -10,7 +10,7 @@ module Processors
     end
 
     def self.dependencies
-      [ReferencesIdentifier]
+      ReferencesInfoCacheLoader
     end
 
     protected

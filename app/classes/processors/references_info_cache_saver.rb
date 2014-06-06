@@ -5,10 +5,7 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
-        next unless ref[:doi] && ref[:info]
-        PaperInfoCache.update('doi', ref[:doi], ref[:info])
-      end
+      save_info_to_cache if Rails.configuration.app.use_cached_info
     end
 
     # Make sure we save the cache as the last thing
@@ -18,6 +15,16 @@ module Processors
 
     def self.dependencies
       [ ] # References, ReferencesIdentifier, ReferencesAbstract, ReferencesDelayedLicense ]
+    end
+
+    protected
+
+    def save_info_to_cache
+      references.each do |id, ref|
+        next unless ref[:doi] && ref[:info]
+
+        PaperInfoCache.update('doi', ref[:doi], ref[:info])
+      end
     end
 
   end

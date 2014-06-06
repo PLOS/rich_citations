@@ -20,7 +20,7 @@ describe Processors::ReferencesInfoCacheSaver do
   end
 
   it "Update an existing cache record" do
-    cache = PaperInfoCache.create(identifier:'doi:10.111/111', info:{doi:'10.111/111', source:'other', other:999 } )
+    cache = PaperInfoCache.create!(identifier:'doi:10.111/111', info:{doi:'10.111/111', source:'other', other:999 } )
 
     refs 'First'
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', source:'test', score:1.23 })

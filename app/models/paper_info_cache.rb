@@ -3,9 +3,8 @@ class PaperInfoCache < ActiveRecord::Base
   validates :identifier, presence:true
   validates :info_json,  presence:true
 
-  def self.get_info_for_identifier(type, identifier)
-    cache = find_by_identifier(type, identifier)
-    cache && cache.info
+  def self.find_by_identifier(type, identifier)
+    self.where(identifier:full_identifier(type, identifier)).first
   end
 
   def self.update(type, identifier, info)
@@ -29,10 +28,6 @@ class PaperInfoCache < ActiveRecord::Base
   end
 
   protected
-
-  def self.find_by_identifier(type, identifier)
-    self.where(identifier:full_identifier(type, identifier)).first
-  end
 
   def self.full_identifier(type, identifier)
     "#{type}:#{identifier}"
