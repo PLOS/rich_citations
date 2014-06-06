@@ -7,6 +7,10 @@ module Processors::Helpers
     @body ||= xml.search('body').first || xml
   end
 
+  def state
+    result[:state] ||= ActiveSupport::OrderedOptions.new
+  end
+
   def references
     @references ||= result[:references]
   end

@@ -109,4 +109,14 @@ describe Processors::ReferencesLicense do
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
+  it "should record the time of the run" do
+    licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1')]}
+    allow(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    allow_any_instance_of(Processors::State).to receive(:cleanup) { }
+
+    travel_to Time.new(2012, 6, 12, 1, 2, 3) do
+      expect(result[:state].license_retrieved_time).to eq(Time.new(2012, 6, 12, 1, 2, 3))
+    end
+  end
+
 end
