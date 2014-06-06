@@ -5,7 +5,7 @@ module Processors
     include Helpers
 
     def process
-      plos_references = references.values.select{ |ref| Plos::Doi.is_plos_doi?(ref[:doi]) }
+      plos_references = references.values.select{ |ref| !ref[:info].try(:[], :abstract) && Plos::Doi.is_plos_doi?(ref[:doi]) }
       add_abstracts(plos_references) if plos_references.present?
     end
 

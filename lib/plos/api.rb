@@ -85,6 +85,7 @@ module Plos
       # http.debug_output = $stdout
 
       loop do
+        # puts "GET #{url}"
         uri = URI.parse(url)
         req = Net::HTTP::Get.new(uri.request_uri, parse_headers(headers))
         response = http.request uri, req
@@ -113,6 +114,7 @@ module Plos
       http.retry_change_requests = true
 
       loop do
+        # puts "POST #{url}"
         uri = URI.parse(url)
         req = Net::HTTP::Post.new(uri.request_uri, parse_headers(headers))
         req.body = content

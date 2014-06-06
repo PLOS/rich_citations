@@ -32,6 +32,19 @@ describe Processors::ReferencesInfo do
                                                       })
   end
 
+  it "should not call the API if there are cached results" do
+    refs 'First'
+    expect(Plos::Api).to_not receive(:http_get)
+
+    cached = { references: {
+        'ref-1' => { doi:'10.1371/11111', info:{type:'cached', title:'cached title'} },
+    } }
+    process(cached)
+
+    expect(result[:references]['ref-1'][:info][:type] ).to eq('cached')
+    expect(result[:references]['ref-1'][:info][:title]).to eq('cached title')
+  end
+
   it "should not overwrite the DOI, score or source" do
     refs 'First', 'Secpmd', 'Third'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', score:1.23, source:'test' } )
