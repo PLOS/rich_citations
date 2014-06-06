@@ -193,7 +193,8 @@ function buildReferenceData(json, elements) {
 
 var Reference = React.createClass({
     getInitialState: function() {
-        return { showAppearances: false };
+        return { showAppearances: false,
+                 authorsExpanded: false };
     },
     getDefaultProps: function() {
         return {
@@ -276,11 +277,22 @@ var Reference = React.createClass({
             return "";
         }
     },
+    toggleAuthorsExpanded: function() {
+        this.setState({authorsExpanded: !this.state.authorsExpanded});
+        return false;
+    },
     renderReferenceAuthors: function(info) {
-        var authorString = _.map(info.author, function (author) {
+        var etal;
+        var authorMax = 3;
+        if (info.author.length > 3 && !this.state.authorsExpanded) {
+            etal = <a href="#" onClick={ this.toggleAuthorsExpanded }>, et al.</a>;
+        } else {
+            authorMax = info.author.length;
+        }
+        var authorString = _.map(info.author.slice(0, authorMax), function (author) {
             return author.family + " " + author.given;
         }).join(", ");
-        return <span className="reference-authors">{ authorString }</span>;
+        return <span className="reference-authors">{ authorString }{ etal }</span>;
     },
     renderReference: function (ref) {
         var info = ref.info;
