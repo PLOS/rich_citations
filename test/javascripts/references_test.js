@@ -112,13 +112,14 @@ test("guid generator", function() {
     var guid1 = guid();
     var guid2 = guid();
     notEqual(guid1, guid2);
-    ok(guid1.match("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"));
+
     ok(guid2.match("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"));
 });
 
 test("extract and generated citation reference ids", function() {
     var id = "pone.0067380-Sperone2";
-    strictEqual(extractCitationReferenceId("pone.0067380-Sperone2"), null);
-    strictEqual(extractCitationReferenceId(generateCitationReferenceId(id, 0)), id);
+    strictEqual(extractCitationReferenceInfo("pone.0067380-Sperone2"), null);
+    strictEqual(extractCitationReferenceInfo(generateCitationReferenceId(id, 0)).id, id);
+    strictEqual(extractCitationReferenceInfo(generateCitationReferenceId(id, 0)).count, 0);
     strictEqual(generateCitationReferenceId("pone.0067380-Sperone2", 0), "ref_" + id + "_0");
 });

@@ -629,9 +629,9 @@ function mkReferencePopover(id, references, suppressMentions) {
  * Functions to manage citation refernce ids. Of the form ref_ID_COUNT.
  * 
  */
-function extractCitationReferenceId(id) {
-    var md = id.match(/^ref_([^_]+)_[0-9]+$/);
-    return (md && md[1]) || null;
+function extractCitationReferenceInfo(id) {
+    var md = id.match(/^ref_([^_]+)_([0-9])+$/);
+    return (md && {id: md[1], count: parseInt(md[2])}) || null;
 }
 
 function generateCitationReferenceId(id, count) {
