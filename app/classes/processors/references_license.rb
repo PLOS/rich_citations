@@ -8,15 +8,17 @@ module Processors
 
       results = get_licenses(references)
       add_licenses(results)
+
+      state.license_retrieved_time = timestamp if !is_delayed?
     end
 
     # Execute as soon as possible to maximize the time between this and DelayedReferencesLicense
     def self.priority
-      0
+      1
     end
 
     def self.dependencies
-      [ ReferencesIdentifier ]
+      [State, ReferencesInfoCacheLoader]
     end
 
     protected
@@ -24,7 +26,11 @@ module Processors
     API_URL = 'http://howopenisit.org/lookup/12345,67890'
 
     def is_delayed?
-      self.class != ReferencesLicense
+      false
+    end
+
+    def timestamp
+      Time.now
     end
 
     def references_without_licenses

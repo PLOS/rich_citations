@@ -6,13 +6,15 @@ module Processors
 
     def process
       references.each do |id, ref|
+        next if ref[:info].try(:[], :type)
+
         doi = ref[:doi]
         get_doi_info(doi, ref) if doi
       end
     end
 
     def self.dependencies
-      ReferencesIdentifier
+      ReferencesInfoCacheLoader
     end
 
     protected

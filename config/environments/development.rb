@@ -31,6 +31,7 @@ CitationTools::Application.configure do
   config.react.variant = :development
 end
 
+# Disable broadcasting of log entries in dev
 class ::ActiveSupport::Logger
   self.singleton_class.send(:alias_method, :old_broadcast_module, :broadcast)
 

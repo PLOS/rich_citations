@@ -88,4 +88,35 @@ describe Processors::ReferencesLicense do
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
+  it "should not call the API if the license was in the cache" do
+    license  = {
+        identifier:[ {type:'doi', id:'10.222/222'} ],
+        license:[
+                       {status:'inactive',type:'inactive-license-1', provenance:{date: 2.days.ago.as_json} },
+                       {status:'active',  type:'test-license-2',     provenance:{date: 4.days.ago.as_json} },
+                   ]
+    }
+    licenses = { results: [license]}
+    expect(Plos::Api).to receive(:http_post).with(anything, '[{"type":"doi","id":"10.222/222"}]', anything).and_return(JSON.generate(licenses))
+
+    cached = { references: {
+        'ref-1' => { doi:'10.111/111', info:{license:'cached-license-1'} },
+        'ref-2' => { doi:'10.222/222', info:{}  },
+    } }
+    process(cached)
+
+    expect( result[:references]['ref-1'][:info][:license] ).to eq('cached-license-1')
+    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+  end
+
+  it "should record the time of the run" do
+    licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1')]}
+    allow(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    allow_any_instance_of(Processors::State).to receive(:cleanup) { }
+
+    travel_to Time.new(2012, 6, 12, 1, 2, 3) do
+      expect(result[:state].license_retrieved_time).to eq(Time.new(2012, 6, 12, 1, 2, 3))
+    end
+  end
+
 end

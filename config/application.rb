@@ -26,6 +26,9 @@ module CitationTools
     #App configuration
     config.app = ActiveSupport::OrderedOptions.new
 
+    config.app.use_cached_info = true
+
+    # This is the key for the doi.crossreforg API
     config.app.crossref_pid = "plos:plos1"
 
     # This is Adam's API key. Please don't overuse it.
