@@ -205,7 +205,7 @@ var ReferenceAbstract = React.createClass({
     },
     render: function() {
         if (this.props.text) {
-            var toggle = <a onClick={ this.handleClick } href="#">Show abstract { this.state.show ? " ▼ " : " ▶ " }</a>;
+            var toggle = <button onClick={ this.handleClick }>Show abstract { this.state.show ? " ▼ " : " ▶ " }</button>;
             if (this.state.show) {
                 return <div>{ toggle }<p className="abstract">{ this.props.text }</p></div>;
             } else {
@@ -271,8 +271,9 @@ var Reference = React.createClass({
         if (ref.mentions === 1 && this.props.suppressMention !== null) {
             return <span>{ text }</span>;
         } else {
-            return <a onClick={this.handleClick} href="#">{ text }{ this.state.showAppearances ? " ▼ " : " ▶ " }
-            </a>;
+            return <button onClick={this.handleClick}>
+                { text }{ this.state.showAppearances ? " ▼ " : " ▶ " }
+            </button>;
         }
     },
     renderAppearanceList: function() {
@@ -311,7 +312,7 @@ var Reference = React.createClass({
         var etal;
         var authorMax = 3;
         if (info.author.length > 3 && !this.state.authorsExpanded) {
-            etal = <a href="#" onClick={ this.toggleAuthorsExpanded }>, et al.</a>;
+            etal = <button onClick={ this.toggleAuthorsExpanded }>, et al.</button>;
         } else {
             authorMax = info.author.length;
         }
@@ -492,7 +493,7 @@ var Sorter = React.createClass({
             if (this.props.toggleable && isCurrent) {
                 orderStr = (this.props.current.order === "asc") ? "↑ " : "↓ ";
             }
-            return <a href="#" onClick={this.handleClick}>{orderStr}{this.props.name}</a>;
+            return <button onClick={this.handleClick}>{orderStr}{this.props.name}</button>;
         }
     }
 });
@@ -515,11 +516,7 @@ var Toggle = React.createClass({
     },
     render: function () {
         var toggle = this.props.toggleState ? "☑" : "☐";
-        if (this.props.available) {
-            return <p className="toggle"><a href="#" onClick={ this.handleClick }>{ toggle } { this.props.children }</a></p>;
-        } else {
-            return <p className="toggle disabled">{ toggle } { this.props.children }</p>;
-        }
+        return <p className="toggle"><button onClick={ this.handleClick } disabled={ !this.props.available }>{ toggle } { this.props.children }</button></p>;
     }
 });
 
