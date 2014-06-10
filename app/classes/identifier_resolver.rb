@@ -139,7 +139,7 @@ class IdentifierResolver
 
   ALL_RESOLVERS = [
       IdentifierResolvers::CrossRef,
-      IdentifierResolvers::Doi,
+      IdentifierResolvers::DoiFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
   ]
