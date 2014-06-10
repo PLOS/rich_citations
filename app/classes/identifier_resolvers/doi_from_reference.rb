@@ -6,7 +6,7 @@ module IdentifierResolvers
     def resolve
       unresolved_references.each{ |id, node|
         info = extract_info(node.text)
-        root.set_result(id, :doi, info)
+        set_result(id, :doi, info)
       }
     end
 

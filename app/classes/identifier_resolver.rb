@@ -39,6 +39,10 @@ class IdentifierResolver
     # [#69951266] flag_duplicates_for_more_resolving(key, id, info[key])
   end
 
+  def has_result?(id)
+    results[id]
+  end
+
   def unresolved_references
     references.slice(*unresolved_ids)
   end

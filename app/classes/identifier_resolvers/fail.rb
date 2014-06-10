@@ -12,7 +12,7 @@ module IdentifierResolvers
               score: nil,
           }
 
-          root.set_result(id, nil, info )
+          set_result(id, nil, info )
         end
       end
     end
