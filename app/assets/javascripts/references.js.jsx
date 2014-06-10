@@ -195,6 +195,28 @@ function buildReferenceData(json, elements) {
     return retval;
 }
 
+var ReferenceAbstract = React.createClass({
+    getInitialState: function() {
+        return { show: false };
+    },
+    handleClick: function() {
+        this.setState({ show: !this.state.show });
+        return false;
+    },
+    render: function() {
+        if (this.props.text) {
+            var toggle = <a onClick={ this.handleClick } href="#">Show abstract { this.state.show ? " ▼ " : " ▶ " }</a>;
+            if (this.state.show) {
+                return <div>{ toggle }<p className="abstract">{ this.props.text }</p></div>;
+            } else {
+                return <div>{ toggle }</div>;
+            }
+        } else {
+            return <div></div>;
+        }
+    }
+});
+                                         
 var Reference = React.createClass({
     getInitialState: function() {
         return { showAppearances: false,
@@ -319,6 +341,7 @@ var Reference = React.createClass({
             { this.renderLabel() }
             { this.renderReference(this.props.reference) }
             { this.renderSelfCiteFlag() }
+            <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             { this.renderAppearanceToggle() }
             { this.renderAppearanceList() }
             </div>;
