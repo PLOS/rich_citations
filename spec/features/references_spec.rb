@@ -21,4 +21,22 @@ describe "reference viewing", :type => :feature, :js => true do
     page.click_button("Journal")
     expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-ODonoghue1")
   end
+
+  it "should have a show repeated citations button" do
+    visit '/view/10.1371/journal.pone.0067380'
+    
+    expect(page).to have_button("Show repeated citations")
+
+    # should be disabled on non-appearance sorts
+    page.click_button("Title")
+    expect(page).to have_button("Show repeated citations", disabled: true)
+    page.click_button("Mentions")
+    expect(page).to have_button("Show repeated citations", disabled: true)
+    page.click_button("Year")
+    expect(page).to have_button("Show repeated citations", disabled: true)
+    page.click_button("Author")
+    expect(page).to have_button("Show repeated citations", disabled: true)
+    page.click_button("Journal")
+    expect(page).to have_button("Show repeated citations", disabled: true)
+  end
 end
