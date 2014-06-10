@@ -7,9 +7,12 @@ describe Processors::SelfCitations do
     meta <<-EOM
       <contrib contrib-type="author">
         <surname>Jolie</surname><given-names>Angelina</given-names>
-        <xref ref-type='aff' rid='aff1'>
-        <xref ref-type='corresp' rid='corr1'>
-     </contrib>
+        <xref ref-type='aff' rid='aff1' />
+        <xref ref-type='corresp' rid='corr1' />
+      </contrib>
+      <contrib contrib-type="author">
+        <literal>Roberts, Julia</literal>
+      </contrib>
       <aff id="aff1"><addr-line>Hollywood</addr-line></aff>
       <corresp id="corr1">a.jolie@hollywood.com</corresp>
     EOM
@@ -25,9 +28,24 @@ describe Processors::SelfCitations do
     result[:references].values.first
   end
 
-  it "should identify a self citation" do
+  it "should identify a self citation based on a given and family name" do
     resolve_author!(family:'Jolie', given:'Angelina')
-    expect(reference[:self_citations]).to eq(['Angelina Jolie [name]'])
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
+  end
+
+  it "should identify a self citation based on a literal name" do
+    resolve_author!(literal:'Roberts, Julia')
+    expect(reference[:self_citations]).to eq(['Roberts, Julia [name]'])
+  end
+
+  it "should work when comparing a literal name to a given and family" do
+    resolve_author!(family:'Roberts', given:'Julia')
+    expect(reference[:self_citations]).to eq(['Roberts, Julia [name]'])
+  end
+
+  it "should work when comparing a given and family name with a literal name" do
+    resolve_author!(literal:'Jolie, Angelina')
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
   end
 
   it "should return nil if there are no self citations" do
@@ -42,12 +60,12 @@ describe Processors::SelfCitations do
 
   it "should note a self citation if the affiliations are the same" do
     resolve_author!(family:'Jolie', given:'Angelina', affiliation:'Hollywood')
-    expect(reference[:self_citations]).to eq(['Angelina Jolie [name,affiliation]'])
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name,affiliation]'])
   end
 
   it "should match self citations based on email" do
     resolve_author!(family:'Jolie', given:'A.', email:'a.jolie@hollywood.com')
-    expect(reference[:self_citations]).to eq(['A. Jolie [email]'])
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [email]'])
   end
 
   it "should not match self citations with differing emails" do
@@ -57,12 +75,12 @@ describe Processors::SelfCitations do
 
   it "should match self citations based on name and email" do
     resolve_author!(family:'Jolie', given:'Angelina', email:'a.jolie@hollywood.com')
-    expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email]'])
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name,email]'])
   end
 
   it "should note self citations based on name and email with the same affiliation" do
     resolve_author!(family:'Jolie', given:'Angelina', email:'a.jolie@hollywood.com', affiliation:'Hollywood')
-    expect(reference[:self_citations]).to eq(['Angelina Jolie [name,email,affiliation]'])
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name,email,affiliation]'])
   end
 
 end
