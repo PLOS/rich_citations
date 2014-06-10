@@ -20,12 +20,16 @@ var citationFilter = function (el) {
 function buildIndex(references) {
     var idx = lunr(function () {
         this.field('title', { boost: 10 });
+        this.field('author');
+        this.field('journal');
         this.field('body');
     });
     for (var id in references) {
         var ref = references[id];
         var doc = { id:    ref.id,
+                    author: _.map(ref.info.author, function(a) { return a.given + " " + a.family; }).join(" "),
                     title: ref.info.title,
+                    journal: ref.info['container-title'],
                     body:  ref.text };
         idx.add(doc);
     }
