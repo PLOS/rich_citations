@@ -339,6 +339,13 @@ var SortedReferencesList = React.createClass({
             return null;
         }
     },
+    renderGroupContext: function(group) {
+        if (this.props.showCitationContext) {
+            return <p>{ group[0].group.context }</p>;
+        } else {
+            return "";
+        }
+    },
     renderReferenceList: function(refs) {
         if ($.type(refs) === 'array') {
             if ($.type(refs[0]) === 'array') {
@@ -346,7 +353,7 @@ var SortedReferencesList = React.createClass({
                 return _.map(refs, function (group) {
                     var key = "citation_group_" + group[0].group.word_position;
                     return <div className="citationGroup" key={ key }>
-                        <p>{ group[0].group.context }</p>
+                        { this.renderGroupContext(group) }
                         { this.renderReferenceList(group) }
                     </div>;
                 }.bind(this));
@@ -508,7 +515,8 @@ var ReferencesApp = React.createClass({
         return {sort: { by: "appearance", order: "asc" },
                 filterText: '',
                 showRepeated: false,
-                groupCitations: false};
+                groupCitations: false,
+                showCitationContext: false};
     },
     componentWillMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -540,6 +548,10 @@ var ReferencesApp = React.createClass({
         this.setState({groupCitations: !this.state.groupCitations});
         return false;
     },
+    toggleShowCitationContext: function() {
+        this.setState({showCitationContext: !this.state.showCitationContext});
+        return false;
+    },
     render: function() {
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
@@ -561,6 +573,9 @@ var ReferencesApp = React.createClass({
               <Toggle onClick={ this.toggleGroupCitations } toggleState={ this.state.groupCitations } available={ this.state.showRepeated }>
                 Group citations
               </Toggle>
+              <Toggle onClick={ this.toggleShowCitationContext } toggleState={ this.state.showCitationContext } available={ this.state.showRepeated && this.state.groupCitations }>
+                Show citation context
+              </Toggle>
             </div>
             <SortedReferencesList
               current={this.state.sort}
@@ -570,6 +585,7 @@ var ReferencesApp = React.createClass({
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
               showRepeated={ this.state.showRepeated }
               groupCitations={ this.state.groupCitations }
+              showCitationContext={ this.state.showCitationContext }
             />
             </div>;
     }
