@@ -216,68 +216,30 @@ var ReferenceAbstract = React.createClass({
         }
     }
 });
-                                         
-var Reference = React.createClass({
+
+var ReferenceAppearanceList = React.createClass({
     getInitialState: function() {
-        return { showAppearances: false,
-                 authorsExpanded: false };
+        return { show: false };
     },
-    getDefaultProps: function() {
-        return {
-            suppressMention: null
-        };
-    },
-    componentDidUpdate: function() {
-        if (this.props.qtip) {
-            this.props.qtip.reposition();
-        }
-    },
-    componentDidMount: function() {
-        if (this.props.qtip) {
-            this.props.qtip.reposition();
-        }
-    }, 
     handleClick: function() {
-        this.setState( { showAppearances: !this.state.showAppearances });
+        this.setState({ show: !this.state.show });
         return false;
     },
-    isSelected: function () {
-        return ($.param.fragment() === this.props.reference.id);
-    },
-    renderLabel: function() {
-        if (this.props.showLabel) {
-            /* check if this is the selected anchor */
-            var ref = this.props.reference;
-            if (this.isSelected()) {
-                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
-            } else {
-                return <span className="label">{ ref.index }.</span>;
-            }
-        } else {
-            return "";
-        }
-    },
-    renderSelfCiteFlag: function() {
-        var selfCiteFlag = null;
-        if (this.props.reference.self_citations) {
-            return <span className="selfcitation">Self-citation</span>;
-        } else {
-            return "";
-        }
-    },
-    renderAppearanceToggle: function() {
+    render: function() {
         var ref = this.props.reference;
         var text = "Appears " +  (ref.mentions === 1 ? "once" : ref.mentions + " times") + " in this paper.";
         if (ref.mentions === 1 && this.props.suppressMention !== null) {
-            return <span>{ text }</span>;
+            return <div>{ text }</div>;
         } else {
-            return <button onClick={this.handleClick}>
-                { text }{ this.state.showAppearances ? " ▼ " : " ▶ " }
-            </button>;
+            return <div><button onClick={ this.handleClick }>
+                { text }{ this.state.show ? " ▼ " : " ▶ " }
+            </button>
+                { this.renderAppearanceList() }
+            </div>;
         }
     },
     renderAppearanceList: function() {
-        if (this.state.showAppearances) {
+        if (this.state.show) {
             var ref = this.props.reference;
             /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
             var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
@@ -300,6 +262,51 @@ var Reference = React.createClass({
                     { mentions }
                 </div>;
             }.bind(this));
+        } else {
+            return "";
+        }
+    }
+});
+                                                
+var Reference = React.createClass({
+    getInitialState: function() {
+        return { authorsExpanded: false };
+    },
+    getDefaultProps: function() {
+        return {
+            suppressMention: null
+        };
+    },
+    componentDidUpdate: function() {
+        if (this.props.qtip) {
+            this.props.qtip.reposition();
+        }
+    },
+    componentDidMount: function() {
+        if (this.props.qtip) {
+            this.props.qtip.reposition();
+        }
+    }, 
+    isSelected: function () {
+        return ($.param.fragment() === this.props.reference.id);
+    },
+    renderLabel: function() {
+        if (this.props.showLabel) {
+            /* check if this is the selected anchor */
+            var ref = this.props.reference;
+            if (this.isSelected()) {
+                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
+            } else {
+                return <span className="label">{ ref.index }.</span>;
+            }
+        } else {
+            return "";
+        }
+    },
+    renderSelfCiteFlag: function() {
+        var selfCiteFlag = null;
+        if (this.props.reference.self_citations) {
+            return <span className="selfcitation">Self-citation</span>;
         } else {
             return "";
         }
@@ -343,8 +350,7 @@ var Reference = React.createClass({
             { this.renderReference(this.props.reference) }
             { this.renderSelfCiteFlag() }
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
-            { this.renderAppearanceToggle() }
-            { this.renderAppearanceList() }
+            <ReferenceAppearanceList reference={ this.props.reference } suppressMention={ this.props.suppressMention }/>
             </div>;
     }
 });
