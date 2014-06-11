@@ -25,8 +25,6 @@ xml = r = Plos::Api.document( DOI )
 info = PaperParser.parse_xml(xml)
 
 if info
-  pp info[:references].values[13][:info]
-  pp info[:references].values[15][:info]; exit
   pp info
 else
   puts "\n*************** Document #{DOI} could not be retrieved\n"
