@@ -59,6 +59,7 @@ module Processors
     def set_field(info, field, value)
       if info[field].blank?
         value = value.content if value.respond_to?(:content)
+        value = value.strip if value.respond_to?(:strip)
         info[field] = value if value.present?
       end
     end
