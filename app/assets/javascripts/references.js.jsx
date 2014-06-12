@@ -267,7 +267,31 @@ var ReferenceAppearanceList = React.createClass({
         }
     }
 });
-                                                
+
+var ReferenceAuthorList = React.createClass({
+    getInitialState: function() {
+        return { expanded: false };
+    },
+    handleClick: function() {
+        this.setState({ expanded: !this.state.expanded});
+        return false;
+    },
+    render: function() {
+        /* display at most 4 authors; if > than 4, display first 3 then et al */
+        var etal;
+        var authorMax = 3;
+        if (this.props.authors.length > (authorMax + 1) && !this.state.expanded) {
+            etal = <button onClick={ this.handleClick }>, et al.</button>;
+        } else {
+            authorMax = this.props.authors.length;
+        }
+        var authorString = _.map(this.props.authors.slice(0, authorMax), function (author) {
+            return author.family + " " + author.given;
+        }).join(", ");
+        return <span className="reference-authors">{ authorString }{ etal }</span>;
+    }
+});
+
 var Reference = React.createClass({
     getInitialState: function() {
         return { authorsExpanded: false };
@@ -311,28 +335,12 @@ var Reference = React.createClass({
             return "";
         }
     },
-    toggleAuthorsExpanded: function() {
-        this.setState({authorsExpanded: !this.state.authorsExpanded});
-        return false;
-    },
-    renderReferenceAuthors: function(info) {
-        var etal;
-        var authorMax = 3;
-        if (info.author.length > 3 && !this.state.authorsExpanded) {
-            etal = <button onClick={ this.toggleAuthorsExpanded }>, et al.</button>;
-        } else {
-            authorMax = info.author.length;
-        }
-        var authorString = _.map(info.author.slice(0, authorMax), function (author) {
-            return author.family + " " + author.given;
-        }).join(", ");
-        return <span className="reference-authors">{ authorString }{ etal }</span>;
-    },
     renderReference: function (ref) {
         var info = ref.info;
         if (info.title) {
                 return <span><a id={ ref.id } name={ this.props.id }></a>
-                { this.renderReferenceAuthors(info) } ({ info.issued['date-parts'][0][0] })<br/>
+                <ReferenceAuthorList authors={ info.author }/>
+                ({ info.issued['date-parts'][0][0] })<br/>
                 <span className="reference-title"><a href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a></span><br/>
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 <a href={ "/references/" + encodeURIComponent(this.props.reference.info.doi) + "?format=bib" }>Download reference (BibTeX)</a><br/>
