@@ -273,7 +273,7 @@ var ReferenceAppearanceList = React.createClass({
             return _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     if (this.props.suppressMention === mention.index) {
-                        return <p key={ "mention" + mention.word_position } ><i>current location</i></p>;
+                        return <p key={ "mention" + mention.word_position } >☛{ mention.context }☚</p>;
                     } else {
                         return <p key={ "mention" + mention.word_position } >
                             <a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a>
