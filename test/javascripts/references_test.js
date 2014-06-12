@@ -154,7 +154,15 @@ test("author list", function() {
     var authorList4 = ReferenceAuthorList({authors: [a, b, c, d]});
     var authorList5 = ReferenceAuthorList({authors: [a, b, c, d, e]});
     TestUtils.renderIntoDocument(authorList4);
-    var span = TestUtils.findRenderedDOMComponentWithTag(authorList4, 'span');
+    TestUtils.renderIntoDocument(authorList5);
+    var span4 = TestUtils.findRenderedDOMComponentWithTag(authorList4, 'span');
+    var span5 = TestUtils.findRenderedDOMComponentWithTag(authorList5, 'span');
     /* all four names should display */
-    strictEqual(span.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J");
+    strictEqual(span4.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J");
+    /* 2 refs of 5 should be hidden */
+    strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, et al.");
+    /* should expand on click */
+    var input = TestUtils.findRenderedDOMComponentWithTag(span5, 'button');
+    TestUtils.Simulate.click(input);
+    strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J, Roe J");
 });
