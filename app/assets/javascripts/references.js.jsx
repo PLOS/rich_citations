@@ -249,7 +249,14 @@ var ReferenceAppearanceList = React.createClass({
     },
     render: function() {
         var ref = this.props.reference;
-        var text = "Appears " +  (ref.mentions === 1 ? "once" : ref.mentions + " times") + " in this paper.";
+        function appearanceStr() {
+            if (ref.mentions > 1) {
+                return "appearances"; 
+            } else {
+                return "appearance";
+            }
+        }
+        var text = ordinalStr(this.props.suppressMention + 1) + " of " + ref.mentions + " " + appearanceStr() + " in this article.";
         return <div><button onClick={ this.handleClick }>
             { text }{ this.state.show ? " ▼ " : " ▶ " }
         </button>
