@@ -256,8 +256,12 @@ var ReferenceAppearanceList = React.createClass({
                 return "appearance";
             }
         }
+        var nthText = "";
+        if (this.props.suppressMention !== null) {
+            nthText = ordinalStr(this.props.suppressMention + 1) + " of";
+        }
         return <div><button onClick={ this.handleClick }>
-            { ordinalStr(this.props.suppressMention + 1) } of { ref.mentions } { appearanceStr() } in this article. { this.state.show ? " ▼ " : " ▶ " }
+                { nthText } { ref.mentions } { appearanceStr() } in this article. { this.state.show ? " ▼ " : " ▶ " }
         </button>
             { this.renderAppearanceList() }
         </div>;
