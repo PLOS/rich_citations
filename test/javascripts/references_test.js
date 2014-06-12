@@ -1,4 +1,8 @@
+/** @jsx React.DOM */
 //= require jquery
+//= require react
+
+var TestUtils = React.addons.TestUtils;
 
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");
@@ -122,4 +126,19 @@ test("extract and generated citation reference ids", function() {
     strictEqual(extractCitationReferenceInfo(generateCitationReferenceId(id, 0)).id, id);
     strictEqual(extractCitationReferenceInfo(generateCitationReferenceId(id, 0)).count, 0);
     strictEqual(generateCitationReferenceId("pone.0067380-Sperone2", 0), "ref_" + id + "_0");
+});
+
+test("author list", function() {
+    var a = {given: "Jane", family: "Roe"};
+    var b = {given: "Joan", family: "Roe"};
+    var c = {given: "John", family: "Doe"};
+    var d = {given: "James", family: "Doe"};
+    var e = {given: "Jennifer", family: "Roe"};
+    /* can't make JSX transform work at the moment */
+    var authorList4 = ReferenceAuthorList({authors: [a, b, c, d]});
+    var authorList5 = ReferenceAuthorList({authors: [a, b, c, d, e]});
+    TestUtils.renderIntoDocument(authorList4);
+    var span = TestUtils.findRenderedDOMComponentWithTag(authorList4, 'span');
+    /* all four names should display */
+    strictEqual(span.getDOMNode().textContent, "Roe Jane, Roe Joan, Doe John, Doe James");
 });
