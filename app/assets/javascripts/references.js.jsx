@@ -217,6 +217,28 @@ var ReferenceAbstract = React.createClass({
     }
 });
 
+function ordinal(n) {
+    var n_mod_100 = (n % 100);
+    if (n_mod_100 === 11 || n_mod_100 === 12 || n_mod_100 === 13) {
+        return "th";
+    } else {
+        var n_mod_10 = (n % 10);
+        if (n_mod_10 === 1) {
+            return "st";
+        } else if (n_mod_10 === 2) {
+            return "nd";
+        } else if (n_mod_10 === 3) {
+            return "rd";
+        } else {
+            return "th";
+        }
+    }
+}
+
+function ordinalStr(n) {
+    return "" + n + ordinal(n);
+}
+
 var ReferenceAppearanceList = React.createClass({
     getInitialState: function() {
         return { show: false };

@@ -143,7 +143,16 @@ test("renderAuthorName", function() {
     strictEqual(renderAuthorName({given: "Jane", family: "Roe Doe"}), "Roe Doe J");
     strictEqual(renderAuthorName({given: "Jane", family: "Roe-Doe"}), "Roe-Doe J");
 });
-                
+
+test("ordinalStr", function() {
+    strictEqual(ordinalStr(1), "1st");
+    strictEqual(ordinalStr(2), "2nd");
+    strictEqual(ordinalStr(3), "3rd");
+    strictEqual(ordinalStr(1000), "1000th");
+    strictEqual(ordinalStr(1011), "1011th");
+    strictEqual(ordinalStr(1021), "1021st");
+});
+
 test("author list", function() {
     var a = {given: "Jane", family: "Roe"};
     var b = {given: "Joan", family: "Roe"};
