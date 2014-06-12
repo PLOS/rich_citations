@@ -268,6 +268,19 @@ var ReferenceAppearanceList = React.createClass({
     }
 });
 
+function capitalize(str) {
+    function capitalizeToken(t) {
+        return t[0].toUpperCase() + t.substr(1).toLowerCase();
+    }
+    return _.map(str.split(/\b/), capitalizeToken).join("");
+}
+
+function renderAuthorName(author) {
+    var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
+            join("").toUpperCase();
+    return capitalize(author.family) + " " + initials;
+}
+
 var ReferenceAuthorList = React.createClass({
     getInitialState: function() {
         return { expanded: false };
@@ -278,16 +291,14 @@ var ReferenceAuthorList = React.createClass({
     },
     render: function() {
         /* display at most 4 authors; if > than 4, display first 3 then et al */
-        var etal;
+        var etal = "";
         var authorMax = 3;
         if (this.props.authors.length > (authorMax + 1) && !this.state.expanded) {
             etal = <button onClick={ this.handleClick }>, et al.</button>;
         } else {
             authorMax = this.props.authors.length;
         }
-        var authorString = _.map(this.props.authors.slice(0, authorMax), function (author) {
-            return author.family + " " + author.given;
-        }).join(", ");
+        var authorString = _.map(this.props.authors.slice(0, authorMax), renderAuthorName).join(", ");
         return <span className="reference-authors">{ authorString }{ etal }</span>;
     }
 });

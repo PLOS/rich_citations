@@ -128,6 +128,22 @@ test("extract and generated citation reference ids", function() {
     strictEqual(generateCitationReferenceId("pone.0067380-Sperone2", 0), "ref_" + id + "_0");
 });
 
+test("capitalize", function() {
+    strictEqual(capitalize("DOE"), "Doe");
+    strictEqual(capitalize("doe"), "Doe");
+    strictEqual(capitalize("Doe"), "Doe");
+    strictEqual(capitalize("ROE DOE"), "Roe Doe");
+    strictEqual(capitalize("Roe Die Doe"), "Roe Die Doe");
+    strictEqual(capitalize("ROE-DOE"), "Roe-Doe");
+});
+
+test("renderAuthorName", function() {
+    strictEqual(renderAuthorName({given: "Jane", family: "Roe"}), "Roe J");
+    strictEqual(renderAuthorName({given: "Mary Jane", family: "Roe"}), "Roe MJ");
+    strictEqual(renderAuthorName({given: "Jane", family: "Roe Doe"}), "Roe Doe J");
+    strictEqual(renderAuthorName({given: "Jane", family: "Roe-Doe"}), "Roe-Doe J");
+});
+                
 test("author list", function() {
     var a = {given: "Jane", family: "Roe"};
     var b = {given: "Joan", family: "Roe"};
@@ -140,5 +156,5 @@ test("author list", function() {
     TestUtils.renderIntoDocument(authorList4);
     var span = TestUtils.findRenderedDOMComponentWithTag(authorList4, 'span');
     /* all four names should display */
-    strictEqual(span.getDOMNode().textContent, "Roe Jane, Roe Joan, Doe John, Doe James");
+    strictEqual(span.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J");
 });
