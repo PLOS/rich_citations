@@ -205,7 +205,7 @@ var ReferenceAbstract = React.createClass({
     },
     render: function() {
         if (this.props.text) {
-            var toggle = <button onClick={ this.handleClick }>Show abstract { this.state.show ? " ▼ " : " ▶ " }</button>;
+            var toggle = <button onClick={ this.handleClick }>Show abstract{ this.state.show ? " ▼ " : " ▶ " }</button>;
             if (this.state.show) {
                 return <div>{ toggle }<p className="abstract">{ this.props.text }</p></div>;
             } else {
