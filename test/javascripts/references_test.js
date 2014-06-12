@@ -128,15 +128,6 @@ test("extract and generated citation reference ids", function() {
     strictEqual(generateCitationReferenceId("pone.0067380-Sperone2", 0), "ref_" + id + "_0");
 });
 
-test("capitalize", function() {
-    strictEqual(capitalize("DOE"), "Doe");
-    strictEqual(capitalize("doe"), "Doe");
-    strictEqual(capitalize("Doe"), "Doe");
-    strictEqual(capitalize("ROE DOE"), "Roe Doe");
-    strictEqual(capitalize("Roe Die Doe"), "Roe Die Doe");
-    strictEqual(capitalize("ROE-DOE"), "Roe-Doe");
-});
-
 test("renderAuthorName", function() {
     strictEqual(renderAuthorName({given: "Jane", family: "Roe"}), "Roe J");
     strictEqual(renderAuthorName({given: "Mary Jane", family: "Roe"}), "Roe MJ");

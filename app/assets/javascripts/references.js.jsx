@@ -296,17 +296,10 @@ var ReferenceAppearanceList = React.createClass({
     }
 });
 
-function capitalize(str) {
-    function capitalizeToken(t) {
-        return t[0].toUpperCase() + t.substr(1).toLowerCase();
-    }
-    return _.map(str.split(/\b/), capitalizeToken).join("");
-}
-
 function renderAuthorName(author) {
     var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
             join("").toUpperCase();
-    return capitalize(author.family) + " " + initials;
+    return author.family + " " + initials;
 }
 
 var ReferenceAuthorList = React.createClass({
