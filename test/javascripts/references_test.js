@@ -175,3 +175,13 @@ test("author list", function() {
     TestUtils.Simulate.click(input);
     strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J, Roe J");
 });
+
+test("abstract display", function() {
+    var abs = ReferenceAbstract({ text: "foo bar baz" });
+    TestUtils.renderIntoDocument(abs);
+    var div = TestUtils.findRenderedDOMComponentWithTag(abs, "div");
+    strictEqual(div.getDOMNode().textContent, "Show abstract ▶ ");
+    var input = TestUtils.findRenderedDOMComponentWithTag(abs, 'button');
+    TestUtils.Simulate.click(input);
+    strictEqual(div.getDOMNode().textContent, "Show abstract ▼ foo bar baz");
+});
