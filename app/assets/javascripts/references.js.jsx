@@ -386,8 +386,7 @@ var Reference = React.createClass({
         var className = "reference";
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
-            { this.renderLabel() }
-            { this.renderReference(this.props.reference) }
+            { this.renderLabel() } { this.renderReference(this.props.reference) }
             { this.renderSelfCiteFlag() }
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceList reference={ this.props.reference } suppressMention={ this.props.suppressMention }/>
