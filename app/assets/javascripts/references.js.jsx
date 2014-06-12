@@ -256,9 +256,8 @@ var ReferenceAppearanceList = React.createClass({
                 return "appearance";
             }
         }
-        var text = ordinalStr(this.props.suppressMention + 1) + " of " + ref.mentions + " " + appearanceStr() + " in this article.";
         return <div><button onClick={ this.handleClick }>
-            { text }{ this.state.show ? " ▼ " : " ▶ " }
+            { ordinalStr(this.props.suppressMention + 1) } of { ref.mentions } { appearanceStr() } in this article. { this.state.show ? " ▼ " : " ▶ " }
         </button>
             { this.renderAppearanceList() }
         </div>;
