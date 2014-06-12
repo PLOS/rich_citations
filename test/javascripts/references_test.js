@@ -171,8 +171,8 @@ test("abstract display", function() {
     var abs = ReferenceAbstract({ text: "foo bar baz" });
     TestUtils.renderIntoDocument(abs);
     var div = TestUtils.findRenderedDOMComponentWithTag(abs, "div");
-    strictEqual(div.getDOMNode().textContent, "Show abstract ▶ ");
+    strictEqual(div.getDOMNode().textContent, "▶ Show abstract ");
     var input = TestUtils.findRenderedDOMComponentWithTag(abs, 'button');
     TestUtils.Simulate.click(input);
-    strictEqual(div.getDOMNode().textContent, "Show abstract ▼ foo bar baz");
+    strictEqual(div.getDOMNode().textContent, "▼ Show abstract foo bar baz");
 });
