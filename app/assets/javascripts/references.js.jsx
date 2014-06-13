@@ -285,15 +285,15 @@ var ReferenceAppearanceList = React.createClass({
             return _.map(citationGroupsBySection, function(value, key) {
                 var mentions = _.map(value, function (mention) {
                     if (this.props.suppressMention === mention.index) {
-                        return <p key={ "mention" + mention.word_position } >☛{ mention.context }☚</p>;
+                        return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
                     } else {
-                        return <p key={ "mention" + mention.word_position } >
-                            <a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a>
-                            </p>;
+                        return <div key={ "mention" + mention.word_position } >
+                            <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
+                            </div>;
                     }
                 }.bind(this));
                 return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
-                    { mentions }
+                    <dl className="appearances">{ mentions }</dl>
                 </div>;
             }.bind(this));
         } else {
