@@ -217,6 +217,9 @@ var ReferenceAbstract = React.createClass({
     }
 });
 
+/**
+ * Return the correct ordinal suffix (e.g., nd, th) for a given number.
+ */
 function ordinal(n) {
     var n_mod_100 = (n % 100);
     if (n_mod_100 === 11 || n_mod_100 === 12 || n_mod_100 === 13) {
@@ -235,6 +238,9 @@ function ordinal(n) {
     }
 }
 
+/**
+ * Turn a number into an ordinal string, e.g. 1st, 2nd, 3rd.
+ */
 function ordinalStr(n) {
     return "" + n + ordinal(n);
 }
@@ -296,6 +302,10 @@ var ReferenceAppearanceList = React.createClass({
     }
 });
 
+/**
+ * Return a rendered string for displaying a given author. Turns given
+ * names into initials, e.g. Jane Roe -> Roe J
+ */
 function renderAuthorName(author) {
     var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
             join("").toUpperCase();
