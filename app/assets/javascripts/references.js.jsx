@@ -205,7 +205,7 @@ var ReferenceAbstract = React.createClass({
     },
     render: function() {
         if (this.props.text) {
-            var toggle = <button onClick={ this.handleClick }>{ this.state.show ? "▼" : "▶" } Show abstract </button>;
+            var toggle = <button className="non-button" onClick={ this.handleClick }>{ this.state.show ? "▼" : "▶" } Show abstract </button>;
             if (this.state.show) {
                 return <div>{ toggle }<p className="abstract">{ this.props.text }</p></div>;
             } else {
@@ -266,7 +266,7 @@ var ReferenceAppearanceList = React.createClass({
         if (this.props.suppressMention !== null) {
             nthText = ordinalStr(this.props.suppressMention + 1) + " of";
         }
-        return <div><button onClick={ this.handleClick }>
+        return <div><button className="non-button" onClick={ this.handleClick }>
             { this.state.show ? "▼" : "▶" } { nthText } { ref.mentions } { appearanceStr() } in this article.
         </button>
             { this.renderAppearanceList() }
@@ -567,7 +567,7 @@ var Toggle = React.createClass({
     },
     render: function () {
         var toggle = this.props.toggleState ? "☑" : "☐";
-        return <p className="toggle"><button onClick={ this.handleClick } disabled={ !this.props.available }>{ toggle } { this.props.children }</button></p>;
+        return <p className="toggle"><button className="non-button" onClick={ this.handleClick } disabled={ !this.props.available }>{ toggle } { this.props.children }</button></p>;
     }
 });
 
