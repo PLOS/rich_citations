@@ -176,3 +176,14 @@ test("abstract display", function() {
     TestUtils.Simulate.click(input);
     strictEqual(div.getDOMNode().textContent, "▼ Show abstract foo bar baz");
 });
+
+test("search bar", function() {
+    /* test that updating search text will call function with changed text */
+    var text = "";
+    var f = function(foo) { text = foo; };
+    var sb = SearchBar({ filterText: text, onSearchUpdate: f});
+    TestUtils.renderIntoDocument(sb);
+    var input = TestUtils.findRenderedDOMComponentWithTag(sb, "input");
+    TestUtils.Simulate.change(input, {target : { value: "foo" }});
+    strictEqual(text, "foo");
+});
