@@ -503,19 +503,18 @@ var SortedReferencesList = React.createClass({
     }
 });
 
+/**
+ * Form used for filtering references.
+ */
 var SearchBar = React.createClass({
-    handleChange: function(event) {
-        this.props.onSearchUpdate(event.target.value);
-    },
     render: function() {
         return (
             <form onSubmit={function(){return false;}}>
                 <input
                     type="text"
                     placeholder="Search..."
-                    value={this.props.filterText}
-                    onChange={this.handleChange}
-                />
+                    value={ this.props.filterText }
+                    onChange={ function(event) { this.props.onSearchUpdate(event.target.value); }.bind(this) } />
             </form>
         );
     }
