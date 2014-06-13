@@ -381,7 +381,7 @@ var Reference = React.createClass({
         var info = ref.info;
         if (info.title) {
                 return <span><a id={ ref.id } name={ this.props.id }></a>
-                <ReferenceAuthorList authors={ info.author }/> ({ info.issued['date-parts'][0][0] })<br/>
+                <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> ({ info.issued['date-parts'][0][0] })</span><br/>
                 <span className="reference-title"><a href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a></span><br/>
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 Download reference (<a href={ "/references/" + encodeURIComponent(this.props.reference.info.doi) + "?format=bib" }>BibTeX</a>)
