@@ -504,10 +504,8 @@ var SortedReferencesList = React.createClass({
 });
 
 var SearchBar = React.createClass({
-    handleChange: function() {
-        this.props.onSearchUpdate(
-            this.refs.filterTextInput.getDOMNode().value
-        );
+    handleChange: function(event) {
+        this.props.onSearchUpdate(event.target.value);
     },
     render: function() {
         return (
@@ -516,7 +514,6 @@ var SearchBar = React.createClass({
                     type="text"
                     placeholder="Search..."
                     value={this.props.filterText}
-                    ref="filterTextInput"
                     onChange={this.handleChange}
                 />
             </form>
