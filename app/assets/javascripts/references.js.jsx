@@ -745,13 +745,17 @@ function generateCitationReferenceId(id, count) {
     return "ref_" + id + "_" + count;
 }
 
+function withReferenceData(doi, f) {
+    var url = "/papers/" + doi + "?format=json&inline=t";
+    $.ajax({ url: url }).done(function(rawdata) {
+        f(rawdata);
+    });
+}
+
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
-    $.ajax({
-        url: "/papers/" + doi + "?format=json&inline=t"
-    }).done(function(data) {
-        /* build main data structure */
+    withReferenceData(doi, function (data) {
         var references = buildReferenceData(data);
         /* insert the container */
         $("<div id='richcites'></div>").insertBefore("#references");

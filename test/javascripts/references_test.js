@@ -210,3 +210,12 @@ test("toggle", function() {
     button = TestUtils.findRenderedDOMComponentWithTag(tun, "button");
     strictEqual(button.props.disabled, true);
 });
+
+test("withReferenceData", function() {
+    stop();
+    withReferenceData("10.1371/journal.pone.0097164", function (data) {
+        strictEqual(data.references["pone.0097164-Ptz7"].info.author[0].family, "Pütz");
+        start();
+    });
+});
+
