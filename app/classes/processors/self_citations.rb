@@ -19,7 +19,10 @@ module Processors
 
       self_citations = cited_authors.product(paper_authors).map do |cited, citing|
         reason = is_self_citation?(cited, citing)
-        "#{cited[:given]} #{cited[:family]} [#{reason}]" if reason
+        if reason
+          name = citing[:literal] || "#{citing[:family]}, #{citing[:given]}"
+          "#{name} [#{reason}]" if reason
+        end
       end.compact
 
       self_citations.presence
@@ -30,17 +33,20 @@ module Processors
 
       self_citation = []
       self_citation << "name"        if matches?( cited[:family] ,citing[:family],   cited[:given], citing[:given] )
+      self_citation << "name"        if matches?( cited[:literal],citing[:literal] )
+      self_citation << "name"        if matches?( "#{cited[:family] }, #{cited[:given] }",   citing[:literal] )
+      self_citation << "name"        if matches?( "#{citing[:family]}, #{citing[:given]}",   cited[:literal]  )
       self_citation << "email"       if matches?( cited[:email], citing[:email]   )
       self_citation << "affiliation" if matches?( cited[:affiliation], citing[:affiliation] )
 
-      self_citation.present? ? self_citation.join(',') : nil
+      self_citation.present? ? self_citation.uniq.join(',') : nil
     end
 
     def matches?(a1,a2, b1=nil,b2=nil)
-      return false unless a1 && a2
+      return false unless a1.present? && a2.present?
       return false if a1.downcase != a2.downcase
 
-      return true  unless b1 && b2
+      return true  unless b1.present? && b2.present?
       return false if b1.downcase != b2.downcase
 
       return true

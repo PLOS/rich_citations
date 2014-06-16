@@ -4,13 +4,12 @@ module IdentifierResolvers
   class LowScoreCrossRef < Base
 
     def resolve
-      unresolved_ids = root.unresolved_ids
-      crossref_infos = root.state[:crossref_infos]
+      crossref_infos = state[:crossref_infos]
 
       crossref_infos.each do |id, info|
-        if ! root.results[id]
+        if ! has_result?(id)
           info[:source] = :crossref_lowscore
-          root.set_result(id, :doi, info)
+          set_result(id, :doi, info)
         end
       end
     end

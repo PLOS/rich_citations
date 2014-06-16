@@ -6,7 +6,7 @@ module IdentifierResolvers
 
     def resolve
       unresolved_texts = unresolved_references.map { |id, data| [id, data.text] }.to_h
-      @crossref_infos = root.state[:crossref_infos] = {}
+      @crossref_infos = state[:crossref_infos] = {}
       unresolved_texts.each_slice(50) do |group| resolve_group(group.to_h) end
     end
 
@@ -26,7 +26,7 @@ module IdentifierResolvers
         next unless info
 
         @crossref_infos[id] = info
-        root.set_result(id, :doi, info) if include_info?(info)
+        set_result(id, :doi, info) if include_info?(info)
 
       end
     end

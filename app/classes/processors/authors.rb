@@ -14,6 +14,7 @@ module Processors
         {
             given:       author_given_name(node),
             family:      author_family_name(node),
+            literal:     author_literal_name(node),
             email:       author_email(node),
             affiliation: author_affiliation(node),
         }.compact
@@ -21,11 +22,15 @@ module Processors
     end
 
     def author_given_name(node)
-      node.css('given-names').text.strip
+      node.css('given-names').text.strip.presence
     end
 
     def author_family_name(node)
-      node.css('surname').text.strip
+      node.css('surname').text.strip.presence
+    end
+
+    def author_literal_name(node)
+      node.css('literal').text.strip.presence
     end
 
     def author_email(node)

@@ -12,6 +12,7 @@ DOI='10.1371/journal.pone.0032408' # The Paper from Hell
 DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pone.0047692'
 DOI='10.1371/journal.pone.0098172'
+DOI="10.1371/journal.pbio.1001675"
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"

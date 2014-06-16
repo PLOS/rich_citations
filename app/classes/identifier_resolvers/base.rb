@@ -18,5 +18,10 @@ module IdentifierResolvers
       @unresolved_references = unresolved_references
     end
 
+    delegate :state,
+             :set_result,
+             :has_result?,
+             to: :root
+
   end
 end

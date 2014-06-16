@@ -21,6 +21,16 @@ describe Processors::Authors do
                             {family: 'Roberts', given:'Julia'   }  ])
   end
 
+  it "should parse out literal authors" do
+    meta <<-EOS
+      <contrib contrib-type="author">
+        <literal>Roberts, Julia</literal>
+      </contrib>
+    EOS
+
+    expect(authors).to eq([ {literal: 'Roberts, Julia'   }  ])
+  end
+
   it "should ignore non-authors" do
     meta <<-EOS
       <contrib contrib-type="author">
