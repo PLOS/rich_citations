@@ -30,8 +30,13 @@ module Processors
     end
 
     def get_result(doi)
-      json   = Plos::Api.try(:http_get, "http://dx.doi.org/#{URI.encode_www_form_component(doi)}", '  ')
-      JSON.parse(json, symbolize_names:true)
+      begin
+        json   = Plos::Api.http_get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", '  ')
+        JSON.parse(json, symbolize_names:true)
+      rescue Exception=>ex
+        Rails.logger.error(ex)
+        return {}
+      end
     end
 
   end
