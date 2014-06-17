@@ -17,8 +17,12 @@ module Processors
     protected
 
     def get_crossmark_info(doi, ref)
-      result = get_result(doi)
-      ref[:updated_by] = result[:updated_by]
+      begin
+        result = get_result(doi)
+        ref[:updated_by] = result[:updated_by]
+      rescue Net::HTTPServerException
+        # most likely a 404, ignore
+      end
     end
 
     def get_result(doi)

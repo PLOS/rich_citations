@@ -22,4 +22,12 @@ describe Processors::ReferencesCrossmark do
     process
     expect(result[:references]['ref-1'][:updated_by][0][:doi]).to eq("10.5555/26262626x")
   end
+
+  it "handles missing crossref" do
+    refs 'Some Reference'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' } )
+    expect(Plos::Api).to receive(:http_get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F111').and_raise(Net::HTTPServerException.new(404, ""))
+    process
+    
+  end
 end
