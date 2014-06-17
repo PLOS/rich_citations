@@ -408,7 +408,7 @@ var Reference = React.createClass({
                     });
             }.bind(this), 1);
                 return <span><a id={ ref.id } name={ this.props.id }></a>
-                <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> ({ info.issued['date-parts'][0][0] })</span><br/>
+                <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
                 <span className="reference-title"><a href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a></span><br/>
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 <div id={ actionListId } className="action-list">
