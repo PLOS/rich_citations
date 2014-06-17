@@ -421,12 +421,27 @@ var Reference = React.createClass({
             return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
         }
     },
+    renderUpdated: function () {
+        if (this.props.reference.updated_by) {
+            var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
+            if (_.contains(types, "retraction")) {
+                    return <span className="retracted">RETRACTED</span>;
+            } else if (types.length > 0) {
+                    return <span className="updated">UPDATED</span>;
+            } else {
+                return "";
+            }
+        } else {
+            return "";
+        }
+    },
     render: function () {
         var className = "reference";
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() } { this.renderReference(this.props.reference) }
             { this.renderSelfCiteFlag() }
+            { this.renderUpdated() }
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceList reference={ this.props.reference } suppressMention={ this.props.suppressMention }/>
             </div>;
