@@ -30,7 +30,7 @@ module Processors
     end
 
     def get_result(doi)
-      json   = Plos::Api.http_get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", '  ')
+      json   = Plos::Api.http_get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
     end
 
