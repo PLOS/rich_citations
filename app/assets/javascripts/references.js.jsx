@@ -14,6 +14,32 @@ var citationFilter = function (el) {
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
+function formatAuthorNameInverted (author) {
+    if (author.literal) {
+        return author.literal;
+    } else if (author.given && author.family) {
+        return author.family + ", " + author.given;
+    } else {
+        return "[unknown]";
+    }
+}
+
+/**
+ * Return a rendered string for displaying a given author. Turns given
+ * names into initials, e.g. Jane Roe -> Roe J
+ */
+function formatAuthorNameInvertedInitials (author) {
+    if (author.literal) {
+        return author.literal;
+    } else if (author.given && author.family) {
+        var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
+                join("").toUpperCase();
+        return author.family + " " + initials;
+    } else {
+        return "[unknown]";
+    }
+}
+
 /**
  * Build a full-text index from an array of references.
  */
@@ -27,7 +53,7 @@ function buildIndex(references) {
     for (var id in references) {
         var ref = references[id];
         var doc = { id:    ref.id,
-                    author: _.map(ref.info.author, function(a) { return a.given + " " + a.family; }).join(" "),
+                    author: _.map(ref.info.author, formatAuthorNameInverted).join(" "),
                     title: ref.info.title,
                     journal: ref.info['container-title'],
                     body:  ref.text };
@@ -82,7 +108,7 @@ function mkSortField(ref, fieldname) {
         return ref.mentions;
     } else if (fieldname === 'author') {
         var first_author = info.author && info.author[0];
-        return (first_author && mkSortString(first_author.family + " " + first_author.given)) || null;
+        return (first_author && mkSortString(formatAuthorNameInverted(first_author))) || null;
     } else if (fieldname === "index") {
         return ref.index;
     } else {
@@ -302,16 +328,6 @@ var ReferenceAppearanceList = React.createClass({
     }
 });
 
-/**
- * Return a rendered string for displaying a given author. Turns given
- * names into initials, e.g. Jane Roe -> Roe J
- */
-function renderAuthorName(author) {
-    var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
-            join("").toUpperCase();
-    return author.family + " " + initials;
-}
-
 var ReferenceAuthorList = React.createClass({
     getInitialState: function() {
         return { expanded: false };
@@ -329,7 +345,7 @@ var ReferenceAuthorList = React.createClass({
         } else {
             authorMax = this.props.authors.length;
         }
-        var authorString = _.map(this.props.authors.slice(0, authorMax), renderAuthorName).join(", ");
+        var authorString = _.map(this.props.authors.slice(0, authorMax), formatAuthorNameInvertedInitials).join(", ");
         return <span className="reference-authors">{ authorString }{ etal }</span>;
     }
 });
