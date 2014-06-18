@@ -50,4 +50,10 @@ describe "reference viewing", :type => :feature, :js => true do
     page.click_button("Show repeated citations")
     expect(page).to have_button("Group citations")
   end
+
+  it "should display a retracted mark for retracted cites" do
+    visit '/view/10.1371/journal.pone.0059428'
+
+    expect(page).to have_content("Small Protein-Mediated Quorum Sensing in a Gram-Negative Bacterium PLoS ONE RETRACTED")
+  end
 end
