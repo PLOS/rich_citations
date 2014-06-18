@@ -39,7 +39,7 @@ class PaperResult < ActiveRecord::Base
     info_json.present?
   end
 
-  def journal_url
+  def self.journal_url(doi)
     case doi
     when /journal\.pone/
       "http://www.plosone.org"

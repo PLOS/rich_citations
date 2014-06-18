@@ -1,7 +1,7 @@
 class PapersController < ApplicationController
 
   def show
-    @paper = PaperResult.find_by_doi!( params[:id] )
+    @paper = PaperResult.calculate_for(params[:id])
 
     respond_to do |format|
 
@@ -21,14 +21,13 @@ class PapersController < ApplicationController
 
   def view
     @doi = params[:id]
-    @paper = PaperResult.calculate_for(@doi)
+    @journal_url = PaperResult.journal_url(@doi)
     @xml = Plos::Api.document(@doi)
     render layout: 'viewer'
   end
 
   def reference
     @doi = params[:id]
-    @paper = PaperResult.calculate_for(@doi)
     ref = @paper.info[:references].values.select{|r|r[:index] == params[:referenceid].to_i}.first
     render json: JSON.pretty_unparse(ref)
   end
