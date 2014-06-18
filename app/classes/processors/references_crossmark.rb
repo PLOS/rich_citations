@@ -17,17 +17,16 @@ module Processors
     protected
 
     def get_crossmark_info(doi, ref)
-      begin
-        result = get_result(doi)
-        ref[:updated_by] = result[:updated_by]
-      rescue Net::HTTPServerException
-        # most likely a 404, ignore
+      doi_enc = URI.encode_www_form_component(doi)
+      result = Rails.cache.fetch("crossmark_#{doi_enc}", :expires_in=> 108000) do
+        begin
+          json   = Plos::Api.http_get("http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}")
+          JSON.parse(json, symbolize_names:true)
+        rescue Net::HTTPServerException
+          []
+        end
       end
-    end
-
-    def get_result(doi)
-      json   = Plos::Api.http_get("http://crossmark.crossref.org/crossmark/?doi=#{URI.encode_www_form_component(doi)}")
-      JSON.parse(json, symbolize_names:true)
+      ref[:updated_by] = result[:updated_by]
     end
   end
 end
