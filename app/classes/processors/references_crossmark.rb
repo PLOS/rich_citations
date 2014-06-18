@@ -20,10 +20,10 @@ module Processors
       doi_enc = URI.encode_www_form_component(doi)
       result = Rails.cache.fetch("crossmark_#{doi_enc}", :expires_in=> 108000) do
         begin
-          json   = Plos::Api.http_get("http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}")
-          JSON.parse(json, symbolize_names:true)
+          url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
+          JSON.parse(Plos::Api.http_get(url), symbolize_names:true)
         rescue Net::HTTPServerException
-          []
+          {}
         end
       end
       ref[:updated_by] = result[:updated_by]
