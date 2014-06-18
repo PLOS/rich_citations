@@ -25,9 +25,9 @@ describe Processors::ReferencesCrossmark do
 
   it "handles missing crossref" do
     refs 'Some Reference'
+    Rails.cache.delete("crossmark_10.111%2F111")
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' } )
     expect(Plos::Api).to receive(:http_get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F111').and_raise(Net::HTTPServerException.new(404, ""))
     process
-    
   end
 end
