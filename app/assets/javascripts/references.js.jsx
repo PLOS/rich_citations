@@ -154,7 +154,8 @@ function sortReferences (refs, by, showRepeated) {
  * given index and a search string.
  */
 function mkSearchResultsFilter(idx, filterText) {
-    if (filterText) {
+    var tokens = idx.pipeline.run(lunr.tokenizer(filterText));
+    if (tokens.length > 0) {
         var resultHash = {};
         idx.search(filterText).map(function (res) {
             resultHash[res['ref']] = res['score'];
@@ -642,10 +643,11 @@ var ReferencesApp = React.createClass({
             this.setState({ filterText: "" });
         }.bind(this));
     },
-    componentDidMount: function() {
+    componentWillMount: function() {
         /* build full-text index */
         this.idx = buildIndex(this.props.references);
-
+    },
+    componentDidMount: function() {
         $(window).bind('hashchange', function(e) {
             /* redraw when the fragment URL changes, to faciliate the link to the back button */
             this.setState({});
