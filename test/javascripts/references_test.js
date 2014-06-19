@@ -33,7 +33,6 @@ test("mkSortField", function () {
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
             var ref = fixture.references["pone.0067380-Lowry1"];
-            var refNoInfo = fixture.references["pone.0067380-Wahnbaeck1"];
             strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
             strictEqual(1, mkSortField(ref, "mentions"));
             strictEqual(6487, mkSortField(ref, "appearance"));
@@ -43,6 +42,8 @@ test("mkSortField", function () {
             strictEqual("journal of royal society interface", mkSortField(ref, "journal"));
 
             /* reference with no info */
+            var refNoInfo = {id: "pone.0067380-Wahnbaeck1",
+                             info: {}};
             strictEqual(null, mkSortField(refNoInfo, "author"));
             strictEqual(null, mkSortField(refNoInfo, "year"));
             strictEqual(null, mkSortField(refNoInfo, "title"));
@@ -97,8 +98,8 @@ test("sortReferences", function () {
                     {by: "title",
                      first: "pone.0067380-Simon1",
                      last: "pone.0067380-Whitehead1",
-                     sortableCount: 39,
-                     unsortableCount: 16,
+                     sortableCount: 55,
+                     unsortableCount: 0,
                      showRepeated: false}],
                    function (d) {
                        var refs = fixture.references;
@@ -128,11 +129,11 @@ test("extract and generated citation reference ids", function() {
     strictEqual(generateCitationReferenceId("pone.0067380-Sperone2", 0), "ref_" + id + "_0");
 });
 
-test("renderAuthorName", function() {
-    strictEqual(renderAuthorName({given: "Jane", family: "Roe"}), "Roe J");
-    strictEqual(renderAuthorName({given: "Mary Jane", family: "Roe"}), "Roe MJ");
-    strictEqual(renderAuthorName({given: "Jane", family: "Roe Doe"}), "Roe Doe J");
-    strictEqual(renderAuthorName({given: "Jane", family: "Roe-Doe"}), "Roe-Doe J");
+test("formatAuthorNameInvertedInitials", function() {
+    strictEqual(formatAuthorNameInvertedInitials({given: "Jane", family: "Roe"}), "Roe J");
+    strictEqual(formatAuthorNameInvertedInitials({given: "Mary Jane", family: "Roe"}), "Roe MJ");
+    strictEqual(formatAuthorNameInvertedInitials({given: "Jane", family: "Roe Doe"}), "Roe Doe J");
+    strictEqual(formatAuthorNameInvertedInitials({given: "Jane", family: "Roe-Doe"}), "Roe-Doe J");
 });
 
 test("ordinalStr", function() {
