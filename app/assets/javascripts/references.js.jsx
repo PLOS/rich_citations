@@ -394,6 +394,13 @@ var Reference = React.createClass({
             return "";
         }
     },
+    renderTitle: function(info) {
+        if (info.doi) {
+            return <span className="reference-title"><a className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
+        } else {
+            return <span className="reference-title">{ info.title }<br/></span>;
+        }
+    },
     renderReference: function (ref) {
         var info = ref.info;
         if (info.title) {
@@ -410,7 +417,7 @@ var Reference = React.createClass({
             }.bind(this), 1);
                 return <span><a id={ ref.id } name={ this.props.id }></a>
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
-                <span className="reference-title"><a href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a></span><br/>
+                { this.renderTitle(info) }
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 <div id={ actionListId } className="action-list">
                 Download reference (<a href={ "/references/" + encodeURIComponent(this.props.reference.info.doi) + "?format=bib" }>BibTeX</a>)

@@ -3,6 +3,49 @@
 //= require react
 
 var TestUtils = React.addons.TestUtils;
+var testRef = {
+      "sections": {
+        "Introduction": 1
+      },
+      "mentions": 1,
+      "median_co_citations": 0.0,
+      "citation_groups": [
+        {
+          "word_position": 21,
+          "section": "Introduction",
+          "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+          "references": [
+            "pone.0000000-Doe1"
+          ],
+          "count": 1
+        },
+      ],
+      "info": {
+        "author": [
+          {
+            "given": "J",
+            "family": "Doe"
+          }
+        ],
+        "page": "79-95",
+        "issued": {
+          "date-parts": [
+            [
+              2007
+            ]
+          ]
+        },
+        "volume": "2",
+        "title": "The best ever",
+        "container-title": "Journal of Silly Studies",
+        "container-type": "journal",
+        "text": "Doe J ( 2007 ) The best ever. Journal of Silly Studies 2: 79\u201395."
+      },
+      "index": 1,
+      "id": "pone.0000000-Doe1"
+    };
+
+var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"doi": "10.12345/67890"}});
 
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");
@@ -210,6 +253,22 @@ test("toggle", function() {
     TestUtils.renderIntoDocument(tun);
     button = TestUtils.findRenderedDOMComponentWithTag(tun, "button");
     strictEqual(button.props.disabled, true);
+});
+
+test("reference with DOI has link", function() {
+    var r = Reference({reference: testRefWithDoi});
+    TestUtils.renderIntoDocument(r);
+    var title = TestUtils.findRenderedDOMComponentWithClass(r, "reference-link");
+    equal("http://dx.doi.org/10.12345/67890", title.getDOMNode().getAttribute("href"));
+});
+
+test("reference without DOI has no link", function() {
+    var r = Reference({reference: testRef});
+    TestUtils.renderIntoDocument(r);
+    throws(
+        function() {
+            TestUtils.findRenderedDOMComponentWithClass(r, "reference-link");
+        });
 });
 
 test("withReferenceData", function() {
