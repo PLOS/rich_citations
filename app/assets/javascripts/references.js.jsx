@@ -827,7 +827,9 @@ function generateCitationReferenceId(id, count) {
 
 function withReferenceData(doi, f) {
     var url = "/papers/" + doi + "?format=json&inline=t";
-    $.ajax({ url: url }).done(function(rawdata) {
+    $.ajax({ url: url,
+             timeout: 300000 // can take a loooong time
+           }).done(function(rawdata) {
         f(rawdata);
     });
 }
