@@ -802,7 +802,7 @@ function mkReferencePopover(id, references, suppressMentions) {
             fixed: true,
             delay: 1000
         },
-        style: 'qtip-wiki',
+        style: { classes: 'citation-popover' },
         position: {
             viewport: $(window),
             adjust: {

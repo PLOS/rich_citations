@@ -5,11 +5,11 @@ span.selfcitation {
 }
 
 span.highlight {
-    background-color: #fff700;
+    background-color: #ffffc5;
 }
 
 div.reference.selected {
-    background-color: #ffd8bd;
+    background-color: #fff700;
 }
 
 div.reference {
@@ -79,4 +79,9 @@ span.updated {
 
 span.reference-doi {
     color: #828282;
+}
+
+.citation-popover{
+    border-color: #FFFFC5;
+    background-color: #F1F2F0;
 }
