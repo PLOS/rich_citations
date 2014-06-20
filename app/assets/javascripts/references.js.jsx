@@ -350,7 +350,7 @@ var ReferenceAuthorList = React.createClass({
         var etal = "";
         var authorMax = 3;
         if (this.props.authors.length > (authorMax + 1) && !this.state.expanded) {
-            etal = <span>, <a href="#" onClick={ this.handleClick }>et al.</a></span>;
+            etal = <span>, (<a href="#" onClick={ this.handleClick }>and { this.props.authors.length - authorMax } more</a>)</span>;
         } else {
             authorMax = this.props.authors.length;
         }

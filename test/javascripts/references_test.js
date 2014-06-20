@@ -204,7 +204,7 @@ test("author list", function() {
     /* all four names should display */
     strictEqual(span4.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J");
     /* 2 refs of 5 should be hidden */
-    strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, et al.");
+    strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, (and 2 more)");
     /* should expand on click */
     var input = TestUtils.findRenderedDOMComponentWithTag(span5, 'a');
     TestUtils.Simulate.click(input);
