@@ -430,6 +430,13 @@ var Reference = React.createClass({
             return "";
         }
     },
+    renderDoi: function(info) {
+        if (info.doi) {
+            return <span className="reference-doi">{ info.doi }<br/></span>;
+        } else {
+            return "";
+        }
+    },
     renderReference: function (ref) {
         var info = ref.info;
         if (info.title) {
@@ -437,6 +444,7 @@ var Reference = React.createClass({
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
                 { this.renderTitle(info) }
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
+                { this.renderDoi(ref.info) }
                 { this.renderActionList(ref) }
                 </span>;
 
