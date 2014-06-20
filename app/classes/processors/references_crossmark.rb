@@ -22,8 +22,12 @@ module Processors
         begin
           url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
           JSON.parse(Plos::Api.http_get(url), symbolize_names:true)
-        rescue Net::HTTPServerException
-          {}
+        rescue Net::HTTPServerException => ex
+          if ex.message == "404"
+            {}
+          else
+            raise
+          end
         end
       end
       ref[:updated_by] = result[:updated_by]
