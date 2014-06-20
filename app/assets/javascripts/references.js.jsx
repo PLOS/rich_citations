@@ -276,6 +276,9 @@ var ReferenceAppearanceList = React.createClass({
     getInitialState: function() {
         return { show: false };
     },
+    getDefaultProps: function() {
+        return { suppressMention: null };
+    },
     handleClick: function() {
         this.setState({ show: !this.state.show });
         return false;
@@ -289,15 +292,20 @@ var ReferenceAppearanceList = React.createClass({
                 return "appearance";
             }
         }
-        var nthText = "";
-        if (this.props.suppressMention !== null) {
-            nthText = ordinalStr(this.props.suppressMention + 1) + " of";
+        var inPopover = (this.props.suppressMention !== null);
+        if (inPopover && (ref.mentions === 1)) {
+            return <div>Appears once in this article.</div>;
+        } else {
+            var nthText = "";
+            if (inPopover) {
+                nthText = ordinalStr(this.props.suppressMention + 1) + " of";
+            }
+            return <div className="appearance-toggle"><button className="non-button" onClick={ this.handleClick }>
+                { this.state.show ? "▼" : "▶" } { nthText } { ref.mentions } { appearanceStr() } in this article.
+                </button>
+                { this.renderAppearanceList() }
+            </div>;
         }
-        return <div><button className="non-button" onClick={ this.handleClick }>
-            { this.state.show ? "▼" : "▶" } { nthText } { ref.mentions } { appearanceStr() } in this article.
-        </button>
-            { this.renderAppearanceList() }
-        </div>;
     },
     renderAppearanceList: function() {
         if (this.state.show) {
