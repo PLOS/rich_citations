@@ -66,11 +66,15 @@ div.action-list {
 }
 
 span.retracted {
-    color: #FF0000;
+    border-radius: 2px;
+    padding: 2px;
+    background: #FF0000;
 }
 
 span.updated {
-    color: #FF6B6B;
+    border-radius: 2px;
+    padding: 2px;
+    background: #FF6B6B;
 }
 
 span.reference-doi {
