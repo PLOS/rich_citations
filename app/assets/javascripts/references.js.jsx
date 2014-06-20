@@ -99,7 +99,8 @@ function mkSortField(ref, fieldname) {
     if (fieldname === 'title') {
         return mkSortString(info.title);
     } else if (fieldname === 'appearance') {
-        return ref.citation_groups[0].word_position;
+        /* if no references in paper, sort at end */
+        return (ref.citation_groups && ref.citation_groups[0].word_position) || 99999999;
     } else if (fieldname === 'journal') {
         return mkSortString(info['container-title']);
     } else if (fieldname === 'year') {
@@ -136,7 +137,7 @@ function sortReferences (refs, by, showRepeated) {
     } else {
         t = _.map(refs, function(ref) {
             return { data: ref,
-                     group: ref.citation_groups[0],
+                     group: (ref.citation_groups && ref.citation_groups[0]) || "References",
                      sort: [mkSortField(ref, by), ref.index] };
         });
     }
