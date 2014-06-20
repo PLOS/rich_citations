@@ -689,11 +689,11 @@ var ReferencesApp = React.createClass({
             <div className="sorter">
             <strong>Sort by:</strong>
             <ul className="sorters">
-            <li><Sorter name="Appearance"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Order in paper"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /> | </li>
-            <li><Sorter name="Mentions" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/> | </li>
+            <li><Sorter name="Appearances" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/> | </li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             </div>
