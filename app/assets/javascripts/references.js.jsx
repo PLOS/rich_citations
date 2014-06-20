@@ -368,6 +368,9 @@ var Reference = React.createClass({
             suppressMention: null
         };
     },
+    isPopover: function() {
+        return (this.props.suppressMention !== null);
+    },
     componentDidUpdate: function() {
         if (this.props.qtip) {
             this.props.qtip.reposition();
@@ -421,7 +424,7 @@ var Reference = React.createClass({
                     $(jq(actionListId)).fadeOut();
                 });
         }.bind(this), 1);
-        if (ref.info.doi) {
+        if (!this.isPopover() && ref.info.doi) {
             return <div id={ actionListId } className="action-list">
                 Download reference (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=bib" }>BibTeX</a>)
             (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=ris" }>RIS</a>)<br/>
