@@ -305,7 +305,10 @@ var Revealable = React.createClass({
         </div>;
     }
 });
-    
+
+/**
+ * Class to handle an appearance list in a popover or reference list.
+ */
 var ReferenceAppearanceListRevealable = React.createClass({
     getDefaultProps: function() {
         return { currentMention: null };
@@ -338,6 +341,9 @@ var ReferenceAppearanceListRevealable = React.createClass({
     }
 });
 
+/**
+ * A list of appearances for a given reference in a paper.
+ */
 var ReferenceAppearanceList = React.createClass({
     render: function() {
         var ref = this.props.reference;
