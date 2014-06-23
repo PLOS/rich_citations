@@ -483,23 +483,29 @@ var Reference = React.createClass({
     }
 });
 
-var SortedReferencesList = React.createClass({
-    useHeadings: function() {
-        return ["journal","appearance"].indexOf(this.props.current.by) !== -1;
-    },
-    headingGrouper: function (ref) {
-        var by = this.props.current.by;
+/**
+ * Function to make a function to return the appropriate heading for a
+ * reference given a sortby string (e.g., appearance)
+ */
+function mkHeadingGrouper(by) {
+    return function (ref) {
         /* handle reference groups */
         if ($.type(ref) === 'array') {
             ref = ref[0];
         }
         if (by === "journal") {
             return ref.data.info['container-title'];
-        } else if (by === "appearance") {
+        } else if (by === "appearance" || by === "appearance+repeated") {
             return ref.group.section;
         } else {
             return null;
         }
+    };
+}
+
+var SortedReferencesList = React.createClass({
+    useHeadings: function() {
+        return ["journal","appearance"].indexOf(this.props.current.by) !== -1;
     },
     renderGroupContext: function(group) {
         if (this.props.showCitationContext) {
@@ -563,7 +569,8 @@ var SortedReferencesList = React.createClass({
             }).value();
         }
         if (this.useHeadings()) {
-            sorted = _.groupBy(sorted, this.headingGrouper);
+            var grouper = mkHeadingGrouper(this.props.current.by);
+            sorted = _.groupBy(sorted, grouper);
         }
         return <div>{ this.renderReferenceList(sorted) }</div>;
     },
