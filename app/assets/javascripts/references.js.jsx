@@ -403,9 +403,6 @@ var ReferenceActionList = React.createClass({
 });
 
 var Reference = React.createClass({
-    getInitialState: function() {
-        return { authorsExpanded: false };
-    },
     getDefaultProps: function() {
         return { currentMention: null };
     },
