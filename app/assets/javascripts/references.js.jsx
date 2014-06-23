@@ -379,6 +379,42 @@ var Reference = React.createClass({
     },
     getDefaultProps: function() {
         return { currentMention: null };
+
+var ReferenceActionList = React.createClass({
+    render: function() {
+        var ref = this.props.reference;
+        var actionListId = ref.id + "action-list";
+        setTimeout(function () {
+            $(jq(actionListId)).hide();
+            $(jq('reference_' + ref.id)).hover(
+                function () {
+                    $(jq(actionListId)).fadeIn();
+                }, 
+                function () {
+                    $(jq(actionListId)).fadeOut();
+                });
+        }.bind(this), 1);
+        if (!this.isPopover() && ref.info.doi) {
+            return <div id={ actionListId } className="action-list">
+                Download reference (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=bib" }>BibTeX</a>)
+            (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=ris" }>RIS</a>)<br/>
+                </div>;
+        } else {
+            return "";
+        }
+    }
+});
+
+var ReferenceSelfCiteFlag = React.createClass({
+    render: function() {
+        if (this.props.self_citations) {
+            return <span className="selfcitation">Self-citation</span>;
+        } else {
+            return <span/>;
+        }
+    }
+});
+
     },
     isPopover: function() {
         return (this.props.currentMention !== null);
@@ -409,40 +445,11 @@ var Reference = React.createClass({
             return "";
         }
     },
-    renderSelfCiteFlag: function() {
-        var selfCiteFlag = null;
-        if (this.props.reference.self_citations) {
-            return <span className="selfcitation">Self-citation</span>;
-        } else {
-            return "";
-        }
-    },
     renderTitle: function(info) {
         if (info.doi) {
             return <span className="reference-title"><a className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
         } else {
             return <span className="reference-title">{ info.title }<br/></span>;
-        }
-    },
-    renderActionList: function(ref) {
-        var actionListId = ref.id + "action-list";
-        setTimeout(function () {
-            $(jq(actionListId)).hide();
-            $(jq('reference_' + ref.id)).hover(
-                function () {
-                    $(jq(actionListId)).fadeIn();
-                }, 
-                function () {
-                    $(jq(actionListId)).fadeOut();
-                });
-        }.bind(this), 1);
-        if (!this.isPopover() && ref.info.doi) {
-            return <div id={ actionListId } className="action-list">
-                Download reference (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=bib" }>BibTeX</a>)
-            (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=ris" }>RIS</a>)<br/>
-                </div>;
-        } else {
-            return "";
         }
     },
     renderDoi: function(info) {
@@ -460,7 +467,7 @@ var Reference = React.createClass({
                 { this.renderTitle(info) }
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 { this.renderDoi(ref.info) }
-                { this.renderActionList(ref) }
+                <ReferenceActionList reference={ ref }/>
                 </span>;
 
         } else {
@@ -472,7 +479,7 @@ var Reference = React.createClass({
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() } { this.renderReference(this.props.reference) }
-            { this.renderSelfCiteFlag() }
+            <ReferenceSelfCiteFlag self_citations={ this.props.reference.self_citations } />
             <ReferenceUpdated updated_by={ this.props.reference.updated_by }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
