@@ -292,71 +292,65 @@ var Revealable = React.createClass({
     }
 });
     
-var ReferenceAppearanceList = React.createClass({
-    getInitialState: function() {
-        return { show: false };
-    },
+var ReferenceAppearanceListRevealable = React.createClass({
     getDefaultProps: function() {
-        return { suppressMention: null };
+        return { currentMention: null };
     },
-    handleClick: function() {
-        this.setState({ show: !this.state.show });
-        return false;
+    inPopover: function() {
+        return (this.props.currentMention !== null);
+    },
+    appearanceText: function() {
+        var txt = "";
+        if (this.inPopover()) {
+            txt += ordinalStr(this.props.currentMention + 1) + " of ";
+        }
+        txt += this.props.reference.mentions;
+        if (this.props.reference.mentions > 1) {
+            txt += " appearances"; 
+        } else {
+            txt += " appearance";
+        }
+        txt += " in this article.";
+        return txt;
     },
     render: function() {
-        var ref = this.props.reference;
-        function appearanceStr() {
-            if (ref.mentions > 1) {
-                return "appearances"; 
-            } else {
-                return "appearance";
-            }
-        }
-        var inPopover = (this.props.suppressMention !== null);
-        if (inPopover && (ref.mentions === 1)) {
+        if (this.inPopover() && (this.props.reference.mentions === 1)) {
             return <div>Appears once in this article.</div>;
         } else {
-            var nthText = "";
-            if (inPopover) {
-                nthText = ordinalStr(this.props.suppressMention + 1) + " of";
-            }
-            return <div className="appearance-toggle"><button className="non-button" onClick={ this.handleClick }>
-                { this.state.show ? "▼" : "▶" } { nthText } { ref.mentions } { appearanceStr() } in this article.
-                </button>
-                { this.renderAppearanceList() }
-            </div>;
-        }
-    },
-    renderAppearanceList: function() {
-        if (this.state.show) {
-            var ref = this.props.reference;
-            /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
-            var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
-                group['index'] = index;
-                return group;
-            });
-            /* group each citation group by the section it is in */
-            var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
-            return _.map(citationGroupsBySection, function(value, key) {
-                var mentions = _.map(value, function (mention) {
-                    if (this.props.suppressMention === mention.index) {
-                        return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
-                    } else {
-                        return <div key={ "mention" + mention.word_position } >
-                            <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
-                            </div>;
-                    }
-                }.bind(this));
-                return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
-                    <dl className="appearances">{ mentions }</dl>
-                </div>;
-            }.bind(this));
-        } else {
-            return "";
+            return <Revealable revealText={ this.appearanceText() }>
+                <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
+                </Revealable>;
         }
     }
 });
 
+var ReferenceAppearanceList = React.createClass({
+    render: function() {
+        var ref = this.props.reference;
+        /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
+        var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
+            group['index'] = index;
+            return group;
+        });
+        /* group each citation group by the section it is in */
+        var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
+        return _.map(citationGroupsBySection, function(value, key) {
+            var mentions = _.map(value, function (mention) {
+                if (this.props.currentMention === mention.index) {
+                    return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
+                } else {
+                    return <div key={ "mention" + mention.word_position } >
+                        <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
+                        </div>;
+                }
+            }.bind(this));
+            return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
+                <dl className="appearances">{ mentions }</dl>
+                </div>;
+        }.bind(this));
+    }
+});
+                                                
 var ReferenceAuthorList = React.createClass({
     getInitialState: function() {
         return { expanded: false };
@@ -384,12 +378,10 @@ var Reference = React.createClass({
         return { authorsExpanded: false };
     },
     getDefaultProps: function() {
-        return {
-            suppressMention: null
-        };
+        return { currentMention: null };
     },
     isPopover: function() {
-        return (this.props.suppressMention !== null);
+        return (this.props.currentMention !== null);
     },
     componentDidUpdate: function() {
         if (this.props.qtip) {
@@ -497,7 +489,7 @@ var Reference = React.createClass({
             { this.renderSelfCiteFlag() }
             { this.renderUpdated() }
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
-            <ReferenceAppearanceList reference={ this.props.reference } suppressMention={ this.props.suppressMention }/>
+            <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
             </div>;
     }
 });
@@ -655,11 +647,19 @@ var Sorter = React.createClass({
 });
 
 /**
- * Class to handle a toggleable thing. The current status is passed in
- * using the toggleState property. If the property available is false,
- * the toggle will be grayed out. On click, the function passed in as
- * onClick will be called.
+ * Class containing a reference in a popover.
  */
+var ReferencePopover = React.createClass({
+    render: function() {
+        var references = _.map(_.zip(this.props.references, this.props.currentMentions), function(d) {
+            return <Reference
+              reference={ d[0] }
+              qtip={ this.props.qtip }
+              key={ d[0].id }
+              showLabel={ this.props.references.length > 1 }
+              currentMention={ d[1] } />;
+        }.bind(this));
+        return <div>{ references }</div>;
 var Toggle = React.createClass({
     getDefaultProps: function() {
         return {
@@ -676,17 +676,6 @@ var Toggle = React.createClass({
     }
 });
 
-var ReferencePopover = React.createClass({
-    render: function() {
-        var references = _.map(_.zip(this.props.references, this.props.suppressMentions), function(d) {
-            return <Reference
-              reference={ d[0] }
-              qtip={ this.props.qtip }
-              key={ d[0].id }
-              showLabel={ this.props.references.length > 1 }
-              suppressMention={ d[1] } />;
-        }.bind(this));
-        return <div>{ references }</div>;
     }
 });
         
@@ -812,13 +801,13 @@ function wrapSpan(startId, endId, spanId) {
  * Attach a popover to an element with a given ID containing
  * references.
  */
-function mkReferencePopover(id, references, suppressMentions) {
+function mkReferencePopover(id, references, currentMentions) {
     var popoverId = guid();
     $(jq(id)).qtip({
         content: {
             text: function(event, api) {
                 setTimeout(function (){
-                    React.renderComponent(<ReferencePopover references={ references } qtip={ api } suppressMentions={ suppressMentions }/>,
+                    React.renderComponent(<ReferencePopover references={ references } qtip={ api } currentMentions={ currentMentions }/>,
                                           $(jq(popoverId)).get(0));
                 }.bind(this), 1);
                 return "<div id='" + popoverId + "'>Loading...</div>";
@@ -924,8 +913,8 @@ $(document).ready(function () {
                         var spanId = guid();
                         wrapSpan(startId, citationId, spanId);
                         var references = _.map(currentGroupRefIds, function(refId) { return data.references[refId]; });
-                        var suppressMentions = _.map(currentGroupRefIds, function(refId) { return citationCounters[refId]; });
-                        mkReferencePopover(spanId, references, suppressMentions);
+                        var currentMentions = _.map(currentGroupRefIds, function(refId) { return citationCounters[refId]; });
+                        mkReferencePopover(spanId, references, currentMentions);
                         citationsEncountered = null;
                     } else {
                         /* in the middle */

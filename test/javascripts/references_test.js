@@ -280,13 +280,13 @@ test("withReferenceData", function() {
 });
 
 test("ReferenceAppearanceList with 1 mention in reference list", function() {
-    var l = ReferenceAppearanceList({ reference: testRef });
+    var l = ReferenceAppearanceListRevealable({ reference: testRef });
     var x = TestUtils.renderIntoDocument(l);
-    strictEqual(x.getDOMNode().textContent, "▶  1 appearance in this article.");
+    strictEqual(x.getDOMNode().textContent, "▶ 1 appearance in this article.");
 });
 
 test("ReferenceAppearanceList with 1 mention in popover", function() {
-    var l = ReferenceAppearanceList({ reference: testRef, suppressMention: 0 });
+    var l = ReferenceAppearanceListRevealable({ reference: testRef, currentMention: 0 });
     var x = TestUtils.renderIntoDocument(l);
     strictEqual(x.getDOMNode().textContent, "Appears once in this article.");
 });
