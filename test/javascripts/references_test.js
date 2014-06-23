@@ -290,3 +290,13 @@ test("Revealable", function() {
     TestUtils.Simulate.click(input);
     strictEqual(r.getDOMNode().textContent, "▼ foobaz");
 });
+
+test("Maybe", function() {
+    var t = Maybe({test: true, children: ["foo"]});
+    TestUtils.renderIntoDocument(t);
+    strictEqual(t.getDOMNode().textContent, "foo");
+
+    var f = Maybe({test: false, children: ["foo"]});
+    TestUtils.renderIntoDocument(f);
+    strictEqual(f.getDOMNode().textContent, "");
+});

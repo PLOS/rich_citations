@@ -223,6 +223,20 @@ function buildReferenceData(json, elements) {
     return retval;
 }
 
+/**
+ * Simple wrapper to either return children or an empty span depending
+ * on the truth-value of test.
+ */
+var Maybe = React.createClass({
+    render: function() {
+        if (this.props.test) {
+            return <span>{ this.props.children }</span>;
+        } else {
+            return <span/>;
+        }
+    }
+});
+
 var ReferenceAbstract = React.createClass({
     getInitialState: function() {
         return { show: false };
