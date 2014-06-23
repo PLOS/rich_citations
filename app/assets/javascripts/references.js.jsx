@@ -466,13 +466,6 @@ var ReferenceSelfCiteFlag = React.createClass({
             return <span className="reference-title">{ info.title }<br/></span>;
         }
     },
-    renderDoi: function(info) {
-        if (info.doi) {
-            return <span className="reference-doi">{ info.doi }<br/></span>;
-        } else {
-            return "";
-        }
-    },
     renderReference: function (ref) {
         var info = ref.info;
         if (info.title) {
@@ -480,7 +473,9 @@ var ReferenceSelfCiteFlag = React.createClass({
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
                 { this.renderTitle(info) }
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
-                { this.renderDoi(ref.info) }
+                <Maybe test={ this.props.reference.info }>
+                  <span className="reference-doi">{ info.doi }<br/></span>
+                </Maybe>
                 <ReferenceActionList reference={ ref }/>
                 </span>;
 
