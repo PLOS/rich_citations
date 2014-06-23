@@ -290,3 +290,12 @@ test("ReferenceAppearanceList with 1 mention in popover", function() {
     var x = TestUtils.renderIntoDocument(l);
     strictEqual(x.getDOMNode().textContent, "Appears once in this article.");
 });
+
+test("Revealable", function() {
+    var r = Revealable({revealText: "foo", children: ["baz"]});
+    TestUtils.renderIntoDocument(r);
+    strictEqual(r.getDOMNode().textContent, "▶ foo");
+    var input = TestUtils.findRenderedDOMComponentWithTag(r, 'button');
+    TestUtils.Simulate.click(input);
+    strictEqual(r.getDOMNode().textContent, "▼ foobaz");
+});

@@ -273,6 +273,25 @@ function ordinalStr(n) {
     return "" + n + ordinal(n);
 }
 
+/**
+ * Class that enables a revealable toggle.
+ */
+var Revealable = React.createClass({
+    getInitialState: function() {
+        return { show: false };
+    },
+    handleClick: function() {
+        this.setState({ show: !this.state.show });
+        return false;
+    },
+    render: function() {
+        return <div className="appearance-toggle"><button className="non-button" onClick={ this.handleClick }>
+            { this.state.show ? "▼" : "▶" } { this.props.revealText}</button>
+            { this.state.show ? this.props.children : "" }
+        </div>;
+    }
+});
+    
 var ReferenceAppearanceList = React.createClass({
     getInitialState: function() {
         return { show: false };
