@@ -407,24 +407,10 @@ var ReferenceActionList = React.createClass({
                     $(jq(actionListId)).fadeOut();
                 });
         }.bind(this), 1);
-        if (!this.isPopover() && ref.info.doi) {
-            return <div id={ actionListId } className="action-list">
+        return <div id={ actionListId } className="action-list">
                 Download reference (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=bib" }>BibTeX</a>)
             (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=ris" }>RIS</a>)<br/>
                 </div>;
-        } else {
-            return "";
-        }
-    }
-});
-
-var ReferenceSelfCiteFlag = React.createClass({
-    render: function() {
-        if (this.props.self_citations) {
-            return <span className="selfcitation">Self-citation</span>;
-        } else {
-            return <span/>;
-        }
     }
 });
 
@@ -481,7 +467,9 @@ var Reference = React.createClass({
                 <Maybe test={ this.props.reference.info }>
                   <span className="reference-doi">{ info.doi }<br/></span>
                 </Maybe>
-                <ReferenceActionList reference={ ref }/>
+                <Maybe test={ !this.isPopover() && ref.info.doi }>
+                  <ReferenceActionList reference={ ref }/>
+                </Maybe>
                 </span>;
 
         } else {
@@ -493,7 +481,9 @@ var Reference = React.createClass({
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() } { this.renderReference(this.props.reference) }
-            <ReferenceSelfCiteFlag self_citations={ this.props.reference.self_citations } />
+            <Maybe test={ this.props.reference.self_citations }>
+              <span className="selfcitation">Self-citation</span>
+            </Maybe>
             <ReferenceUpdated updated_by={ this.props.reference.updated_by }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
