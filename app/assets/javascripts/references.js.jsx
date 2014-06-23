@@ -238,24 +238,12 @@ var Maybe = React.createClass({
 });
 
 var ReferenceAbstract = React.createClass({
-    getInitialState: function() {
-        return { show: false };
-    },
-    handleClick: function() {
-        this.setState({ show: !this.state.show });
-        return false;
-    },
     render: function() {
-        if (this.props.text) {
-            var toggle = <button className="non-button" onClick={ this.handleClick }>{ this.state.show ? "▼" : "▶" } Show abstract </button>;
-            if (this.state.show) {
-                return <div>{ toggle }<p className="abstract">{ this.props.text }</p></div>;
-            } else {
-                return <div>{ toggle }</div>;
-            }
-        } else {
-            return <div></div>;
-        }
+            return <Maybe test={ this.props.text }>
+                     <Revealable revealText={ "Show abstract" }>
+                       <p className="abstract">{ this.props.text }</p>
+                     </Revealable>
+                   </Maybe>;
     }
 });
 
