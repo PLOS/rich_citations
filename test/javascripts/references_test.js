@@ -276,6 +276,20 @@ test("withReferenceData", function() {
     withReferenceData("10.1371/journal.pone.0097164", function (data) {
         strictEqual(data.references["pone.0097164-Ptz7"].info.author[0].family, "Pütz");
         start();
+
+test("ReferenceUpdated", function() {
+    var r = ReferenceUpdated({updated_by: [{"type": "retraction"}]});
+    TestUtils.renderIntoDocument(r);
+    strictEqual(r.getDOMNode().textContent, "RETRACTED");
+
+    var u = ReferenceUpdated({updated_by: [{"type": "update"}]});
+    TestUtils.renderIntoDocument(u);
+    strictEqual(u.getDOMNode().textContent, "UPDATED");
+
+    var n = ReferenceUpdated({updated_by: {}});
+    TestUtils.renderIntoDocument(n);
+    strictEqual(n.getDOMNode().textContent, "");
+});
     });
 });
 
