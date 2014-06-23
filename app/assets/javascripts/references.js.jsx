@@ -659,25 +659,9 @@ var ReferencePopover = React.createClass({
               currentMention={ d[1] } />;
         }.bind(this));
         return <div>{ references }</div>;
-var Toggle = React.createClass({
-    getDefaultProps: function() {
-        return {
-            available: true
-        };
-    },
-    handleClick: function() {
-        this.props.onClick();
-        return false;
-    },
-    render: function () {
-        var toggle = this.props.toggleState ? "☑" : "☐";
-        return <p className="toggle"><button className="non-button" onClick={ this.handleClick } disabled={ !this.props.available }>{ toggle } { this.props.children }</button></p>;
     }
 });
 
-    }
-});
-        
 var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "appearance", order: "asc" },
@@ -737,17 +721,6 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Appearances" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/> | </li>
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
-            </div>
-            <div>
-              <Toggle onClick={ this.toggleShowRepeated } toggleState={ this.state.showRepeated } available= { showRepeatedAvailable }>
-                Show repeated citations
-              </Toggle>
-            <Toggle onClick={ this.toggleGroupCitations } toggleState={ this.state.groupCitations } available={ groupCitationsAvailable }>
-                Group citations
-              </Toggle>
-              <Toggle onClick={ this.toggleShowCitationContext } toggleState={ this.state.showCitationContext } available={ showCitationContextAvailable }>
-                Show citation context
-              </Toggle>
             </div>
             <SortedReferencesList
               current={this.state.sort}
