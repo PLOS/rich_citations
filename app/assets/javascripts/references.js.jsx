@@ -393,13 +393,6 @@ var ReferenceAuthorList = React.createClass({
     }
 });
 
-var Reference = React.createClass({
-    getInitialState: function() {
-        return { authorsExpanded: false };
-    },
-    getDefaultProps: function() {
-        return { currentMention: null };
-
 var ReferenceActionList = React.createClass({
     render: function() {
         var ref = this.props.reference;
@@ -435,6 +428,12 @@ var ReferenceSelfCiteFlag = React.createClass({
     }
 });
 
+var Reference = React.createClass({
+    getInitialState: function() {
+        return { authorsExpanded: false };
+    },
+    getDefaultProps: function() {
+        return { currentMention: null };
     },
     isPopover: function() {
         return (this.props.currentMention !== null);
@@ -502,12 +501,6 @@ var ReferenceSelfCiteFlag = React.createClass({
     }
 });
 
-/**
- * Function to make a function to return the appropriate heading for a
- * reference given a sortby string (e.g., appearance)
- */
-function mkHeadingGrouper(by) {
-    return function (ref) {
 var ReferenceUpdated = React.createClass({
     render: function () {
         if (this.props.updated_by) {
@@ -525,6 +518,12 @@ var ReferenceUpdated = React.createClass({
     }
 });
 
+/**
+ * Function to make a function to return the appropriate heading for a
+ * reference given a sortby string (e.g., appearance)
+ */
+function mkHeadingGrouper(by) {
+    return function (ref) {
         /* handle reference groups */
         if ($.type(ref) === 'array') {
             ref = ref[0];
