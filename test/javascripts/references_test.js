@@ -232,29 +232,6 @@ test("search bar", function() {
     strictEqual(text, "foo");
 });
 
-test("toggle", function() {
-    var clicked = false;
-    var t = Toggle({ available: true, toggleState: true, onClick: function() { clicked=true;} }, "foo");
-    TestUtils.renderIntoDocument(t);
-    var p = TestUtils.findRenderedDOMComponentWithTag(t, "p");
-    strictEqual(p.getDOMNode().textContent, "☑ foo");
-    var button = TestUtils.findRenderedDOMComponentWithTag(t, "button");
-    TestUtils.Simulate.click(button);
-    strictEqual(clicked, true);
-
-    /* toggle off */
-    var toff = Toggle({ available: true, toggleState: false, onClick: function() { } }, "foo");
-    TestUtils.renderIntoDocument(toff);
-    p = TestUtils.findRenderedDOMComponentWithTag(toff, "p");
-    strictEqual(p.getDOMNode().textContent, "☐ foo");
-
-    /* unavailable toggle */
-    var tun = Toggle({ available: false, toggleState: true, onClick: function() { } }, "foo");
-    TestUtils.renderIntoDocument(tun);
-    button = TestUtils.findRenderedDOMComponentWithTag(tun, "button");
-    strictEqual(button.props.disabled, true);
-});
-
 test("reference with DOI has link", function() {
     var r = Reference({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
