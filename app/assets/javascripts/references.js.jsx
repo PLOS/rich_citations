@@ -472,11 +472,13 @@ var ReferenceCore = React.createClass({
             return <span><a id={ ref.id } name={ this.props.id }></a>
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }</span><br/>
                 { this.renderTitle(info) }
-                <span className="reference-journal">{ info['container-title'] }</span><br/>
-                <Maybe test={ this.props.reference.info }>
+                <Maybe test={ info['container-title'] }>
+                  <span className="reference-journal">{ info['container-title'] }</span><br/>
+                </Maybe>
+                <Maybe test={ info.doi }>
                   <span className="reference-doi">{ info.doi }<br/></span>
                 </Maybe>
-                <Maybe test={ !this.props.isPopover && ref.info.doi }>
+                <Maybe test={ !this.props.isPopover && info.doi }>
                   <ReferenceActionList reference={ ref }/>
                 </Maybe>
                 </span>;
