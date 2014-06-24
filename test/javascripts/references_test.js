@@ -248,6 +248,12 @@ test("reference without DOI has no link", function() {
         });
 });
 
+test("full reference", function() {
+    var r = Reference({reference: testRefWithDoi});
+    TestUtils.renderIntoDocument(r);
+    equal(r.getDOMNode().textContent, "Doe J (2007)The best everJournal of Silly Studies10.12345/67890▶ 1 appearance in this article.");
+});
+
 test("withReferenceData", function() {
     stop();
     withReferenceData("10.1371/journal.pone.0097164", function (data) {

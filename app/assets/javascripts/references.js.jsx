@@ -436,7 +436,7 @@ var Reference = React.createClass({
                 return <span className="label">{ ref.index }.</span>;
             }
         } else {
-            return "";
+            return <span/>;
         }
     },
     render: function () {
@@ -450,7 +450,7 @@ var Reference = React.createClass({
             </Maybe>
             <ReferenceUpdated updated_by={ this.props.reference.updated_by }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
-            <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
+            <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention }/>
             </div>;
     }
 });
