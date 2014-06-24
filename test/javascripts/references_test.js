@@ -236,7 +236,7 @@ test("reference with DOI has link", function() {
     var r = ReferenceCore({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
     var title = TestUtils.findRenderedDOMComponentWithClass(r, "reference-link");
-    equal("http://dx.doi.org/10.12345/67890", title.getDOMNode().getAttribute("href"));
+    strictEqual(title.getDOMNode().getAttribute("href"), "http://dx.doi.org/10.12345/67890");
 });
 
 test("reference without DOI has no link", function() {
