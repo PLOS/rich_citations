@@ -460,7 +460,7 @@ var Reference = React.createClass({
 var ReferenceCore = React.createClass({
     renderTitle: function(info) {
         if (info.doi) {
-            return <span className="reference-title"><a className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
         } else {
             return <span className="reference-title">{ info.title }<br/></span>;
         }
