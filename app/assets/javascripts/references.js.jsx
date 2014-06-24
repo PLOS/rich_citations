@@ -616,7 +616,7 @@ var SortedReferencesList = React.createClass({
 var SearchBar = React.createClass({
     render: function() {
         return (
-            <form onSubmit={function(){return false;}}>
+            <form className="search" onSubmit={function(){return false;}}>
                 <input
                     type="text"
                     placeholder="Search..."
@@ -703,7 +703,6 @@ var ReferencesApp = React.createClass({
     },
     render: function() {
         return <div>
-            <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
             <div className="sorter">
             <strong>Sort by:</strong>
             <ul className="sorters">
@@ -716,6 +715,7 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             </div>
+            <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
             <SortedReferencesList
               current={this.state.sort}
               references={this.props.references}
