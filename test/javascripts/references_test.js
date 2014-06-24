@@ -233,14 +233,14 @@ test("search bar", function() {
 });
 
 test("reference with DOI has link", function() {
-    var r = Reference({reference: testRefWithDoi});
+    var r = ReferenceCore({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
     var title = TestUtils.findRenderedDOMComponentWithClass(r, "reference-link");
     equal("http://dx.doi.org/10.12345/67890", title.getDOMNode().getAttribute("href"));
 });
 
 test("reference without DOI has no link", function() {
-    var r = Reference({reference: testRef});
+    var r = ReferenceCore({reference: testRef});
     TestUtils.renderIntoDocument(r);
     throws(
         function() {

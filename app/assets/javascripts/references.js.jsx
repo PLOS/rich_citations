@@ -435,37 +435,12 @@ var Reference = React.createClass({
             return "";
         }
     },
-    renderTitle: function(info) {
-        if (info.doi) {
-            return <span className="reference-title"><a className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
-        } else {
-            return <span className="reference-title">{ info.title }<br/></span>;
-        }
-    },
-    renderReference: function (ref) {
-        var info = ref.info;
-        if (info.title) {
-                return <span><a id={ ref.id } name={ this.props.id }></a>
-                <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
-                { this.renderTitle(info) }
-                <span className="reference-journal">{ info['container-title'] }</span><br/>
-                <Maybe test={ this.props.reference.info }>
-                  <span className="reference-doi">{ info.doi }<br/></span>
-                </Maybe>
-                <Maybe test={ !this.isPopover() && ref.info.doi }>
-                  <ReferenceActionList reference={ ref }/>
-                </Maybe>
-                </span>;
-
-        } else {
-            return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
-        }
-    },
     render: function () {
         var className = "reference";
         if (this.isSelected()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
-            { this.renderLabel() } { this.renderReference(this.props.reference) }
+            { this.renderLabel() }
+            <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
             <Maybe test={ this.props.reference.self_citations }>
               <span className="selfcitation">Self-citation</span>
             </Maybe>
@@ -473,6 +448,36 @@ var Reference = React.createClass({
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
             </div>;
+    }
+});
+
+var ReferenceCore = React.createClass({
+    renderTitle: function(info) {
+        if (info.doi) {
+            return <span className="reference-title"><a className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
+        } else {
+            return <span className="reference-title">{ info.title }<br/></span>;
+        }
+    },
+    render: function () {
+        var ref = this.props.reference;
+        var info = ref.info;
+        if (info.title) {
+            return <span><a id={ ref.id } name={ this.props.id }></a>
+                <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
+                { this.renderTitle(info) }
+                <span className="reference-journal">{ info['container-title'] }</span><br/>
+                <Maybe test={ this.props.reference.info }>
+                  <span className="reference-doi">{ info.doi }<br/></span>
+                </Maybe>
+                <Maybe test={ this.props.isPopover && ref.info.doi }>
+                  <ReferenceActionList reference={ ref }/>
+                </Maybe>
+                </span>;
+
+        } else {
+            return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
+        }
     }
 });
 
