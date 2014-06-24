@@ -358,7 +358,10 @@ var ReferenceAppearanceList = React.createClass({
         }.bind(this));
     }
 });
-                                                
+
+/**
+ * Class to manage an expandable list of authors.
+ */
 var ReferenceAuthorList = React.createClass({
     getInitialState: function() {
         return { expanded: false };
@@ -371,12 +374,13 @@ var ReferenceAuthorList = React.createClass({
         /* display at most 4 authors; if > than 4, display first 3 then et al */
         var etal = "";
         var authorMax = 3;
-        if (this.props.authors.length > (authorMax + 1) && !this.state.expanded) {
-            etal = <span>, (<a href="#" onClick={ this.handleClick }>and { this.props.authors.length - authorMax } more</a>)</span>;
+        var authors = this.props.authors || [];
+        if (authors.length > (authorMax + 1) && !this.state.expanded) {
+            etal = <span>, (<a href="#" onClick={ this.handleClick }>and { authors.length - authorMax } more</a>)</span>;
         } else {
-            authorMax = this.props.authors.length;
+            authorMax = authors.length;
         }
-        var authorString = _.map(this.props.authors.slice(0, authorMax), formatAuthorNameInvertedInitials).join(", ");
+        var authorString = _.map(authors.slice(0, authorMax), formatAuthorNameInvertedInitials).join(", ");
         return <span className="reference-authors">{ authorString }{ etal }</span>;
     }
 });
@@ -464,7 +468,7 @@ var ReferenceCore = React.createClass({
         var info = ref.info;
         if (info.title) {
             return <span><a id={ ref.id } name={ this.props.id }></a>
-                <span title={ ref.text }><ReferenceAuthorList authors={ info.author || [] }/> ({ info.issued && info.issued['date-parts'][0][0] })</span><br/>
+                <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }</span><br/>
                 { this.renderTitle(info) }
                 <span className="reference-journal">{ info['container-title'] }</span><br/>
                 <Maybe test={ this.props.reference.info }>
