@@ -130,23 +130,20 @@ test("sortReferences", function () {
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Lowry1",
                      sortableCount: 55,
-                     unsortableCount: 0,
-                     showRepeated: false},
-                    {by: "appearance",
+                     unsortableCount: 0},
+                    {by: "appearance+repeated",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Heithaus1",
                      sortableCount: 91,
-                     unsortableCount: 0,
-                     showRepeated: true},
+                     unsortableCount: 0},
                     {by: "title",
                      first: "pone.0067380-Simon1",
                      last: "pone.0067380-Whitehead1",
                      sortableCount: 55,
-                     unsortableCount: 0,
-                     showRepeated: false}],
+                     unsortableCount: 0}],
                    function (d) {
                        var refs = fixture.references;
-                       var results = sortReferences(refs, d.by, d.showRepeated);
+                       var results = sortReferences(refs, d.by);
                        strictEqual(results.unsortable.length, d.unsortableCount);
                        strictEqual(results.sorted.length, d.sortableCount);
                        strictEqual(results.sorted[0].data.id, d.first);

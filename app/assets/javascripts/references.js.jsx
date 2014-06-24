@@ -98,7 +98,7 @@ function mkSortField(ref, fieldname) {
     var info = ref.info;
     if (fieldname === 'title') {
         return mkSortString(info.title);
-    } else if (fieldname === 'appearance') {
+    } else if (fieldname === 'appearance' || fieldname === 'appearance+repeated') {
         /* if no references in paper, sort at end */
         return (ref.citation_groups && ref.citation_groups[0].word_position) || 99999999;
     } else if (fieldname === 'journal') {
@@ -121,10 +121,10 @@ function mkSortField(ref, fieldname) {
  * Sorts references by the given fieldname. Returns an object
  * containing two values, sorted and unsortable.
  */
-function sortReferences (refs, by, showRepeated) {
+function sortReferences (refs, by) {
     /* data structure to use for sorting */
     var t = [];
-    if (showRepeated && by === 'appearance') {
+    if (by === 'appearance+repeated') {
         /* special case, show repeated citations in order of appearance */
         _.each(refs, function(ref) {
             _.each(ref.citation_groups, function (group) {
@@ -526,10 +526,10 @@ function mkHeadingGrouper(by) {
 
 var SortedReferencesList = React.createClass({
     useHeadings: function() {
-        return ["journal","appearance"].indexOf(this.props.current.by) !== -1;
+        return ["journal","appearance","appearance+repeated"].indexOf(this.props.current.by) !== -1;
     },
     renderGroupContext: function(group) {
-        if (this.props.showCitationContext) {
+        if (this.props.current.by === "appearance+repeated") {
             return <p>{ group[0].group.context }</p>;
         } else {
             return "";
@@ -582,7 +582,7 @@ var SortedReferencesList = React.createClass({
         if (this.props.current.order == "desc") {
             sorted = sorted.reverse();
         }
-        if (this.props.showRepeated && this.props.groupCitations ) {
+        if (this.props.current.by === "appearance+repeated") {
             sorted = _.chain(sorted).groupBy(function(ref) {
                 return ref.group.word_position;
             }).values().sortBy(function (refs) {
@@ -597,7 +597,7 @@ var SortedReferencesList = React.createClass({
     },
     render: function() {
         var filtered = _.filter(this.props.references, this.props.searchResultsFilter);
-        var results = sortReferences(filtered, this.props.current.by, this.props.showRepeated);
+        var results = sortReferences(filtered, this.props.current.by);
         this.updateHighlighting();
 
         return <div>
@@ -676,10 +676,7 @@ var ReferencePopover = React.createClass({
 var ReferencesApp = React.createClass({
     getInitialState: function() {
         return {sort: { by: "appearance", order: "asc" },
-                filterText: '',
-                showRepeated: false,
-                groupCitations: false,
-                showCitationContext: false};
+                filterText: ''};
     },
     componentWillMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -704,28 +701,14 @@ var ReferencesApp = React.createClass({
     handleSorterClick: function(by, order) {
         this.setState({sort: { by: by, order: order }});
     },
-    toggleShowRepeated: function() {
-        this.setState({showRepeated: !this.state.showRepeated});
-        return false;
-    },
-    toggleGroupCitations: function() {
-        this.setState({groupCitations: !this.state.groupCitations});
-        return false;
-    },
-    toggleShowCitationContext: function() {
-        this.setState({showCitationContext: !this.state.showCitationContext});
-        return false;
-    },
     render: function() {
-        var showRepeatedAvailable = (this.state.sort.by === 'appearance');
-        var groupCitationsAvailable = showRepeatedAvailable && this.state.showRepeated;
-        var showCitationContextAvailable = groupCitationsAvailable && this.state.groupCitations;
         return <div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
             <div className="sorter">
             <strong>Sort by:</strong>
             <ul className="sorters">
             <li><Sorter name="Order in paper"    by="appearance"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Order in paper with repeated"    by="appearance+repeated"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Title"    by="title"    current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /> | </li>
@@ -739,9 +722,6 @@ var ReferencesApp = React.createClass({
               filterText={this.state.filterText}
               idx={ this.idx }
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
-              showRepeated={ this.state.showRepeated }
-              groupCitations={ this.state.groupCitations }
-              showCitationContext={ this.state.showCitationContext }
             />
             </div>;
     }
