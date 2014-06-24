@@ -443,7 +443,7 @@ var Reference = React.createClass({
     },
     render: function () {
         var className = "reference";
-        if (this.isSelected()) { className = className + " selected"; }
+        if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
