@@ -333,6 +333,16 @@ var ReferenceAppearanceListRevealable = React.createClass({
  * A list of appearances for a given reference in a paper.
  */
 var ReferenceAppearanceList = React.createClass({
+    renderMention: function(mention) {
+        var ref = this.props.reference;
+        if (this.props.currentMention === mention.index) {
+            return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
+        } else {
+            return <div key={ "mention" + mention.word_position } >
+                <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
+                </div>;
+        }
+    },
     render: function() {
         var ref = this.props.reference;
         /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
@@ -342,20 +352,12 @@ var ReferenceAppearanceList = React.createClass({
         });
         /* group each citation group by the section it is in */
         var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
-        return _.map(citationGroupsBySection, function(value, key) {
-            var mentions = _.map(value, function (mention) {
-                if (this.props.currentMention === mention.index) {
-                    return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
-                } else {
-                    return <div key={ "mention" + mention.word_position } >
-                        <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
-                        </div>;
-                }
-            }.bind(this));
+        var t = _.map(citationGroupsBySection, function(value, key) {
             return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
-                <dl className="appearances">{ mentions }</dl>
+                <dl className="appearances">{ _.map(value, this.renderMention) }</dl>
                 </div>;
         }.bind(this));
+        return <div>{ t }</div>;
     }
 });
 

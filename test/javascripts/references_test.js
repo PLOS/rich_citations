@@ -276,16 +276,22 @@ test("ReferenceUpdated", function() {
     });
 });
 
-test("ReferenceAppearanceList with 1 mention in reference list", function() {
+test("ReferenceAppearanceListRevealable with 1 mention in reference list", function() {
     var l = ReferenceAppearanceListRevealable({ reference: testRef });
     var x = TestUtils.renderIntoDocument(l);
     strictEqual(x.getDOMNode().textContent, "▶ 1 appearance in this article.");
 });
 
-test("ReferenceAppearanceList with 1 mention in popover", function() {
+test("ReferenceAppearanceListRevealable with 1 mention in popover", function() {
     var l = ReferenceAppearanceListRevealable({ reference: testRef, currentMention: 0 });
     var x = TestUtils.renderIntoDocument(l);
     strictEqual(x.getDOMNode().textContent, "Appears once in this article.");
+});
+
+test("ReferenceAppearanceList", function() {
+    var l = ReferenceAppearanceList({ reference: testRef, currentMention: 0 });
+    var x = TestUtils.renderIntoDocument(l);
+    strictEqual(x.getDOMNode().textContent, "Introduction☛Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. …");
 });
 
 test("Revealable", function() {
