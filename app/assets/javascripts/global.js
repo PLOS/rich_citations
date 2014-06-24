@@ -1327,66 +1327,6 @@ if ($(document).pjax) {
 
 // End Pjax related code
 
-$(function() {
-  //Stolen from:
-  //http://www.vancelucas.com/blog/fixing-ie7-z-index-issues-with-jquery/
-  if($.browser.msie && jQuery.browser.version < 10) {
-    var zIndexNumber = 500;
-    $('div.sidebar').find('div').each(function() {
-      $(this).css('zIndex', zIndexNumber);
-      zIndexNumber -= 10;
-    });
-  }
-});
-
-/*
- * jQuery UI Autocomplete HTML Extension
- *
- * Copyright 2010, Scott González (http://scottgonzalez.com)
- * Dual licensed under the MIT or GPL Version 2 licenses.
- *
- * http://github.com/scottgonzalez/jquery-ui-extensions
- */
-
-// HTML extension to autocomplete borrowed from
-// https://github.com/scottgonzalez/jquery-ui-extensions/blob/master/autocomplete/jquery.ui.autocomplete.html.js
-
-(function( $ ) {
-
-  var proto = $.ui.autocomplete.prototype,
-    initSource = proto._initSource;
-
-  function filter( array, term ) {
-    var matcher = new RegExp( $.ui.autocomplete.escapeRegex(term), "i" );
-    return $.grep( array, function(value) {
-      return matcher.test( $( "<div>" ).html( value.label || value.value || value ).text() );
-    });
-  }
-
-  $.extend( proto, {
-    _initSource: function() {
-      if ($.isArray(this.options.source) ) {
-        this.source = function( request, response ) {
-          response( filter( this.options.source, request.term ) );
-        };
-      } else {
-        initSource.call( this );
-      }
-    },
-
-    _renderItem: function( ul, item) {
-      return $( "<li></li>" )
-        .data( "item.autocomplete", item )
-        .append( $( "<a style=\"line-height: "
-          + (item.value ? 0.9 : 2)
-          + "; font-size: 12px;\"></a>" )
-          [item.type == "html" ? "html" : "text"]( item.label ) )
-        .appendTo( ul );
-    }
-  });
-
-})( jQuery );
-
 // table popup and download as CSV
 function tableOpen(tableId, type) {
   try {
@@ -1435,29 +1375,7 @@ function tableOpen(tableId, type) {
       });
       var mydata = csvData.join('\n');
       var dataurl = 'data:text/csv;base64,' + $.base64.encode($.base64.utf8_encode(mydata));
-      if ($.browser && ($.browser.chrome)) {
-        // you can specify a file name in <a ...> tag on chrome.
-        // http://stackoverflow.com/questions/283956/is-there-any-way-to-specify-a-suggested-filename-when-using-data-uri
-        function downloadWithName(uri, name) {
-          function eventFire(el, etype){
-            if (el.fireEvent) {
-              (el.fireEvent('on' + etype));
-            } else {
-              var evObj = document.createEvent('Events');
-              evObj.initEvent(etype, true, false);
-              el.dispatchEvent(evObj);
-            }
-          }
-          var link = document.createElement("a");
-          link.download = name;
-          link.href = uri;
-          eventFire(link, "click");
-        }
-        downloadWithName(dataurl, tableId + ".csv");
-      }
-      else {
-        window.location = dataurl;
-      }
+      window.location = dataurl;
     }
   }
   catch (e) {
