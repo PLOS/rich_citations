@@ -447,9 +447,7 @@ var Reference = React.createClass({
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
-            <Maybe test={ this.props.reference.self_citations }>
-              <span className="selfcitation">Self-citation</span>
-            </Maybe>
+            <ReferenceBadges reference={ this.props.reference }/>
             <ReferenceUpdated updated_by={ this.props.reference.updated_by }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention }/>
@@ -485,6 +483,28 @@ var ReferenceCore = React.createClass({
 
         } else {
             return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
+        }
+    }
+});
+
+var ReferenceBadges = React.createClass({
+    render: function() {
+        var ref = this.props.reference;
+        var badges = [];
+        if (ref.self_citations) {
+            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation</span>);
+        }
+        /* license badges */
+        var license = ref.info.license;
+        if (license === "free-to-read") {
+            badges.push(<span key={ ref.id + "license" } className="license-badge">Full-text available</span>);
+        } else if (license && license !== "failed-to-obtain-license") {
+            badges.push(<span key={ ref.id + "license" } className="license-badge">{ license }</span>);
+        }
+        if (badges.length < 1) {
+            return <span/>;
+        } else {
+            return <span>{ badges }<br/></span>;
         }
     }
 });
