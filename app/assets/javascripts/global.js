@@ -215,11 +215,11 @@ function onReadyMainContainer() {
     });
   });
 
-  if (!$.support.touchEvents) {
-    $article.doOnce(function () {
-      this.scrollFrame();
-    });
-  }
+  // if (!$.support.touchEvents) {
+  //   $article.doOnce(function () {
+  //     this.scrollFrame();
+  //   });
+  // }
 
   if (typeof selected_tab != "undefined") {
     $("#print-article").css("display", selected_tab == "article" ? "list-item" : "none");
