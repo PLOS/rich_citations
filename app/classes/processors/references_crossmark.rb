@@ -19,15 +19,15 @@ module Processors
     def get_crossmark_info(doi, ref)
       doi_enc = URI.encode_www_form_component(doi)
       result = Rails.cache.fetch("crossmark_#{doi_enc}", :expires_in=> 108000) do
+       url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
         begin
-          url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
           JSON.parse(Plos::Api.http_get(url), symbolize_names:true)
         rescue Net::HTTPServerException => ex
-          if ex.message == "404"
-            {}
-          else
-            raise
-          end
+          Rails.logger.warn("Got #{ex} from #{url}")
+          {}
+        rescue Net::HTTPFatalError => ex
+          Rails.logger.warn("Got #{ex} from #{url}")
+          {}
         end
       end
       ref[:updated_by] = result[:updated_by]
