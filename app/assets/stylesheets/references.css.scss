@@ -2,6 +2,7 @@ span.selfcitation {
     border-radius: 2px;
     padding: 0px;
     background: #bbbbbb;
+    margin-right: 1em;
 }
 
 span.highlight {
@@ -87,4 +88,11 @@ span.reference-doi {
 
 form.search {
     text-align: right;
+}
+
+span.license-badge {
+    border-radius: 2px;
+    padding: 0px;
+    background: #00C71E;
+    margin-right: 1em;
 }
