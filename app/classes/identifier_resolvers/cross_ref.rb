@@ -44,7 +44,7 @@ module IdentifierResolvers
 
       {
           source: :crossref,
-          doi:    Plos::Doi.extract( result['doi'] ),
+          doi:    Id::Doi.extract( result['doi'] ),
           score:  result['score'].to_f,
       }
     end

@@ -1,7 +1,10 @@
 
-module Plos
-  class Utilities
+module Id
+  class Base
+
     PUNCT = %q{[\]'"`.,:;!)\-\/]} # Posix [[:punct:]] regex is more liberal than we want
+
+    private
 
     # Regexes must have a named capture called 'result'
     def self.match_regexes(text, regexes)

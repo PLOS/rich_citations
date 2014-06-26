@@ -13,7 +13,7 @@ module IdentifierResolvers
     private
 
     def extract_info(text)
-      doi = Plos::Doi.extract(text)
+      doi = Id::Doi.extract(text)
 
       return nil unless doi.present?
       {
