@@ -39,7 +39,7 @@ module Processors
 
     def get_licenses(references)
       data = references.map { |id,ref| {type:'doi', id:ref[:doi]} }
-      results = Plos::Api.http_post(API_URL, JSON.generate(data),
+      results = HttpUtilities.post(API_URL, JSON.generate(data),
                           'Accept' => Mime::JSON, 'Content-Type' => Mime::JSON
       )
       JSON.parse(results)
