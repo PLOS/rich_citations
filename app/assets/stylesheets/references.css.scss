@@ -1,8 +1,13 @@
-span.selfcitation {
+.badge {
     border-radius: 2px;
     padding: 0px;
-    background: #bbbbbb;
+    background: #6ebe44;
     margin-right: 1em;
+}
+
+span.selfcitation {
+    @extend .badge;
+    background: #bbbbbb;
 }
 
 span.highlight {
@@ -66,14 +71,12 @@ div.action-list {
 }
 
 span.retracted {
-    border-radius: 2px;
-    padding: 2px;
+    @extend .badge;
     background: #FF0000;
 }
 
 span.updated {
-    border-radius: 2px;
-    padding: 2px;
+    @extend .badge;
     background: #FF6B6B;
 }
 
@@ -90,9 +93,12 @@ form.search {
     text-align: right;
 }
 
-span.license-badge {
-    border-radius: 2px;
-    padding: 0px;
-    background: #00C71E;
-    margin-right: 1em;
+.open-access {
+    @extend .badge;
+    background: #6ebe44;
+}
+
+.text-available {
+    @extend .badge;
+    background: #449992;
 }

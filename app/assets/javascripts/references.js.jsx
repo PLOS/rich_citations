@@ -506,9 +506,9 @@ var ReferenceBadges = React.createClass({
         /* license badges */
         var license = ref.info.license;
         if (license === "free-to-read") {
-            badges.push(<span key={ ref.id + "license" } className="license-badge">Full text available</span>);
+            badges.push(<span key={ ref.id + "license" } className="text-available">Full text available</span>);
         } else if (license && license !== "failed-to-obtain-license") {
-            badges.push(<span key={ ref.id + "license" } className="license-badge">{ license.toUpperCase() }</span>);
+            badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() }</span>);
         }
         if (badges.length < 1) {
             return <span/>;
