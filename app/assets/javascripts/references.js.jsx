@@ -673,7 +673,7 @@ var Sorter = React.createClass({
             if (this.props.toggleable && isCurrent) {
                 orderStr = (this.props.current.order === "asc") ? "↑ " : "↓ ";
             }
-            return <button onClick={this.handleClick}>{orderStr}{this.props.name}</button>;
+            return <button className="non-button" onClick={this.handleClick}>{orderStr}{this.props.name}</button>;
         }
     }
 });
