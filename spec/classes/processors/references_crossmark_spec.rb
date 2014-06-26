@@ -28,7 +28,7 @@ describe Processors::ReferencesCrossmark do
     refs 'Some Reference'
     Rails.cache.delete("crossmark_10.111%2F112")
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/112' } )
-    expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F112').and_raise(Net::HTTPServerException.new(404, ""))
+    expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F112').and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
     process
   end
 end

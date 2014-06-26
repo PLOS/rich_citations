@@ -23,11 +23,8 @@ module Processors
           url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
           JSON.parse(HttpUtilities.get(url), symbolize_names:true)
         rescue Net::HTTPServerException => ex
-          if ex.message == "404"
-            {}
-          else
-            raise
-          end
+          raise unless ex.response.is_a?(Net::HTTPNotFound)
+          {}
         end
       end
       ref[:updated_by] = result[:updated_by]
