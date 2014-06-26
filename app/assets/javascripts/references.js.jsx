@@ -755,7 +755,7 @@ var ReferencesApp = React.createClass({
  */
 function wrapSpan(startId, endId, spanId) {
     if (startId === endId) {
-        $(jq(startId)).wrapAll("<span id='" + popoverSpanId + "'/>");
+        $(jq(startId)).wrapAll("<span id='" + spanId + "'/>");
     } else {
         var startSelector = jq(startId);
         var endSelector = jq(endId);
