@@ -112,6 +112,15 @@ function mkSortField(ref, fieldname) {
         return (first_author && mkSortString(formatAuthorNameInverted(first_author))) || null;
     } else if (fieldname === "index") {
         return ref.index;
+    } else if (fieldname === 'license') {
+        if (!ref.info.license || (ref.info.license === 'failed-to-obtain-license')) {
+            return 100;
+        } else if (ref.info.license === 'free-to-read') {
+            return 50;
+        } else {
+            /* assume something else means open acccess */
+            return 0;
+        }
     } else {
         return null;
     }
@@ -734,7 +743,8 @@ var ReferencesApp = React.createClass({
             <li><Sorter name="Author"   by="author"   current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
             <li><Sorter name="Year"     by="year"     current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc" toggleable={ true } /> | </li>
             <li><Sorter name="Appearances" by="mentions" current={this.state.sort} onClick={this.handleSorterClick} defaultOrder="desc"/> | </li>
-            <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
+            <li><Sorter name="Journal"  by="journal"  current={this.state.sort} onClick={this.handleSorterClick}/> | </li>
+            <li><Sorter name="Availability"  by="license"  current={this.state.sort} onClick={this.handleSorterClick}/></li>
             </ul>
             </div>
             <SearchBar filterText={this.state.filterText} onSearchUpdate={this.handleSearchUpdate}/>
