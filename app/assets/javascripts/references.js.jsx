@@ -845,18 +845,24 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
         if (currentGroupRefIds.length === 1) {
             /* single group, no anchors to add */
             groupCounter = groupCounter + 1;
-            handleSingle(this, refId, groups[groupCounter]);
+            if (handleSingle) {
+                handleSingle(this, refId, groups[groupCounter]);
+            }
         } else {
             if (inElission) {
                 /* advance the inGroupCounter until we reach the end of the elission group */
                 var cites = [elissionStartRefId];
                 while (refId !== currentGroupRefIds[inGroupCounter]) {
-                    handleElided(this, currentGroupRefIds[inGroupCounter]);
+                    if (handleElided) {
+                        handleElided(this, currentGroupRefIds[inGroupCounter]);
+                    }
                     cites.push(currentGroupRefIds[inGroupCounter]);
                     inGroupCounter = inGroupCounter + 1;
                 }
                 cites.push(refId);
-                handleEndElissionGroup(elissionStart, this, cites);
+                if (handleEndElissionGroup) {
+                    handleEndElissionGroup(elissionStart, this, cites);
+                }
                 inElission = false;
                 elissionStart = null;
                 elissionStartRefId = null;
@@ -868,10 +874,14 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                     if ((atEnd = inGroupCounter == currentGroupRefIds.length - 1) ||
                         (nextRefId === currentGroupRefIds[inGroupCounter + 1])) {
                         /* not an elission */
-                        handleSingle(this, refId, groups[groupCounter]);
+                        if (handleSingle) {
+                            handleSingle(this, refId, groups[groupCounter]);
+                        }
                     } else {
                         /* elission starts here */
-                        handleBeginElissionGroup(this, refId);
+                        if (handleBeginElissionGroup) {
+                            handleBeginElissionGroup(this, refId);
+                        }
                         inElission = true;
                         elissionStart = this;
                         elissionStartRefId = refId;
