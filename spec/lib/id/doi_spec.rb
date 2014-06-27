@@ -75,14 +75,6 @@ describe Id::Doi do
 
   describe '#prefix' do
 
-    it "should extract a list of DOIs" do
-      expect( Id::Doi.prefix("10.1234.5678/abcd.efgfh") ).to eq('10.1234.5678')
-    end
-
-  end
-
-  describe '#prefix' do
-
     it "should get the doi prefix" do
       expect( Id::Doi.prefix("10.1234.5678/abcd.efgfh") ).to eq('10.1234.5678')
     end
