@@ -14,8 +14,8 @@ describe "reference viewing", :type => :feature, :js => true do
     page.click_button("Order in paper")
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Clua1")
 
-    page.click_button("Order in paper with repeated")
-    expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Clua1")
+    page.click_button("Citation groups")
+    expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-Clua1")
 
     page.click_button("Year")
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Sperone2")
@@ -33,7 +33,7 @@ describe "reference viewing", :type => :feature, :js => true do
   it "should display a retracted mark for retracted cites" do
     visit '/view/10.1371/journal.pone.0059428'
 
-    expect(page).to have_content("Small Protein-Mediated Quorum Sensing in a Gram-Negative Bacterium PLoS ONE 10.1371/journal.pone.0029192 RETRACTED")
+    expect(page).to have_content("Small Protein-Mediated Quorum Sensing in a Gram-Negative Bacterium PLoS ONE 10.1371/journal.pone.0029192 CC-BY RETRACTED")
   end
 
   it "should work when a reference is not actually cited in the paper" do
