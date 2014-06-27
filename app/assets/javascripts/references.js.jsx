@@ -962,7 +962,23 @@ function addCitationIds(groups) {
     }
     citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
 }
-    
+
+function mkPopovers(data) {
+    var counter = mkCitationCounter();
+    function handleSingle(node, refId) {
+        var c = counter(refId);
+        mkReferencePopover($(node).attr('id'), [data.references[refId]], [counter(refId)]);
+    }
+    function handleEndElissionGroup(start, end, refIds) {
+        var spanId = guid();
+        wrapSpan($(start).attr('id'), $(end).attr('id'), spanId);
+        var references = _.map(refIds, function(refId) { return data.references[refId]; });
+        var currentMentions = _.map(refIds, function(refId) { return counter(refId); });
+        mkReferencePopover(spanId, references, currentMentions);
+    }
+    citationIterator(data.groups, handleSingle, null, null, handleEndElissionGroup);
+}
+
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
@@ -975,64 +991,7 @@ $(document).ready(function () {
                 <ReferencesApp references={references} />,
             $("ol.references").get(0)
         );
-
-        var groups = data.groups;
-        var groupCounter = 0;
-        /* track the citations encountered in a multi-citation
-         group, so that we add those elided */
-        var citationsEncountered = null;
-        /* track the starting citation id */
-        var startId;
-        /* track the current count for each citation */
-        var citationCounters = {};
-        function incCitationCounter(referenceId) {
-            if (citationCounters[referenceId] === undefined) {
-                citationCounters[referenceId] = 0;
-            } else {
-                citationCounters[referenceId] = citationCounters[referenceId] + 1;
-            }
-        }
-        $(citationSelector).filter(citationFilter).each(function() {
-            /* the id of the current reference */
-            var refId = $(this).attr('href').substring(1);
-            incCitationCounter(refId);
-            /* give this a unique id */
-            var citationId = generateCitationReferenceId(refId, citationCounters[refId]);
-            $(this).attr("id", citationId);
-            /* the list of reference id for the current citation group */
-            var currentGroupRefIds = groups[groupCounter].references;
-            if (currentGroupRefIds.length === 1) {
-                groupCounter = groupCounter + 1;
-                mkReferencePopover(citationId, [data.references[refId]], [citationCounters[refId]]);
-            } else {
-                /* in a multi-citation group */
-                if (citationsEncountered === null) {
-                    /* first */
-                    citationsEncountered = [refId];
-                    startId = citationId;
-                } else if (refId === currentGroupRefIds[currentGroupRefIds.length-1]) {
-                    /* last */
-                    citationsEncountered.push(refId);
-                    /* add targets for elided references */
-                    var elidedReferences = _.filter(currentGroupRefIds, function (id) {
-                        return (citationsEncountered.indexOf(id) == -1);
-                    });
-                    _.each(elidedReferences, function (refId) {
-                        incCitationCounter(refId);
-                        $("<a id='" + generateCitationReferenceId(refId, citationCounters[refId]) + "'/>").insertAfter(jq(startId));
-                    });
-                    groupCounter = groupCounter + 1;
-                    var spanId = guid();
-                    wrapSpan(startId, citationId, spanId);
-                    var references = _.map(currentGroupRefIds, function(refId) { return data.references[refId]; });
-                    var currentMentions = _.map(currentGroupRefIds, function(refId) { return citationCounters[refId]; });
-                    mkReferencePopover(spanId, references, currentMentions);
-                    citationsEncountered = null;
-                } else {
-                    /* in the middle */
-                    citationsEncountered.push(refId);
-                }
-            }
-        });
+        addCitationIds(data.groups);
+        mkPopovers(data);
     });
 });
