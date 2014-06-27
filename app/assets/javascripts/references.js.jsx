@@ -823,6 +823,75 @@ function mkReferencePopover(id, references, currentMentions) {
 }
 
 /**
+ * Iterate over the citations in a document.
+ * When a single citation, in a group or not, is found, handleSingle is called with the node and the referenceId.
+ * When an elission group is found, e.g. [1]-[3], handleBeginElissionGroup is called with the node [1] and the refid of [1].
+ * For each elided reference, e.g. [2] in [1]-[3], handleElided is called with the node [3] and the refId for 2
+ * Finally, handleEndElissionGroup is called with the start node [1], the end node [3] and an array of ref ids in the 
+ */
+function citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup) {
+    var groupCounter = 0;
+    var inElission = false;
+    var inGroupCounter = 0;
+    var elissionStart = null;
+    var elissionStartRefId = null;
+    $(citationSelector).filter(citationFilter).each(function() {
+        /* get the id of the current reference */
+        var refId = $(this).attr('href').substring(1);
+        /* the list of reference id for the current citation group */
+        var currentGroupRefIds = groups[groupCounter].references;
+        /* track the citations encountered in a multi-citation
+         group, so that we add those elided */
+        if (currentGroupRefIds.length === 1) {
+            /* single group, no anchors to add */
+            groupCounter = groupCounter + 1;
+            handleSingle(this, refId, groups[groupCounter]);
+        } else {
+            if (inElission) {
+                /* advance the inGroupCounter until we reach the end of the elission group */
+                var cites = [elissionStartRefId];
+                while (refId !== currentGroupRefIds[inGroupCounter]) {
+                    handleElided(this, currentGroupRefIds[inGroupCounter]);
+                    cites.push(currentGroupRefIds[inGroupCounter]);
+                    inGroupCounter = inGroupCounter + 1;
+                }
+                cites.push(refId);
+                handleEndElissionGroup(elissionStart, this, cites);
+                inElission = false;
+                elissionStart = null;
+                elissionStartRefId = null;
+            } else {
+                if (refId === currentGroupRefIds[inGroupCounter]) {
+                    /* check to see if the next ref is elided or if we are at the end */
+                    var next = $(this).next(citationSelector).filter(citationFilter);
+                    var nextRefId = ($(next).length > 0) && $(next).attr('href').substring(1);
+                    if ((atEnd = inGroupCounter == currentGroupRefIds.length - 1) ||
+                        (nextRefId === currentGroupRefIds[inGroupCounter + 1])) {
+                        /* not an elission */
+                        handleSingle(this, refId, groups[groupCounter]);
+                    } else {
+                        /* elission starts here */
+                        handleBeginElissionGroup(this, refId);
+                        inElission = true;
+                        elissionStart = this;
+                        elissionStartRefId = refId;
+                    }
+                } else {
+                    /* what? */
+                    assert(false);
+                }
+            }
+            inGroupCounter = inGroupCounter + 1;
+            if (refId === currentGroupRefIds[currentGroupRefIds.length-1]) {
+                /* at end, advance group counter and reset inGroupCounter */
+                inGroupCounter = 0;
+                groupCounter = groupCounter + 1;
+            }
+        }
+    });
+}
+
+/**
  * Functions to manage citation refernce ids. Of the form ref_ID_COUNT.
  * 
  */

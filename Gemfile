@@ -41,6 +41,7 @@ end
 group :development do
   gem 'sqlite3'
   gem 'quiet_assets'
+  gem 'sinon-rails'
 end
 
 group :development, :test do
@@ -48,6 +49,7 @@ group :development, :test do
   gem "qunit-rails"
   gem 'capybara'
   gem 'selenium-webdriver'
+  gem 'sinon-rails'
 end
 
 group :production do

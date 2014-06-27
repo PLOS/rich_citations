@@ -309,3 +309,67 @@ test("Maybe", function() {
     TestUtils.renderIntoDocument(f);
     strictEqual(f.getDOMNode().textContent, "");
 });
+
+var groups = [
+    {"count": 1,
+     "references": [
+        "pone.0000000-Doe1"
+     ],
+     "section": "Introduction",
+     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "word_position": 50
+    },
+    {"count": 2,
+     "references": [
+         "pone.0000000-Doe1",
+         "pone.0000000-Doe2"
+     ],
+     "section": "Introduction",
+     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1], [2] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "word_position": 100
+    },
+    {"count": 3,
+     "references": [
+         "pone.0000000-Doe1",
+         "pone.0000000-Doe2",
+         "pone.0000000-Doe3"
+     ],
+     "section": "Introduction",
+     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1]-[3] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "word_position": 150
+    }
+];
+
+test("citationIterator", function() {
+    citationSelector = "a[href^='#pone.0000000']";
+    var $fixture = $("#qunit-fixture");
+    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
+    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>], [<a href='#pone.0000000-Doe2'>2</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
+    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>]-[<a href='#pone.0000000-Doe3'>3</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
+    $fixture.append("<ol class='references'><li><a id='pone.0000000-Doe1'/>Doe1</a></li><li><a id='pone.0000000-Doe2'/>Doe2</a></li><li><a id='pone.0000000-Doe3'/>Doe3</a></li></ol>");
+    var handleSingle = sinon.spy();
+    var handleElided = sinon.spy();
+    var handleBeginElissionGroup = sinon.spy();
+    var handleEndElissionGroup = sinon.spy();
+    citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
+    strictEqual(handleSingle.callCount, 3);
+    strictEqual($(handleSingle.getCall(0).args[0]).attr('href'), "#pone.0000000-Doe1");
+    strictEqual(handleSingle.getCall(0).args[1], "pone.0000000-Doe1");
+    strictEqual($(handleSingle.getCall(1).args[0]).attr('href'), "#pone.0000000-Doe1");
+    strictEqual(handleSingle.getCall(1).args[1], "pone.0000000-Doe1");
+    strictEqual($(handleSingle.getCall(2).args[0]).attr('href'), "#pone.0000000-Doe2");
+    strictEqual(handleSingle.getCall(2).args[1], "pone.0000000-Doe2");
+
+    strictEqual(handleBeginElissionGroup.callCount, 1);
+    strictEqual($(handleBeginElissionGroup.getCall(0).args[0]).attr('href'), "#pone.0000000-Doe1");
+    strictEqual(handleBeginElissionGroup.getCall(0).args[1], "pone.0000000-Doe1");
+
+    strictEqual(handleElided.callCount, 1);
+    strictEqual($(handleElided.getCall(0).args[0]).attr('href'), "#pone.0000000-Doe3");
+    strictEqual(handleElided.getCall(0).args[1], "pone.0000000-Doe2");
+
+    strictEqual(handleEndElissionGroup.callCount, 1);
+    strictEqual($(handleEndElissionGroup.getCall(0).args[0]).attr('href'), "#pone.0000000-Doe1");
+    strictEqual($(handleEndElissionGroup.getCall(0).args[1]).attr('href'), "#pone.0000000-Doe3");
+    deepEqual(handleEndElissionGroup.getCall(0).args[2], ["pone.0000000-Doe1","pone.0000000-Doe2","pone.0000000-Doe3"]);
+});
