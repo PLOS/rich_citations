@@ -10,9 +10,9 @@ module Id
     PLOS_PREFIXES = [ '10.1371' ]
 
     def self.extract(text)
-      match_regexes(text, { DOI_URL_REGEX    => true,
-                            DOI_PREFIX_REGEX => false,
-                            DOI_ALONE_REGEX  => false  })
+      match_regexes(text, DOI_URL_REGEX    => true,
+                          DOI_PREFIX_REGEX => false,
+                          DOI_ALONE_REGEX  => false  )
     end
 
     def self.extract_list(text)
