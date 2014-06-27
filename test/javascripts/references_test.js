@@ -379,12 +379,15 @@ test("addCitationIds", function() {
     $fixture.append(citationFixtureHTML);
     addCitationIds(groups);
     var cites1 = $("a[href='#pone.0000000-Doe1']");
-    var cites2 = $("a[href='#pone.0000000-Doe1']");
-    var cites3 = $("a[href='#pone.0000000-Doe1']");
     strictEqual($(cites1).first().attr('id'), 'ref_pone.0000000-Doe1_0');
     strictEqual($(cites1).slice(1).first().attr('id'), 'ref_pone.0000000-Doe1_1');
-    strictEqual($(cites2).first().attr('id'), 'ref_pone.0000000-Doe1_0');
-    strictEqual($(cites2).slice(1).first().attr('id'), 'ref_pone.0000000-Doe1_1');
-    strictEqual($(cites3).first().attr('id'), 'ref_pone.0000000-Doe1_0');
+    strictEqual($(cites1).slice(2).first().attr('id'), 'ref_pone.0000000-Doe1_2');
+
+    var cites2 = $("a[id^='ref_pone.0000000-Doe2_']");
+    strictEqual($(cites2).first().attr('id'), 'ref_pone.0000000-Doe2_0');
+    strictEqual($(cites2).slice(1).first().attr('id'), 'ref_pone.0000000-Doe2_1');
+
+    var cites3 = $("a[href='#pone.0000000-Doe3']");
+    strictEqual($(cites3).first().attr('id'), 'ref_pone.0000000-Doe3_0');
 });
     

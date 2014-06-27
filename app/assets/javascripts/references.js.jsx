@@ -925,30 +925,42 @@ function withReferenceData(doi, f) {
            });
 }
 
+function mkCitationCounter () {
+    var citationCounters = {};
+    return function(referenceId, doNotInc) {
+        if (!doNotInc) {
+            if (citationCounters[referenceId] === undefined) {
+                citationCounters[referenceId] = 0;
+            } else {
+                citationCounters[referenceId] = citationCounters[referenceId] + 1;
+            }
+        }
+        return citationCounters[referenceId];
+    };
+}
+    
 /** 
  * Add custom ids to each citation.
  */
 function addCitationIds(groups) {
+    var counter = mkCitationCounter();
     /* track the current count for each citation */
-    var citationCounters = {};
-    function incCitationCounter(referenceId) {
-        if (citationCounters[referenceId] === undefined) {
-            citationCounters[referenceId] = 0;
-        } else {
-            citationCounters[referenceId] = citationCounters[referenceId] + 1;
-        }
-    }
     function handleSingle(node, refId) {
-        incCitationCounter(refId);
         /* give this a unique id */
-        $(node).attr("id", generateCitationReferenceId(refId, citationCounters[refId]));
-        /* the list of reference id for the current citation group */
+        $(node).attr("id", generateCitationReferenceId(refId, counter(refId)));
     }
     function handleElided(node, refId) {
-        incCitationCounter(refId);
-        $("<a id='" + generateCitationReferenceId(refId, citationCounters[refId]) + "'/>").insertAfter($(node));
+        var c = counter(refId);
+        $("<a id='" + generateCitationReferenceId(refId, c) + "'/>").insertAfter($(node));
     }
-    citationIterator(groups, handleSingle, handleElided);
+    function handleBeginElissionGroup(node, refId) {
+        $(node).attr("id", generateCitationReferenceId(refId, counter(refId)));
+    }
+    function handleEndElissionGroup(start, end, refIds) {
+        var refId = refIds[refIds.length-1];
+        $(end).attr("id", generateCitationReferenceId(refId, counter(refId)));
+    }
+    citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
 }
     
 /* if we don't load after document ready we get an error */
