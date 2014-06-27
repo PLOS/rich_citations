@@ -340,13 +340,12 @@ var groups = [
     }
 ];
 
+var citationFixtureHTML = "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>] Venison filet mignon exercitation adipisicing meatloaf veniam. Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>], [<a href='#pone.0000000-Doe2'>2</a>] Venison filet mignon exercitation adipisicing meatloaf veniam Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>]-[<a href='#pone.0000000-Doe3'>3</a>] Venison filet mignon exercitation adipisicing meatloaf veniam <ol class='references'><li><a id='pone.0000000-Doe1'/>Doe1</a></li><li><a id='pone.0000000-Doe2'/>Doe2</a></li><li><a id='pone.0000000-Doe3'/>Doe3</a></li></ol>";
+
 test("citationIterator", function() {
     citationSelector = "a[href^='#pone.0000000']";
     var $fixture = $("#qunit-fixture");
-    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
-    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>], [<a href='#pone.0000000-Doe2'>2</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
-    $fixture.append("Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [<a href='#pone.0000000-Doe1'>1</a>]-[<a href='#pone.0000000-Doe3'>3</a>] Venison filet mignon exercitation adipisicing meatloaf veniam");
-    $fixture.append("<ol class='references'><li><a id='pone.0000000-Doe1'/>Doe1</a></li><li><a id='pone.0000000-Doe2'/>Doe2</a></li><li><a id='pone.0000000-Doe3'/>Doe3</a></li></ol>");
+    $fixture.append(citationFixtureHTML);
     var handleSingle = sinon.spy();
     var handleElided = sinon.spy();
     var handleBeginElissionGroup = sinon.spy();
@@ -373,3 +372,19 @@ test("citationIterator", function() {
     strictEqual($(handleEndElissionGroup.getCall(0).args[1]).attr('href'), "#pone.0000000-Doe3");
     deepEqual(handleEndElissionGroup.getCall(0).args[2], ["pone.0000000-Doe1","pone.0000000-Doe2","pone.0000000-Doe3"]);
 });
+
+test("addCitationIds", function() {
+    citationSelector = "a[href^='#pone.0000000']";
+    var $fixture = $("#qunit-fixture");
+    $fixture.append(citationFixtureHTML);
+    addCitationIds(groups);
+    var cites1 = $("a[href='#pone.0000000-Doe1']");
+    var cites2 = $("a[href='#pone.0000000-Doe1']");
+    var cites3 = $("a[href='#pone.0000000-Doe1']");
+    strictEqual($(cites1).first().attr('id'), 'ref_pone.0000000-Doe1_0');
+    strictEqual($(cites1).slice(1).first().attr('id'), 'ref_pone.0000000-Doe1_1');
+    strictEqual($(cites2).first().attr('id'), 'ref_pone.0000000-Doe1_0');
+    strictEqual($(cites2).slice(1).first().attr('id'), 'ref_pone.0000000-Doe1_1');
+    strictEqual($(cites3).first().attr('id'), 'ref_pone.0000000-Doe1_0');
+});
+    

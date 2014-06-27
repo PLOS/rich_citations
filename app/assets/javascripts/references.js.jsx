@@ -925,6 +925,32 @@ function withReferenceData(doi, f) {
            });
 }
 
+/** 
+ * Add custom ids to each citation.
+ */
+function addCitationIds(groups) {
+    /* track the current count for each citation */
+    var citationCounters = {};
+    function incCitationCounter(referenceId) {
+        if (citationCounters[referenceId] === undefined) {
+            citationCounters[referenceId] = 0;
+        } else {
+            citationCounters[referenceId] = citationCounters[referenceId] + 1;
+        }
+    }
+    function handleSingle(node, refId) {
+        incCitationCounter(refId);
+        /* give this a unique id */
+        $(node).attr("id", generateCitationReferenceId(refId, citationCounters[refId]));
+        /* the list of reference id for the current citation group */
+    }
+    function handleElided(node, refId) {
+        incCitationCounter(refId);
+        $("<a id='" + generateCitationReferenceId(refId, citationCounters[refId]) + "'/>").insertAfter($(node));
+    }
+    citationIterator(groups, handleSingle, handleElided);
+}
+    
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
