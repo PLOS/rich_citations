@@ -1,24 +1,38 @@
 module Id
   class Doi < Base
 
-    # (^|\s)doi:?\s*(?<result>10\.([[:punct:]]*[^[[:punct:]][[:space:]]]+)+)
-    DOI_REGEX = '10\.\S+\/\S+'
-    DOI_PREFIX_REGEX = /(^|\s)doi:?\s*(?<result>#{DOI_REGEX}(?<!#{PUNCT}))/io
-    DOI_URL_REGEX    = /(^|\W)doi\.org\/(?<result>#{DOI_REGEX}(?<!#{PUNCT}))/io
-    DOI_ALONE_REGEX  = /^(#{PUNCT}|\s)*(?<result>#{DOI_REGEX}(?<!#{PUNCT}))/io
+    # DOI parsing is painful since, in theory, a DOI can contain any character
+    # The following assumptions are made:
+    #   A DOI cannot contain (unencoded) whitespace or quotes (Since they might be in an attribute)
+    #   A DOI cannot end with punctuation (so that we can separate a DOI from following punctuation)
+
+    DOI_PREFIX_CHAR  = %q{[^\/[[:space:]]]}
+    DOI_CHAR         = %q{[^[[:space:]]'"]}
+    DOI_END_CHAR     = NPUNCT
+    DOI_REGEX        = "10\\.#{DOI_PREFIX_CHAR}+\\/#{DOI_CHAR}*#{DOI_END_CHAR}+"
+
+    DOI_PREFIX_REGEX = /(^|\s)doi:?\s*(?<result>#{DOI_REGEX})/io
+    DOI_URL_REGEX    = /(^|\W)doi\.org\/(?<result>#{DOI_REGEX})/io
+    DOI_ALONE_REGEX  = /^(#{PUNCT}|\s)*(?<result>#{DOI_REGEX})/io
 
     PLOS_PREFIXES = [ '10.1371' ]
 
-    def self.extract(text)
-      match_regexes(text, DOI_URL_REGEX    => true,
-                          DOI_PREFIX_REGEX => false,
-                          DOI_ALONE_REGEX  => false  )
+    def self.extract(text, normalize=false)
+      doi = match_regexes(text, DOI_URL_REGEX    => true,
+                                DOI_PREFIX_REGEX => false,
+                                DOI_ALONE_REGEX  => false  )
+
+      normalize ? normalize(doi) : doi
     end
 
     def self.extract_list(text)
       list = (text || '').split(/(",|',|`,|\s)\s*/)
       list.map!{|i| extract(i) }
       list.select(&:present?)
+    end
+
+    def self.normalize(doi)
+      doi.present? ? doi.strip.tr('–','-') : nil
     end
 
     def self.prefix(doi)

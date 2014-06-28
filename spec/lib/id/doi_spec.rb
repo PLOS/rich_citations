@@ -30,6 +30,10 @@ describe Id::Doi do
       expect( Id::Doi.extract('dOi.ORG/10.123/4567.890') ).to eq('10.123/4567.890')
     end
 
+    it "should match a doi url inside an attribute" do
+      expect( Id::Doi.extract("<ref id=\"ref-1\"> <comment><elem attr=\"http://dx.doi.org/10.1111/1234\"/></comment> </ref>")). to eq('10.1111/1234')
+    end
+
     it "should unescape a DOI url" do
       expect( Id::Doi.extract('doi.org/10.123/4+5%3D6%267%208. ') ).to eq('10.123/4 5=6&7 8')
     end
@@ -49,6 +53,19 @@ describe Id::Doi do
       expect( Id::Doi.extract('doi.org/10.123/4567.890.') ).to eq('10.123/4567.890')
       expect( Id::Doi.extract('doi.org/10.123/4567.890). ') ).to eq('10.123/4567.890')
       expect( Id::Doi.extract('doi.org/10.123/4567.890" ') ).to eq('10.123/4567.890')
+    end
+
+    it "should normalize characters if the second parameter is true" do
+      expect( Id::Doi.extract('doi.org/10.123/4567–890. ', true) ).to eq('10.123/4567-890')
+      expect( Id::Doi.extract('doi.org/10.123/4567–890. '      ) ).to eq('10.123/4567–890')
+    end
+
+  end
+
+ describe '#normalize' do
+
+    it "unicode hyphens" do
+      expect( Id::Doi.normalize('10.123/4567–890') ).to eq('10.123/4567-890')
     end
 
   end
