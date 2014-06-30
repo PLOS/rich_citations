@@ -22,26 +22,26 @@ describe Processors::ReferencesLicense do
 
   it "should call the API" do
     expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"}].to_json
-    expect(Plos::Api).to receive(:http_post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).and_return('{}')
+    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).and_return('{}')
     process
   end
 
   it "should add the license" do
     licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1')]}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-1'][:info][:license] ).to eq('test-license-1')
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
   it "should add inactive licenses license" do
     licenses = { results: [make_license('10.222/222', 'inactive-license-2', nil) ]}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to eq('inactive-license-2')
   end
 
   it "should not set a license if no result is returned" do
     licenses = { results: []}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to be_nil
   end
 
@@ -57,7 +57,7 @@ describe Processors::ReferencesLicense do
                  }]
     }
     licenses = { results: [license]}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license')
   end
 
@@ -71,7 +71,7 @@ describe Processors::ReferencesLicense do
           ]
     }
     licenses = { results: [license]}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
@@ -84,7 +84,7 @@ describe Processors::ReferencesLicense do
                    ]
     }
     licenses = { results: [license]}
-    expect(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
   end
 
@@ -97,7 +97,7 @@ describe Processors::ReferencesLicense do
                    ]
     }
     licenses = { results: [license]}
-    expect(Plos::Api).to receive(:http_post).with(anything, '[{"type":"doi","id":"10.222/222"}]', anything).and_return(JSON.generate(licenses))
+    expect(HttpUtilities).to receive(:post).with(anything, '[{"type":"doi","id":"10.222/222"}]', anything).and_return(JSON.generate(licenses))
 
     cached = { references: {
         'ref-1' => { doi:'10.111/111', info:{license:'cached-license-1'} },
@@ -111,7 +111,7 @@ describe Processors::ReferencesLicense do
 
   it "should record the time of the run" do
     licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1')]}
-    allow(Plos::Api).to receive(:http_post).and_return(JSON.generate(licenses))
+    allow(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     allow_any_instance_of(Processors::State).to receive(:cleanup) { }
 
     travel_to Time.new(2012, 6, 12, 1, 2, 3) do

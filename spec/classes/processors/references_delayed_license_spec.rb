@@ -32,10 +32,10 @@ describe Processors::ReferencesDelayedLicense do
 
   it "should only call the API for unmatched licenses" do
     first_licenses = { results: [make_license('10.222/222', 'test-license-2') ]}.to_json
-    expect(Plos::Api).to receive(:http_post).ordered.and_return(first_licenses)
+    expect(HttpUtilities).to receive(:post).ordered.and_return(first_licenses)
 
     expected_data = [{"type"=>"doi","id"=>"10.111/111"}].to_json
-    expect(Plos::Api).to receive(:http_post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).ordered.and_return('{}')
+    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).ordered.and_return('{}')
 
     stub_clock(20.seconds)
 
@@ -44,17 +44,17 @@ describe Processors::ReferencesDelayedLicense do
 
   it "should not call the API twice if all licenses were matched on the first call" do
     first_licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1') ]}.to_json
-    expect(Plos::Api).to receive(:http_post).once.and_return(first_licenses)
+    expect(HttpUtilities).to receive(:post).once.and_return(first_licenses)
 
     process
   end
 
   it "should set licenses from the second run" do
     first_licenses = { results: [make_license('10.111/111', 'test-license-1') ]}.to_json
-    expect(Plos::Api).to receive(:http_post).ordered.and_return(first_licenses)
+    expect(HttpUtilities).to receive(:post).ordered.and_return(first_licenses)
 
     second_licenses = { results: [make_license('10.222/222', 'test-license-2') ]}.to_json
-    expect(Plos::Api).to receive(:http_post).ordered.and_return(second_licenses)
+    expect(HttpUtilities).to receive(:post).ordered.and_return(second_licenses)
 
     stub_clock(20.seconds)
 
@@ -65,7 +65,7 @@ describe Processors::ReferencesDelayedLicense do
   it "should sleep if necessary" do
     first_licenses = { results: [make_license('10.111/111', 'test-license-1') ]}.to_json
     second_licenses = { results: [make_license('10.222/222', 'test-license-2') ]}.to_json
-    allow(Plos::Api).to receive(:http_post).and_return(first_licenses, second_licenses)
+    allow(HttpUtilities).to receive(:post).and_return(first_licenses, second_licenses)
 
     stub_clock(0.5.seconds)
     expect_any_instance_of(Processors::ReferencesDelayedLicense).to receive(:sleep).with(1.5)
@@ -76,7 +76,7 @@ describe Processors::ReferencesDelayedLicense do
   it "should not sleep if enough time has already passed" do
     first_licenses = { results: [make_license('10.111/111', 'test-license-1') ]}.to_json
     second_licenses = { results: [make_license('10.222/222', 'test-license-2') ]}.to_json
-    allow(Plos::Api).to receive(:http_post).and_return(first_licenses, second_licenses)
+    allow(HttpUtilities).to receive(:post).and_return(first_licenses, second_licenses)
 
     stub_clock(2.seconds)
     expect_any_instance_of(Processors::ReferencesDelayedLicense).not_to receive(:sleep)

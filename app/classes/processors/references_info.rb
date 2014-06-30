@@ -31,7 +31,7 @@ module Processors
 
     def get_result(doi)
       begin
-        json   = Plos::Api.http_get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", 'application/citeproc+json')
+        json   = HttpUtilities.get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", 'application/citeproc+json')
         JSON.parse(json, symbolize_names:true)
       rescue Exception=>ex
         Rails.logger.error(ex)

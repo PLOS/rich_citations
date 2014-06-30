@@ -17,7 +17,7 @@ module IdentifierResolvers
 
     def resolve_group(references)
       texts    = JSON.generate( references.values )
-      response = Plos::Api::http_post(API_URL, texts, :xml)
+      response = HttpUtilities.post(API_URL, texts, :xml)
       results  = JSON.parse(response)['results']
 
       results.each_with_index do |result, i|
@@ -44,7 +44,7 @@ module IdentifierResolvers
 
       {
           source: :crossref,
-          doi:    Plos::Doi.extract( result['doi'] ),
+          doi:    Id::Doi.extract( result['doi'] ),
           score:  result['score'].to_f,
       }
     end
