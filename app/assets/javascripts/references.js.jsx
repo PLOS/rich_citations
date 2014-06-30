@@ -840,7 +840,7 @@ function mkReferencePopover(id, references, currentMentions) {
         },
         events: {
             visible: function(event, api) {
-                $(api.elements.tooltip).css('max-height',$(window).height() - 20);
+                $(api.elements.tooltip).css('max-height',$(window).height());
                 $(jq(id)).addClass("citation_hover");
             },
             hidden: function(event, api) {
