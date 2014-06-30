@@ -457,7 +457,6 @@ var Reference = React.createClass({
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
             <ReferenceBadges reference={ this.props.reference }/>
-            <ReferenceUpdated updated_by={ this.props.reference.updated_by }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention }/>
             </div>;
@@ -500,8 +499,13 @@ var ReferenceBadges = React.createClass({
     render: function() {
         var ref = this.props.reference;
         var badges = [];
-        if (ref.self_citations) {
-            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation</span>);
+        if (this.props.reference.updated_by) {
+            var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
+            if (_.contains(types, "retraction")) {
+                badges.push(<span key={ ref.id + "retracted"} className="retracted">RETRACTED</span>);
+            } else if (types.length > 0) {
+                badges.push(<span key={ ref.id + "retracted"} className="updated">UPDATED</span>);
+            }
         }
         /* license badges */
         var license = ref.info.license;
@@ -510,27 +514,13 @@ var ReferenceBadges = React.createClass({
         } else if (license && license !== "failed-to-obtain-license") {
             badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() }</span>);
         }
+        if (ref.self_citations) {
+            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation</span>);
+        }
         if (badges.length < 1) {
             return <span/>;
         } else {
             return <span>{ badges }<br/></span>;
-        }
-    }
-});
-
-var ReferenceUpdated = React.createClass({
-    render: function () {
-        if (this.props.updated_by) {
-            var types = _.map(this.props.updated_by, function(u) { return u.type; });
-            if (_.contains(types, "retraction")) {
-                return <span className="retracted">RETRACTED</span>;
-            } else if (types.length > 0) {
-                return <span className="updated">UPDATED</span>;
-            } else {
-                return <span/>;
-            }
-        } else {
-            return <span/>;
         }
     }
 });
