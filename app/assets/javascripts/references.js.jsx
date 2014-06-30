@@ -837,6 +837,16 @@ function mkReferencePopover(id, references, currentMentions) {
             adjust: {
                 method: 'shift shift'
             }
+        },
+        events: {
+            visible: function(event, api) {
+                console.log(id);
+                $(jq(id)).addClass("citation_hover");
+            },
+            hidden: function(event, api) {
+                console.log(id);
+                $(jq(id)).removeClass("citation_hover");
+            }
         }
     });
 }
