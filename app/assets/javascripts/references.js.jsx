@@ -622,7 +622,7 @@ var SortedReferencesList = React.createClass({
         this.updateHighlighting();
 
         return <div>
-            <SortedHeader current={ this.props.current } unsortableCount={ results.unsortable.length }/>
+            <SortedHeader onClick={ this.props.onClick } current={ this.props.current } unsortableCount={ results.unsortable.length }/>
             { this.renderSortedReferenceList(results.sorted) }
             { (results.sorted.length === 0 && results.unsortable.length === 0) ? <div>No results found.</div> : "" }
             { (results.unsortable.length > 0 ) ? <h5 id="unsortable">Unsortable</h5> : ""}
@@ -632,9 +632,19 @@ var SortedReferencesList = React.createClass({
 });
 
 var SortedHeader = React.createClass({
+    handleClick: function() {
+        var newOrder = "asc";
+        if (this.props.current.order === "asc") { newOrder = "desc"; }
+        this.props.onClick(this.props.current.by, newOrder);
+        return false;
+    },
     render: function() {
         if (this.props.current.by === 'year') {
-            return <p>Newest first <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+            if (this.props.current.order === 'desc') {
+                return <p><a href="#" onClick={ this.handleClick }>Newest first ▾</a> <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+            } else {
+                return <p><a href="#" onClick={ this.handleClick }>Oldest first ▴</a> <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+            }                
         } else if (this.props.current.by === 'author') {
             return <p>Alphabetical <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
         } else {
@@ -647,11 +657,11 @@ var Unsortable = React.createClass({
     render: function() {
         if (this.props.count > 0) {
             if (this.props.current.by === 'year') {
-                return <span>(<a href="#unsortable">{ this.props.count } unknown date</a>)</span>;
+                return <span>(<a href="#unsortable">{ this.props.count } unknown date{ (this.props.count > 1) ? "s" : "" }</a>)</span>;
             } else if (this.props.current.by === 'author') {
                 return <span>(<a href="#unsortable">{ this.props.count } unsortable</a>)</span>;
             } else { 
-                return <span><a href="#unsortable">{ this.props.count } unsortable items</a></span>;
+                return <span><a href="#unsortable">{ this.props.count } unsortable</a></span>;
             }
         } else {
             return <span/>;
@@ -680,28 +690,19 @@ var SearchBar = React.createClass({
 var Sorter = React.createClass({
     getDefaultProps: function() {
         return {
-            defaultOrder: "asc",
-            toggleable: false
+            defaultOrder: "asc"
         };
     },
     handleClick: function() {
-        var order = this.props.defaultOrder;
-        if (this.props.toggleable && (this.props.current.by === this.props.by)) {
-            order = (this.props.current.order === "asc") ? "desc" : "asc";
-        }
-        this.props.onClick(this.props.by, order);
+        this.props.onClick(this.props.by, this.props.defaultOrder);
         return false;
     },
     render: function() {
         var isCurrent = (this.props.current.by === this.props.by);
-        if (!this.props.toggleable && isCurrent) {
+        if (isCurrent) {
             return <span>{this.props.name}</span>;
         } else {
-            var orderStr = "";
-            if (this.props.toggleable && isCurrent) {
-                orderStr = (this.props.current.order === "asc") ? "↑ " : "↓ ";
-            }
-            return <button className="non-button" onClick={this.handleClick}>{orderStr}{this.props.name}</button>;
+            return <button className="non-button" onClick={ this.handleClick }>{ this.props.name }</button>;
         }
     }
 });
@@ -771,6 +772,7 @@ var ReferencesApp = React.createClass({
               current={this.state.sort}
               references={this.props.references}
               filterText={this.state.filterText}
+              onClick={this.handleSorterClick}
               idx={ this.idx }
               searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
             />
