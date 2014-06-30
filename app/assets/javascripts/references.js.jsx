@@ -873,10 +873,16 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
         /* track the citations encountered in a multi-citation
          group, so that we add those elided */
         if (currentGroupRefIds.length === 1) {
-            /* single group, no anchors to add */
-            groupCounter = groupCounter + 1;
-            if (handleSingle) {
-                handleSingle(this, refId, groups[groupCounter]);
+            if (refId === currentGroupRefIds[0]) {
+                /* single group, no anchors to add */
+                groupCounter = groupCounter + 1;
+                if (handleSingle) {
+                    handleSingle(this, refId, groups[groupCounter]);
+                }
+            } else {
+                console.log("Problem in group " + groupCounter + " with ref " + inGroupCounter);
+                console.log("Found " + refId + ", expected " + currentGroupRefIds[inGroupCounter]);
+                console.log(groups[groupCounter]);
             }
         } else {
             if (inElission) {
@@ -917,8 +923,9 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                         elissionStartRefId = refId;
                     }
                 } else {
-                    /* what? */
-                    assert(false);
+                    console.log("Problem in group " + groupCounter + " with ref " + inGroupCounter);
+                    console.log("Found " + refId + ", expected " + currentGroupRefIds[inGroupCounter]);
+                    console.log(groups[groupCounter]);
                 }
             }
             inGroupCounter = inGroupCounter + 1;
