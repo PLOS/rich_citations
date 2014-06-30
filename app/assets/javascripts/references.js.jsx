@@ -502,20 +502,20 @@ var ReferenceBadges = React.createClass({
         if (this.props.reference.updated_by) {
             var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
             if (_.contains(types, "retraction")) {
-                badges.push(<span key={ ref.id + "retracted"} className="retracted">RETRACTED</span>);
+                badges.push(<span key={ ref.id + "retracted"} className="retracted">RETRACTED </span>);
             } else if (types.length > 0) {
-                badges.push(<span key={ ref.id + "retracted"} className="updated">UPDATED</span>);
+                badges.push(<span key={ ref.id + "retracted"} className="updated">UPDATED </span>);
             }
         }
         /* license badges */
         var license = ref.info.license;
         if (license === "free-to-read") {
-            badges.push(<span key={ ref.id + "license" } className="text-available">Full text available</span>);
+            badges.push(<span key={ ref.id + "license" } className="text-available">Full text available </span>);
         } else if (license && license !== "failed-to-obtain-license") {
-            badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() }</span>);
+            badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() } </span>);
         }
         if (ref.self_citations) {
-            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation</span>);
+            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation </span>);
         }
         if (badges.length < 1) {
             return <span/>;
