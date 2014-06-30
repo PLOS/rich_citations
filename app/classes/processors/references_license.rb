@@ -23,7 +23,7 @@ module Processors
 
     protected
 
-    API_URL = 'http://howopenisit.org/lookup/12345,67890'
+    API_URL = 'http://howopenisit.org/lookup'
 
     def is_delayed?
       false

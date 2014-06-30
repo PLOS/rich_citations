@@ -2,7 +2,8 @@
 module Id
   class Base
 
-    PUNCT = %q{[\]'"`.,:;!)\-\/]} # Posix [[:punct:]] regex is more liberal than we want
+    PUNCT  = %q{[\]'"`.,:;!)\-\/]}  # Posix [[:punct:]] regex is more liberal than we want
+    NPUNCT = %q{[^\]'"`.,>[[:space:]]:;!)\-\/]}
 
     private
 

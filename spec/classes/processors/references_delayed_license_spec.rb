@@ -35,7 +35,7 @@ describe Processors::ReferencesDelayedLicense do
     expect(HttpUtilities).to receive(:post).ordered.and_return(first_licenses)
 
     expected_data = [{"type"=>"doi","id"=>"10.111/111"}].to_json
-    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).ordered.and_return('{}')
+    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup', expected_data, anything).ordered.and_return('{}')
 
     stub_clock(20.seconds)
 

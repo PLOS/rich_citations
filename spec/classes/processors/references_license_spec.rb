@@ -22,7 +22,7 @@ describe Processors::ReferencesLicense do
 
   it "should call the API" do
     expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"}].to_json
-    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup/12345,67890', expected_data, anything).and_return('{}')
+    expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup', expected_data, anything).and_return('{}')
     process
   end
 
