@@ -632,7 +632,7 @@ var SortedReferencesList = React.createClass({
         this.updateHighlighting();
 
         return <div>
-            { (results.unsortable.length > 0) ? <p>And <a href="#unsortable">{ results.unsortable.length } unsortable items</a></p> : ""}
+            <SortedHeader current={ this.props.current } unsortableCount={ results.unsortable.length }/>
             { this.renderSortedReferenceList(results.sorted) }
             { (results.sorted.length === 0 && results.unsortable.length === 0) ? <div>No results found.</div> : "" }
             { (results.unsortable.length > 0 ) ? <h5 id="unsortable">Unsortable</h5> : ""}
@@ -641,7 +641,36 @@ var SortedReferencesList = React.createClass({
     }
 });
 
+var SortedHeader = React.createClass({
+    render: function() {
+        if (this.props.current.by === 'year') {
+            return <p>Newest first <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+        } else if (this.props.current.by === 'author') {
+            return <p>Alphabetical <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+        } else {
+            return <p><Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
+        }
+    }
+});
+
+var Unsortable = React.createClass({
+    render: function() {
+        if (this.props.count > 0) {
+            if (this.props.current.by === 'year') {
+                return <span>(<a href="#unsortable">{ this.props.count } unknown date</a>)</span>;
+            } else if (this.props.current.by === 'author') {
+                return <span>(<a href="#unsortable">{ this.props.count } unsortable</a>)</span>;
+            } else { 
+                return <span><a href="#unsortable">{ this.props.count } unsortable items</a></span>;
+            }
+        } else {
+            return <span/>;
+        }
+    }
+});
+
 /**
+
  * Form used for filtering references.
  */
 var SearchBar = React.createClass({
