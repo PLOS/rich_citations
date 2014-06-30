@@ -996,7 +996,6 @@ function addCitationIds(groups) {
 function mkPopovers(data) {
     var counter = mkCitationCounter();
     function handleSingle(node, refId) {
-        var c = counter(refId);
         mkReferencePopover($(node).attr('id'), [data.references[refId]], [counter(refId)]);
     }
     function handleEndElissionGroup(start, end, refIds) {
