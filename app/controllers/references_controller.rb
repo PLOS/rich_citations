@@ -10,7 +10,7 @@ class ReferencesController < ApplicationController
     encoded_doi = URI.encode_www_form_component(params[:id])
     data = Rails.cache.fetch("doi_#{encoded_doi}_#{format}") do
       url = "http://dx.doi.org/#{encoded_doi}"
-      Plos::Api.http_get(url, content_type)
+      HttpUtilities.get(url, content_type)
     end
     render text: data, content_type: content_type
   end

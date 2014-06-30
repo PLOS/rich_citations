@@ -21,7 +21,7 @@ module Processors
       result = Rails.cache.fetch("crossmark_#{doi_enc}", :expires_in=> 108000) do
         url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
         begin
-          JSON.parse(Plos::Api.http_get(url), symbolize_names:true)
+          JSON.parse(HttpUtilities.get(url), symbolize_names:true)
         rescue Net::HTTPServerException => ex
           Rails.logger.warn("Got #{ex} from #{url}")
           {}
