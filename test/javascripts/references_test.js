@@ -78,7 +78,7 @@ test("mkSortField", function () {
             var ref = fixture.references["pone.0067380-Lowry1"];
             strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
             strictEqual(1, mkSortField(ref, "mentions"));
-            strictEqual(6487, mkSortField(ref, "appearance"));
+            strictEqual(55, mkSortField(ref, "appearance"));
             strictEqual("lowry d", mkSortField(ref, "author"));
             strictEqual(2008, mkSortField(ref, "year"));
             strictEqual(55, mkSortField(ref, "index"));
