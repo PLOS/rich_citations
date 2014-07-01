@@ -456,7 +456,7 @@ var Reference = React.createClass({
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
-            <ReferenceBadges reference={ this.props.reference }/>
+            <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention }/>
             </div>;
@@ -508,11 +508,13 @@ var ReferenceBadges = React.createClass({
             }
         }
         /* license badges */
-        var license = ref.info.license;
-        if (license === "free-to-read") {
-            badges.push(<span key={ ref.id + "license" } className="text-available">Full text available </span>);
-        } else if (license && license !== "failed-to-obtain-license") {
-            badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() } </span>);
+        if (!this.props.suppressLicenseBadge) {
+            var license = ref.info.license;
+            if (license === "free-to-read") {
+                badges.push(<span key={ ref.id + "license" } className="text-available">Full text available </span>);
+            } else if (license && license !== "failed-to-obtain-license") {
+                badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() } </span>);
+            }
         }
         if (ref.self_citations) {
             badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation </span>);
@@ -539,6 +541,8 @@ function mkHeadingGrouper(by) {
             return ref.data.info['container-title'];
         } else if (by === "appearance" || by === "appearance+repeated") {
             return ref.group.section;
+        } else if (by === "license") {
+            return ref.data.info.license;
         } else {
             return null;
         }
@@ -547,13 +551,27 @@ function mkHeadingGrouper(by) {
 
 var SortedReferencesList = React.createClass({
     useHeadings: function() {
-        return ["journal","appearance","appearance+repeated"].indexOf(this.props.current.by) !== -1;
+        return ["journal","appearance","appearance+repeated","license"].indexOf(this.props.current.by) !== -1;
     },
     renderGroupContext: function(group) {
         if (this.props.current.by === "appearance+repeated") {
             return <p>{ group[0].group.context }</p>;
         } else {
             return "";
+        }
+    },
+    renderGroupHeading: function(key) {
+        if (this.props.current.by === "license") {
+            /* copy & paste of license badge code; should probably be consolidated but it is short */
+            if (key === "free-to-read") {
+                return <p><span className="text-available">Full text available</span></p>;
+            } else if (key === "failed-to-obtain-license") {
+                return <p><strong>Paywalled or not online</strong></p>;
+            } else {
+                return <p><span className="open-access">{ key.toUpperCase() }</span></p>;
+            }
+        } else {
+            return <p><strong>{ key }</strong></p>;
         }
     },
     renderReferenceList: function(refs) {
@@ -573,7 +591,7 @@ var SortedReferencesList = React.createClass({
         } else {
             return _.map(refs, function (value, key) {
                 return <div key={ "citation_group_" + key }>
-                    <p><strong>{ key }</strong></p>
+                    { this.renderGroupHeading(key) }
                     { this.renderReferenceList(value) }
                 </div>;
             }.bind(this));
@@ -597,7 +615,11 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        return <li key={ "" + ref.data.id + ref.group.word_position }><Reference reference={ ref.data } showLabel={ true } /></li>;
+        return <li key={ "" + ref.data.id + ref.group.word_position }>
+            <Reference reference={ ref.data }
+                       showLabel={ true }
+                       suppressLicenseBadge={ (this.props.current.by === "license") }/>
+                               </li>;
     },
     renderSortedReferenceList: function (sorted) {
         if (this.props.current.order == "desc") {
