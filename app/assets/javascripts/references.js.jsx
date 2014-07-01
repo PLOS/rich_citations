@@ -98,7 +98,9 @@ function mkSortField(ref, fieldname) {
     var info = ref.info;
     if (fieldname === 'title') {
         return mkSortString(info.title);
-    } else if (fieldname === 'appearance' || fieldname === 'appearance+repeated') {
+    } else if (fieldname === 'appearance') {
+        return ref.index;
+    } else if (fieldname === 'appearance+repeated') {
         /* if no references in paper, sort at end */
         return (ref.citation_groups && ref.citation_groups[0].word_position) || 99999999;
     } else if (fieldname === 'journal') {
