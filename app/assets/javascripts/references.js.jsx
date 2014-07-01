@@ -297,7 +297,7 @@ var Revealable = React.createClass({
     },
     render: function() {
         return <div className="appearance-toggle"><button className="non-button" onClick={ this.handleClick }>
-            { this.state.show ? "▼" : "▶" } { this.props.revealText}</button>
+            { this.state.show ? "▾" : "▸" } { this.props.revealText}</button>
             { this.state.show ? this.props.children : "" }
         </div>;
     }
