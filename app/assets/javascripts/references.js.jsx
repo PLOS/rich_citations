@@ -249,7 +249,7 @@ var Maybe = React.createClass({
 var ReferenceAbstract = React.createClass({
     render: function() {
             return <Maybe test={ this.props.text }>
-                     <Revealable revealText={ "Show abstract" }>
+                     <Revealable qtip={ this.props.qtip} revealText={ "Show abstract" }>
                        <p className="abstract">{ this.props.text }</p>
                      </Revealable>
                    </Maybe>;
@@ -291,6 +291,12 @@ var Revealable = React.createClass({
     getInitialState: function() {
         return { show: false };
     },
+    componentDidUpdate: function() {
+        maybeQtipReposition(this.props.qtip);
+    },
+    componentDidMount: function() {
+        maybeQtipReposition(this.props.qtip);
+    }, 
     handleClick: function() {
         this.setState({ show: !this.state.show });
         return false;
@@ -302,6 +308,12 @@ var Revealable = React.createClass({
         </div>;
     }
 });
+
+function maybeQtipReposition(qtip) {
+    if (qtip) {
+        qtip.reposition();
+    }
+}
 
 /**
  * Class to handle an appearance list in a popover or reference list.
@@ -331,7 +343,7 @@ var ReferenceAppearanceListRevealable = React.createClass({
         if (this.inPopover() && (this.props.reference.mentions === 1)) {
             return <div>Appears once in this article.</div>;
         } else {
-            return <Revealable revealText={ this.appearanceText() }>
+            return <Revealable qtip={ this.props.qtip } revealText={ this.appearanceText() }>
                 <ReferenceAppearanceList reference={ this.props.reference } currentMention={ this.props.currentMention }/>
                 </Revealable>;
         }
@@ -424,16 +436,6 @@ var Reference = React.createClass({
     isPopover: function() {
         return (this.props.currentMention !== null);
     },
-    componentDidUpdate: function() {
-        if (this.props.qtip) {
-            this.props.qtip.reposition();
-        }
-    },
-    componentDidMount: function() {
-        if (this.props.qtip) {
-            this.props.qtip.reposition();
-        }
-    }, 
     isSelected: function () {
         return ($.param.fragment() === this.props.reference.id);
     },
@@ -457,8 +459,8 @@ var Reference = React.createClass({
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
             <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
-            <ReferenceAbstract text={ this.props.reference.info.abstract }/>
-            <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention }/>
+            <ReferenceAbstract text={ this.props.reference.info.abstract } qtip={ this.props.qtip }/>
+            <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
             </div>;
     }
 });
