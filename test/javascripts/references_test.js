@@ -212,10 +212,10 @@ test("abstract display", function() {
     var abs = ReferenceAbstract({ text: "foo bar baz" });
     TestUtils.renderIntoDocument(abs);
     var div = TestUtils.findRenderedDOMComponentWithTag(abs, "div");
-    strictEqual(div.getDOMNode().textContent, "▶ Show abstract");
+    strictEqual(div.getDOMNode().textContent, "▸ Show abstract");
     var input = TestUtils.findRenderedDOMComponentWithTag(abs, 'button');
     TestUtils.Simulate.click(input);
-    strictEqual(div.getDOMNode().textContent, "▼ Show abstractfoo bar baz");
+    strictEqual(div.getDOMNode().textContent, "▾ Show abstractfoo bar baz");
 });
 
 test("search bar", function() {
@@ -248,7 +248,7 @@ test("reference without DOI has no link", function() {
 test("full reference", function() {
     var r = Reference({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
-    equal(r.getDOMNode().textContent, "Doe J (2007)The best everJournal of Silly Studies10.12345/67890Download reference (BibTeX) (RIS)▶ 1 appearance in this article.");
+    equal(r.getDOMNode().textContent, "Doe J (2007)The best everJournal of Silly Studies10.12345/67890Download reference (BibTeX) (RIS)▸ 1 appearance in this article.");
 });
 
 test("withReferenceData", function() {
@@ -276,7 +276,7 @@ test("ReferenceBadges", function() {
 test("ReferenceAppearanceListRevealable with 1 mention in reference list", function() {
     var l = ReferenceAppearanceListRevealable({ reference: testRef });
     var x = TestUtils.renderIntoDocument(l);
-    strictEqual(x.getDOMNode().textContent, "▶ 1 appearance in this article.");
+    strictEqual(x.getDOMNode().textContent, "▸ 1 appearance in this article.");
 });
 
 test("ReferenceAppearanceListRevealable with 1 mention in popover", function() {
@@ -288,16 +288,16 @@ test("ReferenceAppearanceListRevealable with 1 mention in popover", function() {
 test("ReferenceAppearanceList", function() {
     var l = ReferenceAppearanceList({ reference: testRef, currentMention: 0 });
     var x = TestUtils.renderIntoDocument(l);
-    strictEqual(x.getDOMNode().textContent, "Introduction☛Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. …");
+    strictEqual(x.getDOMNode().textContent, "Introduction▸Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. …");
 });
 
 test("Revealable", function() {
     var r = Revealable({revealText: "foo", children: ["baz"]});
     TestUtils.renderIntoDocument(r);
-    strictEqual(r.getDOMNode().textContent, "▶ foo");
+    strictEqual(r.getDOMNode().textContent, "▸ foo");
     var input = TestUtils.findRenderedDOMComponentWithTag(r, 'button');
     TestUtils.Simulate.click(input);
-    strictEqual(r.getDOMNode().textContent, "▼ foobaz");
+    strictEqual(r.getDOMNode().textContent, "▾ foobaz");
 });
 
 test("Maybe", function() {
