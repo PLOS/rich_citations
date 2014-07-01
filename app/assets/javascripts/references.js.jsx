@@ -894,10 +894,12 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
     $(citationSelector).filter(citationFilter).each(function() {
         /* get the id of the current reference */
         var refId = $(this).attr('href').substring(1);
+        while (!inElission && (refId !== groups[groupCounter].references[inGroupCounter])) {
+            inGroupCounter = 0;
+            groupCounter = groupCounter + 1;
+        }
         /* the list of reference id for the current citation group */
         var currentGroupRefIds = groups[groupCounter].references;
-        /* track the citations encountered in a multi-citation
-         group, so that we add those elided */
         if (currentGroupRefIds.length === 1) {
             if (refId === currentGroupRefIds[0]) {
                 /* single group, no anchors to add */
