@@ -345,7 +345,7 @@ var ReferenceAppearanceList = React.createClass({
     renderMention: function(mention) {
         var ref = this.props.reference;
         if (this.props.currentMention === mention.index) {
-            return <div key={ "mention" + mention.word_position } ><dt>☛</dt><dd>{ mention.context }</dd></div>;
+            return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd>{ mention.context }</dd></div>;
         } else {
             return <div key={ "mention" + mention.word_position } >
                 <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
