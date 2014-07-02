@@ -564,6 +564,14 @@ var SortedReferencesList = React.createClass({
             return "";
         }
     },
+    licenseDescriptions: {
+        "cc-by": "Free to redistribute, attribution required",
+        "cc-by-nd": "Free to redistribute, attribution required, no derivative works",
+        "cc-by-sa": "Free to redistribute, attribution required, no derivative works, must redistribute under same license",
+        "cc-by-nc": "Free to redistribute, attribution required, no commercial use",
+        "cc-by-nc-nd": "Free to redistribute, attribution required, no commercial use, no derivative works",
+        "cc-by-nc-sa": "Free to redistribute, attribution required, no commercial use, must redistribute under same license"
+    },
     renderGroupHeading: function(key) {
         if (this.props.current.by === "license") {
             /* copy & paste of license badge code; should probably be consolidated but it is short */
@@ -572,7 +580,7 @@ var SortedReferencesList = React.createClass({
             } else if (key === "failed-to-obtain-license") {
                 return <p><strong>Paywalled or not online</strong></p>;
             } else {
-                return <p><span className="open-access">{ key.toUpperCase() }</span></p>;
+                return <p><span className="open-access">{ key.toUpperCase() }</span> { this.licenseDescriptions[key] || "" }</p>;
             }
         } else {
             return <p><strong>{ key }</strong></p>;
