@@ -15,8 +15,14 @@ span.highlight {
 }
 
 div.reference.selected {
-    background-color: #fff700;
+    border-color: #66CCFF;
+    background-color: #F6F7F7;
+    border-width: 1px;
+    border-style: solid;
+    padding-right: .25em;
+    padding-left: .25em;
 }
+
 
 div.reference {
     margin-bottom: 1.5em;
