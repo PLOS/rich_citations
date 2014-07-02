@@ -565,12 +565,12 @@ var SortedReferencesList = React.createClass({
         }
     },
     licenseDescriptions: {
-        "cc-by": "Free to redistribute, attribution required",
-        "cc-by-nd": "Free to redistribute, attribution required, no derivative works",
-        "cc-by-sa": "Free to redistribute, attribution required, no derivative works, must redistribute under same license",
-        "cc-by-nc": "Free to redistribute, attribution required, no commercial use",
-        "cc-by-nc-nd": "Free to redistribute, attribution required, no commercial use, no derivative works",
-        "cc-by-nc-sa": "Free to redistribute, attribution required, no commercial use, must redistribute under same license"
+        "cc-by": "Free to read and redistribute, attribution required",
+        "cc-by-nd": "Free to read and redistribute, attribution required, no derivative works",
+        "cc-by-sa": "Free to read and redistribute, attribution required, no derivative works, must redistribute under same license",
+        "cc-by-nc": "Free to read and redistribute, attribution required, no commercial use",
+        "cc-by-nc-nd": "Free to read and redistribute, attribution required, no commercial use, no derivative works",
+        "cc-by-nc-sa": "Free to read and redistribute, attribution required, no commercial use, must redistribute under same license"
     },
     renderGroupHeading: function(key) {
         if (this.props.current.by === "license") {
