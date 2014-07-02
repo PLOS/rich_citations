@@ -26,7 +26,7 @@ describe "reference viewing", :type => :feature, :js => true do
     page.click_button("Journal")
     expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-ODonoghue1")
 
-    page.click_button("Appearances")
+    page.click_button("Number of appearances")
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Domenici1")
   end
 
