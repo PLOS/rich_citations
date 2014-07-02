@@ -891,13 +891,33 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
     var inGroupCounter = 0;
     var elissionStart = null;
     var elissionStartRefId = null;
+
+    var citationCounters = {};
+    function incCitationCounter(referenceId) {
+        if (citationCounters[referenceId] === undefined) {
+            citationCounters[referenceId] = 0;
+        } else {
+            citationCounters[referenceId] = citationCounters[referenceId] + 1;
+        }
+        return citationCounters[referenceId];
+    }
+    
     $(citationSelector).filter(citationFilter).each(function() {
         /* get the id of the current reference */
         var refId = $(this).attr('href').substring(1);
         while (!inElission && (refId !== groups[groupCounter].references[inGroupCounter])) {
+            /* we have a citation group in the JSON that does not
+             * exist in the HTML ; possibly a table? */
+            /* skip over the rest, incrementing the counters while we do so */
+            var currentGroupRefIds = groups[groupCounter].references;
+            while (inGroupCounter < currentGroupRefIds.length) {
+                incCitationCounter(currentGroupRefIds[inGroupCounter]);
+                inGroupCounter = inGroupCounter + 1;
+            }
             inGroupCounter = 0;
             groupCounter = groupCounter + 1;
         }
+        incCitationCounter(refId);
         /* the list of reference id for the current citation group */
         var currentGroupRefIds = groups[groupCounter].references;
         if (currentGroupRefIds.length === 1) {
@@ -905,7 +925,7 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                 /* single group, no anchors to add */
                 groupCounter = groupCounter + 1;
                 if (handleSingle) {
-                    handleSingle(this, refId, groups[groupCounter]);
+                    handleSingle(this, refId, citationCounters[refId]);
                 }
             } else {
                 console.log("Problem in group " + groupCounter + " with ref " + inGroupCounter);
@@ -917,15 +937,18 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                 /* advance the inGroupCounter until we reach the end of the elission group */
                 var cites = [elissionStartRefId];
                 while (refId !== currentGroupRefIds[inGroupCounter]) {
+                    var erefId = currentGroupRefIds[inGroupCounter];
+                    incCitationCounter(erefId);
                     if (handleElided) {
-                        handleElided(this, currentGroupRefIds[inGroupCounter]);
+                        handleElided(this, erefId, citationCounters[erefId]);
                     }
                     cites.push(currentGroupRefIds[inGroupCounter]);
                     inGroupCounter = inGroupCounter + 1;
                 }
                 cites.push(refId);
                 if (handleEndElissionGroup) {
-                    handleEndElissionGroup(elissionStart, this, cites);
+                    var counters = _.map(cites, function(c) { return citationCounters[c];});
+                    handleEndElissionGroup(elissionStart, this, cites, counters);
                 }
                 inElission = false;
                 elissionStart = null;
@@ -935,16 +958,17 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                     /* check to see if the next ref is elided or if we are at the end */
                     var next = $(this).next(citationSelector).filter(citationFilter);
                     var nextRefId = ($(next).length > 0) && $(next).attr('href').substring(1);
+
                     if ((atEnd = inGroupCounter == currentGroupRefIds.length - 1) ||
                         (nextRefId === currentGroupRefIds[inGroupCounter + 1])) {
                         /* not an elission */
                         if (handleSingle) {
-                            handleSingle(this, refId, groups[groupCounter]);
+                            handleSingle(this, refId, citationCounters[refId]);
                         }
                     } else {
                         /* elission starts here */
                         if (handleBeginElissionGroup) {
-                            handleBeginElissionGroup(this, refId);
+                            handleBeginElissionGroup(this, refId, citationCounters[refId]);
                         }
                         inElission = true;
                         elissionStart = this;
@@ -990,55 +1014,36 @@ function withReferenceData(doi, f) {
            });
 }
 
-function mkCitationCounter () {
-    var citationCounters = {};
-    return function(referenceId, doNotInc) {
-        if (!doNotInc) {
-            if (citationCounters[referenceId] === undefined) {
-                citationCounters[referenceId] = 0;
-            } else {
-                citationCounters[referenceId] = citationCounters[referenceId] + 1;
-            }
-        }
-        return citationCounters[referenceId];
-    };
-}
-    
 /** 
  * Add custom ids to each citation.
  */
 function addCitationIds(groups) {
-    var counter = mkCitationCounter();
     /* track the current count for each citation */
-    function handleSingle(node, refId) {
+    function handleSingle(node, refId, c) {
         /* give this a unique id */
-        $(node).attr("id", generateCitationReferenceId(refId, counter(refId)));
+        $(node).attr("id", generateCitationReferenceId(refId, c));
     }
-    function handleElided(node, refId) {
-        var c = counter(refId);
+    function handleElided(node, refId, c) {
         $("<a id='" + generateCitationReferenceId(refId, c) + "'/>").insertAfter($(node));
     }
-    function handleBeginElissionGroup(node, refId) {
-        $(node).attr("id", generateCitationReferenceId(refId, counter(refId)));
+    function handleBeginElissionGroup(node, refId, c) {
+        $(node).attr("id", generateCitationReferenceId(refId, c));
     }
-    function handleEndElissionGroup(start, end, refIds) {
-        var refId = refIds[refIds.length-1];
-        $(end).attr("id", generateCitationReferenceId(refId, counter(refId)));
+    function handleEndElissionGroup(start, end, refIds, counters) {
+        $(end).attr("id", generateCitationReferenceId(refIds[refIds.length-1], counters[counters.length-1]));
     }
     citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
 }
 
 function mkPopovers(data) {
-    var counter = mkCitationCounter();
-    function handleSingle(node, refId) {
-        mkReferencePopover($(node).attr('id'), [data.references[refId]], [counter(refId)]);
+    function handleSingle(node, refId, c) {
+        mkReferencePopover($(node).attr('id'), [data.references[refId]], [c]);
     }
-    function handleEndElissionGroup(start, end, refIds) {
+    function handleEndElissionGroup(start, end, refIds, counters) {
         var spanId = guid();
         wrapSpan($(start).attr('id'), $(end).attr('id'), spanId);
         var references = _.map(refIds, function(refId) { return data.references[refId]; });
-        var currentMentions = _.map(refIds, function(refId) { return counter(refId); });
-        mkReferencePopover(spanId, references, currentMentions);
+        mkReferencePopover(spanId, references, counters);
     }
     citationIterator(data.groups, handleSingle, null, null, handleEndElissionGroup);
 }
