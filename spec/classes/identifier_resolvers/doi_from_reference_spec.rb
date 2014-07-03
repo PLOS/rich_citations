@@ -33,7 +33,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :doi, source: :ref, doi:'10.1111/1111')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'10.1111/1111', id_type: :doi)
       resolver.resolve
     end
 
@@ -44,7 +44,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :doi, source: :ref, doi:'10.1111/1111')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'10.1111/1111', id_type: :doi)
       resolver.resolve
     end
 
@@ -55,7 +55,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :doi, source: :ref, doi:'10.1111/1111')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'10.1111/1111', id_type: :doi)
       resolver.resolve
     end
 
@@ -69,7 +69,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :doi, source: :ref, doi:'10.1111/1111')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'10.1111/1111', id_type: :doi)
       resolver.resolve
     end
 
@@ -82,7 +82,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :doi, source: :ref, doi:'10.1111/1111')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'10.1111/1111', id_type: :doi)
       resolver.resolve
     end
 

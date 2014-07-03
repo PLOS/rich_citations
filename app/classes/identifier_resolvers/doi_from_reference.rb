@@ -4,7 +4,7 @@ module IdentifierResolvers
     def resolve
       unresolved_references.each{ |id, node|
         info = extract_info(node)
-        set_result(id, :doi, info)
+        set_result(id, info)
       }
     end
 
@@ -23,8 +23,9 @@ module IdentifierResolvers
 
       return nil unless doi.present?
       {
-          source: :ref,
-          doi:    doi,
+          ref_source: :ref,
+          id:         doi,
+          id_type:    :doi,
       }
     end
 

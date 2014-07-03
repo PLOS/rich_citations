@@ -4,7 +4,7 @@ module IdentifierResolvers
     def resolve
       unresolved_references.each{ |id, node|
         info = extract_info(node.text)
-        set_result(id, :isbn, info)
+        set_result(id, info)
       }
     end
 
@@ -15,8 +15,9 @@ module IdentifierResolvers
 
       return nil unless isbn.present?
       {
-          source: :ref,
-          isbn:   isbn,
+          ref_source: :ref,
+          id:         isbn,
+          id_type:    :isbn,
       }
     end
 

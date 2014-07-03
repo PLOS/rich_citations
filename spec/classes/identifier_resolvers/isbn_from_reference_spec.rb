@@ -33,7 +33,7 @@ describe IdentifierResolvers::IsbnFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', :isbn, source: :ref, isbn:'1234567890')
+      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'1234567890', id_type: :isbn)
       resolver.resolve
     end
 
