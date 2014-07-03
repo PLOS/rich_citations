@@ -1,7 +1,7 @@
 require 'uri'
 
 module Processors
-  class ReferencesInfo < Base
+  class ReferencesInfoFromDoi < Base
     include Helpers
 
     def process

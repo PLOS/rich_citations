@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Processors::ReferencesInfo do
+describe Processors::ReferencesInfoFromDoi do
   include Spec::ProcessorHelper
 
   it "should call the API" do
