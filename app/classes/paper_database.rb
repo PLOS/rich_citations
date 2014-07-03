@@ -83,7 +83,7 @@ class PaperDatabase
   def add_reference(all_references, cited_doi, cited_id, cited_ref, citing_doi, paper_info)
     cited_info                        = cited_doi_info(cited_doi)
 
-    # cited_info[:id]                 ||= id
+    # cited_info[:ref_id              ||= id
     cited_info[:citations]            += 1
     cited_info[:info]                  = cited_ref[:info] unless cited_info[:info]
     cited_info[:intra_paper_mentions] += cited_ref[:mentions].to_i
