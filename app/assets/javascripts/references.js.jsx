@@ -468,9 +468,10 @@ var Reference = React.createClass({
 });
 
 var ReferenceCore = React.createClass({
-    renderTitle: function(info) {
+    renderTitle: function(ref) {
+        var info = ref.info;
         if (info.doi) {
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "http://dx.doi.org/" + info.doi }>{ info.title }</a><br/></span>;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodeURIComponent(doi) + "&to=" + ref.index }>{ info.title }</a><br/></span>;
         } else {
             return <span className="reference-title">{ info.title }<br/></span>;
         }
@@ -481,7 +482,7 @@ var ReferenceCore = React.createClass({
         if (info.title) {
             return <span><a id={ ref.id } name={ this.props.id }></a>
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }</span><br/>
-                { this.renderTitle(info) }
+                { this.renderTitle(ref) }
                 <Maybe test={ info['container-title'] }>
                   <span className="reference-journal">{ info['container-title'] }</span><br/>
                 </Maybe>
@@ -1020,6 +1021,18 @@ function withReferenceData(doi, f) {
                    f(rawdata);
                }
            });
+}
+
+function redirectOnce(to) {
+    $(document).ready(function() {
+        var key = 'redirected_' + to;
+        if (!localStorage.getItem(key)) {
+            window.setTimeout(function() {
+                localStorage.setItem(key, true);
+                window.location.href = to;
+            }, 5000);
+        }
+    });
 }
 
 /** 

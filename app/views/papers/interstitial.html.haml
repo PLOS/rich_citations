@@ -1,0 +1,15 @@
+%h3 Originating page
+%p
+  = render partial: "cite", object: @paper.info[:paper]
+  
+%h3 Destination
+%p
+  = render partial: "cite", object: @ref[:info]
+
+%p
+  Redirecting to
+  = link_to @ref[:info][:title], "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:doi])}"
+
+#redirect
+  :javascript
+    redirectOnce("http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:doi])}");
