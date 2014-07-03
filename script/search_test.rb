@@ -5,9 +5,10 @@ Rails.logger = Logger.new($stdout)
 require 'pp'
 
 SEARCH_SUBJECT = "circadian rhythms"
-MAX_PAPERS = 5
+MAX_PAPERS = 50
 
-pp PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
+info =  PaperDatabase.analyze!(SEARCH_SUBJECT, MAX_PAPERS)
+pp info
 
 #
 ## Find information about a bunch of PLOS papers!

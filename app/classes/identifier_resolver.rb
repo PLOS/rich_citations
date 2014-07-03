@@ -110,6 +110,7 @@ class IdentifierResolver
     references.map.with_index do | (id, node), i|
       [id,
        Hashie::Mash.new(
+           id:   id,
            node: node,
            text: normalized_node_text(node, i+1)
        )
@@ -144,6 +145,7 @@ class IdentifierResolver
   ALL_RESOLVERS = [
       IdentifierResolvers::CrossRef,
       IdentifierResolvers::DoiFromReference,
+      IdentifierResolvers::IsbnFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
   ]

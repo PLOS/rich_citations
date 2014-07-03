@@ -13,8 +13,8 @@ DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pone.0047692'
 DOI='10.1371/journal.pone.0098172'
 DOI='10.1371/journal.pbio.1001675'
-DOI='10.1371/journal.pone.0068243' # ISBN
 DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
+DOI='10.1371/journal.pone.0068243' # ISBN
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"
