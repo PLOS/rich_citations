@@ -5,7 +5,7 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should call the API" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111' }, 'ref-2' => { source:'none'}, 'ref-3' => { doi:'10.333/333' })
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { source:'none'}, 'ref-3' => { id_type: :doi, id:'10.333/333' })
 
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return('{}')
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.333%2F333', anything).and_return('{}')
@@ -15,7 +15,7 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should merge in the API results" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', score:1.23, source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, source:'test' } )
 
     info = {
         author: [ {given:'C.', family:'Theron'} ],
@@ -24,8 +24,9 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          doi:    '10.111/111',
-                                                          source:  'test',
+                                                          id:     '10.111/111',
+                                                          id_type: :doi,
+                                                          source: 'test',
                                                           score:  1.23,
                                                           author: [ {given:'C.', family:'Theron'} ],
                                                           title:  'A Title',
@@ -45,21 +46,23 @@ describe Processors::ReferencesInfoFromDoi do
     expect(result[:references]['ref-1'][:info][:title]).to eq('cached title')
   end
 
-  it "should not overwrite the DOI, score or source" do
+  it "should not overwrite the type, id, score or source" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { doi:'10.111/111', score:1.23, source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, ref_source:'test' } )
 
     info = {
-        DOI:    '10.xxx/xxx',
-        score:  99,
-        source: 'ignored',
+        id:         '10.xxx/xxx',
+        id_type:    :foo,
+        score:      99,
+        ref_source: 'ignored',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          doi:    '10.111/111',
-                                                          source:  'test',
-                                                          score:  1.23,
+                                                          id_type:     :doi,
+                                                          id:          '10.111/111',
+                                                          ref_source:  'test',
+                                                          score:       1.23,
                                                       })
   end
 

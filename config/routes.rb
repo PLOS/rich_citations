@@ -6,7 +6,7 @@ CitationTools::Application.routes.draw do
 
   resources :results, only:[:index, :show] do
     member do
-      get '/cited/:doi', action:'cited', constraints: {doi: /.+/}, format:false, as:'cited'
+      get '/cited/:ref', action:'cited', constraints: {ref: /.+/}, format:false, as:'cited'
     end
     collection do
       post :search

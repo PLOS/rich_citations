@@ -2,6 +2,8 @@ module Processors
   class ReferencesLicense < Base
     include Helpers
 
+    #@todo #@pubmed - this API can handle pubmed ids
+
     def process
       references = references_without_licenses
       return if references.blank?
@@ -34,11 +36,11 @@ module Processors
     end
 
     def references_without_licenses
-      references.select { |id, ref| ref[:doi] && ! ref[:info][:license] }.to_h
+      references_for_type(:doi).select { |ref| ! ref[:info][:license] }
     end
 
     def get_licenses(references)
-      data = references.map { |id,ref| {type:'doi', id:ref[:doi]} }
+      data = references.map { |ref| {type:'doi', id:ref[:id]} }
       results = HttpUtilities.post(API_URL, JSON.generate(data),
                           'Accept' => Mime::JSON, 'Content-Type' => Mime::JSON
       )
@@ -47,7 +49,7 @@ module Processors
 
     def add_licenses(results)
       Array(results['results']).each do |result|
-        ref     = get_reference( result['identifier'] )
+        ref     = get_reference(result['identifier'] )
         license = get_license( result['license'] )
         next unless ref && license
 
@@ -57,7 +59,7 @@ module Processors
 
     def get_reference(identifiers)
       identifiers.each do| identifier|
-        ref = reference_by_identifier(identifier['id'])
+        ref = reference_by_identifier(identifier['type'], identifier['id'])
         return ref if ref
       end
     end

@@ -5,8 +5,10 @@ module Processors
     include Helpers
 
     def process
-      plos_references = references.values.select{ |ref| !ref[:info].try(:[], :abstract) && Id::Doi.is_plos_doi?(ref[:doi]) }
-      add_abstracts(plos_references) if plos_references.present?
+      plos_references = references_for_type(:doi).select { |ref| Id::Doi.is_plos_doi?(ref[:id]) }
+      plos_references_without_abstracts = plos_references.reject { |ref| ref[:info] && ref[:info][:abstract] }
+
+      add_abstracts(plos_references_without_abstracts) if plos_references_without_abstracts.present?
     end
 
     def self.dependencies
@@ -16,7 +18,7 @@ module Processors
     protected
 
     def add_abstracts(references)
-      dois    = references.map { |ref| ref[:doi] }
+      dois    = references.map{ |ref| ref[:id] }
       results = Plos::Api.search_dois(dois)
 
       results.each_with_index do |result, index|

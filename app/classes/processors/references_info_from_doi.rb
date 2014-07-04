@@ -5,10 +5,10 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references_for_type(:doi).each do |ref|
         next if ref[:info].try(:[], :type)
 
-        doi = ref[:doi]
+        doi = ref[:id]
         get_doi_info(doi, ref) if doi
       end
     end
@@ -25,7 +25,7 @@ module Processors
 
     def get_doi_info(doi, ref)
       result = get_result(doi)
-      result = result.except(:DOI, :source, :score)
+      result = result.except(:id, :id_type, :ref_source, :score)
       ref[:info].merge!(result)
     end
 

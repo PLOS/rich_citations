@@ -47,7 +47,7 @@ class PaperDatabase
   def results
     if @recalculate
 
-      @results[:citations].each do |doi, info|
+      @results[:citations].each do |id, info|
         recalculate_results(info)
       end
 
@@ -69,19 +69,19 @@ class PaperDatabase
   def add_references(citing_doi, paper_info, all_references)
     @results[:citations] ||= {}
 
-    all_references.each do |cited_id, cited_ref|
-      cited_id  = cited_id.to_s
-      cited_doi = cited_ref[:doi]
-      next unless cited_doi
+    all_references.each do |cited_ref_id, cited_ref|
+      cited_ref_id  = cited_ref_id.to_s
+      cited_id      = full_identifier(cited_ref)
+      next unless cited_id
 
-      add_reference(all_references, cited_doi, cited_id, cited_ref, citing_doi, paper_info)
+      add_reference(all_references, cited_id, cited_ref_id, cited_ref, citing_doi, paper_info)
     end
 
     @recalculate = true
   end
 
-  def add_reference(all_references, cited_doi, cited_id, cited_ref, citing_doi, paper_info)
-    cited_info                        = cited_doi_info(cited_doi)
+  def add_reference(all_references, cited_id, cited_ref_id, cited_ref, citing_doi, paper_info)
+    cited_info                        = cited_info_by_id(cited_id)
 
     # cited_info[:ref_id              ||= id
     cited_info[:citations]            += 1
@@ -99,7 +99,7 @@ class PaperDatabase
 
     groups = cited_ref[:citation_groups]
     if groups.present?
-      add_co_citation_counts(cited_id, groups, cited_info, all_references)
+      add_co_citation_counts(cited_ref_id, groups, cited_info, all_references)
       add_section_summaries(groups, cited_info)
 
       add_citing_groups(groups, citing_info, paper_info)
@@ -108,9 +108,9 @@ class PaperDatabase
     cited_info.compact!
   end
 
-  def cited_doi_info(doi)
-    unless @results[:citations][ doi ]
-      @results[:citations][ doi ] = {
+  def cited_info_by_id(id)
+    unless @results[:citations][ id ]
+      @results[:citations][ id ] = {
         intra_paper_mentions: 0,
         citations:            0,
         citing_papers:        {},
@@ -120,7 +120,7 @@ class PaperDatabase
       @results[:cited_count] += 1
     end
 
-    @results[:citations][ doi ]
+    @results[:citations][ id ]
   end
 
   def new_citing_info(ref)
@@ -138,7 +138,7 @@ class PaperDatabase
 
     groups.each do |group|
       citations << {
-          citing_doi:    paper_info[:doi],
+          citing_id:     full_identifier(paper_info),
           section:       group[:section],
           word_position: "#{group[:word_position]}/#{paper_info[:paper][:word_count]}",
           context:       group[:context],
@@ -157,18 +157,18 @@ class PaperDatabase
     end
   end
 
-  def add_co_citation_counts(cited_id, groups, cited_info, all_references)
+  def add_co_citation_counts(cited_ref_id, groups, cited_info, all_references)
     co_citation_counts = cited_info[:co_citation_counts]
 
     groups.each do |group|
 
       # Aggregate co-citation counts
       group[:references].each do |co_citation_id|
-        next if co_citation_id == cited_id
+        next if co_citation_id == cited_ref_id
 
         cc_ref = all_references[co_citation_id] || all_references[co_citation_id.to_s.to_sym]
-        co_citation_doi = cc_ref[:doi] || 'No-DOI'
-        co_citation_counts[co_citation_doi] = co_citation_counts[co_citation_doi].to_i + 1
+        co_citation_id = full_identifier(cc_ref) || 'No-Identifier'
+        co_citation_counts[co_citation_id] = co_citation_counts[co_citation_id].to_i + 1
       end
 
     end
@@ -179,12 +179,16 @@ class PaperDatabase
 
   def sort_results
     @results[:citations] = @results[:citations].sort.to_h
-    @results[:citations].each do |doi, cited_info|
+    @results[:citations].each do |id, cited_info|
       cited_info[:citing_papers] = cited_info[:citing_papers].sort.to_h
     end
 
     # Don't sort these - matches are sorted by relevance
     # @results[:matches].sort!
+  end
+
+  def full_identifier(ref)
+    ref[:id_type] ? "#{ref[:id_type].downcase}:#{ref[:id]}" : nil
   end
 
 end
