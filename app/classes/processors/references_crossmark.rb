@@ -24,6 +24,8 @@ module Processors
 
           url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"
           JSON.parse(HttpUtilities.get(url), symbolize_names:true)
+        rescue Net::HTTPFatalError #@mro #@todo
+          {}
 
         rescue Net::HTTPServerException => ex
           raise unless ex.response.is_a?(Net::HTTPNotFound)

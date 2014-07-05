@@ -57,22 +57,29 @@ module Processors
           title:     data[:title],
           subtitle:  [data[:subtitle]].compact.presence,
           pages:     data[:number_of_pages],
-          issued:    data[:publish_date],
+          issued:    parse_date( data[:publish_date] ),
           URL:       data[:url],
           publisher: data[:publishers] && data[:publishers].first[:name],
           cover:     data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
-          subject:   data_subjects(data),
-          authors:   data_authors(data),
+          subject:   parse_data_subjects(data),
+          authors:   parse_data_authors(data),
       }.compact
     end
 
-    def data_subjects(data)
+    def parse_data_subjects(data)
       subjects = Array(data[:subjects]) + Array(data[:subject_places]) + Array(data[:subject_people]) + Array(data[:subject_times])
       subjects.map { |i| i[:name]}.compact.uniq.presence
     end
 
-    def data_authors(data)
+    def parse_data_authors(data)
       Array(data[:authors]).map { |i| [{literal:i[:name]}] }.presence
+    end
+
+    def parse_date(string)
+      return nil unless string.present?
+
+      # For now we don't do any parsing but we might need to in future
+      string
     end
 
   end
