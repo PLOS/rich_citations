@@ -6,7 +6,7 @@ describe Processors::ReferencesIdentifier do
   it "should include info in references" do
     refs 'Some Reference', 'Another Reference'
 
-    expect(result[:references]).to have(2).items
+    expect(result[:references].count).to eq(2)
     expect(result[:references]['ref-1'][:info]).to eq({text: "Some Reference"},    )
     expect(result[:references]['ref-2'][:info]).to eq({text: "Another Reference"}  )
   end
