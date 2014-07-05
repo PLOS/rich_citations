@@ -5,7 +5,9 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should call the API" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { source:'none'}, 'ref-3' => { id_type: :doi, id:'10.333/333' })
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' },
+                                                              'ref-2' => { source:'none'},
+                                                              'ref-3' => { id_type: :doi, id:'10.333/333' })
 
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return('{}')
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.333%2F333', anything).and_return('{}')
@@ -38,7 +40,7 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { doi:'10.1371/11111', info:{type:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :doi, id:'10.1371/11111', info:{type:'cached', title:'cached title'} },
     } }
     process(cached)
 

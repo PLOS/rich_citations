@@ -11,7 +11,7 @@ module Processors
     end
 
     def self.dependencies
-      [ReferencesInfoFromDoi]
+      [ReferencesInfoFromDoi, ReferencesInfoFromIsbn]
     end
 
     protected
