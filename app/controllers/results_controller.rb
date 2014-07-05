@@ -69,7 +69,7 @@ class ResultsController < ApplicationController
 
   def cited
     @result_set = ResultSet.for_token( params.require(:id) )
-    @ref    = params[:ref]
+    @ref    = URI.decode_www_form_component( params[:ref] )
     @cited  = @result_set.results[:citations][ @ref.to_sym ]
     raise ActiveRecord::RecordNotFound unless @cited
 
