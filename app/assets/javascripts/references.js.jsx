@@ -393,6 +393,7 @@ var ReferenceAuthorList = React.createClass({
     },
     handleClick: function() {
         this.setState({ expanded: !this.state.expanded});
+        this.props.updateHighlighting();
         return false;
     },
     render: function() {
@@ -459,7 +460,10 @@ var Reference = React.createClass({
         if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
-            <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() } suppressJournal={ this.props.suppressJournal }/>
+            <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }
+                           suppressJournal={ this.props.suppressJournal }
+                           updateHighlighting={ this.props.updateHighlighting }
+              />
             <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract } qtip={ this.props.qtip }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
@@ -481,7 +485,10 @@ var ReferenceCore = React.createClass({
         var info = ref.info;
         if (info.title) {
             return <span><a id={ ref.id } name={ this.props.id }></a>
-                <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }</span><br/>
+                <span title={ ref.text }>
+                <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting }
+                  authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }
+                </span><br/>
                 { this.renderTitle(ref) }
                 <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
                   <span className="reference-journal">{ info['container-title'] }</span><br/>
@@ -632,6 +639,7 @@ var SortedReferencesList = React.createClass({
             <Reference reference={ ref.data }
                        showLabel={ true }
                        suppressLicenseBadge={ this.props.current.by === "license" }
+                       updateHighlighting={ this.updateHighlighting }
                        suppressJournal={ this.props.current.by === "journal" }/>
             </li>;
     },
