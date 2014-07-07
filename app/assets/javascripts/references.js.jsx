@@ -487,7 +487,7 @@ var ReferenceCore = React.createClass({
                   <span className="reference-journal">{ info['container-title'] }</span><br/>
                 </Maybe>
                 <Maybe test={ info.doi }>
-                  <span className="reference-doi">{ info.doi }<br/></span>
+                  <span className="reference-doi">doi: { info.doi }<br/></span>
                 </Maybe>
                 <Maybe test={ !this.props.isPopover && info.doi }>
                   <ReferenceActionList reference={ ref }/>
