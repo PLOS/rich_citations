@@ -27,6 +27,7 @@ module Processors
           {}
         rescue Net::HTTPServerException => ex
           raise unless ex.response.is_a?(Net::HTTPNotFound)
+          {}
         end
       end
 
