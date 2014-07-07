@@ -1,7 +1,7 @@
 # coding: utf-8
 require "spec_helper"
 
-describe PapersController do
+describe PapersController, type: :controller do
   describe "GET '/view/10.1371/journal.pone.0067380'" do
     it "returns http success" do
       get 'view', id: '10.1371/journal.pone.0067380'

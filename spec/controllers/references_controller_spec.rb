@@ -1,7 +1,7 @@
 # coding: utf-8
 require "spec_helper"
 
-describe ReferencesController do
+describe ReferencesController, type: :controller do
   describe "GET '/references/10.1007%2Fs00114-005-0614-4" do
     it "works for RIS data" do
       get 'show', id: '10.1007/s00114-005-0614-4', format: 'ris'

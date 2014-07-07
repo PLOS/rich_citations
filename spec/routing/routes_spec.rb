@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "papers routing" do
+RSpec.describe "papers routing", type: :routing do
   it "routes /view/10.1371/journal.pone.0067380 to profile#view" do
     expect(get: "/view/10.1371/journal.pone.0067380").to route_to(
       controller: "papers",
