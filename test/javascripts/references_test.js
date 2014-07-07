@@ -1,6 +1,7 @@
 /** @jsx React.DOM */
 //= require jquery
 //= require react
+var doi = "10.12345/09876";
 
 var TestUtils = React.addons.TestUtils;
 var testRef = {
@@ -233,7 +234,7 @@ test("reference with DOI has link", function() {
     var r = ReferenceCore({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
     var title = TestUtils.findRenderedDOMComponentWithClass(r, "reference-link");
-    strictEqual(title.getDOMNode().getAttribute("href"), "http://dx.doi.org/10.12345/67890");
+    strictEqual(title.getDOMNode().getAttribute("href"), "/interstitial?from=10.12345%2F09876&to=1");
 });
 
 test("reference without DOI has no link", function() {
