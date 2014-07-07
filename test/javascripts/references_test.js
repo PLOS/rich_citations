@@ -249,7 +249,7 @@ test("reference without DOI has no link", function() {
 test("full reference", function() {
     var r = Reference({reference: testRefWithDoi});
     TestUtils.renderIntoDocument(r);
-    equal(r.getDOMNode().textContent, "Doe J (2007)The best everJournal of Silly Studies10.12345/67890Download reference (BibTeX) (RIS)▸ 1 appearance in this article.");
+    equal(r.getDOMNode().textContent, "Doe J (2007)The best everJournal of Silly Studiesdoi: 10.12345/67890Download reference (BibTeX) (RIS)▸ 1 appearance in this article.");
 });
 
 test("withReferenceData", function() {
