@@ -23,8 +23,15 @@ module Processors::Helpers
     references.find { |id, ref| ref[:index] == index }.try(:second)
   end
 
-  def reference_by_identifier(identifier)
-    references.find { |id, ref| ref[:doi] == identifier }.try(:second)
+  def reference_by_identifier(type, identifier)
+    type = type.to_sym
+    references.find { |id, ref|
+      ref[:id_type]==type && ref[:id]==identifier }.try(:second
+    )
+  end
+
+  def references_for_type(type)
+    references.values.select { |ref| ref[:id_type] == type }
   end
 
   def citation_groups

@@ -3,7 +3,8 @@ module Processors
 
     def process
       doi = xml.at('article-id[pub-id-type=doi]').try(:content).try(:strip)
-      result[:doi] = doi
+      result[:id_type] = :doi
+      result[:id]      = doi
     end
 
   end

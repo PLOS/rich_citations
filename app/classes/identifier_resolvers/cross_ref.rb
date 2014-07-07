@@ -26,7 +26,7 @@ module IdentifierResolvers
         next unless info
 
         @crossref_infos[id] = info
-        set_result(id, :doi, info) if include_info?(info)
+        set_result(id, info) if include_info?(info)
 
       end
     end
@@ -43,9 +43,10 @@ module IdentifierResolvers
       return nil unless result['match']
 
       {
-          source: :crossref,
-          doi:    Id::Doi.extract( result['doi'] ),
-          score:  result['score'].to_f,
+          ref_source:  :crossref,
+          id:          Id::Doi.extract( result['doi'] ),
+          id_type:     :doi,
+          score:       result['score'].to_f,
       }
     end
 

@@ -21,9 +21,9 @@ module Processors
 
     def save_info_to_cache
       references.each do |id, ref|
-        next unless ref[:doi] && ref[:info]
+        next unless ref[:id_type] && ref[:info]
 
-        PaperInfoCache.update('doi', ref[:doi], ref[:info])
+        PaperInfoCache.update(ref[:id_type], ref[:id], ref[:info])
       end
     end
 

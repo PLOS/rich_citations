@@ -1,14 +1,14 @@
 require 'uri'
 
 module Processors
-  class ReferencesInfo < Base
+  class ReferencesInfoFromDoi < Base
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references_for_type(:doi).each do |ref|
         next if ref[:info].try(:[], :type)
 
-        doi = ref[:doi]
+        doi = ref[:id]
         get_doi_info(doi, ref) if doi
       end
     end
@@ -23,20 +23,18 @@ module Processors
     # This API always does a redirect. If we can guess the source ebfore hand we could optimize slightly
     # see Pivotal #72716068
 
+    API_URL = "http://dx.doi.org/"
+
     def get_doi_info(doi, ref)
       result = get_result(doi)
-      result = result.except(:DOI, :source, :score)
+      result = result.except(:id, :id_type, :ref_source, :score)
       ref[:info].merge!(result)
     end
 
     def get_result(doi)
-      begin
-        json   = HttpUtilities.get("http://dx.doi.org/#{URI.encode_www_form_component(doi)}", 'application/citeproc+json')
-        JSON.parse(json, symbolize_names:true)
-      rescue Exception=>ex
-        Rails.logger.error(ex)
-        return {}
-      end
+      url  = API_URL + URI.encode_www_form_component(doi)
+      json = HttpUtilities.get(url, 'application/citeproc+json')
+      JSON.parse(json, symbolize_names:true)
     end
 
   end

@@ -69,8 +69,8 @@ class ResultsController < ApplicationController
 
   def cited
     @result_set = ResultSet.for_token( params.require(:id) )
-    @doi    = params[:doi]
-    @cited  = @result_set.results[:citations][ @doi.to_sym ]
+    @ref    = URI.decode_www_form_component( params[:ref] )
+    @cited  = @result_set.results[:citations][ @ref.to_sym ]
     raise ActiveRecord::RecordNotFound unless @cited
 
     respond_to do |format|
@@ -79,7 +79,7 @@ class ResultsController < ApplicationController
 
       format.json {
         response.content_type = Mime::JSON
-        headers['Content-Disposition'] = %Q{attachment; filename="cited #{@doi}.js"}
+        headers['Content-Disposition'] = %Q{attachment; filename="#{filename(@ref)}"}
         render json: @cited
       }
 
@@ -89,6 +89,10 @@ class ResultsController < ApplicationController
   end
 
   protected
+
+  def filename(name)
+    'cited ' + name.tr(':','-') + '.js'
+  end
 
   def sort_link(text, column)
     options = {sort:column}

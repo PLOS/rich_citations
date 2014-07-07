@@ -6,9 +6,9 @@ describe Processors::References do
   it "should have references" do
     refs 'Some Reference', 'Another Reference'
 
-    expect(result[:references]).to have(2).items
-    expect(result[:references]['ref-1']).to eq(id:'ref-1', index:1 )
-    expect(result[:references]['ref-2']).to eq(id:'ref-2', index:2 )
+    expect(result[:references].count).to eq(2)
+    expect(result[:references]['ref-1']).to eq(ref_id:'ref-1', index:1 )
+    expect(result[:references]['ref-2']).to eq(ref_id:'ref-2', index:2 )
   end
 
   it "should remove nil items during cleanup" do

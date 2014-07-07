@@ -6,8 +6,12 @@ module Processors
       references.each do |id, ref|
         info = identifier_for_reference[id]
 
-        ref[:info] = info
-        ref[:doi]  = info && info[:doi]
+        ref.merge!(
+          info:     info,
+          id:       info[:id],
+          id_type: info[:id_type]
+        ) if info
+
       end
 
     end

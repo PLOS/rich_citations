@@ -1,7 +1,7 @@
 - content_for :title do
-  Results for cited DOI: #{@doi}
+  Results for cited paper: #{@ref}
 
-%h3 Results for cited DOI: #{@doi} from #{link_to "'" + @result_set.query + "'", result_path(@result_set.token) },
+%h3 Results for cited paper: #{@ref} from #{link_to "'" + @result_set.query + "'", result_path(@result_set.token) },
 
 .results
 
@@ -9,7 +9,7 @@
     .json
       %h5 JSON Output
       = text_area_tag :json, JSON.pretty_generate(@cited), readonly:true
-      = link_to 'Download JSON', cited_result_path(@result_set.token, @doi, format:'json'), class:'btn btn-primary pull-right'
+      = link_to 'Download JSON', cited_result_path(@result_set.token, @ref, format:'json'), class:'btn btn-primary pull-right'
 
 %br
 %br

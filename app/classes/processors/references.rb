@@ -10,9 +10,9 @@ module Processors
          id = node[:id]
 
         reference   = {
-            id:    id,
-            index: index,
-            node:  node,       # for other processors
+            ref_id: id,
+            index:  index,
+            node:   node,       # for other processors
         }
 
         references[id] = reference
