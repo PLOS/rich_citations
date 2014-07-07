@@ -187,14 +187,18 @@ test("ordinalStr", function() {
 });
 
 test("author list", function() {
+    var updateHighlightingCalled = false;
     var a = {given: "Jane", family: "Roe"};
     var b = {given: "Joan", family: "Roe"};
     var c = {given: "John", family: "Doe"};
     var d = {given: "James", family: "Doe"};
     var e = {given: "Jennifer", family: "Roe"};
     /* can't make JSX transform work at the moment */
-    var authorList4 = ReferenceAuthorList({authors: [a, b, c, d]});
-    var authorList5 = ReferenceAuthorList({authors: [a, b, c, d, e]});
+    var authorList4 = ReferenceAuthorList({authors: [a, b, c, d], updateHighlighting: function(){}});
+    var authorList5 = ReferenceAuthorList({authors: [a, b, c, d, e],
+                                           updateHighlighting: function(){
+                                               updateHighlightingCalled=true;
+                                           }});
     TestUtils.renderIntoDocument(authorList4);
     TestUtils.renderIntoDocument(authorList5);
     var span4 = TestUtils.findRenderedDOMComponentWithClass(authorList4, 'reference-authors');
@@ -205,8 +209,12 @@ test("author list", function() {
     strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, (and 2 more)");
     /* should expand on click */
     var input = TestUtils.findRenderedDOMComponentWithTag(span5, 'a');
+    strictEqual(false, updateHighlightingCalled);
     TestUtils.Simulate.click(input);
     strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J, Roe J");
+
+    /* ensure that updateHighlighting was called */
+    strictEqual(true, updateHighlightingCalled);
 });
 
 test("abstract display", function() {
