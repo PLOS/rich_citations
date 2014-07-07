@@ -459,7 +459,7 @@ var Reference = React.createClass({
         if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
-            <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }/>
+            <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() } suppressJournal={ this.props.suppressJournal }/>
             <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
             <ReferenceAbstract text={ this.props.reference.info.abstract } qtip={ this.props.qtip }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
@@ -483,7 +483,7 @@ var ReferenceCore = React.createClass({
             return <span><a id={ ref.id } name={ this.props.id }></a>
                 <span title={ ref.text }><ReferenceAuthorList authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }</span><br/>
                 { this.renderTitle(ref) }
-                <Maybe test={ info['container-title'] }>
+                <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
                   <span className="reference-journal">{ info['container-title'] }</span><br/>
                 </Maybe>
                 <Maybe test={ info.doi }>
@@ -631,8 +631,9 @@ var SortedReferencesList = React.createClass({
         return <li key={ "" + ref.data.id + ref.group.word_position }>
             <Reference reference={ ref.data }
                        showLabel={ true }
-                       suppressLicenseBadge={ (this.props.current.by === "license") }/>
-                               </li>;
+                       suppressLicenseBadge={ this.props.current.by === "license" }
+                       suppressJournal={ this.props.current.by === "journal" }/>
+            </li>;
     },
     renderSortedReferenceList: function (sorted) {
         if (this.props.current.order == "desc") {
