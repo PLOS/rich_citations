@@ -70,7 +70,7 @@ function buildIndex(references) {
     });
     for (var id in references) {
         var ref = references[id];
-        var doc = { ref_id: ref.ref_id,
+        var doc = { id: ref.ref_id,
                     author: _.map(ref.info.author, formatAuthorNameInverted).join(" "),
                     title: ref.info.title,
                     journal: ref.info['container-title'],
@@ -749,6 +749,7 @@ var SearchBar = React.createClass({
                     type="text"
                     placeholder="Search..."
                     value={ this.props.filterText }
+                    name="referencefilter"
                     onChange={ function(event) { this.props.onSearchUpdate(event.target.value); }.bind(this) } />
             </form>
         );

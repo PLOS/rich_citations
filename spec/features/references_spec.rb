@@ -39,4 +39,10 @@ describe "reference viewing", :type => :feature, :js => true do
   it "should work when a reference is not actually cited in the paper" do
     visit '/view/10.1371/journal.pone.0100115'
   end    
+
+  it "filter should work" do
+    visit '/view/10.1371/journal.pone.0067380'
+    fill_in('referencefilter', :with => 'motta')
+    expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-Motta1")
+  end    
 end
