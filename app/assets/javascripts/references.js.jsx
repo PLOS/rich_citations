@@ -14,6 +14,24 @@ var citationFilter = function (el) {
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
 };
 
+function getDOI(ref) {
+    var info = ref.info;
+    if (info.id_type === 'doi') {
+        return info.id;
+    } else {
+        return undefined;
+    }
+}
+
+function getEncodedDOI(ref) {
+    var doi = getDOI(ref);
+    if (doi) {
+        return encodeURIComponent(doi);
+    } else {
+        return undefined;
+    }
+}
+
 function formatAuthorNameInverted (author) {
     if (author.literal) {
         return author.literal;
@@ -52,7 +70,7 @@ function buildIndex(references) {
     });
     for (var id in references) {
         var ref = references[id];
-        var doc = { id:    ref.id,
+        var doc = { ref_id: ref.ref_id,
                     author: _.map(ref.info.author, formatAuthorNameInverted).join(" "),
                     title: ref.info.title,
                     journal: ref.info['container-title'],
@@ -173,7 +191,7 @@ function mkSearchResultsFilter(idx, filterText) {
             resultHash[res['ref']] = res['score'];
         });
         return function (ref) {
-            return (resultHash[ref.id] != null);
+            return (resultHash[ref.ref_id] != null);
         };
     } else {
         /* by default return all results */
@@ -198,7 +216,11 @@ function guid() {
  * Create a quoted selector for a given id.
  */
 function jq(myid) {
-    return "#" + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
+    if (!myid) {
+        return undefined;
+    } else {
+        return "#" + myid.replace( /(:|\.|\[|\])/g, "\\$1" );
+    }
 }
 
 /* custom pipeline with more limited stop words & no stemming for sorting */
@@ -225,11 +247,11 @@ function buildReferenceData(json, elements) {
     var retval = {};
     $.each(json.references, function (k, v) {
         retval[k] = v;
-        var html = $(jq(v.id)).parent().first().remove("span.label").html();
+        var html = $(jq(v.ref_id)).parent().first().remove("span.label").html();
         // cannot get this to work properly in jquery
         html = html.replace(/<span class="label">[^<]+<\/span>/, '');
         retval[k]['html'] = html;
-        retval[k]['text'] = $(jq(v.id)).parent().first().text();
+        retval[k]['text'] = $(jq(v.ref_id)).parent().first().text();
     });
     return retval;
 }
@@ -362,7 +384,7 @@ var ReferenceAppearanceList = React.createClass({
             return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd>{ mention.context }</dd></div>;
         } else {
             return <div key={ "mention" + mention.word_position } >
-                <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.index } >{ mention.context }</a></dd>
+                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } >{ mention.context }</a></dd>
                 </div>;
         }
     },
@@ -376,7 +398,7 @@ var ReferenceAppearanceList = React.createClass({
         /* group each citation group by the section it is in */
         var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
         var t = _.map(citationGroupsBySection, function(value, key) {
-            return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
+            return <div key={ "appearance_list_" + ref.ref_id + "-" + key } ><p><strong>{ key }</strong></p>
                 <dl className="appearances">{ _.map(value, this.renderMention) }</dl>
                 </div>;
         }.bind(this));
@@ -414,10 +436,10 @@ var ReferenceAuthorList = React.createClass({
 var ReferenceActionList = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var actionListId = ref.id + "action-list";
+        var actionListId = ref.ref_id + "action-list";
         setTimeout(function () {
             $(jq(actionListId)).hide();
-            $(jq('reference_' + ref.id)).hover(
+            $(jq('reference_' + ref.ref_id)).hover(
                 function () {
                     $(jq(actionListId)).fadeIn();
                 }, 
@@ -426,8 +448,8 @@ var ReferenceActionList = React.createClass({
                 });
         }.bind(this), 1);
         return <div id={ actionListId } className="action-list">
-                Download reference (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=bib" }>BibTeX</a>)
-            (<a href={ "/references/" + encodeURIComponent(ref.info.doi) + "?format=ris" }>RIS</a>)<br/>
+            Download reference (<a href={ "/references/" + getEncodedDOI(ref) + "?format=bib" }>BibTeX</a>)
+            (<a href={ "/references/" + getEncodedDOI(ref) + "?format=ris" }>RIS</a>)<br/>
                 </div>;
     }
 });
@@ -440,7 +462,7 @@ var Reference = React.createClass({
         return (this.props.currentMention !== null);
     },
     isSelected: function () {
-        return ($.param.fragment() === this.props.reference.id);
+        return ($.param.fragment() === this.props.reference.ref_id);
     },
     renderLabel: function() {
         if (this.props.showLabel) {
@@ -458,7 +480,7 @@ var Reference = React.createClass({
     render: function () {
         var className = "reference";
         if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
-        return <div id={ 'reference_' + this.props.reference.id } className={ className }>
+        return <div id={ 'reference_' + this.props.reference.ref_id } className={ className }>
             { this.renderLabel() }
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }
                            suppressJournal={ this.props.suppressJournal }
@@ -474,8 +496,9 @@ var Reference = React.createClass({
 var ReferenceCore = React.createClass({
     renderTitle: function(ref) {
         var info = ref.info;
-        if (info.doi) {
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodeURIComponent(doi) + "&to=" + ref.index }>{ info.title }</a><br/></span>;
+        var encodedDOI = getEncodedDOI(ref);
+        if (encodedDOI) {
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodedDOI + "&to=" + ref.index }>{ info.title }</a><br/></span>;
         } else {
             return <span className="reference-title">{ info.title }<br/></span>;
         }
@@ -483,8 +506,9 @@ var ReferenceCore = React.createClass({
     render: function () {
         var ref = this.props.reference;
         var info = ref.info;
+        var doi = getDOI(ref);
         if (info.title) {
-            return <span><a id={ ref.id } name={ this.props.id }></a>
+            return <span><a id={ ref.ref_id } name={ this.props.id }></a>
                 <span title={ ref.text }>
                 <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting }
                   authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }
@@ -493,10 +517,10 @@ var ReferenceCore = React.createClass({
                 <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
                   <span className="reference-journal">{ info['container-title'] }</span><br/>
                 </Maybe>
-                <Maybe test={ info.doi }>
-                  <span className="reference-doi">doi: { info.doi }<br/></span>
+                <Maybe test={ doi }>
+                  <span className="reference-doi">doi: { doi }<br/></span>
                 </Maybe>
-                <Maybe test={ !this.props.isPopover && info.doi }>
+                <Maybe test={ !this.props.isPopover && doi }>
                   <ReferenceActionList reference={ ref }/>
                 </Maybe>
                 </span>;
@@ -514,22 +538,22 @@ var ReferenceBadges = React.createClass({
         if (this.props.reference.updated_by) {
             var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
             if (_.contains(types, "retraction")) {
-                badges.push(<span key={ ref.id + "retracted"} className="retracted">RETRACTED </span>);
+                badges.push(<span key={ ref.ref_id + "retracted"} className="retracted">RETRACTED </span>);
             } else if (types.length > 0) {
-                badges.push(<span key={ ref.id + "retracted"} className="updated">UPDATED </span>);
+                badges.push(<span key={ ref.ref_id + "retracted"} className="updated">UPDATED </span>);
             }
         }
         /* license badges */
         if (!this.props.suppressLicenseBadge) {
             var license = ref.info.license;
             if (license === "free-to-read") {
-                badges.push(<span key={ ref.id + "license" } className="text-available">Full text available </span>);
+                badges.push(<span key={ ref.ref_id + "license" } className="text-available">Full text available </span>);
             } else if (license && license !== "failed-to-obtain-license") {
-                badges.push(<span key={ ref.id + "license" } className="open-access">{ license.toUpperCase() } </span>);
+                badges.push(<span key={ ref.ref_id + "license" } className="open-access">{ license.toUpperCase() } </span>);
             }
         }
         if (ref.self_citations) {
-            badges.push(<span key={ ref.id + "selfcitation" } className="selfcitation">Self-citation </span>);
+            badges.push(<span key={ ref.ref_id + "selfcitation" } className="selfcitation">Self-citation </span>);
         }
         if (badges.length < 1) {
             return <span/>;
@@ -635,7 +659,7 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        return <li key={ "" + ref.data.id + ref.group.word_position }>
+        return <li key={ "" + ref.data.ref_id + ref.group.word_position }>
             <Reference reference={ ref.data }
                        showLabel={ true }
                        suppressLicenseBadge={ this.props.current.by === "license" }
@@ -760,7 +784,7 @@ var ReferencePopover = React.createClass({
             return <Reference
               reference={ d[0] }
               qtip={ this.props.qtip }
-              key={ d[0].id }
+              key={ d[0].ref_id }
               showLabel={ this.props.references.length > 1 }
               currentMention={ d[1] } />;
         }.bind(this));
