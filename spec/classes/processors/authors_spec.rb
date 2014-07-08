@@ -4,7 +4,7 @@ describe Processors::Authors do
   include Spec::ProcessorHelper
 
   def authors
-    result[:paper][:author]
+    result[:paper][:authors]
   end
 
   it "should parse out the authors" do

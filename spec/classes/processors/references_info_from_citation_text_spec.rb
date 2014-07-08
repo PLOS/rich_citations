@@ -17,7 +17,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     expect(result[:references]['ref-1'][:info]).to eq( :title            => 'Citation counts: are they good predictors of RAE scores? Available: http://dspace.lib.cranfield.ac.uk/handle/1826/2248',
                                                        :issued           => {:"date-parts"=>[[2008]]},
-                                                       :author           => [{literal:"Mahdi S, D'Este P, Neely A"}   ]                )
+                                                       :authors          => [{literal:"Mahdi S, D'Este P, Neely A"}   ]                )
   end
 
   it "should not overwrite existing fields" do
@@ -32,7 +32,7 @@ describe Processors::ReferencesInfoFromCitationText do
         info: {
             :title            => 'Article Title',
             :issued           => {:"date-parts"=>[[2001,1,1]] },
-            :author           =>
+            :authors          =>
                  [{:family=>"Roberts", :given=>"J"},
                   {:family=>"Jolie",   :given=>"J"} ]
 
@@ -40,7 +40,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     expect(result[:references]['ref-1'][:info]).to eq( :title            => 'Article Title',
                                                        :issued           => {:"date-parts"=>[[2001,1,1]] },
-                                                       :author           =>
+                                                       :authors          =>
                                                            [{:family=>"Roberts", :given=>"J"},
                                                             {:family=>"Jolie",   :given=>"J"}]                )
   end

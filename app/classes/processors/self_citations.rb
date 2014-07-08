@@ -1,8 +1,9 @@
 module Processors
   class SelfCitations < Base
+    include Helpers
 
     def process
-      result[:references].each do |id, ref|
+      references.each do |id, ref|
         ref[:self_citations] = self_citations_for( ref[:info] )
       end
     end
@@ -14,7 +15,7 @@ module Processors
     protected
 
     def self_citations_for(cited_info)
-      cited_authors = cited_info[:author]
+      cited_authors = cited_info[:authors]
       return if cited_authors.blank?
 
       self_citations = cited_authors.product(paper_authors).map do |cited, citing|
@@ -44,16 +45,16 @@ module Processors
 
     def matches?(a1,a2, b1=nil,b2=nil)
       return false unless a1.present? && a2.present?
-      return false if a1.downcase != a2.downcase
+      return false if a1.casecmp(a2) != 0
 
       return true  unless b1.present? && b2.present?
-      return false if b1.downcase != b2.downcase
+      return false if b1.casecmp(b2) != 0
 
       return true
     end
 
     def paper_authors
-      @paper_authors ||= result[:paper][:author]
+      @paper_authors ||= result[:paper][:authors]
     end
 
   end
