@@ -980,6 +980,11 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                 /* advance the inGroupCounter until we reach the end of the elission group */
                 var cites = [elissionStartRefId];
                 while (refId !== currentGroupRefIds[inGroupCounter]) {
+                    if (inGroupCounter >= currentGroupRefIds.length) {
+                        /* something is wrong, we've gone too far */
+                        console.log("Unable to find end of ellission group: " + currentGroupRefIds);
+                        break;
+                    }
                     var erefId = currentGroupRefIds[inGroupCounter];
                     incCitationCounter(erefId);
                     if (handleElided) {
@@ -1001,9 +1006,9 @@ function citationIterator(groups, handleSingle, handleBeginElissionGroup, handle
                     /* check to see if the next ref is elided or if we are at the end */
                     var next = $(this).next(citationSelector).filter(citationFilter);
                     var nextRefId = ($(next).length > 0) && $(next).attr('href').substring(1);
-
-                    if ((atEnd = inGroupCounter == currentGroupRefIds.length - 1) ||
-                        (nextRefId === currentGroupRefIds[inGroupCounter + 1])) {
+                    if (!nextRefId ||
+                        (inGroupCounter == (currentGroupRefIds.length-1)) // last citation in group
+                        || (nextRefId === currentGroupRefIds[inGroupCounter + 1])) { // next ref is in group
                         /* not an elission */
                         if (handleSingle) {
                             handleSingle(this, refId, citationCounters[refId]);
