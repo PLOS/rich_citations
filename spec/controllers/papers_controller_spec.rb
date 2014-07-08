@@ -17,4 +17,11 @@ describe PapersController, type: :controller do
       expect(parsed["info"]["author"]).to eq([{"family"=>"Similä", "given"=>"Tiu"}, {"family"=>"Ugarte", "given"=>"Fernando"}])
     end
   end
+
+  describe "GET '/interstitial&from=10.1371%2Fjournal.pone.0067380&to=1'" do
+    it "returns http success" do
+      get :interstitial, from: '10.1371/journal.pone.0067380', to: '1'
+      expect(response).to be_success
+    end
+  end
 end
