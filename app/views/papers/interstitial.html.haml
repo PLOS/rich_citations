@@ -1,3 +1,6 @@
+- content_for :title do
+  Redirect to #{@ref[:info][:title]}
+  
 %h3 Originating page
 %p
   = render partial: "cite", object: @paper.info[:paper]
