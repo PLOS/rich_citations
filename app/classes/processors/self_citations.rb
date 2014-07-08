@@ -9,7 +9,7 @@ module Processors
     end
 
     def self.dependencies
-      [Authors, ReferencesInfoFromCitationNode, ReferencesInfoFromCitationText]
+      NormalizeAuthorNames
     end
 
     protected
