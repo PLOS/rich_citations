@@ -24,7 +24,7 @@ class String
     "#{omission}#{right}"
   end
 
-  def word_truncate(count, omission='...')
+  def word_truncate_ending(count)
     string = self.rstrip
     matches = /\s+/.all_matches(string)
     return string unless matches
@@ -32,13 +32,13 @@ class String
 
     if matches.length >= count
       length = matches[count-1].begin(0) - 1
-      string[0..length] + omission
+      [ string[0..length], true ]
     else
-      string
+      [ string, false ]
     end
   end
 
-  def word_truncate_beginning(count, omission='...')
+  def word_truncate_beginning(count)
     string = self.lstrip
     matches = /\s+/.all_matches(string)
     return string unless matches
@@ -46,9 +46,9 @@ class String
 
     if matches.length >= count
       start = matches[matches.length-count].end(0)
-      omission + string[start..length]
+      [ string[start..length], true ]
     else
-      string
+      [ string, false ]
     end
   end
 
