@@ -100,6 +100,39 @@ describe PaperParser do
       expect(PaperParser.processor_classes).to include(Processors::References)
     end
 
+    it "should load each processor class in order" do
+      allow(PaperParser).to receive(:processor_classes).and_call_original
+      expect(PaperParser.resolved_processor_classes).to eq([
+                                                             Processors::State,
+                                                             Processors::References,
+                                                             Processors::ReferencesIdentifier,
+                                                             Processors::ReferencesInfoCacheLoader,
+                                                             Processors::ReferencesLicense,
+                                                             Processors::CitationGroups,
+                                                             Processors::CitationGroupSection,
+                                                             Processors::Doi,
+                                                             Processors::PaperInfo,
+                                                             Processors::ReferencesAbstract,
+                                                             Processors::ReferencesCitedGroups,
+                                                             Processors::ReferencesCrossmark,
+                                                             Processors::Authors,
+                                                             Processors::ReferencesInfoFromDoi,
+                                                             Processors::ReferencesInfoFromIsbn,
+                                                             Processors::ReferencesInfoFromCitationNode,
+                                                             Processors::ReferencesInfoFromCitationText,
+                                                             Processors::SelfCitations,
+                                                             Processors::CitationGroupPosition,
+                                                             Processors::ReferencesZeroMentions,
+                                                             Processors::CitationGroupContext,
+                                                             Processors::ReferencesMedianCoCitations,
+                                                             Processors::ReferencesMentionCount,
+                                                             Processors::ReferencesSection,
+                                                             Processors::ReferencesDelayedLicense,
+                                                             Processors::ReferencesInfoCacheSaver,
+                                                           ])
+
+    end
+
   end
 
 end
