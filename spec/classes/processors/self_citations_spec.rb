@@ -10,18 +10,24 @@ describe Processors::SelfCitations do
         <xref ref-type='aff' rid='aff1' />
         <xref ref-type='corresp' rid='corr1' />
       </contrib>
+      <aff id="aff1"><addr-line>Hollywood</addr-line></aff>
+      <corresp id="corr1">a.jolie@hollywood.com</corresp>
       <contrib contrib-type="author">
         <literal>Roberts, Julia</literal>
       </contrib>
-      <aff id="aff1"><addr-line>Hollywood</addr-line></aff>
-      <corresp id="corr1">a.jolie@hollywood.com</corresp>
+      <contrib contrib-type="author">
+        <literal>Sandra Bullock</literal>
+      </contrib>
+      <contrib contrib-type="author">
+        <literal>Kidman, N. M.</literal>
+      </contrib>
     EOM
 
     refs 'Some Reference'
   end
 
   def resolve_author!(author)
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author:[author] })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { authors:[author] })
   end
 
   def reference
@@ -43,8 +49,38 @@ describe Processors::SelfCitations do
     expect(reference[:self_citations]).to eq(['Roberts, Julia [name]'])
   end
 
+  it "should work when comparing a literal name in the given family format with a given and family" do
+    resolve_author!(family:'Bullock', given:'Sandra')
+    expect(reference[:self_citations]).to eq(['Sandra Bullock [name]'])
+  end
+
   it "should work when comparing a given and family name with a literal name" do
     resolve_author!(literal:'Jolie, Angelina')
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
+  end
+
+  it "should work when comparing a given and family name with a literal name in give family format" do
+    resolve_author!(literal:'Angelina Jolie')
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
+  end
+
+  it "should work when comparing a literal with a literal name in give family format" do
+    resolve_author!(literal:'Jolie, Angelina')
+    expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
+  end
+
+  it "should work when comparing a literal in th given, family format with a literal name" do
+    resolve_author!(literal:'Bullock, Sandra')
+    expect(reference[:self_citations]).to eq(['Sandra Bullock [name]'])
+  end
+
+  it "should ignore spaces and punctuation in initials" do
+    resolve_author!(literal:'Kidman, NM')
+    expect(reference[:self_citations]).to eq(['Kidman, N. M. [name]'])
+  end
+
+  it "should ignore case differences" do
+    resolve_author!(family:'joliE', given:'angelinA')
     expect(reference[:self_citations]).to eq(['Jolie, Angelina [name]'])
   end
 

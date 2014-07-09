@@ -20,18 +20,18 @@ describe Processors::ReferencesInfoFromDoi do
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, source:'test' } )
 
     info = {
-        author: [ {given:'C.', family:'Theron'} ],
-        title:  'A Title',
+        authors: [ {given:'C.', family:'Theron'} ],
+        title:   'A Title',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          id:     '10.111/111',
+                                                          id:      '10.111/111',
                                                           id_type: :doi,
-                                                          source: 'test',
-                                                          score:  1.23,
-                                                          author: [ {given:'C.', family:'Theron'} ],
-                                                          title:  'A Title',
+                                                          source:  'test',
+                                                          score:   1.23,
+                                                          authors: [ {given:'C.', family:'Theron'} ],
+                                                          title:   'A Title',
                                                       })
   end
 

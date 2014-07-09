@@ -33,7 +33,7 @@ module Processors
 
       # Add page range
       if matches[:authors].present?
-        set_field info, :author, [ literal:matches[:authors].strip ]
+        set_field info, :authors, [ literal:matches[:authors].strip ]
       end
 
     end

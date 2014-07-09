@@ -42,7 +42,7 @@ module Processors
     end
 
     def extract_citation_names(node, info)
-      return if info[:author].present?
+      return if info[:authors].present?
       names = node.css('name')
       return unless names.present?
 
@@ -53,7 +53,7 @@ module Processors
         }.compact
       end
 
-      set_field info, :author, authors
+      set_field info, :authors, authors
     end
 
     def set_field(info, field, value)

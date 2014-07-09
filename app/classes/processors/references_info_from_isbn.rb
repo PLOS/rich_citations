@@ -72,7 +72,7 @@ module Processors
     end
 
     def parse_data_authors(data)
-      Array(data[:authors]).map { |i| [{literal:i[:name]}] }.presence
+      Array(data[:authors]).map { |i| {literal:i[:name]} }.presence
     end
 
     def parse_date(string)
