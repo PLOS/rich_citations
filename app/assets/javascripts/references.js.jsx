@@ -378,13 +378,16 @@ var ReferenceAppearanceListRevealable = React.createClass({
  * A list of appearances for a given reference in a paper.
  */
 var ReferenceAppearanceList = React.createClass({
+    renderMentionContext: function(context) {
+        return <span>{ context.ellipses_before }{ context.text_before }<b>{ context.citation }</b>{ context.text_after } { context.ellipses_after }</span>;
+    },
     renderMention: function(mention) {
         var ref = this.props.reference;
         if (this.props.currentMention === mention.index) {
-            return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd>{ mention.context }</dd></div>;
+            return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd>{ this.renderMentionContext(mention.context) }</dd></div>;
         } else {
             return <div key={ "mention" + mention.word_position } >
-                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } >{ mention.context }</a></dd>
+                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } >{ this.renderMentionContext(mention.context) }</a></dd>
                 </div>;
         }
     },
