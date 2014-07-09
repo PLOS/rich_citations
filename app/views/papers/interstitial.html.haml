@@ -11,8 +11,8 @@
 
 %p
   Redirecting to
-  = link_to @ref[:info][:title], "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:doi])}"
+  = link_to @ref[:info][:title], "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}"
 
 #redirect
   :javascript
-    redirectOnce("http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:doi])}");
+    redirectOnce("http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}");
