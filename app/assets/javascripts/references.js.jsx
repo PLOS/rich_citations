@@ -1111,16 +1111,18 @@ function mkPopovers(data) {
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
-    withReferenceData(doi, function (data) {
-        var references = buildReferenceData(data);
-        /* insert the container */
-        $("<div id='richcites'></div>").insertBefore("#references");
-        /* and drop into react */
-        React.renderComponent(
-                <ReferencesApp references={references} />,
-            $("ol.references").get(0)
-        );
-        addCitationIds(data.groups);
-        mkPopovers(data);
-    });
+    if (doi) {
+        withReferenceData(doi, function (data) {
+            var references = buildReferenceData(data);
+            /* insert the container */
+            $("<div id='richcites'></div>").insertBefore("#references");
+            /* and drop into react */
+            React.renderComponent(
+                    <ReferencesApp references={references} />,
+                $("ol.references").get(0)
+            );
+            addCitationIds(data.groups);
+            mkPopovers(data);
+        });
+    }
 });
