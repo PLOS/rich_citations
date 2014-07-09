@@ -541,18 +541,18 @@ var ReferenceBadges = React.createClass({
         if (this.props.reference.updated_by) {
             var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
             if (_.contains(types, "retraction")) {
-                badges.push(<span key={ ref.ref_id + "retracted"} className="retracted">RETRACTED </span>);
+                badges.push(<span key={ ref.ref_id + "retracted"} className="retracted">● Retracted </span>);
             } else if (types.length > 0) {
-                badges.push(<span key={ ref.ref_id + "retracted"} className="updated">UPDATED </span>);
+                badges.push(<span key={ ref.ref_id + "retracted"} className="updated">● Updated </span>);
             }
         }
         /* license badges */
         if (!this.props.suppressLicenseBadge) {
             var license = ref.info.license;
             if (license === "free-to-read") {
-                badges.push(<span key={ ref.ref_id + "license" } className="text-available">Full text available </span>);
-            } else if (license && license !== "failed-to-obtain-license") {
-                badges.push(<span key={ ref.ref_id + "license" } className="open-access">{ license.toUpperCase() } </span>);
+                badges.push(<span key={ ref.ref_id + "license" } className="text-available">● Free to read</span>);
+            } else if (license && license.toUpperCase().match(/^CC-BY/)) {
+                badges.push(<span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse</span>);
             }
         }
         if (ref.self_citations) {
@@ -599,23 +599,15 @@ var SortedReferencesList = React.createClass({
             return "";
         }
     },
-    licenseDescriptions: {
-        "cc-by": "Free to read and redistribute, attribution required",
-        "cc-by-nd": "Free to read and redistribute, attribution required, no derivative works",
-        "cc-by-sa": "Free to read and redistribute, attribution required, no derivative works, must redistribute under same license",
-        "cc-by-nc": "Free to read and redistribute, attribution required, no commercial use",
-        "cc-by-nc-nd": "Free to read and redistribute, attribution required, no commercial use, no derivative works",
-        "cc-by-nc-sa": "Free to read and redistribute, attribution required, no commercial use, must redistribute under same license"
-    },
     renderGroupHeading: function(key) {
         if (this.props.current.by === "license") {
             /* copy & paste of license badge code; should probably be consolidated but it is short */
             if (key === "free-to-read") {
-                return <p><span className="text-available">Full text available</span></p>;
+                return <p><span className="text-available">● Free to read</span></p>;
             } else if (key === "failed-to-obtain-license") {
-                return <p><strong>Paywalled or not online</strong></p>;
-            } else {
-                return <p><span className="open-access">{ key.toUpperCase() }</span> { this.licenseDescriptions[key] || "" }</p>;
+                return <p><strong>● Paywalled or not online</strong></p>;
+            } else if (key && key.toUpperCase().match(/^CC-BY/)) {
+                return <p><span className="open-access">● Free to read and reuse</span></p>;
             }
         } else {
             return <p><strong>{ key }</strong></p>;

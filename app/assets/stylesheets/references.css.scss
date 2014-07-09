@@ -1,13 +1,5 @@
-.badge {
-    border-radius: 2px;
-    padding: 0px;
-    background: #6ebe44;
-    margin-right: 1em;
-}
-
 span.selfcitation {
-    @extend .badge;
-    background: #bbbbbb;
+    background-color: #bbbbbb;
 }
 
 span.highlight {
@@ -22,7 +14,6 @@ div.reference.selected {
     padding-right: .25em;
     padding-left: .25em;
 }
-
 
 div.reference {
     margin-bottom: 1.5em;
@@ -55,7 +46,7 @@ p.abstract {
 }
 
 button.non-button {
-    background: none;
+    background-color: none;
     border: none;
     color: #3C63AF; /* same as link */
 }
@@ -77,13 +68,11 @@ div.action-list {
 }
 
 span.retracted {
-    @extend .badge;
-    background: #FF0000;
+    color: #f0532d;
 }
 
 span.updated {
-    @extend .badge;
-    background: #2582CE;
+    color: #4cb9d2;
 }
 
 span.reference-doi {
@@ -101,15 +90,13 @@ form.search {
 }
 
 .open-access {
-    @extend .badge;
-    background: #6ebe44;
+    color: #4cb748;
 }
 
 .text-available {
-    @extend .badge;
-    background: #449992;
+    color: #c9aa28;
 }
 
 .citation_hover {
-    background: #66ccff;
+    color: #66ccff;
 }
