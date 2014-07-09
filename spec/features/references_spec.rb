@@ -45,4 +45,17 @@ describe "reference viewing", :type => :feature, :js => true do
     fill_in('referencefilter', :with => 'motta')
     expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-Motta1")
   end    
+
+   it "should display an interstitial page, then redirect" do
+     visit '/view/10.1371/journal.pone.0067380'
+     click_link('Surface and underwater observations of cooperatively feeding killer whales in northern Norway')
+     redir_window = page.driver.find_window('Redirect')
+     within_window(redir_window) do
+       expect(page).to have_content("Originating page Oliver SP; Turner JR; Gann K; Silvosa M; D'Urban Jackson T Thresher Sharks Use Tail-Slaps as a Hunting Strategy")
+       expect(page).to have_content("Destination Similä T; Ugarte F Surface and underwater observations of cooperatively feeding killer whales in northern Norway Can. J. Zool.")
+       # after redirect
+       expect(page).to have_content("Get an email alert for the latest issue")
+       page.driver.browser.close
+     end
+   end    
 end
