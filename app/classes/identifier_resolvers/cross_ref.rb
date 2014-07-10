@@ -41,10 +41,12 @@ module IdentifierResolvers
 
     def self.extract_info(result)
       return nil unless result['match']
+      doi = Id::Doi.extract( result['doi'] )
+      return nil unless doi.present?
 
       {
           ref_source:  :crossref,
-          id:          Id::Doi.extract( result['doi'] ),
+          id:          doi,
           id_type:     :doi,
           score:       result['score'].to_f,
       }

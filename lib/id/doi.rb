@@ -22,6 +22,7 @@ module Id
                                 DOI_PREFIX_REGEX => false,
                                 DOI_ALONE_REGEX  => false  )
 
+      doi = cleanup(doi)
       normalize ? normalize(doi) : doi
     end
 
@@ -41,6 +42,19 @@ module Id
 
     def self.is_plos_doi?(doi)
       prefix(doi).in?(PLOS_PREFIXES)
+    end
+
+    private
+
+    # Some stuff which is just too tricky to handle with regexes
+    def self.cleanup(doi)
+      # Handle DOIs that have an ending XML delimiter in them
+      if doi =~ /<\//
+        doi = doi.sub(/<\/.*/,'')
+        doi = doi.sub(/#{PUNCT}+$/o,'')
+      end
+
+      doi
     end
 
   end

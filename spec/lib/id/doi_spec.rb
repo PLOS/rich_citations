@@ -60,6 +60,15 @@ describe Id::Doi do
       expect( Id::Doi.extract('doi.org/10.123/4567–890. '      ) ).to eq('10.123/4567–890')
     end
 
+    it "should handle citations with xml (i.e. </ chars)" do
+      text = '<mixed-citation>... doi:10.1371/journal.pone.0014755.</mixed-citation>'
+      expect( Id::Doi.extract(text) ).to eq('10.1371/journal.pone.0014755')
+    end
+
+    it "DOIs can contain / s" do
+      expect( Id::Doi.extract('doi:10.1111//2222/3333 ') ).to eq('10.1111//2222/3333')
+    end
+
   end
 
  describe '#normalize' do
