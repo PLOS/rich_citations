@@ -164,7 +164,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           OCLC:       ["36792831"],
                                                           OLID:       ["OL1017798M"],
                                                           URL:        "https://openlibrary.org/books/OL1017798M/The_adventures_of_Tom_Sawyer",
-                                                          authors:    [{:literal=>"Mark Twain"}],
+                                                          author:     [{literal:"Mark Twain"}],
                                                           cover:      "https://covers.openlibrary.org/b/id/295577-S.jpg",
                                                           issued:     "1997",
                                                           pages:      216,

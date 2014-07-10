@@ -10,6 +10,11 @@ class PaperResult < ActiveRecord::Base
     self.where(doi:doi).first!
   end
 
+  def self.find_or_new_for_doi(doi)
+    params = { doi:doi }
+    self.where(params).first || self.new(params)
+  end
+
   def self.calculate_for(doi)
     result = find_by_doi(doi)
     if result && result.ready?
@@ -35,6 +40,21 @@ class PaperResult < ActiveRecord::Base
   end
   alias result info
 
+
+  def start_analysis!
+    if ready?
+      self.touch
+
+    else
+      # Note this does not prevent a task being started multiple times
+      ThreadingHelpers.background("Analyze PaperResult:#{self.id}") do
+        analyze!
+      end
+
+    end
+
+  end
+
   def ready?
     info_json.present?
   end
@@ -58,5 +78,22 @@ class PaperResult < ActiveRecord::Base
     else
       raise Exception.new("Unknown journal found in #{doi}")
     end
+  end
+
+  private
+
+  def analyze!
+    if ready?
+      Rails.logger.info("Using cached #{doi}")
+      touch
+    end
+
+    Rails.logger.info("Fetching #{doi} ...")
+    xml = Plos::Api.document( doi )
+    Rails.logger.info("Parsing #{doi} ...")
+    info = PaperParser.parse_xml(xml)
+
+    self.info_json = JSON.generate(info)
+    self.save!
   end
 end

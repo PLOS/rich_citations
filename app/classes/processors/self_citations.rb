@@ -15,7 +15,7 @@ module Processors
     protected
 
     def self_citations_for(cited_info)
-      cited_authors = cited_info[:authors]
+      cited_authors = cited_info[:author]
       return if cited_authors.blank?
 
       self_citations = cited_authors.product(paper_authors).map do |cited, citing|
@@ -84,7 +84,7 @@ module Processors
     end
 
     def paper_authors
-      @paper_authors ||= result[:paper][:authors]
+      @paper_authors ||= result[:paper][:author]
     end
 
   end

@@ -1,0 +1,7 @@
+%h3
+  = image_tag('spinner.gif')
+  Parsing paper '#{@paper.doi}'
+
+-# Refresh the page in 10 seconds
+- content_for :head do
+  %meta{ 'http-equiv' => 'refresh', 'content' => '10'}

@@ -11,6 +11,7 @@ CitationTools::Application.routes.draw do
     collection do
       post :search
       post :list
+      post :parse
     end
   end
 

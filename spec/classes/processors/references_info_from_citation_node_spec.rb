@@ -27,7 +27,7 @@ describe Processors::ReferencesInfoFromCitationNode do
                                                        :volume           => "51",
                                                        :issued           => {:"date-parts"=>[[1995]]},
                                                        :page             =>"404-410",
-                                                       :authors          =>
+                                                       :author           =>
                                                            [{:family=>"Davenport", :given=>"E"},
                                                             {:family=>"Snyder",    :given=>"H"}]                )
   end
@@ -88,7 +88,7 @@ describe Processors::ReferencesInfoFromCitationNode do
             :volume           => "99",
             :issued           => {:"date-parts"=>[[2001,1,1]] },
             :page             =>"100-101",
-            :authors          =>
+            :author           =>
                  [{:family=>"Roberts", :given=>"J"},
                   {:family=>"Jolie",   :given=>"J"} ]
 
@@ -100,7 +100,7 @@ describe Processors::ReferencesInfoFromCitationNode do
                                                        :volume           => "99",
                                                        :issued           => {:"date-parts"=>[[2001,1,1]] },
                                                        :page             =>"100-101",
-                                                       :authors          =>
+                                                       :author           =>
                                                            [{:family=>"Roberts", :given=>"J"},
                                                             {:family=>"Jolie",   :given=>"J"}]                )
   end

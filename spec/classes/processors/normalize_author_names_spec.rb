@@ -5,12 +5,12 @@ describe Processors::NormalizeAuthorNames do
 
   def resolve_authors!(*authors)
     refs 'First'
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { authors:authors })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author: authors })
   end
 
   def authors
     reference = result[:references].values.first
-    reference[:info][:authors]
+    reference[:info][:author]
   end
 
   it "should normalize authors in the citing paper info" do
@@ -23,10 +23,10 @@ describe Processors::NormalizeAuthorNames do
       </contrib>
     META
 
-    expect( result[:paper][:authors] ).to eq( [
-                                                {given:"Angelina", family:"Jolie"},
-                                                {literal:"Roberts, Julia"}
-                                              ])
+    expect( result[:paper][:author] ).to eq( [
+                                              {given:"Angelina", family:"Jolie"},
+                                              {literal:"Roberts, Julia"}
+                                            ])
   end
 
   it "should normalize authors in the cited paper's info" do

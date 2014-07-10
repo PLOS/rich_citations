@@ -20,7 +20,7 @@ describe Processors::ReferencesInfoFromDoi do
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, source:'test' } )
 
     info = {
-        authors: [ {given:'C.', family:'Theron'} ],
+        author:  [ {given:'C.', family:'Theron'} ],
         title:   'A Title',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
@@ -30,7 +30,7 @@ describe Processors::ReferencesInfoFromDoi do
                                                           id_type: :doi,
                                                           source:  'test',
                                                           score:   1.23,
-                                                          authors: [ {given:'C.', family:'Theron'} ],
+                                                          author:  [ {given:'C.', family:'Theron'} ],
                                                           title:   'A Title',
                                                       })
   end

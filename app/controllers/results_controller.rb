@@ -6,6 +6,7 @@ class ResultsController < ApplicationController
         limit: 50
     )
     @list_result_set ||= ResultSet.new
+    @parsed_paper ||= PaperResult.new
 
     @available_result_sets = ResultSet.order(updated_at: :desc)
 
@@ -38,6 +39,34 @@ class ResultsController < ApplicationController
 
     else
       index
+
+    end
+  end
+
+  def parse
+    @doi = Id::Doi.extract( parse_params[:doi] )
+
+    if @doi.blank?
+      # Fake an object to keep form builders happy
+      @parsed_paper = PaperResult.new(parse_params)
+      @parsed_paper.errors.add(:doi, 'must be valid')
+      index
+
+    elsif ! Id::Doi.is_plos_doi?(@doi)
+      # Fake an object to keep form builders happy
+      @parsed_paper = PaperResult.new(parse_params)
+      @parsed_paper.errors.add(:doi, 'must be a PLOS doi')
+      index
+
+    else
+      @parsed_paper = PaperResult.find_or_new_for_doi(@doi)
+      @parsed_paper.start_analysis!
+
+      if @parsed_paper.save
+        redirect_to paper_path(@parsed_paper.doi)
+      else
+        index
+      end
 
     end
   end
@@ -112,6 +141,10 @@ class ResultsController < ApplicationController
 
   def list_params
     params.require(:result_set).permit(:query)
+  end
+
+  def parse_params
+    params.require(:paper_result).permit(:doi)
   end
 
   def sort_citations(citations, column, descending)

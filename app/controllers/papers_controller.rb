@@ -1,7 +1,16 @@
 class PapersController < ApplicationController
 
   def show
-    @paper = PaperResult.calculate_for(params[:id])
+    @doi = Id::Doi.extract( params[:id] )
+
+    raise "DOI is Invalid" if @doi.blank?
+    raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(@doi)
+
+    @paper = PaperResult.find_or_new_for_doi(@doi)
+    if ! @paper.ready?
+      @paper.start_analysis!
+      @paper.save
+    end
 
     respond_to do |format|
 

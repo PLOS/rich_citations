@@ -7,6 +7,9 @@
   .span4
     = render partial:'list_query_form'
 
+  .span3
+    = render partial:'parse_query_form'
+
 %h3 Previous Searches
 
 - @available_result_sets.each do |r|

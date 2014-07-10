@@ -1,11 +1,8 @@
 - content_for :title do
   References for DOI #{@paper.doi}
 
-%h3 References for DOI #{@paper.doi}
+- if @paper.ready?
+  = render partial:'display_form'
+- else
+  = render partial:'waiting_form'
 
-.results
-  .span9
-    = text_area_tag :references_json, JSON.pretty_generate(@paper.result), readonly:true
-    = link_to 'Download JSON', paper_path(@paper.doi, format:'json'), class:'btn btn-primary pull-right'
-
-%br

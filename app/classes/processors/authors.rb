@@ -4,7 +4,7 @@ module Processors
     def process
       result[:paper] ||= {}
       # result[:paper][:affiliations] = affiliations
-      result[:paper][:authors] = authors
+      result[:paper][:author] = authors
     end
 
     protected
