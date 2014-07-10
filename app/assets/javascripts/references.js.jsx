@@ -1049,7 +1049,7 @@ function generateCitationReferenceId(id, count) {
 }
 
 function withReferenceData(doi, f) {
-    var url = "/papers/" + doi + "?format=json&inline=t";
+    var url = "/papers/" + doi + "?format=json&inline=t&block=t";
     $.ajax({ url: url,
              timeout: 300000 // can take a loooong time
            }).success(function(rawdata) {
