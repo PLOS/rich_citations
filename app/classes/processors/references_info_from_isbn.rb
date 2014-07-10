@@ -62,7 +62,7 @@ module Processors
           publisher: data[:publishers] && data[:publishers].first[:name],
           cover:     data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
           subject:   parse_data_subjects(data),
-          authors:   parse_data_authors(data),
+          author:    parse_data_authors(data),
       }.compact
     end
 

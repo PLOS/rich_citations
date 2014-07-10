@@ -31,11 +31,11 @@ module Processors
     end
 
     def reference_authors
-      @reference_authors ||= references.map do |id, ref| ref[:info][:authors] end.flatten
+      @reference_authors ||= references.map do |id, ref| ref[:info][:author] end.flatten
     end
 
     def paper_authors
-      @paper_authors ||= result[:paper].try(:[], :authors)
+      @paper_authors ||= result[:paper].try(:[], :author)
     end
 
   end

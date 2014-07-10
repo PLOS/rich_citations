@@ -15,9 +15,9 @@ describe Processors::ReferencesInfoFromCitationText do
       info: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :title            => 'Citation counts: are they good predictors of RAE scores? Available: http://dspace.lib.cranfield.ac.uk/handle/1826/2248',
-                                                       :issued           => {:"date-parts"=>[[2008]]},
-                                                       :authors          => [{literal:"Mahdi S, D'Este P, Neely A"}   ]                )
+    expect(result[:references]['ref-1'][:info]).to eq( title:   'Citation counts: are they good predictors of RAE scores? Available: http://dspace.lib.cranfield.ac.uk/handle/1826/2248',
+                                                       issued:  {:"date-parts"=>[[2008]]},
+                                                       author:  [{literal:"Mahdi S, D'Este P, Neely A"}   ]                )
   end
 
   it "should not overwrite existing fields" do
@@ -30,19 +30,19 @@ describe Processors::ReferencesInfoFromCitationText do
     process( references: { 'ref-1' => {
         node: ref_node,
         info: {
-            :title            => 'Article Title',
-            :issued           => {:"date-parts"=>[[2001,1,1]] },
-            :authors          =>
-                 [{:family=>"Roberts", :given=>"J"},
-                  {:family=>"Jolie",   :given=>"J"} ]
+            title: 'Article Title',
+            issued: {:"date-parts"=>[[2001,1,1]] },
+            author:
+                 [{family:"Roberts", given:"J"},
+                  {family:"Jolie",   given:"J"} ]
 
     } } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :title            => 'Article Title',
-                                                       :issued           => {:"date-parts"=>[[2001,1,1]] },
-                                                       :authors          =>
-                                                           [{:family=>"Roberts", :given=>"J"},
-                                                            {:family=>"Jolie",   :given=>"J"}]                )
+    expect(result[:references]['ref-1'][:info]).to eq( title:   'Article Title',
+                                                       issued:  {:"date-parts"=>[[2001,1,1]] },
+                                                       author:
+                                                           [{family:"Roberts", given:"J"},
+                                                            {family:"Jolie",   given:"J"}]                )
   end
 
   it "should not add null info fields" do
