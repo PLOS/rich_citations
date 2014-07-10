@@ -1,0 +1,5 @@
+= simple_form_for @parsed_paper, html:{class:'form-horizontal analyze-form'}, url:parse_results_path do |f|
+  = f.error_notification
+  = f.input  :doi, label:'DOI', input_html: { placeholder:'Enter a PLOS DOI' }
+  .form-actions
+    = f.button :submit, name:nil, value:'Parse', class:'btn btn-primary'

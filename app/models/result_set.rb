@@ -49,7 +49,7 @@ class ResultSet < ActiveRecord::Base
 
     else
       # Note this does not prevent a task being started multiple times
-      ThreadingHelpers.background("Analyze #{self.id}") do
+      ThreadingHelpers.background("Analyze ResultSet:#{self.id}") do
         analyze!
       end
 
