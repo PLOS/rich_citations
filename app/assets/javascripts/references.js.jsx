@@ -794,15 +794,13 @@ var ReferencesApp = React.createClass({
                 filterText: ''};
     },
     componentWillMount: function() {
-        $(citationSelector).filter(citationFilter).on( "click", function() {
-            this.setState({ filterText: "" });
-        }.bind(this));
-    },
-    componentWillMount: function() {
         /* build full-text index */
         this.idx = buildIndex(this.props.references);
     },
     componentDidMount: function() {
+        $(citationSelector).filter(citationFilter).on( "click", function() {
+            this.setState({ filterText: "" });
+        }.bind(this));
         $(window).bind('hashchange', function(e) {
             /* redraw when the fragment URL changes, to faciliate the link to the back button */
             this.setState({});

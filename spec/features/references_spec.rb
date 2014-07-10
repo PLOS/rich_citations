@@ -65,4 +65,12 @@ describe "reference viewing", :type => :feature, :js => true do
     end
   end
 
+  it "should clear the filter when a user clicks on a reference" do
+    visit "/view/10.1371/journal.pone.0067380"
+    fill_in('referencefilter', :with => 'kinematic')
+    expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-Domenici1")
+    click_link("[5]")
+    expect(page.first(:xpath, '//ol[@class="references"]//ol/li/div')['id']).to eq("reference_pone.0067380-Clua1")
+  end
+  
 end
