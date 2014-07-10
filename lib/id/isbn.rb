@@ -7,11 +7,18 @@ module Id
     # ISBN_PREFIX_REGEX = /(^|\s)isbn:?\s*(?<result>#{ISBN_REGEX})/io
 
     def self.extract(text)
+      text = normalize_input(text)
       normalize( match_regexes(text, ISBN_PREFIX_REGEX => false ) )
     end
 
     def self.normalize(isbn)
-      isbn.present? ? isbn.strip.tr('-','').upcase : nil
+      isbn.present? ? isbn.strip.upcase.gsub(/[^0-9X]/,'') : nil
+    end
+
+    private
+
+    def self.normalize_input(text)
+      text && text.strip.gsub(/–/,'-')
     end
 
   end

@@ -25,6 +25,10 @@ describe Id::Isbn do
       expect( Id::Isbn.extract('ISBN: 123-4-56789-012-3') ).to eq('1234567890123')
     end
 
+    it "should handle ISBN's with em hyphens" do
+      expect( Id::Isbn.extract('isbn:123456789–0') ).to eq('1234567890')
+    end
+
     it "should handle extra whitespace" do
       expect( Id::Isbn.extract(' isbn: 1234567890 ') ).to eq('1234567890')
     end

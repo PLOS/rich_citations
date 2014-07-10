@@ -15,14 +15,15 @@ DOI='10.1371/journal.pone.0098172'
 DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
 DOI='10.1371/journal.pone.0041419' # ISBN
+DOI='10.1371/journal.pone.0097128'
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"
 
 xml = r = Plos::Api.document( DOI )
-# r = xml.css('ref-list')
+r = xml.css('ref-list')
 # r = xml.css('body')
-# puts r.to_xml; exit
+puts r.to_xml; exit
 
 info = PaperParser.parse_xml(xml)
 
