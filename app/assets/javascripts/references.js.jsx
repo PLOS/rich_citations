@@ -472,7 +472,7 @@ var Reference = React.createClass({
             /* check if this is the selected anchor */
             var ref = this.props.reference;
             if (this.isSelected()) {
-                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>{ ref.index }</a>.</span>;
+                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>↩{ ref.index }</a>.</span>;
             } else {
                 return <span className="label">{ ref.index }.</span>;
             }
