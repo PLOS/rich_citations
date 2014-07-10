@@ -560,7 +560,7 @@ var ReferenceBadges = React.createClass({
             }
         }
         if (ref.self_citations) {
-            badges.push(<span key={ ref.ref_id + "selfcitation" } className="selfcitation">● Self-citation </span>);
+            badges.push(<span key={ ref.ref_id + "selfcitation" }><span className="selfcitation">●</span> Self-citation </span>);
         }
         if (badges.length < 1) {
             return <span/>;
