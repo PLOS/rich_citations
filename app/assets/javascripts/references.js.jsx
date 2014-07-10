@@ -2,13 +2,13 @@
   * @jsx React.DOM 
   */
 
-var doi = $('meta[name=citation_doi]').attr("content");
+var paper_doi = $('meta[name=citation_doi]').attr("content");
 
 /* local part of the doi */
-var doi_local_part = doi && doi.match(/^10.1371\/journal\.(.*)$/)[1];
+var paper_doi_local_part = paper_doi && paper_doi.match(/^10.1371\/journal\.(.*)$/)[1];
 
 /* selector that can be used to match all the a elements that are citation links */
-var citationSelector = "a[href^='#" + doi_local_part + "']";
+var citationSelector = "a[href^='#" + paper_doi_local_part + "']";
 var citationFilter = function (el) {
     /* return true for refs that link to a target in the references section */
     return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
@@ -379,7 +379,7 @@ var ReferenceAppearanceListRevealable = React.createClass({
  */
 var ReferenceAppearanceList = React.createClass({
     renderMentionContext: function(context) {
-        return <span>{ context.ellipses_before }{ context.text_before }<b>{ context.citation }</b>{ context.text_after } { context.ellipses_after }</span>;
+        return <span>{ context.ellipses_before }{ context.text_before }<b>{ context.citation }</b>{ context.text_after }{ context.ellipses_after }</span>;
     },
     renderMention: function(mention) {
         var ref = this.props.reference;
@@ -501,7 +501,7 @@ var ReferenceCore = React.createClass({
         var info = ref.info;
         var encodedDOI = getEncodedDOI(ref);
         if (encodedDOI) {
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodeURIComponent(doi) + "&to=" + ref.index }>{ info.title }</a><br/></span>;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index }>{ info.title }</a><br/></span>;
         } else {
             return <span className="reference-title">{ info.title }<br/></span>;
         }
@@ -1106,8 +1106,8 @@ function mkPopovers(data) {
 /* if we don't load after document ready we get an error */
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
-    if (doi) {
-        withReferenceData(doi, function (data) {
+    if (paper_doi) {
+        withReferenceData(paper_doi, function (data) {
             var references = buildReferenceData(data);
             /* insert the container */
             $("<div id='richcites'></div>").insertBefore("#references");
