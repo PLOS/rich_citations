@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 //= require jquery
 //= require react
-var doi = "10.12345/09876";
+var paper_doi = "10.12345/09876";
 
 var TestUtils = React.addons.TestUtils;
 var testRef = {
@@ -14,7 +14,12 @@ var testRef = {
         {
           "word_position": 21,
           "section": "Introduction",
-          "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+          "context": {
+              text_before: "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. ",
+              citation: "[1]",
+              text_after: " Venison filet mignon exercitation adipisicing meatloaf veniam. ",
+              ellipses_after: "\u2026"
+          },
           "references": [
             "pone.0000000-Doe1"
           ],
@@ -46,7 +51,7 @@ var testRef = {
       "id": "pone.0000000-Doe1"
     };
 
-var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"doi": "10.12345/67890"}});
+var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"id": "10.12345/67890", "id_type": "doi"}});
 
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");
@@ -106,7 +111,7 @@ test("mkSearchResultsFilter", function () {
             var filter = mkSearchResultsFilter(buildIndex(fixture.references), "odontodactylus");
             var results = _.filter(fixture.references, filter);
             strictEqual(results.length, 1);
-            strictEqual(results[0].id, "pone.0067380-Patek1");
+            strictEqual(results[0].ref_id, "pone.0067380-Patek1");
             start();
         });
 });
@@ -147,8 +152,8 @@ test("sortReferences", function () {
                        var results = sortReferences(refs, d.by);
                        strictEqual(results.unsortable.length, d.unsortableCount);
                        strictEqual(results.sorted.length, d.sortableCount);
-                       strictEqual(results.sorted[0].data.id, d.first);
-                       strictEqual(results.sorted[results.sorted.length-1].data.id, d.last);
+                       strictEqual(results.sorted[0].data.ref_id, d.first);
+                       strictEqual(results.sorted[results.sorted.length-1].data.ref_id, d.last);
                    }.bind(this));
             start();
         });
@@ -271,11 +276,11 @@ test("withReferenceData", function() {
 test("ReferenceBadges", function() {
     var r = ReferenceBadges({reference: {info: {}, updated_by: [{"type": "retraction"}]}});
     TestUtils.renderIntoDocument(r);
-    strictEqual(r.getDOMNode().textContent, "RETRACTED ");
+    strictEqual(r.getDOMNode().textContent, "● Retracted ");
 
     var u = ReferenceBadges({reference: {info: {}, updated_by: [{"type": "updated"}]}});
     TestUtils.renderIntoDocument(u);
-    strictEqual(u.getDOMNode().textContent, "UPDATED ");
+    strictEqual(u.getDOMNode().textContent, "● Updated ");
 
     var n = ReferenceBadges({reference: {info: {}}});
     TestUtils.renderIntoDocument(n);
@@ -325,7 +330,12 @@ var groups = [
         "pone.0000000-Doe1"
      ],
      "section": "Introduction",
-     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "context": {
+         text_before: "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. ",
+         citation: "[1]",
+         text_after: " Venison filet mignon exercitation adipisicing meatloaf veniam. ",
+         ellipses_after: "\u2026"
+     },
      "word_position": 50
     },
     {"count": 2,
@@ -334,7 +344,12 @@ var groups = [
          "pone.0000000-Doe2"
      ],
      "section": "Introduction",
-     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1], [2] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "context": {
+         text_before: "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. ",
+         citation: "[1], [2]",
+         text_after: " Venison filet mignon exercitation adipisicing meatloaf veniam. ",
+         ellipses_after: "\u2026"
+     },
      "word_position": 100
     },
     {"count": 3,
@@ -344,7 +359,12 @@ var groups = [
          "pone.0000000-Doe3"
      ],
      "section": "Introduction",
-     "context": "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1]-[3] Venison filet mignon exercitation adipisicing meatloaf veniam. \u2026",
+     "context": {
+         text_before: "Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. ",
+         citation: "[1]-[3]",
+         text_after: " Venison filet mignon exercitation adipisicing meatloaf veniam. ",
+         ellipses_after: "\u2026"
+     },
      "word_position": 150
     }
 ];
