@@ -550,13 +550,13 @@ var ReferenceBadges = React.createClass({
         if (!this.props.suppressLicenseBadge) {
             var license = ref.info.license;
             if (license === "free-to-read") {
-                badges.push(<span key={ ref.ref_id + "license" } className="text-available">● Free to read</span>);
+                badges.push(<span key={ ref.ref_id + "license" } className="text-available">● Free to read </span>);
             } else if (license && license.toUpperCase().match(/^CC-BY/)) {
-                badges.push(<span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse</span>);
+                badges.push(<span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse </span>);
             }
         }
         if (ref.self_citations) {
-            badges.push(<span key={ ref.ref_id + "selfcitation" } className="selfcitation">Self-citation </span>);
+            badges.push(<span key={ ref.ref_id + "selfcitation" } className="selfcitation">● Self-citation </span>);
         }
         if (badges.length < 1) {
             return <span/>;
@@ -605,7 +605,7 @@ var SortedReferencesList = React.createClass({
             if (key === "free-to-read") {
                 return <p><span className="text-available">● Free to read</span></p>;
             } else if (key === "failed-to-obtain-license") {
-                return <p><strong>● Paywalled or not online</strong></p>;
+                return <p><span className="paywalled">● Subscription required or not online</span></p>;
             } else if (key && key.toUpperCase().match(/^CC-BY/)) {
                 return <p><span className="open-access">● Free to read and reuse</span></p>;
             }
