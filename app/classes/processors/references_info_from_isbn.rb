@@ -49,20 +49,20 @@ module Processors
     def convert_data_to_info(data)
       data.symbolize_keys_recursive!
       {
-          source:    'OpenLibrary',
-          key:       data[:key],
-          ISBN:      data[:identifiers] && (data[:identifiers][:isbn_13] || data[:identifiers][:isbn_10]),
-          OLID:      data[:identifiers] && data[:identifiers][:openlibrary],
-          OCLC:      data[:identifiers] && data[:identifiers][:oclc],
-          title:     data[:title],
-          subtitle:  [data[:subtitle]].compact.presence,
-          pages:     data[:number_of_pages],
-          issued:    parse_date( data[:publish_date] ),
-          URL:       data[:url],
-          publisher: data[:publishers] && data[:publishers].first[:name],
-          cover:     data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
-          subject:   parse_data_subjects(data),
-          author:    parse_data_authors(data),
+          source:            'OpenLibrary',
+          key:               data[:key],
+          ISBN:              data[:identifiers] && (data[:identifiers][:isbn_13] || data[:identifiers][:isbn_10]),
+          OLID:              data[:identifiers] && data[:identifiers][:openlibrary],
+          OCLC:              data[:identifiers] && data[:identifiers][:oclc],
+          title:             data[:title],
+          subtitle:          [data[:subtitle]].compact.presence,
+          :'number-of-pages' => data[:number_of_pages],
+          issued:            parse_date( data[:publish_date] ),
+          URL:               data[:url],
+          publisher:         data[:publishers] && data[:publishers].first[:name],
+          cover:             data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
+          subject:           parse_data_subjects(data),
+          author:            parse_data_authors(data),
       }.compact
     end
 
