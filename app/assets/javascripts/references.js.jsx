@@ -1114,7 +1114,7 @@ $(document).ready(function () {
     /* now fetch the JSON describing the paper */
     if (paper_doi) {
         /* insert the container */
-        $("<div id='richcites'>Loading rich citations <img src='/assets/spinner.gif'/></div>").insertBefore("#references");
+        $("<div id='richcites'>Loading rich citations <img src='" + spinnerPath + "'/></div>").insertBefore("#references");
         withReferenceData(paper_doi, function (data) {
             var references = buildReferenceData(data);
             /* and drop into react */

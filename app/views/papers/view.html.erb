@@ -2,6 +2,10 @@
 <% content_for :title do %>
   <%= title %>
 <% end %>
+
+<# need this to deal with assets pipeline #>
+<%= javascript_tag("var spinnerPath = '#{image_path('spinner.gif')}';") %>
+
 <div id="page-wrap">
   <div id="pagebdy-wrap">
     <div id="pagebdy">
