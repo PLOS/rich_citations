@@ -166,7 +166,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           URL:        "https://openlibrary.org/books/OL1017798M/The_adventures_of_Tom_Sawyer",
                                                           author:     [{literal:"Mark Twain"}],
                                                           cover:      "https://covers.openlibrary.org/b/id/295577-S.jpg",
-                                                          issued:     "1997",
+                                                          issued:     {literal:"1997"},
                                                           pages:      216,
                                                           publisher:  "Signet Classic",
                                                           title:      "The adventures of Tom Sawyer",

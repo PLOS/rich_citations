@@ -76,10 +76,8 @@ module Processors
     end
 
     def parse_date(string)
-      return nil unless string.present?
-
       # For now we don't do any parsing but we might need to in future
-      string
+      string &&  {literal:string}
     end
 
   end
