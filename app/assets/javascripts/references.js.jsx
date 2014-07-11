@@ -513,8 +513,8 @@ var ReferenceCore = React.createClass({
         if (info.title) {
             return <span><a id={ ref.ref_id } name={ this.props.id }></a>
                 <span title={ ref.text }>
-                <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting }
-                  authors={ info.author }/> { info.issued && "(" + info.issued['date-parts'][0][0] + ")" }
+                <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
+                { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
                 </span><br/>
                 { this.renderTitle(ref) }
                 <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
