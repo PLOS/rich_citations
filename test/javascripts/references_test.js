@@ -426,3 +426,16 @@ test("addCitationIds", function() {
     strictEqual($(cites3).first().attr('id'), 'ref_pone.0000000-Doe3_0');
 });
     
+test("render mention", function() {
+    var mention = MentionContext({context: {
+        "ellipses_before": "…",
+        "text_before": "schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies ",
+        "citation": "[38], [39]",
+        "text_after": ".",
+        "quote": "…schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39]."
+    }});
+    var span = TestUtils.renderIntoDocument(mention);
+    var bold = TestUtils.findRenderedDOMComponentWithTag(mention, 'b');
+    strictEqual(span.getDOMNode().textContent, "…schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39].");
+    strictEqual(bold.getDOMNode().textContent, "[38], [39]");
+});

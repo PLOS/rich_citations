@@ -374,20 +374,24 @@ var ReferenceAppearanceListRevealable = React.createClass({
     }
 });
 
+var MentionContext = React.createClass({
+    render: function() {
+        var context = this.props.context;
+        return <span>{ context.ellipses_before }{ context.text_before }<b>{ context.citation }</b>{ context.text_after }{ context.ellipses_after }</span>;
+    }
+});
+    
 /**
  * A list of appearances for a given reference in a paper.
  */
 var ReferenceAppearanceList = React.createClass({
-    renderMentionContext: function(context) {
-        return <span>{ context.ellipses_before }{ context.text_before }<b>{ context.citation }</b>{ context.text_after }{ context.ellipses_after }</span>;
-    },
     renderMention: function(mention) {
         var ref = this.props.reference;
         if (this.props.currentMention === mention.index) {
-            return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd>{ this.renderMentionContext(mention.context) }</dd></div>;
+            return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd><MentionContext context={ mention.context }/></dd></div>;
         } else {
             return <div key={ "mention" + mention.word_position } >
-                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } >{ this.renderMentionContext(mention.context) }</a></dd>
+                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } ><MentionContext context={ mention.context }/></a></dd>
                 </div>;
         }
     },
@@ -598,7 +602,7 @@ var SortedReferencesList = React.createClass({
     },
     renderGroupContext: function(group) {
         if (this.props.current.by === "appearance+repeated") {
-            return <p>{ group[0].group.context }</p>;
+            return <p><MentionContext context={ group[0].group.context }/></p>;
         } else {
             return "";
         }
