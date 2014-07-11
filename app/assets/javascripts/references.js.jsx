@@ -1113,10 +1113,10 @@ function mkPopovers(data) {
 $(document).ready(function () {
     /* now fetch the JSON describing the paper */
     if (paper_doi) {
+        /* insert the container */
+        $("<div id='richcites'>Loading rich citations <img src='/assets/spinner.gif'/></div>").insertBefore("#references");
         withReferenceData(paper_doi, function (data) {
             var references = buildReferenceData(data);
-            /* insert the container */
-            $("<div id='richcites'></div>").insertBefore("#references");
             /* and drop into react */
             React.renderComponent(
                     <ReferencesApp references={references} />,
@@ -1124,6 +1124,7 @@ $(document).ready(function () {
             );
             addCitationIds(data.groups);
             mkPopovers(data);
+            $("#richcites").replaceWith("<div id='richcites'></div>");
         });
     }
 });

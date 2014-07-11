@@ -79,4 +79,14 @@ describe "reference viewing", :type => :feature, :js => true do
 J Exp Biol 203: 283-294")
   end
 
+  it "should display & then hide a spinner" do
+    visit "/view/10.1371/journal.pone.0067372"
+    # this was failing because things moved too fast
+    #expect(page).to have_content("Loading rich citations")
+    #expect(page).to have_xpath("//img[@src='/assets/spinner.gif']")
+    # should go away after loading citations
+    expect(page).to have_content("Palumbi SR (2004) MARINE RESERVES AND OCEAN NEIGHBORHOODS: The Spatial Scale of Marine Populations and Their Management Annual Review of Environment and Resources doi: 10.1146/annurev.energy.29.062403.102254")
+    expect(page).to_not have_content("Loading rich citations")
+    expect(page).to_not have_xpath("//img[@src='/assets/spinner.gif']")
+  end
 end
