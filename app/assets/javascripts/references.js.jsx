@@ -520,7 +520,7 @@ var ReferenceCore = React.createClass({
                 <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
                   <span className="reference-journal">{ info['container-title'] }</span>
                   <Maybe test={ !doi && (info['volume'] || info['issue'] || info['issued']) }>
-                    <span> { info['volume'] }<Maybe test={ info['issue'] }><span>({ info['issue'] })</span></Maybe></span>
+                    <span> { info['volume'] }<Maybe test={ info['issue'] }><span>({ info['issue'] })</span></Maybe><Maybe test={ info['page'] }>: { info['page'] }</Maybe></span>
                   </Maybe>
                   <br/>
                 </Maybe>

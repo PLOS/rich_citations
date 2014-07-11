@@ -76,7 +76,7 @@ describe "reference viewing", :type => :feature, :js => true do
   it "should display a volume number if there is no DOI" do
     visit "/view/10.1371/journal.pone.0067380"
     expect(page).to have_content("Killer whales (Orcinus orca) feeding on schooling herring (Clupea harengus) using underwater tail-slaps: kinematic analyses of field observations
-J Exp Biol 203")
+J Exp Biol 203: 283-294")
   end
 
 end
