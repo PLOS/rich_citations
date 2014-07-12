@@ -7,7 +7,7 @@ class PapersController < ApplicationController
     raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(@doi)
 
     @paper = PaperResult.find_or_new_for_doi(@doi)
-    if ! @paper.ready?
+    if @paper.should_start_analysis?
       @paper.start_analysis!
       @paper.save
     end
