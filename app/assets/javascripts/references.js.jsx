@@ -581,6 +581,7 @@ var ReferenceBadges = React.createClass({
  * reference given a sortby string (e.g., appearance)
  */
 function mkHeadingGrouper(by) {
+    var last = null;
     return function (ref) {
         /* handle reference groups */
         if ($.type(ref) === 'array') {
@@ -589,7 +590,12 @@ function mkHeadingGrouper(by) {
         if (by === "journal") {
             return ref.data.info['container-title'];
         } else if (by === "appearance" || by === "appearance+repeated") {
-            return ref.group.section;
+            if (ref.group.section) {
+                /* hack to handle the fact that sometimes we have no
+                 * group, for unmentioned cites. Use the last one. */
+                last = ref.group.section;
+            }
+            return ref.group.section || last;
         } else if (by === "license") {
             return ref.data.info.license;
         } else {
