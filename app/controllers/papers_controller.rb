@@ -7,7 +7,7 @@ class PapersController < ApplicationController
     raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(@doi)
 
     @paper = PaperResult.find_or_new_for_doi(@doi)
-    if ! @paper.ready?
+    if @paper.should_start_analysis?
       @paper.start_analysis!
       @paper.save
     end
@@ -21,7 +21,9 @@ class PapersController < ApplicationController
       format.json {
         response.content_type = Mime::JSON
         headers['Content-Disposition'] = %Q{attachment; filename="#{@paper.doi}.js"} if !params[:inline]
-        render json: @paper.result
+        result = @paper.ready? ? @paper.result : { processing: true }
+        status = @paper.ready? ? :ok : :created
+        render json:result, status:status
       }
 
       # format.xml  { render xml:  @result.analysis_results.to_xml }

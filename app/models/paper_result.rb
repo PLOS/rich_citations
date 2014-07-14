@@ -40,6 +40,9 @@ class PaperResult < ActiveRecord::Base
   end
   alias result info
 
+  def should_start_analysis?
+    !ready? && ( new_record? || timed_out?)
+  end
 
   def start_analysis!
     if ready?
@@ -95,5 +98,9 @@ class PaperResult < ActiveRecord::Base
 
     self.info_json = JSON.generate(info)
     self.save!
+  end
+
+  def timed_out?
+    Time.now - updated_at > 2.minutes
   end
 end
