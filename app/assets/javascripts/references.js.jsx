@@ -364,7 +364,9 @@ var ReferenceAppearanceListRevealable = React.createClass({
         return txt;
     },
     render: function() {
-        if (this.inPopover() && (this.props.reference.mentions === 1)) {
+        if (this.props.reference.zero_mentions) {
+            return <div>Does not appear in the article text.</div>;
+        } else if (this.inPopover() && (this.props.reference.mentions === 1)) {
             return <div>Appears once in this article.</div>;
         } else {
             return <Revealable qtip={ this.props.qtip } revealText={ this.appearanceText() }>
