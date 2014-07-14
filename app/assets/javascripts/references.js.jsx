@@ -1053,13 +1053,20 @@ function generateCitationReferenceId(id, count) {
 }
 
 function withReferenceData(doi, f) {
-    var url = "/papers/" + doi + "?format=json&inline=t&block=t";
+    var url = "/papers/" + doi + "?format=json&inline=t";
     $.ajax({ url: url,
-             timeout: 300000 // can take a loooong time
-           }).success(function(rawdata) {
-               if (!rawdata.failed) {
-                   f(rawdata);
-               }
+             statusCode: {
+                 201: function() {
+                     setTimeout(function () {
+                         withReferenceData(doi, f);
+                     }, 2000);
+                 },
+                 200: function(rawdata) {
+                     if (!rawdata.failed) {
+                         f(rawdata);
+                     }
+                 }
+             }
            });
 }
 

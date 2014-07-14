@@ -11,9 +11,6 @@ class PapersController < ApplicationController
       @paper.start_analysis!
       @paper.save
     end
-    while (params[:block] && !@paper.ready?) do
-      sleep(1)
-    end
     respond_to do |format|
 
       format.html
