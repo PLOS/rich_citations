@@ -126,7 +126,7 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === 'year') {
         return (info.issued && info.issued["date-parts"] && info.issued["date-parts"][0][0]) || null;
     } else if (fieldname === 'mentions') {
-        return ref.mentions;
+        return ref.mentions || 0;
     } else if (fieldname === 'author') {
         var first_author = info.author && info.author[0];
         return (first_author && mkSortString(formatAuthorNameInverted(first_author))) || null;

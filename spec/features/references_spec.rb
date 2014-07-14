@@ -30,6 +30,13 @@ describe "reference viewing", :type => :feature, :js => true do
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Domenici1")
   end
 
+  it "should work on an article that has a missing citation" do
+    visit '/view/10.1371/journal.pone.0100000'
+
+    page.click_button("Number of appearance")
+    expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0100000-Villa2")
+  end    
+
   it "should display a retracted mark for retracted cites" do
     visit '/view/10.1371/journal.pone.0059428'
 
