@@ -10,8 +10,8 @@ module Id
       normalize( match_regexes(text, PUBMED_PREFIX_REGEX => false ) )
     end
 
-    def self.normalize(isbn)
-      isbn.present? ? isbn.gsub(/[^0-9]/,'') : nil
+    def self.normalize(pmid)
+      pmid.present? ? pmid.gsub(/[^0-9]/,'') : nil
     end
 
   end
