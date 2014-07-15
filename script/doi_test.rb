@@ -18,6 +18,7 @@ DOI='10.1371/journal.pone.0041419' # ISBN
 DOI='10.1371/journal.pone.0097128'
 DOI='10.1371/journal.pone.0067380'
 DOI='10.1371/journal.pone.0097165'
+DOI='10.1371/journal.pone.0041419'
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"

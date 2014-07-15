@@ -41,7 +41,7 @@ module Processors
     end
 
     def fetch_results_for_ids(ids)
-      url    = API_URL + ids.join('|')
+      url    = API_URL + ids.join( URI.encode_www_form_component('|') )
       json   = HttpUtilities.get(url, :json)
       JSON.parse(json, symbolize_names:false)
     end
