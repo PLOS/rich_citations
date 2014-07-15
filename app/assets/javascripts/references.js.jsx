@@ -491,6 +491,9 @@ var Reference = React.createClass({
                            updateHighlighting={ this.props.updateHighlighting }
               />
             <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
+            <Maybe test={ this.props.reference.self_citations }>
+              <span key={ this.props.reference.ref_id + "selfcitation" } className="selfcitation">Self-citation</span><br/>
+            </Maybe>
             <ReferenceAbstract text={ this.props.reference.info.abstract } qtip={ this.props.qtip }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
             </div>;
@@ -589,9 +592,6 @@ var ReferenceBadges = React.createClass({
             } else if (license && license.toUpperCase().match(/^CC-BY/)) {
                 badges.push(<span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse </span>);
             }
-        }
-        if (ref.self_citations) {
-            badges.push(<span key={ ref.ref_id + "selfcitation" }><span className="selfcitation">●</span> Self-citation </span>);
         }
         if (badges.length < 1) {
             return <span/>;
