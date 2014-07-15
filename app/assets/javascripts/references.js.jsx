@@ -511,8 +511,31 @@ var ReferenceCore = React.createClass({
         var info = ref.info;
         var doi = getDOI(ref);
         if (info.title) {
+            var id = "";
+            if (!this.props.isPopover) {
+                id = ref.ref_id + "_title";
+                setTimeout(function (){
+                    $(jq(id)).qtip({
+                        content: {
+                            text: function(event, api) {
+                                return "<div>Original text: " + ref.text + "</div>";
+                            }
+                        },
+                        hide: {
+                            fixed: true,
+                            delay: 1000
+                        },
+                        position: {
+                            viewport: $(window),
+                            adjust: {
+                                method: 'shift shift'
+                            }
+                        }
+                    });
+                }, 1000);
+            }
             return <span><a id={ ref.ref_id } name={ this.props.id }></a>
-                <span title={ ref.text }>
+                <span id={ id }>
                 <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
                 { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
                 </span><br/>
