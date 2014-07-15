@@ -720,8 +720,6 @@ var SortedHeader = React.createClass({
             } else {
                 return <p><a href="#" onClick={ this.handleClick }>Oldest first ▴</a> <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
             }                
-        } else if (this.props.current.by === 'author') {
-            return <p>Alphabetical <Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
         } else {
             return <p><Unsortable count={ this.props.unsortableCount } current={ this.props.current }/></p>;
         }
@@ -734,7 +732,7 @@ var Unsortable = React.createClass({
             if (this.props.current.by === 'year') {
                 return <span>(<a href="#unsortable">{ this.props.count } unknown date{ (this.props.count > 1) ? "s" : "" }</a>)</span>;
             } else if (this.props.current.by === 'author') {
-                return <span>(<a href="#unsortable">{ this.props.count } unsortable</a>)</span>;
+                return <span>Alphabetical (<a href="#unsortable">{ this.props.count } unsortable</a>)</span>;
             } else { 
                 return <span><a href="#unsortable">{ this.props.count } unsortable</a></span>;
             }
@@ -745,7 +743,6 @@ var Unsortable = React.createClass({
 });
 
 /**
-
  * Form used for filtering references.
  */
 var SearchBar = React.createClass({
