@@ -139,7 +139,7 @@ test("sortReferences", function () {
                      last: "pone.0067380-Lowry1",
                      sortableCount: 55,
                      unsortableCount: 0},
-                    {by: "appearance+repeated",
+                    {by: "repeated",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Heithaus1",
                      sortableCount: 91,
