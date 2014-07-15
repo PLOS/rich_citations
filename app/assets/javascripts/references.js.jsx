@@ -819,9 +819,7 @@ var ReferencesApp = React.createClass({
         }.bind(this));
     },
     handleSearchUpdate: function(filterText) {
-        this.setState({
-            filterText: filterText
-        });
+        this.setState({ filterText: filterText });
     },
     handleSorterClick: function(by, order) {
         this.setState({sort: { by: by, order: order }});
