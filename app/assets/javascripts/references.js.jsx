@@ -316,10 +316,10 @@ var Revealable = React.createClass({
         return { show: false };
     },
     componentDidUpdate: function() {
-        maybeQtipReposition(this.props.qtip);
+        this.props.qtip && this.props.qtip.reposition();
     },
     componentDidMount: function() {
-        maybeQtipReposition(this.props.qtip);
+        this.props.qtip && this.props.qtip.reposition();
     }, 
     handleClick: function() {
         this.setState({ show: !this.state.show });
@@ -332,12 +332,6 @@ var Revealable = React.createClass({
         </div>;
     }
 });
-
-function maybeQtipReposition(qtip) {
-    if (qtip) {
-        qtip.reposition();
-    }
-}
 
 /**
  * Class to handle an appearance list in a popover or reference list.
