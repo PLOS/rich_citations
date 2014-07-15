@@ -62,7 +62,7 @@ function formatAuthorNameInvertedInitials (author) {
  * Build a full-text index from an array of references.
  */
 function buildIndex(references) {
-    var idx = lunr(function () {
+    var index = lunr(function () {
         this.field('title', { boost: 10 });
         this.field('author');
         this.field('journal');
@@ -75,9 +75,9 @@ function buildIndex(references) {
                     title: ref.info.title,
                     journal: ref.info['container-title'],
                     body:  ref.text };
-        idx.add(doc);
+        index.add(doc);
     }
-    return idx;
+    return index;
 }
 
 function getReferenceId (el) {
@@ -183,11 +183,11 @@ function sortReferences (refs, by) {
  * Make a function suitable for filtering a reference list from a
  * given index and a search string.
  */
-function mkSearchResultsFilter(idx, filterText) {
-    var tokens = idx.pipeline.run(lunr.tokenizer(filterText));
+function mkSearchResultsFilter(index, filterText) {
+    var tokens = index.pipeline.run(lunr.tokenizer(filterText));
     if (tokens.length > 0) {
         var resultHash = {};
-        idx.search(filterText).map(function (res) {
+        index.search(filterText).map(function (res) {
             resultHash[res['ref']] = res['score'];
         });
         return function (ref) {
@@ -663,7 +663,7 @@ var SortedReferencesList = React.createClass({
             setTimeout(function () {
                 var tokens = lunr.tokenizer(this.props.filterText);
                 /* highlight raw tokens & stemmed */
-                var allTokens = $.unique(tokens.concat(this.props.idx.pipeline.run(tokens)));
+                var allTokens = $.unique(tokens.concat(this.props.index.pipeline.run(tokens)));
                 $("ol.references").highlight(allTokens);
             }.bind(this), 1);
         }
@@ -811,7 +811,7 @@ var ReferencesApp = React.createClass({
     },
     componentWillMount: function() {
         /* build full-text index */
-        this.idx = buildIndex(this.props.references);
+        this.index = buildIndex(this.props.references);
     },
     componentDidMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -851,8 +851,8 @@ var ReferencesApp = React.createClass({
               references={this.props.references}
               filterText={this.state.filterText}
               onClick={this.handleSorterClick}
-              idx={ this.idx }
-              searchResultsFilter={mkSearchResultsFilter(this.idx, this.state.filterText)}
+              index={ this.index }
+              searchResultsFilter={mkSearchResultsFilter(this.index, this.state.filterText)}
             />
             </div>;
     }
