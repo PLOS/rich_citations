@@ -22,7 +22,7 @@ module Processors
     #    This API currently supports ISBNs, LCCNs, OCLC numbers and OLIDs
     #    Since ids are in the url we cannot do more than a few at a time
 
-    API_URL = 'http://openlibrary.org/api/books?format=json&jscmd=data&bibkeys='
+    API_URL = 'http://openlibrary.org/api/volumes/brief/json/'
 
     def references_without_info
       references_for_type(:isbn).reject { |ref| ref[:info] && ref[:info][:source] }
@@ -33,21 +33,24 @@ module Processors
 
       results = fetch_results_for_ids(references.keys)
 
-      results.each do |id, data|
-        info = convert_data_to_info(data)
+      results.each do |id, result|
+        info = convert_result_to_info(result)
         references[id][:info] ||= {}
         references[id][:info].merge!(info)
       end
     end
 
     def fetch_results_for_ids(ids)
-      url    = API_URL + ids.join(',')
+      url    = API_URL + ids.join('|')
       json   = HttpUtilities.get(url, :json)
       JSON.parse(json, symbolize_names:false)
     end
 
-    def convert_data_to_info(data)
-      data.symbolize_keys_recursive!
+    def convert_result_to_info(result)
+      result.symbolize_keys_recursive!
+      data    = (result[:records] && result[:records].values.first[:data])    || {}
+      details = (result[:records] && result[:records].values.first[:details].try(:[], :details) ) || {}
+
       {
           source:            'OpenLibrary',
           key:               data[:key],
@@ -62,7 +65,7 @@ module Processors
           publisher:         data[:publishers] && data[:publishers].first[:name],
           cover:             data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
           subject:           parse_data_subjects(data),
-          author:            parse_data_authors(data),
+          author:            parse_data_authors(data, details),
       }.compact
     end
 
@@ -71,8 +74,9 @@ module Processors
       subjects.map { |i| i[:name]}.compact.uniq.presence
     end
 
-    def parse_data_authors(data)
-      Array(data[:authors]).map { |i| {literal:i[:name]} }.presence
+    def parse_data_authors(data, details)
+      authors = Array( data[:authors] || details[:authors] )
+      authors.map { |i| {literal:i[:name]} }.presence
     end
 
     def parse_date(string)
