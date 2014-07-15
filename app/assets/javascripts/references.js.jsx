@@ -489,8 +489,10 @@ var Reference = React.createClass({
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }
                            suppressJournal={ this.props.suppressJournal }
                            updateHighlighting={ this.props.updateHighlighting }
-              />
-            <ReferenceBadges reference={ this.props.reference } suppressLicenseBadge={ this.props.suppressLicenseBadge }/>
+            />
+            <Maybe test={ !this.props.suppressLicenseBadge }>
+              <LicenseBadge reference={ this.props.reference }/>
+            </Maybe>
             <Maybe test={ this.props.reference.self_citations }>
               <span key={ this.props.reference.ref_id + "selfcitation" } className="selfcitation">Self-citation</span><br/>
             </Maybe>
@@ -580,24 +582,16 @@ var CrossmarkBadge = React.createClass({
     }
 });
                                       
-var ReferenceBadges = React.createClass({
+var LicenseBadge = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var badges = [];
-        /* license badges */
-        if (!this.props.suppressLicenseBadge) {
-            var license = ref.info.license;
-            if (license === "free-to-read") {
-                badges.push(<span key={ ref.ref_id + "license" } className="text-available">● Free to read </span>);
-            } else if (license && license.toUpperCase().match(/^CC-BY/)) {
-                badges.push(<span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse </span>);
-            }
+        var license = ref.info.license;
+        if (license === "free-to-read") {
+            return <span key={ ref.ref_id + "license" } className="text-available">● Free to read<br/></span>;
+        } else if (license && license.toUpperCase().match(/^CC-BY/)) {
+            return <span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse<br/></span>;
         }
-        if (badges.length < 1) {
-            return <span/>;
-        } else {
-            return <span>{ badges }<br/></span>;
-        }
+        return <span/>;
     }
 });
 
