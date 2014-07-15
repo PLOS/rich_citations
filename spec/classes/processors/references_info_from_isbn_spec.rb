@@ -9,7 +9,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                               'ref-2' => { source:'none'},
                                                               'ref-3' => { id_type: :isbn, id:'2222222222' })
 
-    expect(HttpUtilities).to receive(:get).with('http://openlibrary.org/api/volumes/brief/json/ISBN:1111111111|ISBN:2222222222', anything).and_return('{}')
+    expect(HttpUtilities).to receive(:get).with('http://openlibrary.org/api/volumes/brief/json/ISBN:1111111111%7CISBN:2222222222', anything).and_return('{}')
 
     process
   end
