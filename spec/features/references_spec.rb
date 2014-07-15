@@ -40,13 +40,13 @@ describe "reference viewing", :type => :feature, :js => true do
   it "should display a retracted mark for retracted cites" do
     visit '/view/10.1371/journal.pone.0059428'
 
-    expect(page).to have_content("Small Protein-Mediated Quorum Sensing in a Gram-Negative Bacterium PLoS ONE doi: 10.1371/journal.pone.0029192 ● Retracted")
+    expect(page).to have_content("RETRACTED Han S, Sriariyanun M, Lee S, (and 4 more) (2011) Small Protein-Mediated Quorum Sensing in a Gram-Negative Bacterium PLoS ONE doi: 10.1371/journal.pone.0029192")
   end
 
   it "should display an updated mark for updated cites" do
     visit '/view/10.1371/journal.pone.0100404'
 
-    expect(page).to have_content("The First Global, Synoptic Survey of a Species from Space PLoS ONE doi: 10.1371/journal.pone.0033751 ● Updated")
+    expect(page).to have_content("UPDATED Fretwell PT, LaRue MA, Morin P, (and 7 more) (2012) An Emperor Penguin Population Estimate: The First Global, Synoptic Survey of a Species from Space PLoS ONE doi: 10.1371/journal.pone.0033751")
   end
 
   it "should work when a reference is not actually cited in the paper" do

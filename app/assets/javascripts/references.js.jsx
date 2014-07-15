@@ -485,6 +485,7 @@ var Reference = React.createClass({
         if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
         return <div id={ 'reference_' + this.props.reference.ref_id } className={ className }>
             { this.renderLabel() }
+            <CrossmarkBadge reference={ this.props.reference }/>
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }
                            suppressJournal={ this.props.suppressJournal }
                            updateHighlighting={ this.props.updateHighlighting }
@@ -561,18 +562,25 @@ var ReferenceCore = React.createClass({
     }
 });
 
+var CrossmarkBadge = React.createClass({
+    render: function() {
+        var ref = this.props.reference;
+        if (this.props.reference.updated_by) {
+            var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
+            if (_.contains(types, "retraction")) {
+                return <span key={ ref.ref_id + "retracted"} className="retracted">RETRACTED<br/></span>;
+            } else if (types.length > 0) {
+                return <span key={ ref.ref_id + "retracted"} className="updated">UPDATED<br/></span>;
+            }
+        }
+        return <span/>;
+    }
+});
+                                      
 var ReferenceBadges = React.createClass({
     render: function() {
         var ref = this.props.reference;
         var badges = [];
-        if (this.props.reference.updated_by) {
-            var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
-            if (_.contains(types, "retraction")) {
-                badges.push(<span key={ ref.ref_id + "retracted"} className="retracted">● Retracted </span>);
-            } else if (types.length > 0) {
-                badges.push(<span key={ ref.ref_id + "retracted"} className="updated">● Updated </span>);
-            }
-        }
         /* license badges */
         if (!this.props.suppressLicenseBadge) {
             var license = ref.info.license;

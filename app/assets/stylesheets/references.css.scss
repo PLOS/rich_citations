@@ -68,11 +68,17 @@ div.action-list {
 }
 
 span.retracted {
-    color: #f0532d;
+    background-color: #a5131e;
+    color: #ffffff;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 span.updated {
-    color: #4cb9d2;
+    background-color: #4eb9d2;
+    color: #ffffff;
+    padding-left: .5em;
+    padding-right: .5em;
 }
 
 span.reference-doi {
@@ -90,15 +96,15 @@ form.search {
 }
 
 .open-access {
-    color: #4cb748;
+    color: #39b54a;
 }
 
 .text-available {
-    color: #ffc63d;
+    color: #fbb03b;
 }
 
 .paywalled {
-    color: #f47e24;
+    color: #ed1c24;
 }
 
 .citation_hover {

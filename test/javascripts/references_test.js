@@ -275,16 +275,16 @@ test("withReferenceData", function() {
     });
 });
 
-test("ReferenceBadges", function() {
-    var r = ReferenceBadges({reference: {info: {}, updated_by: [{"type": "retraction"}]}});
+test("CrossmarkBadge", function() {
+    var r = CrossmarkBadge({reference: {info: {}, updated_by: [{"type": "retraction"}]}});
     TestUtils.renderIntoDocument(r);
-    strictEqual(r.getDOMNode().textContent, "● Retracted ");
+    strictEqual(r.getDOMNode().textContent, "RETRACTED");
 
-    var u = ReferenceBadges({reference: {info: {}, updated_by: [{"type": "updated"}]}});
+    var u = CrossmarkBadge({reference: {info: {}, updated_by: [{"type": "updated"}]}});
     TestUtils.renderIntoDocument(u);
-    strictEqual(u.getDOMNode().textContent, "● Updated ");
+    strictEqual(u.getDOMNode().textContent, "UPDATED");
 
-    var n = ReferenceBadges({reference: {info: {}}});
+    var n = CrossmarkBadge({reference: {info: {}}});
     TestUtils.renderIntoDocument(n);
     strictEqual(n.getDOMNode().textContent, "");
 });
