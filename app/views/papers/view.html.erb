@@ -32,7 +32,7 @@
                 <span rel="dc:creator" class="author">
                   <span class="person" property="foaf:name" typeof="foaf:Person">
                     <%= author_node.xpath("name/given-names").text().strip() -%>
-                    <%= author_node.xpath("name/surname").text().strip() -%><% if !(author_node / "xref[@ref-type='corresp']").empty? then %><span class="corresponding">mail</span><% end %><% if !(author_node / "./following-sibling::contrib").empty? %>,<% end %></span>
+                    <%= author_node.xpath("name/surname").text().strip() -%><% if !(author_node / "xref[@ref-type='corresp']").empty? then %> <span class="corresponding">mail</span><% end %><% if !(author_node / "./following-sibling::contrib").empty? %>,<% end %></span>
                 </span>
               </li>
             <% end %>
