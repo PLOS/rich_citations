@@ -42,6 +42,14 @@ function formatAuthorNameInverted (author) {
     }
 }
 
+function getLicense(ref) {
+    if (!ref.info || !ref.info.license) {
+        return "failed-to-obtain-license";
+    } else {
+        return ref.info.license.toLowerCase();
+    }
+}
+
 /**
  * Return a rendered string for displaying a given author. Turns given
  * names into initials, e.g. Jane Roe -> Roe J
@@ -131,9 +139,10 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === "index") {
         return ref.index;
     } else if (fieldname === 'license') {
-        if (!ref.info.license || (ref.info.license === 'failed-to-obtain-license')) {
+        var license = getLicense(ref);
+        if (license === 'failed-to-obtain-license') {
             return 100;
-        } else if (ref.info.license === 'free-to-read') {
+        } else if (license === 'free-to-read') {
             return 50;
         } else {
             /* assume something else means open acccess */
@@ -614,7 +623,7 @@ function mkHeadingGrouper(by) {
             }
             return ref.group.section || last;
         } else if (by === "license") {
-            return ref.data.info.license;
+            return getLicense(ref.data.info);
         } else {
             return null;
         }
@@ -637,12 +646,10 @@ var SortedReferencesList = React.createClass({
             /* copy & paste of license badge code; should probably be consolidated but it is short */
             if (key === "free-to-read") {
                 return <p><span className="text-available">● Free to read</span></p>;
-            } else if (key === "failed-to-obtain-license") {
-                return <p><span className="paywalled">● Subscription required or not online</span></p>;
-            } else if (key && key.toUpperCase().match(/^CC-BY/)) {
+            } else if (key === "cc-by") {
                 return <p><span className="open-access">● Free to read and reuse</span></p>;
             } else {
-                return <p/>;
+                return <p><span className="paywalled">● Subscription required or not online</span></p>;
             }
         } else {
             return <p><strong>{ key }</strong></p>;

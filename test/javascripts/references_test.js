@@ -434,3 +434,9 @@ test("render mention", function() {
     strictEqual(span.getDOMNode().textContent, "…schooling fishes [37]. To overcome the confusing defense mechanism of fish schooling, predators have had to adopt different hunting strategies [38], [39].");
     strictEqual(bold.getDOMNode().textContent, "[38], [39]");
 });
+
+test("get license", function() {
+    strictEqual(getLicense({}), "failed-to-obtain-license");
+    strictEqual(getLicense({info: {}}), "failed-to-obtain-license");
+    strictEqual(getLicense({info: {license: "CC-BY"}}), "cc-by");
+});
