@@ -438,5 +438,13 @@ test("render mention", function() {
 test("get license", function() {
     strictEqual(getLicense({}), "failed-to-obtain-license");
     strictEqual(getLicense({info: {}}), "failed-to-obtain-license");
+    strictEqual(getLicense({info: {license: "cc-by"}}), "cc-by");
     strictEqual(getLicense({info: {license: "CC-BY"}}), "cc-by");
+});
+
+test("mkHeadingGrouper", function() {
+    var licenseGrouper = mkHeadingGrouper("license");
+    strictEqual(licenseGrouper({data: {}}), "failed-to-obtain-license");
+    strictEqual(licenseGrouper({data: {info:{}}}), "failed-to-obtain-license");
+    strictEqual(licenseGrouper({data: {info:{license: "cc-by"}}}), "cc-by");
 });

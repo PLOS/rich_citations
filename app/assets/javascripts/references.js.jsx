@@ -592,10 +592,10 @@ var CrossmarkBadge = React.createClass({
 var LicenseBadge = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var license = ref.info.license;
+        var license = getLicense(ref);
         if (license === "free-to-read") {
             return <span key={ ref.ref_id + "license" } className="text-available">● Free to read<br/></span>;
-        } else if (license && license.toUpperCase().match(/^CC-BY/)) {
+        } else if (license === "cc-by") {
             return <span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse<br/></span>;
         }
         return <span/>;
@@ -623,7 +623,7 @@ function mkHeadingGrouper(by) {
             }
             return ref.group.section || last;
         } else if (by === "license") {
-            return getLicense(ref.data.info);
+            return getLicense(ref.data);
         } else {
             return null;
         }
