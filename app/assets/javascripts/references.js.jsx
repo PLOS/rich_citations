@@ -803,7 +803,7 @@ var Sorter = React.createClass({
     render: function() {
         var isCurrent = (this.props.current.by === this.props.by);
         if (isCurrent) {
-            return <span>{ this.props.children }</span>;
+            return <span><strong>{ this.props.children }</strong></span>;
         } else {
             return <button className="non-button" onClick={ this.handleClick }>{ this.props.children }</button>;
         }
