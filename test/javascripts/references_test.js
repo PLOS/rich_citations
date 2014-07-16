@@ -84,7 +84,6 @@ test("mkSortField", function () {
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
             var ref = fixture.references["pone.0067380-Lowry1"];
-            strictEqual("relative importance of growth and behaviour to elasmobranch suction-feeding performance over early ontogeny", mkSortField(ref, "title"));
             strictEqual(1, mkSortField(ref, "mentions"));
             strictEqual(55, mkSortField(ref, "appearance"));
             strictEqual("lowry d", mkSortField(ref, "author"));
@@ -97,7 +96,6 @@ test("mkSortField", function () {
                              info: {}};
             strictEqual(null, mkSortField(refNoInfo, "author"));
             strictEqual(null, mkSortField(refNoInfo, "year"));
-            strictEqual(null, mkSortField(refNoInfo, "title"));
             strictEqual(null, mkSortField(refNoInfo, "journal"));
             
             /* anything else should return null */
@@ -143,11 +141,6 @@ test("sortReferences", function () {
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Heithaus1",
                      sortableCount: 91,
-                     unsortableCount: 0},
-                    {by: "title",
-                     first: "pone.0067380-Simon1",
-                     last: "pone.0067380-Whitehead1",
-                     sortableCount: 55,
                      unsortableCount: 0}],
                    function (d) {
                        var refs = fixture.references;

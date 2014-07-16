@@ -8,9 +8,6 @@ describe "reference viewing", :type => :feature, :js => true do
     visit '/view/10.1371/journal.pone.0067380'
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Clua1")
 
-    page.click_button("Title")
-    expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Simon1")
-
     page.click_button("Order in paper")
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Clua1")
 

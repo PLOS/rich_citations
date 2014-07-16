@@ -114,9 +114,7 @@ function arraySorter(a, b) {
  */
 function mkSortField(ref, fieldname) {
     var info = ref.info;
-    if (fieldname === 'title') {
-        return mkSortString(info.title);
-    } else if (fieldname === 'appearance') {
+    if (fieldname === 'appearance') {
         return ref.index;
     } else if (fieldname === 'repeated') {
         /* if no references in paper, sort at end */
@@ -853,7 +851,6 @@ var ReferencesApp = React.createClass({
             <ul className="sorters">
             <li><Sorter by="appearance" current={ this.state.sort } onClick={ this.handleSorterClick }>Order in paper</Sorter> | </li>
             <li><Sorter by="repeated"   current={ this.state.sort } onClick={ this.handleSorterClick }>Citation groups</Sorter> | </li>
-            <li><Sorter by="title"      current={ this.state.sort } onClick={ this.handleSorterClick }>Title</Sorter> | </li>
             <li><Sorter by="author"     current={ this.state.sort } onClick={ this.handleSorterClick }>Author</Sorter> | </li>
             <li><Sorter by="year"       current={ this.state.sort } onClick={ this.handleSorterClick } defaultOrder="desc" toggleable={ true } >Year</Sorter> | </li>
             <li><Sorter by="journal"    current={ this.state.sort } onClick={ this.handleSorterClick }>Journal</Sorter> | </li>
