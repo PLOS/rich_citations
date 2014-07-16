@@ -1244,7 +1244,6 @@ ul#almSignPost li div.bottom div.center {
 
 #hdr-article .authors li {
   display: inline-block;
-  cursor: pointer;
   position: relative;
 }
 
@@ -1279,23 +1278,6 @@ ul#almSignPost li div.bottom div.center {
   -ms-transition: all .3s linear;
   -o-transition: all .3s linear;
   transition: all .3s linear;
-}
-
-#hdr-article .authors li .author:hover {
-  text-decoration: underline;
-}
-
-#hdr-article .authors li .author.no_author_meta:hover {
-  text-decoration: none;
-  cursor: auto;
-}
-
-#hdr-article .authors li.on .author:hover {
-  text-decoration: none;
-}
-
-#hdr-article .authors a {
-  cursor: pointer;
 }
 
 .authors .equal-contrib {
