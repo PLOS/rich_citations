@@ -145,6 +145,8 @@ class IdentifierResolver
       IdentifierResolvers::CrossRef,
       IdentifierResolvers::DoiFromReference,
       IdentifierResolvers::IsbnFromReference,
+      IdentifierResolvers::PubmedidFromReference,
+      IdentifierResolvers::PmcidFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
   ]
