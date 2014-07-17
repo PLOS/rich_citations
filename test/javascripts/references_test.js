@@ -53,7 +53,7 @@ var testRef = {
 
 var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"id": "10.12345/67890", "id_type": "doi"}});
 
-var spinnerPath = '/assets/spinner.gif';
+var spinnerPath = '/assets/loader.gif';
 
 test("jquery quote id", function() {
     equal(jq("hello.world"), "#hello\\.world");

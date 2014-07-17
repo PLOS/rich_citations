@@ -30,7 +30,7 @@ describe "reference viewing", :type => :feature, :js => true do
   it "should work on an article that has a missing citation" do
     visit '/view/10.1371/journal.pone.0100000'
 
-    page.click_button("Number of appearance")
+    page.click_button("Number of appearances")
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0100000-Villa2")
   end    
 
@@ -87,10 +87,10 @@ J Exp Biol 203: 283-294")
     visit "/view/10.1371/journal.pone.0067372"
     # this was failing because things moved too fast
     #expect(page).to have_content("Loading rich citations")
-    #expect(page).to have_xpath("//img[@src='/assets/spinner.gif']")
+    #expect(page).to have_xpath("//img[@src='/assets/loader.gif']")
     # should go away after loading citations
     expect(page).to have_content("Palumbi SR (2004) MARINE RESERVES AND OCEAN NEIGHBORHOODS: The Spatial Scale of Marine Populations and Their Management Annual Review of Environment and Resources doi: 10.1146/annurev.energy.29.062403.102254")
     expect(page).to_not have_content("Loading rich citations")
-    expect(page).to_not have_xpath("//img[@src='/assets/spinner.gif']")
+    expect(page).to_not have_xpath("//img[@src='/assets/loader.gif']")
   end
 end
