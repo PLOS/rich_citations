@@ -1150,6 +1150,7 @@ $(document).ready(function () {
     if (paper_doi) {
         /* insert the container */
         $("<div id='richcites'>Loading rich citations <img src='" + spinnerPath + "'/></div>").insertBefore("#references");
+        $("<div id='loader2'><img src='" + spinnerPath + "'/></div>").insertAfter($("#nav-article-page ul").first());
         withReferenceData(paper_doi, function (data) {
             var references = buildReferenceData(data);
             /* and drop into react */
@@ -1160,6 +1161,7 @@ $(document).ready(function () {
             addCitationIds(data.groups);
             mkPopovers(data);
             $("#richcites").replaceWith("<div id='richcites'></div>");
+            $("#loader2").replaceWith("<div id='richcites'></div>");
         });
     }
 });
