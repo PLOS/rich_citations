@@ -43,7 +43,7 @@ function formatAuthorNameInverted (author) {
 }
 
 function getLicense(ref) {
-    if (!ref.info || !ref.info.license) {
+    if (!ref.info || !ref.info.license || typeof(ref.info.license) !== "string") {
         return "failed-to-obtain-license";
     } else {
         return ref.info.license.toLowerCase();
