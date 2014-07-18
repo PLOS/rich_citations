@@ -30,12 +30,13 @@ div.citationGroup {
 }
 
 ul.sorters {
-    display: inline
+    display: inline;
 }
 
 ul.sorters li {
     display: inline;
     list-style-type: none;
+    line-height: 1.75em;
 }
 
 p.toggle.disabled {
