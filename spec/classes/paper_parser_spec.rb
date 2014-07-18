@@ -114,6 +114,7 @@ describe PaperParser do
                                                              Processors::Authors,
                                                              Processors::ReferencesInfoFromDoi,
                                                              Processors::ReferencesInfoFromIsbn,
+                                                             Processors::ReferencesInfoFromPubmed,
                                                              Processors::ReferencesInfoFromCitationNode,
                                                              Processors::ReferencesInfoFromCitationText,
                                                              Processors::NormalizeAuthorNames,
