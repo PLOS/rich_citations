@@ -14,6 +14,34 @@ describe Processors::ReferencesInfoFromPubmed do
     process
   end
 
+  before do
+    refs 'First'
+  end
+
+  def ref_info
+    result[:references]['ref-1'][:info]
+  end
+
+  def test_response(pmid='1111111111', medline_xml='', pubmed_xml=nil)
+    <<-XML
+      <?xml version="1.0"?>
+      <!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2014//EN" "http://www.ncbi.nlm.nih.gov/corehtml/query/DTD/pubmed_140101.dtd">
+      <PubmedArticleSet>
+      <PubmedArticle>
+          <MedlineCitation Owner="NLM" Status="MEDLINE">
+             #{medline_xml}
+          </MedlineCitation>
+          <PubmedData>
+              <ArticleIdList>
+                  <ArticleId IdType="pubmed">#{pmid}</ArticleId>
+              </ArticleIdList>
+              #{pubmed_xml}
+          </PubmedData>
+      </PubmedArticle>
+      </PubmedArticleSet>
+  XML
+  end
+
   complete_response = <<-XML
 <?xml version="1.0"?>
 <!DOCTYPE PubmedArticleSet PUBLIC "-//NLM//DTD PubMedArticle, 1st January 2014//EN" "http://www.ncbi.nlm.nih.gov/corehtml/query/DTD/pubmed_140101.dtd">
@@ -172,7 +200,6 @@ describe Processors::ReferencesInfoFromPubmed do
   XML
 
   it "should not call the API if there are cached results" do
-    refs 'First'
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
@@ -180,74 +207,70 @@ describe Processors::ReferencesInfoFromPubmed do
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:info][:source]).to eq('cached')
-    expect(result[:references]['ref-1'][:info][:title] ).to eq('cached title')
+    expect(ref_info[:source]).to eq('cached')
+    expect(ref_info[:title] ).to eq('cached title')
   end
 
   it "should merge in the API results" do
-    refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
-                                                          ref_source:          'test',
-                                                          id:                  '0451526538',
-                                                          id_type:             :pmid,
-                                                          score:               1.23,
-                                                          source:              "NIH",
-                                                          DOI:                 "10.1038/nature01262",
-                                                          PMCID:               "PMC111111",
-                                                          PMID:                "0451526538",
-                                                          abstract:            "Abstract Text.",
-                                                          author:              [{:affiliation=>"Genome Sequencing Center.", :literal=>"Mouse Genome Sequencing Consortium", :email=>"waterston@gs.washington.edu"},
-                                                                                {:famiy=>"Waterston", :given=>"Robert H", :initials=>"RH"},
-                                                                                {:famiy=>"Lindblad-Toh", :given=>"Kerstin", :initials=>"K"}],
-                                                          :"container-title"=> "Nature",
-                                                          :"container-type"=>  "Comparative Study",
-                                                          issue:               "6915",
-                                                          issued:              [[2002, 12, 6]],
-                                                          page:                "520-62",
-                                                          subject:             ["Animals", "Base Composition", "Chromosomes, Mammalian - genetics"],
-                                                          title:               "Initial sequencing and comparative analysis of the mouse genome.",
-                                                          volume:              "420",
-                                                      })
+    expect(ref_info).to eq({
+                              ref_source:          'test',
+                              id:                  '0451526538',
+                              id_type:             :pmid,
+                              score:               1.23,
+                              source:              "NIH",
+                              DOI:                 "10.1038/nature01262",
+                              PMCID:               "PMC111111",
+                              PMID:                "0451526538",
+                              abstract:            "Abstract Text.",
+                              author:              [{:affiliation=>"Genome Sequencing Center.", :literal=>"Mouse Genome Sequencing Consortium", :email=>"waterston@gs.washington.edu"},
+                                                    {:famiy=>"Waterston", :given=>"Robert H", :initials=>"RH"},
+                                                    {:famiy=>"Lindblad-Toh", :given=>"Kerstin", :initials=>"K"}],
+                              :"container-title"=> "Nature",
+                              :"container-type"=>  "Comparative Study",
+                              issue:               "6915",
+                              issued:              [[2002, 12, 6]],
+                              page:                "520-62",
+                              subject:             ["Animals", "Base Composition", "Chromosomes, Mammalian - genetics"],
+                              title:               "Initial sequencing and comparative analysis of the mouse genome.",
+                              volume:              "420",
+                          })
   end
 
   it "shouldn't fail for any missing data" do
     response = '<PubmedArticleSet><PubmedArticle></PubmedArticle></PubmedArticleSet>'
 
-    refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:info]).to eq( id:'0451526538', id_type: :pmid)
+    expect(ref_info).to eq( id:'0451526538', id_type: :pmid)
   end
 
   it "shouldn't fail if there is no data" do
     response = '<PubmedArticleSet></PubmedArticleSet>'
 
-    refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:info]).to eq( id:'0451526538', id_type: :pmid)
+    expect(ref_info).to eq( id:'0451526538', id_type: :pmid)
   end
 
   it "should handle missing results" do
-    refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
-    expect(result[:references]['ref-1'][:info]).to eq({
-                                                          ref_source: 'test',
-                                                          id:         '0451526538',
-                                                          id_type:    :pmid,
-                                                          score:      1.23
-                                                      })
+    expect(ref_info).to eq({
+                                ref_source: 'test',
+                                id:         '0451526538',
+                                id_type:    :pmid,
+                                score:      1.23
+                            })
   end
 
   it "should match multiple results even if they are out of order" do
@@ -287,17 +310,99 @@ describe Processors::ReferencesInfoFromPubmed do
   end
 
   it "should not overwrite the type, id, score or ref_source" do
-    refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:info]).to include(
-                                                          id_type:     :pmid,
-                                                          id:          '0451526538',
-                                                          ref_source:  'test',
-                                                          score:       1.23
-                                                      )
+    expect(ref_info).to include(
+                                    id_type:     :pmid,
+                                    id:          '0451526538',
+                                    ref_source:  'test',
+                                    score:       1.23
+                                )
+  end
+
+  it "should include different types of authors" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
+
+    expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
+            <AuthorList CompleteYN="Y">
+                <!-- Literal -->
+                <Author ValidYN="Y">
+                    <CollectiveName>Mouse Genome Sequencing Consortium</CollectiveName>
+                </Author>
+                <!-- Standard -->
+                <Author ValidYN="Y">
+                    <LastName>Waterston</LastName>
+                    <ForeName>Robert H</ForeName>
+                    <Initials>RH</Initials>
+                </Author>
+                <!-- with Affiliation -->
+                <Author ValidYN="Y">
+                    <LastName>Lindblad-Toh</LastName>
+                    <ForeName>Kerstin</ForeName>
+                    <Initials>K</Initials>
+                    <Affiliation>PLOS Lans</Affiliation>
+                </Author>
+                <!-- with Affiliation and email-->
+                <Author ValidYN="Y">
+                    <LastName>Flintstone</LastName>
+                    <ForeName>Fred</ForeName>
+                    <Affiliation>Genome Sequencing Center. waterston@gs.washington.edu</Affiliation>
+                </Author>
+            </AuthorList>
+    XML
+
+    expect(ref_info[:author]).to eq([
+                                      {literal:"Mouse Genome Sequencing Consortium"},
+                                      {famiy:"Waterston", given:"Robert H", initials:"RH"},
+                                      {famiy:"Lindblad-Toh", given:"Kerstin", initials:"K", affiliation:"PLOS Lans"},
+                                      {famiy:"Flintstone", given:"Fred", affiliation:"Genome Sequencing Center.", email:"waterston@gs.washington.edu"},
+                                    ])
+
+  end
+
+  it "should include subjects and nested subjects" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
+
+    expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
+        <MeshHeadingList>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Subject1</DescriptorName>
+            </MeshHeading>
+            <MeshHeading>
+                <DescriptorName MajorTopicYN="N">Subject 2</DescriptorName>
+                <QualifierName MajorTopicYN="Y">Subject Group</QualifierName>
+            </MeshHeading>
+        </MeshHeadingList>
+    XML
+
+    expect(ref_info[:subject]).to eq(['Subject1', 'Subject 2 - Subject Group'])
+
+  end
+
+  it "should include markup in the title" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
+
+    expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
+      <Article PubModel="Print">
+        <ArticleTitle>Title with <i>markup</i>.</ArticleTitle>
+      </Article>
+    XML
+
+    expect(ref_info[:title]).to eq('Title with <i>markup</i>.')
+  end
+
+  it "should include markup in the abstract" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, ref_source:'test' } )
+
+    expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
+      <Abstract>
+      <AbstractText>With <i>Markup</i>.</AbstractText>
+      </Abstract>
+    XML
+
+    expect(ref_info[:abstract]).to eq('With <i>Markup</i>.')
   end
 
 end

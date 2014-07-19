@@ -62,7 +62,7 @@ module Processors
           PMID:                value('PubmedData ArticleIdList *[IdType=pubmed]'), # || value('MedlineCitation > PMID'),
           PMCID:               value('PubmedData ArticleIdList *[IdType=pmc]'),
           DOI:                 value('PubmedData ArticleIdList *[IdType=doi]'),
-          title:               value('MedlineCitation ArticleTitle'),
+          title:               xml('MedlineCitation ArticleTitle'),
           # subtitle:
           issued:              date_value('PubmedData PubMedPubDate[PubStatus=pubmed]'),
           # publisher:
@@ -73,13 +73,18 @@ module Processors
           :'container-title'=> value('MedlineCitation Journal Title'),
           volume:              value('MedlineCitation Journal Volume'),
           issue:               value('MedlineCitation Journal Issue'),
-          abstract:            value('MedlineCitation AbstractText'),
+          abstract:            xml('MedlineCitation AbstractText'),
       }.compact
     end
 
     def value(selector)
       node = @result.at_css(selector)
       node && node.text.presence
+    end
+
+    def xml(selector)
+      node = @result.at_css(selector)
+      node && node.to_inner_xml.presence
     end
 
     def date_value(selector)
