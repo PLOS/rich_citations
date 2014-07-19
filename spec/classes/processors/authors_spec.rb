@@ -48,9 +48,10 @@ describe Processors::Authors do
     meta <<-EOS
       <contrib contrib-type="author">
         <surname>Jolie</surname><given-names>Angelina</given-names>
-        <xref ref-type='corresp' rid='cor1'>
+        <xref ref-type='corresp' rid='cor2'>
       </contrib>
-      <corresp id="cor1">* E-mail: <email xlink:type="simple">a.jolie@plos.org</email></corresp>
+      <corresp id="cor1">* E-mail: <email xlink:type="simple">f.flintstone@plos.org</email></corresp>
+      <corresp id="cor2">* E-mail: <email xlink:type="simple">a.jolie@plos.org</email></corresp>
     EOS
 
     expect(authors).to eq([ {family: 'Jolie',   given:'Angelina', email:'a.jolie@plos.org'}  ])
@@ -60,9 +61,10 @@ describe Processors::Authors do
     meta <<-EOS
       <contrib contrib-type="author">
         <surname>Jolie</surname><given-names>Angelina</given-names>
-        <xref ref-type='aff' rid='aff1'>
+        <xref ref-type='aff' rid='aff2'>
       </contrib>
-      <aff id="aff1"><addr-line>Hollywood</addr-line></aff>
+      <aff id="aff1"><addr-line>Somewhere</addr-line></aff>
+      <aff id="aff2"><addr-line>Hollywood</addr-line></aff>
     EOS
 
     expect(authors).to eq([ {family: 'Jolie',   given:'Angelina', affiliation:'Hollywood'}  ])
