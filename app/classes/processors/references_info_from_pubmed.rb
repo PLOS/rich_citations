@@ -6,7 +6,7 @@ module Processors
 
     def process
       # Process in groups since IDs have to fit in a URL
-      references_without_info.each_slice(20) do |references|
+      references_without_info(:pmid).each_slice(20) do |references|
         fill_info_for_references(references)
       end
     end
@@ -23,10 +23,6 @@ module Processors
     #    Since ids are in the url we cannot do more than a few at a time
 
     API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id='
-
-    def references_without_info
-      references_for_type(:pmid).reject { |ref| ref[:info] && ref[:info][:source] }
-    end
 
     def fill_info_for_references(references)
       reference_ids = references.map { |ref| ref[:id]}
@@ -58,7 +54,7 @@ module Processors
       @result = result
 
       {
-          source:              'NIH',
+          info_source:         'NIH',
           PMID:                value('PubmedData ArticleIdList *[IdType=pubmed]'), # || value('MedlineCitation > PMID'),
           PMCID:               value('PubmedData ArticleIdList *[IdType=pmc]'),
           DOI:                 value('PubmedData ArticleIdList *[IdType=doi]'),

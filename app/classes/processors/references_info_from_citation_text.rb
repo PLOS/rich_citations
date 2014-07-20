@@ -23,6 +23,8 @@ module Processors
       matches = cite.text.match(/(?<authors>.+)\((?<year>\d{4})\)(?<title>.+)/)
       return unless matches
 
+      @field_changed = false
+
       set_field info, :title, matches[:title]
 
       # Ad year issued
@@ -36,12 +38,17 @@ module Processors
         set_field info, :author, [ literal:matches[:authors].strip ]
       end
 
+      set_field(info, :info_source, 'RefText') if @field_changed
     end
 
     def set_field(info, field, value)
       if info[field].blank?
         value = value.strip if value.respond_to?(:strip)
-        info[field] = value if value.present?
+
+        if value.present? && value != info[field]
+          @field_changed = true
+          info[field] = value
+        end
       end
     end
 

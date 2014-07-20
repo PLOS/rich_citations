@@ -6,7 +6,7 @@ describe Processors::ReferencesInfoFromPmc do
   it "should call the API" do
     refs 'First', 'Second', 'Third'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC1111111111' },
-                                                              'ref-2' => { source:'none'},
+                                                              'ref-2' => { ref_source:'none'},
                                                               'ref-3' => { id_type: :pmcid, id:'PMC2222222222' })
 
     expect(HttpUtilities).to receive(:get).with("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&retmode=xml&id=PMC1111111111,PMC2222222222", :xml).and_return('{}')
@@ -154,11 +154,11 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :pmcid, id:'PMC1234567890', info:{source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :pmcid, id:'PMC1234567890', info:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(ref_info[:source]).to eq('cached')
+    expect(ref_info[:info_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
   end
 
@@ -172,7 +172,7 @@ describe Processors::ReferencesInfoFromPmc do
                               id:                  'PMC2647976',
                               id_type:             :pmcid,
                               score:               1.23,
-                              source:              "NIH",
+                              info_source:         "NIH",
                               DOI:                 "10.1073/pnas.0812194106",
                               PMCID:               "PMC2647976",
                               PMID:                "19246383",
@@ -242,16 +242,16 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          id:         'PMC1111111111',
-                                                          id_type:    :pmcid,
-                                                          source:     'NIH',
-                                                          PMCID:      'PMC1111111111',
+                                                          id:          'PMC1111111111',
+                                                          id_type:     :pmcid,
+                                                          info_source: 'NIH',
+                                                          PMCID:       'PMC1111111111',
                                                       })
     expect(result[:references]['ref-2'][:info]).to eq({
-                                                          id:         'PMC2222222222',
-                                                          id_type:    :pmcid,
-                                                          source:     'NIH',
-                                                          PMCID:      'PMC2222222222',
+                                                          id:          'PMC2222222222',
+                                                          id_type:     :pmcid,
+                                                          info_source: 'NIH',
+                                                          PMCID:       'PMC2222222222',
                                                       })
   end
 

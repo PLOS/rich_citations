@@ -31,7 +31,12 @@ module Processors::Helpers
   end
 
   def references_for_type(type)
+    type = type.to_sym
     references.values.select { |ref| ref[:id_type] == type }
+  end
+
+  def references_without_info(type)
+    references_for_type(type).reject { |ref| ref[:info] && ref[:info][:info_source] }
   end
 
   def citation_groups
