@@ -19,6 +19,10 @@ DOI='10.1371/journal.pone.0097128'
 DOI='10.1371/journal.pone.0067380'
 DOI='10.1371/journal.pone.0097165'
 DOI='10.1371/journal.pone.0041419'
+DOI='10.1371/journal.pgen.1001139' # Pubmed ID
+DOI='10.1371/journal.pgen.1002666' # PMC ID
+# DOI='10.1371/journal.pone.0038649' # Github
+# DOI='10.1371/journal.pone.0071952' # Github
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"
