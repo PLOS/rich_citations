@@ -34,6 +34,23 @@ describe Processors::ReferencesInfoFromCitationNode do
                                                       )
   end
 
+  it "should extract html formatting with the title" do
+    ref_node = Nokogiri::XML.parse <<-XML
+      <ref id="pbio.1001675-Davenport1"><label>17</label>
+        <mixed-citation publication-type="journal" xlink:type="simple">
+          <article-title>Who cites <italic>women</italic>?</article-title>.
+        </mixed-citation>
+      </ref>
+    XML
+
+    process( references: { 'ref-1' => {
+        node: ref_node,
+        info: {},
+    } } )
+
+    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <italic>women</italic>?')
+  end
+
   it "should extract only a start page" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>

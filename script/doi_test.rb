@@ -9,20 +9,13 @@ require 'pp'
 DOI='10.1371/journal.pone.0046843'
 DOI='10.1371/journal.pbio.0050222xxx'
 DOI='10.1371/journal.pone.0032408' # The Paper from Hell
-DOI='10.1371/journal.pbio.1001675'
-DOI='10.1371/journal.pone.0047692'
-DOI='10.1371/journal.pone.0098172'
-DOI='10.1371/journal.pbio.1001675'
 DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
 DOI='10.1371/journal.pone.0041419' # ISBN
-DOI='10.1371/journal.pone.0097128'
-DOI='10.1371/journal.pone.0067380'
-DOI='10.1371/journal.pone.0097165'
-DOI='10.1371/journal.pone.0041419'
 DOI='10.1371/journal.pgen.1001139' # Pubmed ID
 DOI='10.1371/journal.pgen.1002666' # PMC ID
 # DOI='10.1371/journal.pone.0038649' # Github
 # DOI='10.1371/journal.pone.0071952' # Github
+DOI='10.1371/journal.pone.0067380'
 
 start_time = Time.now
 puts "Starting at ----------------- #{start_time}"

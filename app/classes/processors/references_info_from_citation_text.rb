@@ -20,7 +20,7 @@ module Processors
       cite = node.at_css('mixed-citation')
       return unless cite.present?
 
-      matches = cite.text.match(/(?<authors>.+)\((?<year>\d{4})\)(?<title>.+)/)
+      matches = cite.to_inner_xml.match(/(?<authors>.+)\((?<year>\d{4})\)(?<title>.+)/)
       return unless matches
 
       @field_changed = false
