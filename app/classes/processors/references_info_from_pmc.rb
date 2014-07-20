@@ -80,7 +80,7 @@ module Processors
 
     def xml(selector)
       node = @result.at_css(selector)
-      node && node.to_inner_xml.presence
+      node && node.inner_html.presence
     end
 
     def date_value(selector)
