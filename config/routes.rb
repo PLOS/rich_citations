@@ -1,6 +1,6 @@
 CitationTools::Application.routes.draw do
 
-  root 'results#index'
+  root 'papers#index'
 
   get '', to:'results#index', as:'search'
 
