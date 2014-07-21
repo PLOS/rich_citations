@@ -11,8 +11,8 @@ module Id
     DOI_END_CHAR     = NPUNCT
     DOI_REGEX        = "10\\.#{DOI_PREFIX_CHAR}+\\/#{DOI_CHAR}*#{DOI_END_CHAR}+"
 
-    DOI_PREFIX_REGEX = /(^|\s)doi:?\s*(?<result>#{DOI_REGEX})/io
-    DOI_URL_REGEX    = /(^|\W)doi\.org\/(?<result>#{DOI_REGEX})/io
+    DOI_PREFIX_REGEX = /\bdoi:?\s*(?<result>#{DOI_REGEX})/io
+    DOI_URL_REGEX    = /\bdoi\.org\/(?<result>#{DOI_REGEX})/io
     DOI_ALONE_REGEX  = /^(#{PUNCT}|\s)*(?<result>#{DOI_REGEX})/io
 
     PLOS_PREFIXES = [ '10.1371' ]

@@ -5,9 +5,9 @@ module Id
     # 10 or 13 digits with optional hypehns
     PMCID_REGEX = '(\d{4,20})'
     # Prefixed with pmcid and punctuation
-    PMCID_PREFIX_REGEX    = /(^|\s)(pmcid|pubmed\s*commons\s*id):?\s*(?<result>(PMC)?#{PMCID_REGEX})(#{PUNCT}|\s|$)/io
+    PMCID_PREFIX_REGEX    = /\b(pmcid|pubmed\s*commons\s*id):?\s*(?<result>(PMC)?#{PMCID_REGEX})(#{PUNCT}|\s|$)/io
     # Number directly prefixed by PMC
-    PMCID_NO_PREFIX_REGEX = /\b*(?<result>PMC#{PMCID_REGEX})(#{PUNCT}|\s|$)/io
+    PMCID_NO_PREFIX_REGEX = /\b(?<result>PMC#{PMCID_REGEX})(#{PUNCT}|\s|$)/io
 
     def self.extract(text)
       normalize( match_regexes(text, PMCID_PREFIX_REGEX => false,

@@ -6,7 +6,7 @@ describe Processors::ReferencesInfoFromIsbn do
   it "should call the API" do
     refs 'First', 'Second', 'Third'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111' },
-                                                              'ref-2' => { source:'none'},
+                                                              'ref-2' => { ref_source:'none'},
                                                               'ref-3' => { id_type: :isbn, id:'2222222222' })
 
     expect(HttpUtilities).to receive(:get).with('http://openlibrary.org/api/volumes/brief/json/ISBN:1111111111%7CISBN:2222222222', anything).and_return('{}')
@@ -335,11 +335,11 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :isbn, id:'1234567890', info:{source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :isbn, id:'1234567890', info:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:info][:source]).to eq('cached')
+    expect(result[:references]['ref-1'][:info][:info_source]).to eq('cached')
     expect(result[:references]['ref-1'][:info][:title] ).to eq('cached title')
   end
 
@@ -354,7 +354,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           id:                '0451526538',
                                                           id_type:           :isbn,
                                                           score:             1.23,
-                                                          source:            "OpenLibrary",
+                                                          info_source:       "OpenLibrary",
                                                           key:               "/books/OL1017798M",
                                                           ISBN:              ["0451526538"],
                                                           OCLC:              ["36792831"],
@@ -379,7 +379,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:info]).to eq( id:'1111111111', id_type: :isbn, source:'OpenLibrary')
+    expect(result[:references]['ref-1'][:info]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary')
   end
 
   it "should handle missing results" do
@@ -411,16 +411,16 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          id:         '1111111111',
-                                                          id_type:    :isbn,
-                                                          source:     'OpenLibrary',
-                                                          key:        '/books/OL01'
+                                                          id:          '1111111111',
+                                                          id_type:     :isbn,
+                                                          info_source: 'OpenLibrary',
+                                                          key:         '/books/OL01'
                                                       })
     expect(result[:references]['ref-2'][:info]).to eq({
-                                                          id:         '2222222222',
-                                                          id_type:    :isbn,
-                                                          source:     'OpenLibrary',
-                                                          key:        '/books/OL02'
+                                                          id:          '2222222222',
+                                                          id_type:     :isbn,
+                                                          info_source: 'OpenLibrary',
+                                                          key:         '/books/OL02'
                                                       })
   end
 
@@ -434,7 +434,7 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(result[:references]['ref-1'][:info]).to eq({
                                                           id:                '0451526538',
                                                           id_type:           :isbn,
-                                                          source:            "OpenLibrary",
+                                                          info_source:       "OpenLibrary",
                                                           author:            [ {literal:"Mark Twain"} ],
                                                       })
   end

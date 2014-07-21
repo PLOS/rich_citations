@@ -3,8 +3,8 @@ module Id
 
     # 10 or 13 digits with optional hypehns
     ISBN_REGEX = '(\d{3}\-?)?(\d\-?){9}(\d|X)'
-    ISBN_PREFIX_REGEX = /(^|\s)isbn:?\s*(?<result>#{ISBN_REGEX})(#{PUNCT}|\s|$)/io
-    # ISBN_PREFIX_REGEX = /(^|\s)isbn:?\s*(?<result>#{ISBN_REGEX})/io
+    ISBN_PREFIX_REGEX = /\bisbn:?\s*(?<result>#{ISBN_REGEX})(#{PUNCT}|\s|$)/io
+    # ISBN_PREFIX_REGEX = /\bisbn:?\s*(?<result>#{ISBN_REGEX})/io
 
     def self.extract(text)
       text = normalize_input(text)

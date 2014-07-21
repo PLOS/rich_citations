@@ -38,7 +38,7 @@ module Processors
 
       if xref.present?
         rid = xref.first['rid']
-        corresp = xml.css("article-meta corresp##{rid}")
+        corresp = xml.css("article-meta corresp[id=#{rid}]")
         email = corresp.css('email')
 
         if email.present?

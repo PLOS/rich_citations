@@ -74,7 +74,7 @@ class PaperParser
                        end
 
     resolved = []
-    klasses = klasses.sort_by { |klass| klass.priority }
+    klasses = klasses.sort_by { |klass| klass.name }.sort_by { |klass| klass.priority }
     add_dependencies.(resolved, klasses)
     resolved
   end

@@ -26,7 +26,7 @@ describe PaperParser do
 
     def klass(i)
       o = double("processor #{i}", process:nil, cleanup:nil)
-      k = double("processor_klass #{i}", new:o, object:o, dependencies:nil, priority:50)
+      k = double("processor_klass #{i}", new:o, object:o, dependencies:nil, priority:50, name:"processor_klass #{i}")
     end
 
     before do
@@ -114,6 +114,8 @@ describe PaperParser do
                                                              Processors::Authors,
                                                              Processors::ReferencesInfoFromDoi,
                                                              Processors::ReferencesInfoFromIsbn,
+                                                             Processors::ReferencesInfoFromPubmed,
+                                                             Processors::ReferencesInfoFromPmc,
                                                              Processors::ReferencesInfoFromCitationNode,
                                                              Processors::ReferencesInfoFromCitationText,
                                                              Processors::NormalizeAuthorNames,
@@ -121,8 +123,8 @@ describe PaperParser do
                                                              Processors::ReferencesAbstract,
                                                              Processors::ReferencesCitedGroups,
                                                              Processors::ReferencesCrossmark,
-                                                             Processors::SelfCitations,
                                                              Processors::CitationGroupPosition,
+                                                             Processors::SelfCitations,
                                                              Processors::ReferencesZeroMentions,
                                                              Processors::CitationGroupContext,
                                                              Processors::ReferencesMedianCoCitations,

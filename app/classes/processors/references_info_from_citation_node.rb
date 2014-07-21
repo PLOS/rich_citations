@@ -11,7 +11,7 @@ module Processors
     end
 
     def self.dependencies
-      [ReferencesInfoFromDoi, ReferencesInfoFromIsbn]
+      [ReferencesInfoFromDoi, ReferencesInfoFromIsbn, ReferencesInfoFromPubmed, ReferencesInfoFromPmc]
     end
 
     protected
@@ -20,9 +20,11 @@ module Processors
       cite = node.at_css('mixed-citation')
       return unless cite.present?
 
+      @field_changed = false
+
       set_field info, :'container-type',  cite['publication-type']
       set_field info, :'container-title', cite.at_css('source')
-      set_field info, :title,             cite.at_css('article-title')
+      set_field info, :title,             cite.at_css('article-title').try(:inner_html)
       set_field info, :volume,            cite.at_css('volume')
 
       # Ad year issued
@@ -39,6 +41,8 @@ module Processors
       end
 
       extract_citation_names(node, info)
+
+      set_field(info, :info_source, 'RefNode') if @field_changed
     end
 
     def extract_citation_names(node, info)
@@ -60,7 +64,11 @@ module Processors
       if info[field].blank?
         value = value.content if value.respond_to?(:content)
         value = value.strip if value.respond_to?(:strip)
-        info[field] = value if value.present?
+
+        if value.present? && value != info[field]
+          @field_changed = true
+          info[field] = value
+        end
       end
     end
 

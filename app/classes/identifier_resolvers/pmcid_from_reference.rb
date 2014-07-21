@@ -1,5 +1,5 @@
 module IdentifierResolvers
-  class IsbnFromReference < Base
+  class PmcidFromReference < Base
 
     def resolve
       unresolved_references.each{ |id, node|
@@ -11,13 +11,13 @@ module IdentifierResolvers
     private
 
     def extract_info(text)
-      id = Id::Isbn.extract(text)
+      id = Id::Pmcid.extract(text)
 
       return nil unless id.present?
       {
           ref_source: :ref,
           id:         id,
-          id_type:    :isbn,
+          id_type:    :pmcid,
       }
     end
 
