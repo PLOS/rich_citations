@@ -62,7 +62,7 @@ module Plos
     # Given the DOI of a PLOS paper, downloads the XML and parses it
     def self.document(doi)
       url = DOC_URL % [doi]
-      response = Rails.cache.fetch("#{doi}_xml") do
+      response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
         HttpUtilities.get(url, :xml)
       end
       Nokogiri::XML(response)
