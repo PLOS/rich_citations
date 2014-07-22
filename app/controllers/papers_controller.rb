@@ -2,7 +2,7 @@ class PapersController < ApplicationController
 
   def index
     if params[:doi].present? then
-      redirect_to action: 'view', id: (params[:doi].strip)
+      redirect_to action: 'view', id: Id::Doi.extract(params[:doi])
     end
   end
 
