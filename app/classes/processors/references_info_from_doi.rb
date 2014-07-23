@@ -33,6 +33,9 @@ module Processors
       url  = API_URL + URI.encode_www_form_component(doi)
       json = HttpUtilities.get(url, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
+    rescue Net::HTTPServerException => ex
+      raise unless ex.response.is_a?(Net::HTTPNotFound)
+      {}
     end
 
   end

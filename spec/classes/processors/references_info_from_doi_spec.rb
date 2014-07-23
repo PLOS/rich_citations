@@ -71,4 +71,14 @@ describe Processors::ReferencesInfoFromDoi do
                                                       })
   end
 
+  it "handles a missing/bad doi" do
+    refs 'Some Reference'
+
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' } )
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
+
+    process
+
+  end
+
 end
