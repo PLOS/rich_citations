@@ -6,7 +6,7 @@ describe Processors::ReferencesInfoFromPmc do
   it "should call the API" do
     refs 'First', 'Second', 'Third'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC1111111111' },
-                                                              'ref-2' => { ref_source:'none'},
+                                                              'ref-2' => { },
                                                               'ref-3' => { id_type: :pmcid, id:'PMC2222222222' })
 
     expect(HttpUtilities).to receive(:get).with("http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&retmode=xml&id=PMC1111111111,PMC2222222222", :xml).and_return('{}')
@@ -163,12 +163,12 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   it "should merge in the API results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC2647976', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC2647976', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(sample_response)
 
     expect(ref_info).to eq({
-                              ref_source:          'test',
+                              id_source:           'test',
                               id:                  'PMC2647976',
                               id_type:             :pmcid,
                               score:               1.23,
@@ -211,12 +211,12 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   it "should handle missing results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
     expect(ref_info).to eq({
-                                ref_source: 'test',
+                                id_source:  'test',
                                 id:         'PMC0451526538',
                                 id_type:    :pmcid,
                                 score:      1.23
@@ -255,21 +255,21 @@ describe Processors::ReferencesInfoFromPmc do
                                                       })
   end
 
-  it "should not overwrite the type, id, score or ref_source" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+  it "should not overwrite the type, id, score or id_source" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(sample_response)
 
     expect(ref_info).to include(
                                     id_type:     :pmcid,
                                     id:          'PMC0451526538',
-                                    ref_source:  'test',
+                                    id_source:   'test',
                                     score:       1.23
                                 )
   end
 
   it "should include different types of authors" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
       <contrib-group>
@@ -323,7 +323,7 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   it "should include subjects and nested subjects" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
       <article-categories>
@@ -358,7 +358,7 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   it "should include markup in the title" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
       <title-group>
@@ -370,7 +370,7 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   it "should include markup in the abstract" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
       <abstract>
@@ -384,7 +384,7 @@ describe Processors::ReferencesInfoFromPmc do
   context "should include the publication date" do
 
     it "should use the epub date first" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <pub-date pub-type="ppub">
@@ -403,7 +403,7 @@ describe Processors::ReferencesInfoFromPmc do
     end
 
     it "should fallback to the ppub date" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <pub-date pub-type="ppub">
@@ -417,7 +417,7 @@ describe Processors::ReferencesInfoFromPmc do
     end
 
     it "should accept a missing day field" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <pub-date pub-type="epub">
@@ -434,7 +434,7 @@ describe Processors::ReferencesInfoFromPmc do
   context "page field" do
 
     it "should handle a start and end page" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <fpage>4435</fpage>
@@ -445,7 +445,7 @@ describe Processors::ReferencesInfoFromPmc do
     end
 
     it "should not include the end page if it is the same as the start" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <fpage>4435</fpage>
@@ -456,7 +456,7 @@ describe Processors::ReferencesInfoFromPmc do
     end
 
     it "should not fail if the end page is missing" do
-      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538', score:1.23, ref_source:'test' } )
+      allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmcid, id:'PMC0451526538' } )
 
       expect(HttpUtilities).to receive(:get).and_return(test_response('0451526538', <<-XML))
         <fpage>4435</fpage>

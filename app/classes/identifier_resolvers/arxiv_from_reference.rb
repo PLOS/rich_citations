@@ -28,7 +28,7 @@ module IdentifierResolvers
 
       return nil unless id.present?
       {
-          ref_source: :ref,
+          id_source:  :ref,
           id:         id,
           id_type:    :arxiv,
       }

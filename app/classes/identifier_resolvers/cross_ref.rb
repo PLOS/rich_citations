@@ -45,7 +45,7 @@ module IdentifierResolvers
       return nil unless doi.present?
 
       {
-          ref_source:  :crossref,
+          id_source:   :crossref,
           id:          doi,
           id_type:     :doi,
           score:       result['score'].to_f,

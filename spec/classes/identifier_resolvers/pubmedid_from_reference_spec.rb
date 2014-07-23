@@ -33,7 +33,7 @@ describe IdentifierResolvers::PubmedidFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', ref_source: :ref, id:'1234567890', id_type: :pmid)
+      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234567890', id_type: :pmid)
       resolver.resolve
     end
 

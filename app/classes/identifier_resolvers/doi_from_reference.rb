@@ -23,7 +23,7 @@ module IdentifierResolvers
 
       return nil unless doi.present?
       {
-          ref_source: :ref,
+          id_source:  :ref,
           id:         doi,
           id_type:    :doi,
       }
