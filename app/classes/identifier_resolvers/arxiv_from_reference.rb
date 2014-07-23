@@ -17,7 +17,7 @@ module IdentifierResolvers
       if is_arxiv
         id = id || Id::Arxiv.id( node.node.at_css('volume').try(:text))
         id = id || Id::Arxiv.id( node.node.at_css('fpage').try(:text))
-        id = id || Id::Arxiv.id( node.node.at_css('volume').try(:text).to_s + node.node.at_css('fpage').try(:text).to_s)
+        id = id || Id::Arxiv.id( node.node.at_css('volume').try(:text).to_s + '.' + node.node.at_css('fpage').try(:text).to_s)
       end
 
       # Try and extract the link from pure XML

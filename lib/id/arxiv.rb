@@ -9,8 +9,8 @@ module Id
 
     NEW_URL_REGEX    = /arxiv\.org\/abs\/(?<result>#{NEW_ARXIV_REGEX})\b/io
     OLD_URL_REGEX    = /arxiv\.org\/abs\/(?<result>#{OLD_ARXIV_REGEX})\b/io
-    NEW_PREFIX_REGEX = /\barxiv:?\s*(?<result>#{NEW_ARXIV_REGEX})\b/io
-    OLD_PREFIX_REGEX = /\barxiv:?\s*(?<result>#{OLD_ARXIV_REGEX})\b/io
+    NEW_PREFIX_REGEX = /\barxiv(\s*id)?:?\s*(?<result>#{NEW_ARXIV_REGEX})\b/io
+    OLD_PREFIX_REGEX = /\barxiv(\s*id)?:?\s*(?<result>#{OLD_ARXIV_REGEX})\b/io
 
     NEW_ID_REGEX    = /\A#{NEW_ARXIV_REGEX}\z/io
     OLD_ID_REGEX    = /\A#{OLD_ARXIV_REGEX}\z/io

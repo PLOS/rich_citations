@@ -13,9 +13,9 @@ DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
 DOI='10.1371/journal.pone.0041419' # ISBN
 DOI='10.1371/journal.pgen.1001139' # Pubmed ID
 DOI='10.1371/journal.pgen.1002666' # PMC ID
+DOI='10.1371/journal.pone.0036540' #  Arxiv ID
 # DOI='10.1371/journal.pone.0038649' # Github
 # DOI='10.1371/journal.pone.0071952' # Github
-DOI='10.1371/journal.pone.0067380'
 
 doi = ARGV.last || DOI
 
@@ -23,9 +23,9 @@ start_time = Time.now
 puts "Starting at ----------------- #{start_time}"
 
 xml = r = Plos::Api.document( doi )
-r = xml.css('ref-list')
+# r = xml.css('ref-list')
 # r = xml.css('body')
-puts r.to_xml; exit
+# puts r.to_xml; exit
 
 info = PaperParser.parse_xml(xml)
 

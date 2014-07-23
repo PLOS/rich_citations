@@ -11,6 +11,11 @@ describe Id::Arxiv do
         expect( Id::Arxiv.extract('Arxiv: 1407.1234') ).to eq('1407.1234')
       end
 
+      it "should match a string starting with arxiv id" do
+        expect( Id::Arxiv.extract('arxiv id:1407.1234') ).to eq('1407.1234')
+        expect( Id::Arxiv.extract('ArxivId: 1407.1234') ).to eq('1407.1234')
+      end
+
       it "should match a url starting with arxiv.org/abs/" do
         expect( Id::Arxiv.extract('arxiv.org/abs/1407.1234') ).to eq('1407.1234')
         expect( Id::Arxiv.extract('arxiv.org/abs/1407.1234') ).to eq('1407.1234')
