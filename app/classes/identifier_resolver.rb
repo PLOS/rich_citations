@@ -147,6 +147,7 @@ class IdentifierResolver
       IdentifierResolvers::IsbnFromReference,
       IdentifierResolvers::PubmedidFromReference,
       IdentifierResolvers::PmcidFromReference,
+      IdentifierResolvers::ArxivFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
   ]
