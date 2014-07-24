@@ -76,6 +76,10 @@ describe Id::Arxiv do
         expect( Id::Arxiv.extract('Arxiv:hep-lat.GT/1234567. ') ).to eq('hep-lat.GT/1234567')
       end
 
+      it "should handle a version suffix" do
+        expect( Id::Arxiv.extract('Arxiv:hep-lat.GT/1234567v12. ') ).to eq('hep-lat.GT/1234567v12')
+      end
+
       it "should not accept standlone ids" do
         expect( Id::Arxiv.extract('hep-lat.GT/1234567') ).to be_nil
       end
@@ -107,6 +111,28 @@ describe Id::Arxiv do
 
     it "should remove whitespace" do
       expect( Id::Arxiv.normalize('  1234.5678  ') ).to eq('1234.5678')
+    end
+
+  end
+
+  describe "::without_version" do
+
+    it "should remove the version" do
+      expect( Id::Arxiv.without_version('1234.5678v12') ).to eq('1234.5678')
+      expect( Id::Arxiv.without_version('1234.5678V12') ).to eq('1234.5678')
+      expect( Id::Arxiv.without_version('12345678V12') ).to eq('1234.5678')
+      expect( Id::Arxiv.without_version('hep-lat.GT/1234567v12') ).to eq('hep-lat.GT/1234567')
+    end
+
+    it "should not remove the version if there is none" do
+      expect( Id::Arxiv.without_version('1234.5678') ).to eq('1234.5678')
+      expect( Id::Arxiv.without_version('12345678') ).to eq('1234.5678')
+      expect( Id::Arxiv.without_version('hep-lat.GT/1234567') ).to eq('hep-lat.GT/1234567')
+    end
+
+    it "should accept a nil or blank" do
+      expect( Id::Arxiv.without_version(nil) ).to be_nil
+      expect( Id::Arxiv.without_version('') ).to be_nil
     end
 
   end

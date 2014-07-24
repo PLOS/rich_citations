@@ -5,7 +5,7 @@ module Id
     # yymm.nnnn(Vn)
     NEW_ARXIV_REGEX = '\d{4}\.?\d{4,5}(v\d{1,3})?'
     # subject/yymmnnn - subject can be alpha & . or -
-    OLD_ARXIV_REGEX = '[a-z0-9.-]+\/\d{7}'
+    OLD_ARXIV_REGEX = '[a-z0-9.-]+\/\d{7}(v\d{1,3})?'
 
     NEW_URL_REGEX    = /arxiv\.org\/abs\/(?<result>#{NEW_ARXIV_REGEX})\b/io
     OLD_URL_REGEX    = /arxiv\.org\/abs\/(?<result>#{OLD_ARXIV_REGEX})\b/io
@@ -32,11 +32,17 @@ module Id
     end
     def self.is_id?(text); id(text); end
 
+    # Assumes the input is a valid Arxiv ID
+    def self.without_version(id)
+      id = normalize(id)
+      id && id.sub(/v\d+$/i, '')
+    end
+
     def self.normalize(id)
       id = id.try(:strip)
       if id.blank?
         nil
-      elsif id =~ /\d{8}/
+      elsif id =~ /\d{8}/ # New version without period
         id.insert(4,'.')
       else
         id
