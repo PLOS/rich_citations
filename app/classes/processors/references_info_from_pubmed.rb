@@ -5,10 +5,8 @@ module Processors
     include Helpers
 
     def process
-      # Process in groups since IDs have to fit in a URL
-      references_without_info(:pmid).each_slice(20) do |references|
-        fill_info_for_references(references)
-      end
+      references = references_without_info(:pmid)
+      fill_info_for_references(references) if references.present?
     end
 
     def self.dependencies
@@ -20,9 +18,8 @@ module Processors
     # cf http://www.ncbi.nlm.nih.gov/books/NBK25497/
     #    This table is also useful http://www.ncbi.nlm.nih.gov/books/NBK25499/table/chapter4.chapter4_table1/?report=objectonly
     #    We could also use the altimetrics API
-    #    Since ids are in the url we cannot do more than a few at a time
 
-    API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml&id='
+    API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml'
 
     def fill_info_for_references(references)
       reference_ids = references.map { |ref| ref[:id]}
@@ -45,8 +42,9 @@ module Processors
     end
 
     def fetch_results_for_ids(ids)
-      url    = API_URL + ids.join(',')
-      xml   = HttpUtilities.get(url, :xml)
+      data  = 'id=' + ids.join(',')
+      xml   = HttpUtilities.post(API_URL, data,
+                                 'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::XML  )
       Nokogiri::XML(xml)
     end
 
