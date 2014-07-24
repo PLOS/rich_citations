@@ -536,7 +536,7 @@ var ReferenceCore = React.createClass({
                         },
                         hide: {
                             fixed: true,
-                            delay: 1000
+                            delay: 100
                         },
                         position: {
                             viewport: $(window),
@@ -929,7 +929,7 @@ function mkReferencePopover(id, references, currentMentions) {
         },
         hide: {
             fixed: true,
-            delay: 1000
+            delay: 100
         },
         style: { classes: 'citation-popover' },
         position: {
