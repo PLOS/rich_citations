@@ -649,7 +649,7 @@ var SortedReferencesList = React.createClass({
             } else if (key === "cc-by") {
                 return <p><span className="open-access">● Free to read and reuse</span></p>;
             } else {
-                return <p><span className="paywalled">● Subscription required or not online</span></p>;
+                return <p><span className="paywalled">● Subscription required or license unknown</span></p>;
             }
         } else {
             return <p><strong>{ key }</strong></p>;
