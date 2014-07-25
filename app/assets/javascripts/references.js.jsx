@@ -814,6 +814,9 @@ var Sorter = React.createClass({
  * Class containing a reference in a popover.
  */
 var ReferencePopover = React.createClass({
+    componentDidMount: function() {
+        this.props.qtip && this.props.qtip.reposition();
+    }, 
     render: function() {
         var references = _.map(_.zip(this.props.references, this.props.currentMentions), function(d) {
             return <Reference
