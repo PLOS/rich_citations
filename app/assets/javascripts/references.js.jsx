@@ -425,7 +425,7 @@ var ReferenceAuthorList = React.createClass({
     },
     handleClick: function() {
         this.setState({ expanded: !this.state.expanded});
-        this.props.updateHighlighting();
+        if (this.props.updateHighlighting) { this.props.updateHighlighting(); }
         return false;
     },
     render: function() {
