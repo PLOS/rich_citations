@@ -8,7 +8,7 @@ module IdentifierResolvers
 
       crossref_infos.each do |id, info|
         if ! has_result?(id)
-          info[:ref_source] = :crossref_lowscore
+          info[:id_source] = :crossref_lowscore
           set_result(id, info)
         end
       end

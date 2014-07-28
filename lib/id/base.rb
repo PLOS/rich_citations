@@ -5,6 +5,10 @@ module Id
     PUNCT  = %q{[\]'"`.,:;!)\-\/]}  # Posix [[:punct:]] regex is more liberal than we want
     NPUNCT = %q{[^\]'"`.,>[[:space:]]:;!)\-\/]}
 
+    def self.normalize(id)
+      id ? id.strip.presence : nil
+    end
+
     private
 
     # Regexes must have a named capture called 'result'

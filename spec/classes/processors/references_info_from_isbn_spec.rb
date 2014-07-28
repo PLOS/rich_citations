@@ -6,7 +6,7 @@ describe Processors::ReferencesInfoFromIsbn do
   it "should call the API" do
     refs 'First', 'Second', 'Third'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111' },
-                                                              'ref-2' => { ref_source:'none'},
+                                                              'ref-2' => { },
                                                               'ref-3' => { id_type: :isbn, id:'2222222222' })
 
     expect(HttpUtilities).to receive(:get).with('http://openlibrary.org/api/volumes/brief/json/ISBN:1111111111%7CISBN:2222222222', anything).and_return('{}')
@@ -345,12 +345,12 @@ describe Processors::ReferencesInfoFromIsbn do
 
   it "should merge in the API results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          ref_source:        'test',
+                                                          id_source:         'test',
                                                           id:                '0451526538',
                                                           id_type:           :isbn,
                                                           score:             1.23,
@@ -384,12 +384,12 @@ describe Processors::ReferencesInfoFromIsbn do
 
   it "should handle missing results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
     expect(result[:references]['ref-1'][:info]).to eq({
-                                                          ref_source: 'test',
+                                                          id_source:  'test',
                                                           id:         '0451526538',
                                                           id_type:    :isbn,
                                                           score:      1.23
@@ -439,16 +439,16 @@ describe Processors::ReferencesInfoFromIsbn do
                                                       })
   end
 
-  it "should not overwrite the type, id, score or ref_source" do
+  it "should not overwrite the type, id, score or id_source" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
     expect(result[:references]['ref-1'][:info]).to include(
                                                           id_type:     :isbn,
                                                           id:          '0451526538',
-                                                          ref_source:  'test',
+                                                          id_source:   'test',
                                                           score:       1.23
                                                       )
   end

@@ -4,7 +4,7 @@
 
 require 'pp'
 
-result = Plos::Api.search('pmcid', query_type:'reference', rows:100)
+result = Plos::Api.search('arxiv', query_type:'reference', rows:100)
 result.each do |r|
   doi = r['id']
   pp "-- DOI #{doi}"

@@ -49,15 +49,15 @@ describe Processors::ReferencesInfoFromDoi do
     expect(result[:references]['ref-1'][:info][:title]).to eq('cached title')
   end
 
-  it "should not overwrite the type, id, score, info_source or ref_source" do
+  it "should not overwrite the type, id, score, info_source or id_source" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, ref_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, id_source:'test' } )
 
     info = {
         id:          '10.xxx/xxx',
         id_type:     :foo,
         score:       99,
-        ref_source:  'ignored',
+        id_source:   'ignored',
         info_source: 'ignored',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
@@ -65,10 +65,20 @@ describe Processors::ReferencesInfoFromDoi do
     expect(result[:references]['ref-1'][:info]).to eq({
                                                           id_type:     :doi,
                                                           id:          '10.111/111',
-                                                          ref_source:  'test',
+                                                          id_source:   'test',
                                                           info_source: 'dx.doi.org',
                                                           score:       1.23,
                                                       })
+  end
+
+  it "handles a missing/bad doi" do
+    refs 'Some Reference'
+
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' } )
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
+
+    process
+
   end
 
 end
