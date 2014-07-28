@@ -538,6 +538,7 @@ var ReferenceCore = React.createClass({
                             fixed: true,
                             delay: 100
                         },
+                        style: { classes: 'citation-popover' },
                         position: {
                             viewport: $(window),
                             adjust: {
