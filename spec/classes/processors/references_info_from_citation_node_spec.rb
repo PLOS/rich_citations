@@ -1,3 +1,4 @@
+# coding: utf-8
 require 'spec_helper'
 
 describe Processors::ReferencesInfoFromCitationNode do
@@ -48,7 +49,7 @@ describe Processors::ReferencesInfoFromCitationNode do
         info: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <italic>women</italic>?')
+    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <i>women</i>?')
   end
 
   it "should extract only a start page" do
