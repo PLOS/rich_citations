@@ -28,7 +28,7 @@ module Processors
 
       set_field info, :'container-type',  cite['publication-type']
       set_field info, :'container-title', cite.at_css('source')
-      set_field info, :title,             cite.at_css('article-title').try(:inner_html)
+      set_field info, :title,             XmlUtilities.jats2html(cite.at_css('article-title').try(:inner_html))
       set_field info, :volume,            cite.at_css('volume')
 
       # Ad year issued
