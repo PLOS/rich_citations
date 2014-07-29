@@ -41,15 +41,19 @@ end
 group :development do
   gem 'sqlite3'
   gem 'quiet_assets'
-  gem 'sinon-rails'
 end
 
-group :development, :test do
+group :test do
   gem 'rspec-rails', '~> 3.0.0.beta'
   gem "qunit-rails"
   gem 'capybara'
   gem 'selenium-webdriver'
   gem 'sinon-rails'
+  gem 'webmock'
+end
+
+group :test, :development do
+  gem "qunit-rails"
 end
 
 group :production do

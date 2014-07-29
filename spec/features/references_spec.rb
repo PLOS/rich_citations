@@ -4,6 +4,17 @@ require "spec_helper"
 Capybara.default_wait_time = 60
 
 describe "reference viewing", :type => :feature, :js => true do
+  before(:all) do
+    WebMock.stub_request(:get, 'www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/10.1371%2Fjournal.pone.0067380&representation=XML').
+      to_return(:status => 200,
+                :body   => File.open(File.join(Rails.root, 'fixtures', '10.1371%2Fjournal.pone.0067380.xml')))
+#    WebMock.stub_request(:post, "http://search.crossref.org/links").
+#      to_return(:status => 200, :body => "", :headers => {})
+    
+    #      with(#:body => hash_including({:data => ["Clua E , Grosvalet F ( 2000 ) Mixed-species feeding aggregation of dolphins, large tunas and seabirds in the Azores. Aquat. Living Resour . 14 : 11 – 18 ."]}),
+    #           :headers => {'Accept'=>'application/xml'}).
+  end
+
   it "should properly sort a references list" do
     visit '/view/10.1371/journal.pone.0067380'
     expect(page.first(:xpath, '//ol[@class="references"]/li/div')['id']).to eq("reference_pone.0067380-Clua1")
