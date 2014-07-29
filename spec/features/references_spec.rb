@@ -83,6 +83,12 @@ describe "reference viewing", :type => :feature, :js => true do
 J Exp Biol 203: 283-294")
   end
 
+  it 'should display titles with italics' do
+    visit '/view/10.1371/journal.pone.0067380'
+    expect(page.find(:xpath, '/html/body/div[1]/div[1]/div/div/div[3]/div[2]/div[10]/ol/div/div[2]/div/div[1]/ol/li[3]/div/span[3]/span[2]/span/i[1]').text)
+      .to eq('Orcinus orca')
+  end
+    
   it "should display & then hide a spinner" do
     visit "/view/10.1371/journal.pone.0067372"
     # this was failing because things moved too fast

@@ -514,9 +514,10 @@ var ReferenceCore = React.createClass({
         var info = ref.info;
         var encodedDOI = getEncodedDOI(ref);
         if (encodedDOI) {
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index }>{ info.title }</a><br/></span>;
+            var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: info.title }} /><br/></span>;
         } else {
-            return <span className="reference-title">{ info.title }<br/></span>;
+            return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:info.title }} /><br/></span>;
         }
     },
     render: function () {
