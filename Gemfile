@@ -48,12 +48,12 @@ group :test do
   gem "qunit-rails"
   gem 'capybara'
   gem 'selenium-webdriver'
-  gem 'sinon-rails'
   gem 'webmock'
 end
 
 group :test, :development do
   gem "qunit-rails"
+  gem 'sinon-rails'
 end
 
 group :production do

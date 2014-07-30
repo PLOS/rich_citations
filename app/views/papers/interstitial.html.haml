@@ -3,15 +3,15 @@
   
 %h3 Originating page
 %p
-  = render partial: "cite", object: @paper.info[:paper]
+  = render partial: "cite", object: @paper.info[:paper], locals: {cite_href: "/view/#{URI.encode_www_form_component(@doi)}"}
+
   
 %h3 Destination
 %p
-  = render partial: "cite", object: @ref[:info]
+  = render partial: "cite", object: @ref[:info], locals: {cite_href: "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}"}
 
 %p
-  Redirecting to
-  = link_to @ref[:info][:title], "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}"
+  Redirecting ...
 
 #redirect
   :javascript

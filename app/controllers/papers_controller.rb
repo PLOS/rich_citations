@@ -50,6 +50,7 @@ class PapersController < ApplicationController
   end
 
   def interstitial
+    @doi = params[:from]
     @paper = PaperResult.calculate_for(params[:from])
     @ref = @paper.info[:references].values.select{|r|r[:index] == params[:to].to_i}.first
     render layout: 'plain'
