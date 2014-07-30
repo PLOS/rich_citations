@@ -1169,15 +1169,13 @@ function withReferenceData(doi, f) {
 }
 
 function redirectOnce(to) {
-    $(document).ready(function() {
-        var key = 'redirected_' + to;
-        if (!localStorage.getItem(key)) {
-            window.setTimeout(function() {
-                localStorage.setItem(key, true);
-                window.location.href = to;
-            }, 5000);
-        }
-    });
+    var key = 'redirected_' + to;
+    if (!localStorage.getItem(key)) {
+        window.setTimeout(function() {
+            localStorage.setItem(key, true);
+            window.location.href = to;
+        }, 1000);
+    }
 }
 
 /** 
