@@ -62,6 +62,7 @@ module Processors
           cover:             data[:cover] && (data[:cover][:small] || data[:cover][:mdeium] || data[:cover][:large]),
           subject:           parse_data_subjects(data),
           author:            parse_data_authors(data, details),
+          type:              'book'
       }.compact
     end
 
