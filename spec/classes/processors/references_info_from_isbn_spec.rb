@@ -345,7 +345,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
   it "should merge in the API results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test', type: 'book' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
@@ -366,6 +366,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           :'number-of-pages' => 216,
                                                           publisher:         "Signet Classic",
                                                           title:             "The adventures of Tom Sawyer",
+                                                          type:              'book',
                                                           subtitle:          ["how financial models shape markets"],
                                                           subject:           ["Fiction", "Tom Sawyer (Fictitious character)", "Missouri", "Mississippi River", "Mark Twain (1835-1910)", "19th century"],
                                                       })
@@ -375,11 +376,11 @@ describe Processors::ReferencesInfoFromIsbn do
     response = '{ "ISBN:1111111111": {} }'
 
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111', type: 'book'} )
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:info]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary')
+    expect(result[:references]['ref-1'][:info]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary', type: 'book')
   end
 
   it "should handle missing results" do
@@ -414,13 +415,15 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           id:          '1111111111',
                                                           id_type:     :isbn,
                                                           info_source: 'OpenLibrary',
-                                                          key:         '/books/OL01'
+                                                          key:         '/books/OL01',
+                                                          type:        'book'
                                                       })
     expect(result[:references]['ref-2'][:info]).to eq({
                                                           id:          '2222222222',
                                                           id_type:     :isbn,
                                                           info_source: 'OpenLibrary',
-                                                          key:         '/books/OL02'
+                                                          key:         '/books/OL02',
+                                                          type:        'book'
                                                       })
   end
 
@@ -436,6 +439,7 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           id_type:           :isbn,
                                                           info_source:       "OpenLibrary",
                                                           author:            [ {literal:"Mark Twain"} ],
+                                                          type:              'book'
                                                       })
   end
 
@@ -449,7 +453,8 @@ describe Processors::ReferencesInfoFromIsbn do
                                                           id_type:     :isbn,
                                                           id:          '0451526538',
                                                           id_source:   'test',
-                                                          score:       1.23
+                                                          score:       1.23,
+                                                          type:        'book'
                                                       )
   end
 
