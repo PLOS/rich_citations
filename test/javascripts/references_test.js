@@ -200,10 +200,15 @@ test("author list", function() {
                                            updateHighlighting: function(){
                                                updateHighlightingCalled=true;
                                            }});
+    var authorList6 = ReferenceAuthorList({authors: [a, a, a, a, a, a, a, a],
+                                           authorMax: 5,
+                                           updateHighlighting: function(){}});
     TestUtils.renderIntoDocument(authorList4);
     TestUtils.renderIntoDocument(authorList5);
+    TestUtils.renderIntoDocument(authorList6);
     var span4 = TestUtils.findRenderedDOMComponentWithClass(authorList4, 'reference-authors');
     var span5 = TestUtils.findRenderedDOMComponentWithClass(authorList5, 'reference-authors');
+    var span6 = TestUtils.findRenderedDOMComponentWithClass(authorList6, 'reference-authors');
     /* all four names should display */
     strictEqual(span4.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J");
     /* 2 refs of 5 should be hidden */
@@ -213,6 +218,9 @@ test("author list", function() {
     strictEqual(false, updateHighlightingCalled);
     TestUtils.Simulate.click(input);
     strictEqual(span5.getDOMNode().textContent, "Roe J, Roe J, Doe J, Doe J, Roe J");
+
+    /* using 5 as authorMax should display 5 authors (and 3 more) */
+    strictEqual(span6.getDOMNode().textContent, "Roe J, Roe J, Roe J, Roe J, Roe J, (and 3 more)");
 
     /* ensure that updateHighlighting was called */
     strictEqual(true, updateHighlightingCalled);
