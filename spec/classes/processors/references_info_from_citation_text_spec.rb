@@ -34,7 +34,7 @@ describe Processors::ReferencesInfoFromCitationText do
         info: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts: <italic>are they good predictors of RAE scores</italic>?')
+    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts: <i>are they good predictors of RAE scores</i>?')
   end
 
   it "should not overwrite existing fields" do

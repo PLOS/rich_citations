@@ -25,7 +25,7 @@ module Processors
 
       @field_changed = false
 
-      set_field info, :title, matches[:title]
+      set_field info, :title, XmlUtilities.jats2html(matches[:title])
 
       # Ad year issued
       if matches[:year].present?
