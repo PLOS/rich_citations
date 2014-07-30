@@ -510,16 +510,6 @@ var Reference = React.createClass({
 });
 
 var ReferenceCore = React.createClass({
-    renderTitle: function(ref) {
-        var info = ref.info;
-        var encodedDOI = getEncodedDOI(ref);
-        if (encodedDOI) {
-            var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index;
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: info.title }} /><br/></span>;
-        } else {
-            return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:info.title }} /><br/></span>;
-        }
-    },
     render: function () {
         var ref = this.props.reference;
         var info = ref.info;
@@ -554,25 +544,100 @@ var ReferenceCore = React.createClass({
                 <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
                 { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
                 </span><br/>
-                { this.renderTitle(ref) }
-                <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
-                  <span className="reference-journal">{ info['container-title'] }</span>
-                  <Maybe test={ !doi && (info['volume'] || info['issue'] || info['issued']) }>
-                    <span> { info['volume'] }<Maybe test={ info['issue'] }><span>({ info['issue'] })</span></Maybe><Maybe test={ info['page'] }>: { info['page'] }</Maybe></span>
-                  </Maybe>
-                  <br/>
-                </Maybe>
-                <Maybe test={ doi }>
-                  <span className="reference-doi">doi: { doi }<br/></span>
-                </Maybe>
-                <Maybe test={ !this.props.isPopover && doi }>
-                  <ReferenceActionList reference={ ref }/>
-                </Maybe>
+                <ReferencePublicationInfo reference={ ref } suppressJournal={ this.props.suppressJournal }/>
                 </span>;
 
         } else {
             return <span dangerouslySetInnerHTML={ {__html: ref.html} } />;
         }
+    }
+});
+
+var ReferencePublicationInfo = React.createClass({
+    render: function() {
+        var t = this.props.reference.info['type'];
+        if (t === 'book') {
+            return <ReferencePublicationInfoBook reference={ this.props.reference } />;
+        } else {
+            return <ReferencePublicationInfoGeneric reference={ this.props.reference } suppressJournal={ this.props.suppressJournal }/>;
+        }
+    }
+});
+                
+var ReferencePublicationInfoGeneric = React.createClass({
+    renderTitle: function(ref) {
+        var info = ref.info;
+        var encodedDOI = getEncodedDOI(ref);
+        if (encodedDOI) {
+            var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: info.title }} /><br/></span>;
+        } else {
+            return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:info.title }} /><br/></span>;
+        }
+    },
+    render: function() {
+        var ref = this.props.reference;
+        var info = ref.info;
+        var doi = getDOI(ref);
+        return <span>
+            { this.renderTitle(ref) }
+            <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
+            <span className="reference-journal">{ info['container-title'] }</span>
+            <Maybe test={ !doi && (info['volume'] || info['issue'] || info['issued']) }>
+            <span> { info['volume'] }<Maybe test={ info['issue'] }><span>({ info['issue'] })</span></Maybe><Maybe test={ info['page'] }>: { info['page'] }</Maybe></span>
+                  </Maybe>
+            <br/>
+            </Maybe>
+            <Maybe test={ doi }>
+                  <span className="reference-doi">doi: { doi }<br/></span>
+                </Maybe>
+                <Maybe test={ !this.props.isPopover && doi }>
+                  <ReferenceActionList reference={ ref }/>
+            </Maybe>
+            </span>;
+    }
+});
+
+/**
+ * Extract the year OR the literal value from a citeproc-json formatted date.
+ */
+function getYearOrLiteral(d) {
+    if (!d) {
+        return null;
+    } else {
+        if (d['date-parts']) {
+            return d['date-parts'][0][0];
+        } else if (d['literal']) {
+            return d['literal'];
+        } else {
+            return null;
+        }
+    }
+}
+            
+var ReferencePublicationInfoBook = React.createClass({
+    render: function() {
+        var ref = this.props.reference;
+        var info = ref.info;
+        var doi = getDOI(ref);
+        var place = info['place'];
+        var publisher = info['publisher'];
+        var issued = info['issued'];
+        var year = getYearOrLiteral(info['issued']);
+        return <span>
+            <span className="reference-journal">{ info['title'] }</span><br/>
+            <Maybe test={ place }>
+              <span>{ place }</span>
+            </Maybe>
+            <Maybe test={ place && publisher }>: </Maybe>
+            <Maybe test={ publisher }>
+            { publisher }
+            </Maybe>
+            <Maybe test={ (place || publisher) && year }>
+            <span>, </span>
+            </Maybe>
+            { year }
+            </span>;
     }
 });
 
