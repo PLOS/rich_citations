@@ -429,9 +429,9 @@ var ReferenceAuthorList = React.createClass({
         return false;
     },
     render: function() {
-        /* display at most 4 authors; if > than 4, display first 3 then et al */
+        /* display at most authorMax + 1 authors; if > than authorMax + 1, display authorMax then et al */
         var etal = "";
-        var authorMax = 3;
+        var authorMax = this.props.authorMax;
         var authors = this.props.authors || [];
         if (authors.length > (authorMax + 1) && !this.state.expanded) {
             etal = <span>, (<a href="#" onClick={ this.handleClick }>and { authors.length - authorMax } more</a>)</span>;
@@ -541,7 +541,7 @@ var ReferenceCore = React.createClass({
             }
             return <span><a id={ ref.ref_id } name={ this.props.id }></a>
                 <span id={ id }>
-                <ReferenceAuthorList updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
+                <ReferenceAuthorList authorMax={ this.props.isPopover ? 3 : 5 } updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
                 { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
                 </span><br/>
                 <ReferencePublicationInfo reference={ ref } suppressJournal={ this.props.suppressJournal }/>
