@@ -42,14 +42,49 @@ function formatAuthorNameInverted (author) {
     }
 }
 
-function getLicense(ref) {
+var knownLicenses = {
+    'cc-by':                    'read-and-reuse',
+    'cc-by-nc-nd':              'read',
+    'cc-by-nc-sa':              'read-and-reuse',
+    'cc-nc':                    'read-and-reuse',
+    'cc-nc-nd':                 'read',
+    'cc-nc-sa':                 'read-and-reuse',
+    'cc-zero':                  'read-and-reuse',
+    'failed-to-obtain-license': 'paywall',
+    'free-to-read':             'read',
+    'other-closed':             'paywall',
+    'other-pd':                 'read and reuse',
+    'plos-who':                 'read and reuse',
+    'uk-ogl':                   'read-and-reuse'};
+
+function getLicenseShorthand(ref) {
     if (!ref.info || !ref.info.license || typeof(ref.info.license) !== "string") {
-        return "failed-to-obtain-license";
+        return knownLicenses["failed-to-obtain-license"];
     } else {
-        return ref.info.license.toLowerCase();
+        return knownLicenses[ref.info.license.toLowerCase()];
     }
 }
 
+function getLicenseText(shorthand) {
+    if (shorthand === "read") {
+        return "Free to read";
+    } else if (shorthand === "read-and-reuse") {
+        return "Free to read and reuse";
+    } else if (shorthand === "paywall") {
+        return 'Subscription required or license unknown';
+    }
+}
+
+function getLicenseSort(ref) {
+    var t = getLicenseShorthand(ref);
+    if (t === "read-and-reuse") {
+        return 0;
+    } else if (t === "read") {
+        return 50;
+    } else {
+        return 100;
+    }
+}
 /**
  * Return a rendered string for displaying a given author. Turns given
  * names into initials, e.g. Jane Roe -> Roe J
@@ -139,15 +174,7 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === "index") {
         return ref.index;
     } else if (fieldname === 'license') {
-        var license = getLicense(ref);
-        if (license === 'failed-to-obtain-license') {
-            return 100;
-        } else if (license === 'free-to-read') {
-            return 50;
-        } else {
-            /* assume something else means open acccess */
-            return 0;
-        }
+        return getLicenseSort(ref);
     } else {
         return null;
     }
@@ -659,11 +686,11 @@ var CrossmarkBadge = React.createClass({
 var LicenseBadge = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var license = getLicense(ref);
-        if (license === "free-to-read") {
-            return <span key={ ref.ref_id + "license" } className="text-available">● Free to read<br/></span>;
-        } else if (license === "cc-by") {
-            return <span key={ ref.ref_id + "license" } className="open-access">● Free to read and reuse<br/></span>;
+        var license = getLicenseShorthand(ref);
+        if (license === "read") {
+            return <span key={ ref.ref_id + "license" } className="text-available">● { getLicenseText(license) }<br/></span>;
+        } else if (license === "read-and-reuse") {
+            return <span key={ ref.ref_id + "license" } className="open-access">● { getLicenseText(license) }<br/></span>;
         }
         return <span/>;
     }
@@ -690,7 +717,7 @@ function mkHeadingGrouper(by) {
             }
             return ref.group.section || last;
         } else if (by === "license") {
-            return getLicense(ref.data);
+            return getLicenseShorthand(ref.data);
         } else {
             return null;
         }
@@ -710,13 +737,12 @@ var SortedReferencesList = React.createClass({
     },
     renderGroupHeading: function(key) {
         if (this.props.current.by === "license") {
-            /* copy & paste of license badge code; should probably be consolidated but it is short */
-            if (key === "free-to-read") {
-                return <p><span className="text-available">● Free to read</span></p>;
-            } else if (key === "cc-by") {
-                return <p><span className="open-access">● Free to read and reuse</span></p>;
+            if (key === "read") {
+                return <p><span className="text-available">● { getLicenseText(key) }</span></p>;
+            } else if (key === "read-and-reuse") {
+                return <p><span className="open-access">● { getLicenseText(key) }</span></p>;
             } else {
-                return <p><span className="paywalled">● Subscription required or license unknown</span></p>;
+                return <p><span className="paywalled">● { getLicenseText(key) }</span></p>;
             }
         } else {
             return <p><strong>{ key }</strong></p>;
