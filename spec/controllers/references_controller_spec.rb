@@ -14,7 +14,7 @@ TI  - Caudal fin allometry in the white shark Carcharodon carcharias: implicatio
 T2  - Naturwissenschaften
 AU  - Lingham-Soliar, Theagarten
 PY  - 2005
-DA  - 2005/05
+DA  - 2005/03/17
 PB  - Springer Science + Business Media
 SP  - 231-236
 IS  - 5
@@ -32,7 +32,7 @@ ER  -
 	doi = {10.1007/s00114-005-0614-4},
 	url = {http://dx.doi.org/10.1007/s00114-005-0614-4},
 	year = 2005,
-	month = {May},
+	month = {Mar},
 	publisher = {Springer Science + Business Media},
 	volume = {92},
 	number = {5},
