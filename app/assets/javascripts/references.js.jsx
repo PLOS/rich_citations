@@ -110,6 +110,7 @@ function buildIndex(references) {
         this.field('author');
         this.field('journal');
         this.field('body');
+        this.field('abstract');
     });
     for (var id in references) {
         var ref = references[id];
@@ -117,7 +118,8 @@ function buildIndex(references) {
                     author: _.map(ref.info.author, formatAuthorNameInverted).join(" "),
                     title: ref.info.title,
                     journal: ref.info['container-title'],
-                    body:  ref.text };
+                    body:  ref.text,
+                    abstract: ref.info['abstract']};
         index.add(doc);
     }
     return index;
