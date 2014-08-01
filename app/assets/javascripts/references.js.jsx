@@ -53,8 +53,8 @@ var knownLicenses = {
     'failed-to-obtain-license': 'paywall',
     'free-to-read':             'read',
     'other-closed':             'paywall',
-    'other-pd':                 'read and reuse',
-    'plos-who':                 'read and reuse',
+    'other-pd':                 'read-and-reuse',
+    'plos-who':                 'read-and-reuse',
     'uk-ogl':                   'read-and-reuse'};
 
 function getLicenseShorthand(ref) {
