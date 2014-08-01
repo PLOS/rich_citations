@@ -36,8 +36,10 @@ describe Processors::ReferencesAbstract do
 
   it "should add abstracts" do
     search_results = [
-      { 'abstract' => [' abstract 1 '] },
-      { 'abstract' => [' abstract 2 '] },
+      { 'id' => '10.1371/11111',
+        'abstract' => [' abstract 1 '] },
+      { 'id' => '10.1371/33333',
+        'abstract' => [' abstract 2 '] },
     ]
     expect(Plos::Api).to receive(:search_dois).and_return( search_results )
 
@@ -54,7 +56,8 @@ describe Processors::ReferencesAbstract do
 
   it "should not query the API if the abstract is cached" do
     search_results = [
-        { 'abstract' => [' abstract 2 '] },
+      { 'id' => '10.1371/22222',
+        'abstract' => [' abstract 2 '] },
     ]
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/22222']).and_return( search_results )
 
@@ -65,6 +68,23 @@ describe Processors::ReferencesAbstract do
     process(cached)
 
     expect(result[:references]['ref-1'][:info][:abstract]).to eq('cached-1')
+    expect(result[:references]['ref-2'][:info][:abstract]).to eq('abstract 2')
+  end
+
+  it 'should work if the API does not return a result for a DOI' do
+    search_results = [
+      { 'id' => '10.1371/22222',
+        'abstract' => [' abstract 2 '] }
+    ]
+
+    expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111', '10.1371/22222']).and_return(search_results)
+
+    cached = { references: {
+      'ref-1' => { id_type: :doi, id: '10.1371/11111' },
+      'ref-2' => { id_type: :doi, id: '10.1371/22222' }
+    } }
+    process(cached)
+
     expect(result[:references]['ref-2'][:info][:abstract]).to eq('abstract 2')
   end
 
