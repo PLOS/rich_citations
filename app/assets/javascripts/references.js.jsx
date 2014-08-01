@@ -1202,7 +1202,7 @@ function redirectOnce(to) {
         window.setTimeout(function() {
             localStorage.setItem(key, true);
             window.location.href = to;
-        }, 1000);
+        }, 1);
     }
 }
 
