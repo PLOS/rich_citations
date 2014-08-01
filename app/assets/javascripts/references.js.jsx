@@ -617,9 +617,6 @@ var ReferencePublicationInfoGeneric = React.createClass({
                   </Maybe>
             <br/>
             </Maybe>
-            <Maybe test={ doi }>
-                  <span className="reference-doi">doi: { doi }<br/></span>
-                </Maybe>
                 <Maybe test={ !this.props.isPopover && doi }>
                   <ReferenceActionList reference={ ref }/>
             </Maybe>
