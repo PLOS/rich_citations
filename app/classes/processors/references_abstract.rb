@@ -41,9 +41,11 @@ module Processors
       dois    = references.map{ |ref| ref[:id] }
       results = Plos::Api.search_dois(dois)
 
-      results.each_with_index do |result, index|
+      results.each do |result|
         if result['abstract']
-          info = references[index][:info] ||= {}
+          reference = references.find { |ref| (ref[:id] == result['id']) }
+          next unless reference
+          info = reference[:info] ||= {}
           info[:abstract] = result['abstract'].first.strip
         end
       end
