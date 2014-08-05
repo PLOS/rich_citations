@@ -464,16 +464,28 @@ test("render mention", function() {
     strictEqual(bold.getDOMNode().textContent, "[38], [39]");
 });
 
-test("get license", function() {
-    strictEqual(getLicense({}), "failed-to-obtain-license");
-    strictEqual(getLicense({info: {}}), "failed-to-obtain-license");
-    strictEqual(getLicense({info: {license: "cc-by"}}), "cc-by");
-    strictEqual(getLicense({info: {license: "CC-BY"}}), "cc-by");
+test("get license shorthand", function() {
+    strictEqual(getLicenseShorthand({}), "paywall");
+    strictEqual(getLicenseShorthand({info: {}}), "paywall");
+    strictEqual(getLicenseShorthand({info: {license: "CC-BY"}}), "read-and-reuse");
+    strictEqual(getLicenseShorthand({info: {license: 'cc-by'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-by-nc-nd'}}), 'read');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-by-nc-sa'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-nc'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-nc-nd'}}), 'read');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-nc-sa'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'cc-zero'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'failed-to-obtain-license'}}), 'paywall');
+    strictEqual(getLicenseShorthand({info: {license: 'free-to-read'}}), 'read');
+    strictEqual(getLicenseShorthand({info: {license: 'other-closed'}}), 'paywall');
+    strictEqual(getLicenseShorthand({info: {license: 'other-pd'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'plos-who'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({info: {license: 'uk-ogl'}}), 'read-and-reuse');
 });
 
 test("mkHeadingGrouper", function() {
     var licenseGrouper = mkHeadingGrouper("license");
-    strictEqual(licenseGrouper({data: {}}), "failed-to-obtain-license");
-    strictEqual(licenseGrouper({data: {info:{}}}), "failed-to-obtain-license");
-    strictEqual(licenseGrouper({data: {info:{license: "cc-by"}}}), "cc-by");
+    strictEqual(licenseGrouper({data: {}}), "paywall");
+    strictEqual(licenseGrouper({data: {info:{}}}), "paywall");
+    strictEqual(licenseGrouper({data: {info:{license: "cc-by"}}}), "read-and-reuse");
 });
