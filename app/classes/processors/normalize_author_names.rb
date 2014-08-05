@@ -36,9 +36,14 @@ module Processors
     def normalize_author_name(author)
       return unless author
       given, family, literal = author.values_at(:given, :family, :literal)
-      author[:given]   = given.titleize   if all_caps(family) && all_caps(given)&& should_titleize_given(given)
-      author[:family]  = family.titleize  if all_caps(family) && all_caps(given)
-      author[:literal] = literal.titleize if all_caps(literal)
+      author[:given]   = titleize(given)   if all_caps(family) && all_caps(given)&& should_titleize_given(given)
+      author[:family]  = titleize(family)  if all_caps(family) && all_caps(given)
+      author[:literal] = titleize(literal) if all_caps(literal)
+    end
+
+    def titleize(string)
+      # Rails titleize doesn't work for accented chracters
+      string.mb_chars.titleize.to_s
     end
 
     def all_caps(string)
