@@ -107,6 +107,23 @@ describe Processors::ReferencesInfoFromCitationNode do
     expect(result[:references]['ref-1'][:info][:page]).to eq('404-410')
   end
 
+  it "should not add an invalid year" do
+    ref_node = Nokogiri::XML.parse <<-XML
+      <ref id="pbio.1001675-Davenport1"><label>17</label>
+        <mixed-citation publication-type="journal" xlink:type="simple">
+          (<year>in press</year>)
+        </mixed-citation>
+      </ref>
+    XML
+
+    process( references: { 'ref-1' => {
+        node: ref_node,
+        info: {},
+    } } )
+
+    expect(result[:references]['ref-1'][:info][:issued]).to be_nil
+  end
+
   it "should not overwrite existing fields" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
