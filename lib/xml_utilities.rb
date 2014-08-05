@@ -106,18 +106,23 @@ class XmlUtilities
   end
 
   def self.jats2html(s)
+    return nil unless s.present?
     jatsdoc2html(Nokogiri::XML::DocumentFragment.parse(s))
   end
 
   def self.jatsdoc2html(doc)
+    return nil unless doc.present?
+
     retval = ''
     doc.xpath('node()').each do |n|
       if n.text?
         retval << n.text
       else
         case n.name
-        when 'italic'
-          retval << "<i>#{jatsdoc2html(n)}</i>"
+        when 'italic', 'i', 'em'
+          retval << "<em>#{jatsdoc2html(n)}</em>"
+        when 'bold', 'b', 'strong'
+          retval << "<strong>#{jatsdoc2html(n)}</strong>"
         when 'ext-link'
           if (n['ext-link-type'] == 'uri')
             # get namespaced attribute
@@ -133,4 +138,5 @@ class XmlUtilities
     end
     retval
   end
+
 end

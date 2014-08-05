@@ -70,7 +70,7 @@ describe Processors::ReferencesInfoFromCitationNode do
         info: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <i>women</i>?')
+    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <em>women</em>?')
   end
 
   it "should extract only a start page" do

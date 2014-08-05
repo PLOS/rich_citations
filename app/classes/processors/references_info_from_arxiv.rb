@@ -95,7 +95,7 @@ module Processors
 
     def xml(selector)
       node = @result.at_css(selector)
-      node && node.inner_html.strip.presence
+      XmlUtilities.jatsdoc2html(node).try(:strip)
     end
 
     def date_value(selector)
