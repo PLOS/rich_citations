@@ -231,13 +231,23 @@ describe XmlUtilities do
   end
 
   describe "jats2html" do
-    it 'should change <italic> -> <i>' do
-      expect(XmlUtilities.jats2html('foo <italic>bar</italic> baz')).to eq('foo <i>bar</i> baz')
+    
+    it 'should change <italic> -> <em>' do
+      expect(XmlUtilities.jats2html('foo <italic>bar</italic> baz')).to eq('foo <em>bar</em> baz')
+      expect(XmlUtilities.jats2html('foo <i>bar</i> baz')).to eq('foo <em>bar</em> baz')
+      expect(XmlUtilities.jats2html('foo <em>bar</em> baz')).to eq('foo <em>bar</em> baz')
     end
 
+    it 'should change <bold> -> <strong>' do
+      expect(XmlUtilities.jats2html('foo <bold>bar</bold> baz')).to eq('foo <strong>bar</strong> baz')
+      expect(XmlUtilities.jats2html('foo <b>bar</b> baz')).to eq('foo <strong>bar</strong> baz')
+      expect(XmlUtilities.jats2html('foo <strong>bar</strong> baz')).to eq('foo <strong>bar</strong> baz')
+    end
+    
     it 'should change <ext-link> -> <a>' do
       expect(XmlUtilities.jats2html('<p xmlns:xlink="http://www.w3.org/1999/xlink">foo <ext-link ext-link-type="uri" xlink:href="http://www.example.org/foo" xlink:type="simple">bar</ext-link> baz</p>')).
         to eq('foo <a href="http://www.example.org/foo">bar</a> baz')
     end
+    
   end
 end

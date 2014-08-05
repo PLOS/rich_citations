@@ -409,11 +409,11 @@ describe Processors::ReferencesInfoFromPubmed do
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
       <Article PubModel="Print">
-        <ArticleTitle>Title with <i>markup</i>.</ArticleTitle>
+        <ArticleTitle><p>Title with <i>markup</i>.</p></ArticleTitle>
       </Article>
     XML
 
-    expect(ref_info[:title]).to eq('Title with <i>markup</i>.')
+    expect(ref_info[:title]).to eq('Title with <em>markup</em>.')
   end
 
   it "should include markup in the abstract" do
@@ -421,11 +421,11 @@ describe Processors::ReferencesInfoFromPubmed do
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
       <Abstract>
-      <AbstractText>With <i>Markup</i>.</AbstractText>
+      <AbstractText><p>With <i>Markup</i>.</p></AbstractText>
       </Abstract>
     XML
 
-    expect(ref_info[:abstract]).to eq('With <i>Markup</i>.')
+    expect(ref_info[:abstract]).to eq('With <em>Markup</em>.')
   end
 
 end

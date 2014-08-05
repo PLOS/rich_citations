@@ -385,11 +385,11 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
       <title-group>
-         <article-title>Title with <i>markup</i>.</article-title>
+         <article-title><p>Title with <i>markup</i>.</p></article-title>
       </title-group>
     XML
 
-    expect(ref_info[:title]).to eq('Title with <i>markup</i>.')
+    expect(ref_info[:title]).to eq('Title with <em>markup</em>.')
   end
 
   it "should include markup in the abstract" do
@@ -401,7 +401,7 @@ describe Processors::ReferencesInfoFromPmc do
       </abstract>
     XML
 
-    expect(ref_info[:abstract]).to eq('<p>With <i>Markup</i>.</p>')
+    expect(ref_info[:abstract]).to eq('With <em>Markup</em>.')
   end
 
   context "should include the publication date" do

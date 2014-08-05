@@ -270,11 +270,11 @@ describe Processors::ReferencesInfoFromArxiv do
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('1111.1111', <<-XML))
       <title>
-         Title with <i>markup</i>.
+         <p>Title with <i>markup</i>.</p>
       </title
     XML
 
-    expect(ref_info[:title]).to eq('Title with <i>markup</i>.')
+    expect(ref_info[:title]).to eq('Title with <em>markup</em>.')
   end
 
   it "should include markup in the abstract" do
@@ -286,7 +286,7 @@ describe Processors::ReferencesInfoFromArxiv do
       </summary>
     XML
 
-    expect(ref_info[:abstract]).to eq('<p>With <i>Markup</i>.</p>')
+    expect(ref_info[:abstract]).to eq('With <em>Markup</em>.')
   end
 
 end

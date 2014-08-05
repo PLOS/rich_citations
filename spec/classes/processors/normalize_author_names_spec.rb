@@ -103,4 +103,10 @@ describe Processors::NormalizeAuthorNames do
     expect( authors ).to eq([ {given:"AB", family:"Jolie"}, {given:"J.A.X.", family:"Roberts"} ])
   end
 
+  it "should normalize accents correctly" do
+    resolve_authors!( {family:"ÓNALDO", given:"JOSÉ DANIEL"} )
+
+    expect( authors ).to eq([ {family:"Ónaldo", given:"José Daniel"} ])
+  end
+
 end

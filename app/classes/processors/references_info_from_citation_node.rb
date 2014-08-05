@@ -51,10 +51,10 @@ module Processors
       set_field info, :title,             XmlUtilities.jats2html(cite.at_css('article-title').try(:inner_html))
       set_field info, :volume,            cite.at_css('volume')
 
-      # Ad year issued
+      # Add year issued
       if cite.at_css('year').present?
         year = cite.at_css('year').text.to_i
-        set_field info, :issued, :'date-parts' => [[year]]
+        set_field info, :issued, :'date-parts' => [[year]] if year > 0
       end
 
       # Add page range
