@@ -19,6 +19,5 @@
 // THE SOFTWARE.
 
 //= require application
-//= require_tree .
-//= require_self
+//= require references_test
 //= require sinon
