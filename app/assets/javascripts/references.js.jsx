@@ -573,7 +573,7 @@ var ReferenceCore = React.createClass({
                 <ReferenceAuthorList authorMax={ this.props.isPopover ? 3 : 5 } updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
                 { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
                 </span><br/>
-                <ReferencePublicationInfo reference={ ref } suppressJournal={ this.props.suppressJournal }/>
+                <ReferencePublicationInfo reference={ ref } suppressJournal={ this.props.suppressJournal } isPopover={ this.props.isPopover }/>
                 </span>;
 
         } else {
@@ -588,7 +588,7 @@ var ReferencePublicationInfo = React.createClass({
         if (t === 'book') {
             return <ReferencePublicationInfoBook reference={ this.props.reference } />;
         } else {
-            return <ReferencePublicationInfoGeneric reference={ this.props.reference } suppressJournal={ this.props.suppressJournal }/>;
+            return <ReferencePublicationInfoGeneric reference={ this.props.reference } isPopover={ this.props.isPopover } suppressJournal={ this.props.suppressJournal }/>;
         }
     }
 });
