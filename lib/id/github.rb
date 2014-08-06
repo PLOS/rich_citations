@@ -36,7 +36,7 @@ module Id
 
     def self.extract(text)
       normalize( match_regexes(text, GITHUB_WITH_COMMIT_REGEX => false,
-                                     GITHUB_ALONE_REGEX             => false) )
+                                     GITHUB_ALONE_REGEX       => false) )
     end
 
     def self.normalize(id)
