@@ -35,6 +35,7 @@ module Processors
         ReferencesInfoFromDoi,
         ReferencesInfoFromIsbn, ReferencesInfoFromPubmed, ReferencesInfoFromPmc,
         ReferencesInfoFromArxiv,
+        ReferencesInfoFromGithub,
       ]
     end
 
