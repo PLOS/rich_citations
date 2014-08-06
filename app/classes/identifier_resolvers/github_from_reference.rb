@@ -36,6 +36,8 @@ module IdentifierResolvers
     # As a next step you can call the /user/:login api to get the user's
     # name, email, avatar, etc
 
+    #@note: See Github's requirements for the user-agent string as well as rate-limiting
+
     def extract_info(node)
       id = Id::Github.extract(node.text)
 
