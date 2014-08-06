@@ -30,6 +30,12 @@ module IdentifierResolvers
 
     private
 
+    #@todo: In theory it would be possible to call the github apis to get
+    # repo and commit descriptions, etc to provide more info
+    # You can also get all commiters to a repo or the person who made a commit (if any)
+    # As a next step you can call the /user/:login api to get the user's
+    # name, email, avatar, etc
+
     def extract_info(node)
       id = Id::Github.extract(node.text)
 
