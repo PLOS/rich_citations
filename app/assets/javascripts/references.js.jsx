@@ -1245,16 +1245,22 @@ $(document).ready(function () {
         $("<div id='richcites'>Loading rich citations <img src='" + spinnerPath + "'/></div>").insertBefore("#references");
         $("<div id='loader2'><img src='" + spinnerPath + "'/></div>").insertAfter($("#nav-article-page ul").first());
         withReferenceData(paper_doi, function (data) {
-            var references = buildReferenceData(data);
-            /* and drop into react */
-            React.renderComponent(
-                    <ReferencesApp references={references} />,
-                $("ol.references").get(0)
-            );
-            addCitationIds(data.groups);
-            mkPopovers(data);
-            $("#richcites").replaceWith("<div id='richcites'></div>");
-            $("#loader2").replaceWith("<div id='richcites'></div>");
+            try {
+                var references = buildReferenceData(data);
+                /* and drop into react */
+                React.renderComponent(
+                        <ReferencesApp references={references} />,
+                    $("ol.references").get(0)
+                );
+                addCitationIds(data.groups);
+                mkPopovers(data);
+                $("#richcites").replaceWith("<div id='richcites'>Rich Citations Engaged!</div>");
+                $("#loader2").replaceWith("<div id='loader2'></div>");
+            } catch (err) {
+                console.log(err);
+                $("#richcites").replaceWith("<div id='richcites'>Error loading Rich Citations!</div>");
+                $("#loader2").replaceWith("<div id='richcites'></div>");
+            }
         });
     }
 });
