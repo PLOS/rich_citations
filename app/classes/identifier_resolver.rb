@@ -162,12 +162,12 @@ class IdentifierResolver
   end
 
   ALL_RESOLVERS = [
-      # IdentifierResolvers::CrossRef,
-      # IdentifierResolvers::DoiFromReference,
-      # IdentifierResolvers::IsbnFromReference,
-      # IdentifierResolvers::PubmedidFromReference,
-      # IdentifierResolvers::PmcidFromReference,
-      # IdentifierResolvers::ArxivFromReference,
+      IdentifierResolvers::CrossRef,
+      IdentifierResolvers::DoiFromReference,
+      IdentifierResolvers::IsbnFromReference,
+      IdentifierResolvers::PubmedidFromReference,
+      IdentifierResolvers::PmcidFromReference,
+      IdentifierResolvers::ArxivFromReference,
       IdentifierResolvers::GithubFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
