@@ -24,7 +24,9 @@ module Id
     # git@github.com:{owner}/{repo}(.git) or https://github.com/{owner}/{repo}(.git)
     # Optionally followed by (/commit/{sha})
 
-    GITHUB             = '( (https?:\/\/) | (git@) ) github\.com [\/:] (\w+\/\w+) (\.git)?'
+    CHAR               = '[^\/:]'
+    TRAILING_CHAR      = '[\w]'
+    GITHUB             = "( (https?:\/\/) | (git@) ) github\.com [\/:] (#{CHAR}+\/#{CHAR}*#{TRAILING_CHAR})"
     GITHUB_ALONE       = GITHUB + '(\/)?'
     GITHUB_WITH_COMMIT = GITHUB + '\/commit\/\w{8,60}'
 
@@ -32,7 +34,10 @@ module Id
     GITHUB_WITH_COMMIT_REGEX = /(?<result>#{GITHUB_WITH_COMMIT})/iox
 
     COMMIT_PART    = '(\/commit\/(?<commit>\w+))'
-    ID_PARTS_REGEX = /github\.com[:\/] (?<owner>\w+) \/ (?<repo>\w+) (\.git)?  ($ |  #{COMMIT_PART} ) /iox
+    ID_PARTS_REGEX = /github\.com[:\/]                                    # Prefix
+                      (?<owner>#{CHAR}+) \/ (?<repo>#{CHAR}+)             # Owner and Repo
+                      ($ |  #{COMMIT_PART} )                              # Terminator or commit
+                     /iox
 
     def self.extract(text)
       normalize( match_regexes(text, GITHUB_WITH_COMMIT_REGEX => false,
@@ -50,13 +55,16 @@ module Id
 
       id = normalize(id)
       matches = id.match(ID_PARTS_REGEX)
+      owner   = matches[:owner]
+      repo    = matches[:repo].sub(/\.git$/i,'')
+      commit  = matches[:commit]
 
       if matches
         {
             URL:           id,
-            GITHUB_OWNER:  matches[:owner],
-            GITHUB_REPO:   "#{matches[:owner]}/#{matches[:repo]}",
-            GITHUB_COMMIT: matches[:commit],
+            GITHUB_OWNER:  owner,
+            GITHUB_REPO:   "#{owner}/#{repo}",
+            GITHUB_COMMIT: commit,
         }.compact
 
       else
