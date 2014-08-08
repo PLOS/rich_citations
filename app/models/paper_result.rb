@@ -92,7 +92,7 @@ class PaperResult < ActiveRecord::Base
       "http://www.plosmedicine.org"
     when /journal\.pgen/
       "http://www.plosgenetics.org"
-    when /journal\.pbci/
+    when /journal\.pcbi/
       "http://www.ploscompbio.org"
     when /journal\.ppat/
       "http://www.plospathogens.org"
