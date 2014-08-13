@@ -39,7 +39,7 @@ class HttpUtilities
       location = response.header['location']
       if location
         raise "Recursive redirect" if redirects.include?(location)
-        raise "Toom many redirects" if redirect_count >= 3
+        raise "Too many redirects" if redirect_count >= 3
         redirect_count += 1
         redirects << location
         url = location
@@ -69,7 +69,7 @@ class HttpUtilities
       location = response.header['location']
       if location
         raise "Recursive redirect" if redirects.include?(location)
-        raise "Toom many redirects" if redirect_count >= 3
+        raise "Too many redirects" if redirect_count >= 3
         redirect_count += 1
         redirects << location
         url = location
