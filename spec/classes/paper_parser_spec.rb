@@ -140,6 +140,7 @@ describe PaperParser do
                                                              Processors::ReferencesInfoFromPmc,
                                                              Processors::ReferencesInfoFromArxiv,
                                                              Processors::ReferencesInfoFromGithub,
+                                                             Processors::ReferencesInfoFromUrl,
                                                              Processors::ReferencesInfoFromCitationNode,
                                                              Processors::ReferencesInfoFromCitationText,
                                                              Processors::NormalizeAuthorNames,
