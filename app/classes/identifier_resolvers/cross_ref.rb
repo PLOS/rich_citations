@@ -20,7 +20,7 @@
 
 module IdentifierResolvers
   class CrossRef < Base
-    SLICE_SIZE=50
+    SLICE_SIZE=20
     
     # cf  http://search.crossref.org/help/api#match
     API_URL = 'http://search.crossref.org/links'
