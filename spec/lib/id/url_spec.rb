@@ -45,6 +45,10 @@ describe Id::Url do
       expect( Id::Url.extract('http://plos.org/url.') ).to eq('http://plos.org/url')
     end
 
+    it "strict extraction should include trailing punctuation" do
+      expect( Id::Url.extract('http://plos.org/url. ', true) ).to eq('http://plos.org/url.')
+    end
+
   end
 
   describe '#extract_from_xml' do
@@ -73,12 +77,12 @@ describe Id::Url do
             <element-citation publication-type="journal" xlink:type="simple">
               <article-title>GitHub website.</article-title>
               <volume>15</volume>
-              <comment>Available: <ext-link ext-link-type="uri" xlink:href="https://github.com/samuellab/EarlyVersionWormTracker" xlink:type="simple">https://github.com/not-this-url</ext-link> Stuff</comment>
+              <comment>Available: <ext-link ext-link-type="uri" xlink:href="https://github.com/samuellab/EarlyVersionWormTracker." xlink:type="simple">https://github.com/not-this-url</ext-link> Stuff</comment>
             </element-citation>
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker")
+        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker.")
       end
 
       it "should extract a link from an <a> attribute" do
@@ -88,12 +92,12 @@ describe Id::Url do
             <element-citation publication-type="journal" xlink:type="simple">
               <article-title>GitHub website.</article-title>
               <volume>15</volume>
-              <comment>Available: <a href="https://github.com/samuellab/EarlyVersionWormTracker">https://github.com/not-this-url</a> Accessed Stuff</comment>
+              <comment>Available: <a href="https://github.com/samuellab/EarlyVersionWormTracker.">https://github.com/not-this-url</a> Accessed Stuff</comment>
             </element-citation>
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker")
+        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker.")
       end
 
       it "should extract a link from the text" do
@@ -103,7 +107,7 @@ describe Id::Url do
             <element-citation publication-type="journal" xlink:type="simple">
               <article-title>GitHub website.</article-title>
               <volume>15</volume>
-              <comment>Available: <b>  https://github.com/samuellab/EarlyVersionWormTracker </b> Stuff</comment>
+              <comment>Available: <b>  https://github.com/samuellab/EarlyVersionWormTracker. </b> Stuff</comment>
             </element-citation>
           </ref>
         XML

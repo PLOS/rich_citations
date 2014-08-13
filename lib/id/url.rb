@@ -27,20 +27,26 @@ module Id
     TRAILING_CHAR   = NPUNCT
     PROTOCOL        = '(https?)'
     URL             = "#{PROTOCOL}\:\/\/ #{CHAR}*#{TRAILING_CHAR}"
+    STRICT_URL      = "#{PROTOCOL}\:\/\/ #{CHAR}+"
 
-    URL_REGEX       = /(?<result>#{URL})/iox
+    URL_REGEX        = /(?<result>#{URL})/iox
+    STRICT_URL_REGEX = /(?<result>#{STRICT_URL})/iox
 
     ACCESSED_PREFIX = /^(Retrieved|Accessed) \s* #{PUNCT}* \s* /iox
 
-    def self.extract(text)
-      normalize( match_regexes(text, URL_REGEX => false) )
+    def self.extract(text, strict=false)
+      if strict
+        normalize( match_regexes(text, STRICT_URL_REGEX => false) )
+      else
+        normalize( match_regexes(text, URL_REGEX => false) )
+      end
     end
 
     def self.extract_from_xml(xml)
       # Try and extract it either from an href attribute
       xml.css('*').each do |node|
         href = node['href'] || node['xlink:href']
-        url  = extract(href)
+        url  = extract(href, true)
         return {
             url:      url,
             accessed: extract_date( XmlUtilities.text_after(xml, node) )
@@ -48,7 +54,7 @@ module Id
       end
 
       text = xml.text
-      url = extract(text)
+      url = extract(text, false)
       return nil unless url.present?
 
       offset = text.index(url) + url.length
