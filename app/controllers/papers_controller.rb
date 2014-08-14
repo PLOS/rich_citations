@@ -22,7 +22,10 @@ class PapersController < ApplicationController
 
   def index
     if params[:doi].present? then
-      redirect_to action: 'view', id: Id::Doi.extract(params[:doi])
+      doi = Id::Doi.extract( params[:doi] )
+      raise "DOI is Invalid" if doi.blank?
+      raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(doi)
+      redirect_to action: 'view', id: Id::Doi.extract(doi)
     end
   end
 
