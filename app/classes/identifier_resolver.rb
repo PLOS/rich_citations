@@ -169,6 +169,7 @@ class IdentifierResolver
       IdentifierResolvers::PmcidFromReference,
       IdentifierResolvers::ArxivFromReference,
       IdentifierResolvers::GithubFromReference,
+      IdentifierResolvers::UrlFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
   ]

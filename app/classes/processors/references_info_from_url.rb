@@ -1,5 +1,3 @@
-#!/usr/bin/env ./bin/rails runner
-
 # Copyright (c) 2014 Public Library of Science
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -8,10 +6,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-#
+# 
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-#
+# 
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,40 +18,35 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-Rails.logger = Logger.new($stdout)
+require 'uri'
 
-Rails.configuration.app.use_cached_info = false
+module Processors
+  class ReferencesInfoFromUrl < Base
+    include Helpers
 
-require 'pp'
+    def process
+      references = references_without_info(:url)
+      fill_info_for_references( references ) if references.present?
+    end
 
-DOI='10.1371/journal.pone.0046843'
-DOI='10.1371/journal.pbio.0050222xxx'
-DOI='10.1371/journal.pone.0032408' # The Paper from Hell
-DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
-DOI='10.1371/journal.pone.0041419' # ISBN
-DOI='10.1371/journal.pgen.1001139' # Pubmed ID
-DOI='10.1371/journal.pgen.1002666' # PMC ID
-DOI='10.1371/journal.pone.0036540' #  Arxiv ID
-# DOI='10.1371/journal.pone.0038649' # Github
-DOI='10.1371/journal.pone.0071952' # Github
+    def self.dependencies
+      ReferencesInfoCacheLoader
+    end
 
-doi = ARGV.last || DOI
+    #@todo set appropriate user agent header #@mro
 
-start_time = Time.now
-puts "Starting at ----------------- #{start_time}"
+    protected
 
-xml = r = Plos::Api.document( doi )
-# r = xml.css('ref-list')
-# r = xml.css('body')
-# puts r.to_xml; exit
+    def fill_info_for_references(references)
+      references.each do |ref|
+        ref[:info].merge!(
+            URL:          ref[:id][:url],
+            URL_ACCESSED: ref[:id][:accessed],
+        )
+        ref[:info][:info_source] = 'url'
+      end
+    end
 
-info = PaperParser.parse_xml(xml)
+  end
 
-if info
-  pp info
-else
-  puts "\n*************** Document #{doi} could not be retrieved\n"
 end
-
-end_time = Time.now
-puts "Finished at ----------------- #{end_time} == #{end_time - start_time}"
