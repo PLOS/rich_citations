@@ -500,14 +500,11 @@ var Reference = React.createClass({
     isPopover: function() {
         return (this.props.currentMention !== null);
     },
-    isSelected: function () {
-        return ($.param.fragment() === this.props.reference.ref_id);
-    },
     renderLabel: function() {
         if (this.props.showLabel) {
             /* check if this is the selected anchor */
             var ref = this.props.reference;
-            if (this.isSelected()) {
+            if (this.props.selected) {
                 return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>↩{ ref.index }</a>.</span>;
             } else {
                 return <span className="label">{ ref.index }.</span>;
@@ -518,7 +515,9 @@ var Reference = React.createClass({
     },
     render: function () {
         var className = "reference";
-        if (this.isSelected() && !this.isPopover()) { className = className + " selected"; }
+        if (this.props.selected) {
+            className = className + " selected";
+        }
         return <div id={ 'reference_' + this.props.reference.ref_id } className={ className }>
             { this.renderLabel() }
             <CrossmarkBadge reference={ this.props.reference }/>
@@ -788,8 +787,10 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
+        var selected = ($.param.fragment() === ref.data.ref_id);
         return <li key={ "" + ref.data.ref_id + ref.group.word_position }>
             <Reference reference={ ref.data }
+                       selected = { selected }
                        showLabel={ true }
                        suppressLicenseBadge={ this.props.current.by === "license" }
                        updateHighlighting={ this.updateHighlighting }
@@ -912,6 +913,7 @@ var ReferencePopover = React.createClass({
     render: function() {
         var references = _.map(_.zip(this.props.references, this.props.currentMentions), function(d) {
             return <Reference
+              selected={ false }
               reference={ d[0] }
               qtip={ this.props.qtip }
               key={ d[0].ref_id }
