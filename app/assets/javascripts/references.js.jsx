@@ -938,6 +938,8 @@ var ReferencesApp = React.createClass({
         $(window).bind('hashchange', function(e) {
             /* redraw when the fragment URL changes, to faciliate the link to the back button */
             this.setState({});
+            /* fix scroll for top bar */
+            $(window).scrollFrame();
         }.bind(this));
     },
     handleSearchUpdate: function(filterText) {
