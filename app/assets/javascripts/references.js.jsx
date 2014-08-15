@@ -787,7 +787,8 @@ var SortedReferencesList = React.createClass({
     },
     renderReferenceItem: function(ref) {
         /* Build elements for react */
-        var selected = ($.param.fragment() === ref.data.ref_id);
+        var selected = (this.props.current.by !== 'repeated') &&
+                ($.param.fragment() === ref.data.ref_id);
         return <li key={ "" + ref.data.ref_id + ref.group.word_position }>
             <Reference reference={ ref.data }
                        selected = { selected }
