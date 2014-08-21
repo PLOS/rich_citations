@@ -22,14 +22,27 @@ module Processors
   class ReferencesLicense < Base
     include Helpers
 
+    SLICE_SIZE = 20
+    
     #@todo #@pubmed - this API can handle pubmed ids
 
     def process
       references = references_without_licenses
       return if references.blank?
 
-      results = get_licenses(references)
-      add_licenses(results)
+      references.each_slice(SLICE_SIZE) do |group|
+        begin
+          add_licenses(get_licenses(group))
+        rescue Net::HTTPFatalError
+          # try each item one at a time
+          group.each do |item|
+            begin
+              add_licenses(get_licenses([item]))
+            rescue Net::HTTPFatalError
+            end
+          end
+        end
+      end
 
       state.license_retrieved_time = timestamp if !is_delayed?
     end
