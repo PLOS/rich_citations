@@ -54,6 +54,7 @@ class HttpUtilities
 
   def self.post(url, content, headers={})
     redirect_count = 0
+    retry_count = 0
     redirects = []
     http = Net::HTTP::Persistent.new
     # http.debug_output = $stdout
@@ -73,7 +74,12 @@ class HttpUtilities
         redirect_count += 1
         redirects << location
         url = location
-
+      elsif (response.code.to_i == 502)
+        response.value if retry_count > 2
+        retry_count +=1
+        # slow it down
+        http.shutdown
+        sleep 5*retry_count
       else
         response.value
         return response.body
