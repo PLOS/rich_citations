@@ -27,9 +27,6 @@ ARGV.each do |doi|
   paper.save
   papers.push(paper)
   puts "Processing #{paper.doi}."
-end
-papers.each do |paper|
-  puts "Waiting for #{paper.doi} to finish."
   while(!paper.ready?) do
     $stdout.write("*")
     sleep(1)
