@@ -45,7 +45,9 @@ module IdentifierResolvers
 
     def resolve_group(references)
       texts    = JSON.generate( references.values )
-      response = HttpUtilities.post(API_URL, texts, :xml)
+      response = HttpUtilities.post(API_URL, texts,
+                                    { 'Accept' => Mime::XML.to_s,
+                                      'Content-Type' => Mime::JSON.to_s })
       response_json = JSON.parse(response)
       if (!response_json['query_ok']) then
         return false
