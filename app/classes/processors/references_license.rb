@@ -91,10 +91,11 @@ module Processors
     end
 
     def get_reference(identifiers)
-      identifiers.each do| identifier|
+      identifiers.each do |identifier|
         ref = reference_by_identifier(identifier['type'], identifier['id'])
         return ref if ref
       end
+      return nil
     end
 
     def get_license( licenses )
