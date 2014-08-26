@@ -23,6 +23,20 @@ class ApiV0Controller < ApplicationController
     id = params[:id]
     case id
     when %r{^http://dx.doi.org/10.1371/}
+      doi = Id::Doi.extract(params[:id])
+      # TODO : combine with code in papers controller
+      paper = PaperResult.find_or_new_for_doi(doi)
+      if paper.should_start_analysis?
+        paper.start_analysis!
+        paper.save
+      end
+      response.content_type = Mime::JSON
+      headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
+      result = paper.ready? ? paper.result : ''
+      status = paper.ready? ? :ok : :created
+      render(json: result, status: status)
+
+      @paper = PaperResult.find_or_new_for_doi(doi)
     else
       render status: 404, text: ''
     end

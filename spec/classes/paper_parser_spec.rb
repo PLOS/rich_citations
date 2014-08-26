@@ -148,7 +148,6 @@ describe PaperParser do
                                                              Processors::ReferencesAbstract,
                                                              Processors::ReferencesCitedGroups,
                                                              Processors::ReferencesCrossmark,
-                                                             Processors::ReferencesMedianCoCitations,
                                                              Processors::ReferencesMentionCount,
                                                              Processors::ReferencesSection,
                                                              Processors::ReferencesZeroMentions,

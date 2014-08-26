@@ -54,7 +54,6 @@ class CitationGrouper
   private
 
   def add(index)
-    @current_group[:count] += 1
     id = parser.reference_id_for_index(index)
     @current_group[:references].push(id)
   end
@@ -70,7 +69,6 @@ class CitationGrouper
 
   def start_group!(node)
     @current_group =  {
-        count:         0,
         references:    [],
         nodes:         [],
     }
