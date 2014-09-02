@@ -37,6 +37,8 @@ function formatAuthorNameInverted (author) {
         return author.literal;
     } else if (author.given && author.family) {
         return author.family + ", " + author.given;
+    } else if (author.family) {
+        return author.family;
     } else {
         return "[unknown]";
     }
@@ -96,6 +98,8 @@ function formatAuthorNameInvertedInitials (author) {
         var initials = _.map(author.given.split(/\s+/), function(n) { return n[0]; }).
                 join("").toUpperCase();
         return author.family + " " + initials;
+    } else if (author.family) {
+        return author.family;
     } else {
         return "[unknown]";
     }

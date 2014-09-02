@@ -195,6 +195,15 @@ test("formatAuthorNameInvertedInitials", function() {
     strictEqual(formatAuthorNameInvertedInitials({given: "Mary Jane", family: "Roe"}), "Roe MJ");
     strictEqual(formatAuthorNameInvertedInitials({given: "Jane", family: "Roe Doe"}), "Roe Doe J");
     strictEqual(formatAuthorNameInvertedInitials({given: "Jane", family: "Roe-Doe"}), "Roe-Doe J");
+    strictEqual(formatAuthorNameInvertedInitials({family: "Doe"}), "Doe");
+});
+
+test("formatAuthorNameInverted", function() {
+    strictEqual(formatAuthorNameInverted({given: "Jane", family: "Roe"}), "Roe, Jane");
+    strictEqual(formatAuthorNameInverted({given: "Mary Jane", family: "Roe"}), "Roe, Mary Jane");
+    strictEqual(formatAuthorNameInverted({given: "Jane", family: "Roe Doe"}), "Roe Doe, Jane");
+    strictEqual(formatAuthorNameInverted({given: "Jane", family: "Roe-Doe"}), "Roe-Doe, Jane");
+    strictEqual(formatAuthorNameInverted({family: "Doe"}), "Doe");
 });
 
 test("ordinalStr", function() {
