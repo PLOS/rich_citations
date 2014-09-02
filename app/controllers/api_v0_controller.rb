@@ -33,7 +33,7 @@ class ApiV0Controller < ApplicationController
       response.content_type = Mime::JSON
       headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
       result = paper.ready? ? paper.result : ''
-      status = paper.ready? ? :ok : :created
+      status = paper.ready? ? :ok : :accepted
       render(json: result, status: status)
 
       @paper = PaperResult.find_or_new_for_doi(doi)

@@ -22,9 +22,9 @@ require 'spec_helper'
 
 describe ApiV0Controller, type: :controller do
   describe 'get PLOS doi' do
-    it 'returns 201' do
+    it 'returns 202' do
       get 'paper', id: 'http://dx.doi.org/10.1371/journal.pone.0000000'
-      expect(response.status).to eq(201)
+      expect(response.status).to eq(202)
     end
   end
 
