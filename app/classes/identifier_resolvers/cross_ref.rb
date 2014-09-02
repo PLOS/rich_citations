@@ -80,8 +80,7 @@ module IdentifierResolvers
 
       {
           id_source:   :crossref,
-          id:          doi,
-          id_type:     :doi,
+          id:          "http://dx.doi.org/#{doi}",
           score:       result['score'].to_f,
       }
     end

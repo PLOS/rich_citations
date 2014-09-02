@@ -44,8 +44,7 @@ module IdentifierResolvers
       return nil unless doi.present?
       {
           id_source:  :ref,
-          id:         doi,
-          id_type:    :doi,
+          id:         "http://dx.doi.org/#{doi}"
       }
     end
 
