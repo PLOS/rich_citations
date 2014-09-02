@@ -73,7 +73,7 @@ class PapersController < ApplicationController
     @doi = params[:id]
     @paper = PaperResult.calculate_for(params[:id])
     ref = @paper.bibliographic[:references].values.select{|r|r[:index] == params[:referenceid].to_i}.first
-    render json: JSON.pretty_unparse(ref)
+    render json: ref
   end
 
   def interstitial
