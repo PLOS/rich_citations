@@ -53,7 +53,7 @@ describe IdentifierResolvers::PubmedidFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234567890', id_type: :pmid)
+      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'http://identifiers.org/pubmed/1234567890')
       resolver.resolve
     end
 

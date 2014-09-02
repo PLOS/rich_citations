@@ -36,8 +36,7 @@ module IdentifierResolvers
       return nil unless id.present?
       {
           id_source:  :ref,
-          id:         id,
-          id_type:    :pmid,
+          id:         "http://identifiers.org/pubmed/#{id}"
       }
     end
 
