@@ -56,7 +56,7 @@ module Processors
     end
 
     def reference_authors
-      @reference_authors ||= references.map do |id, ref| ref[:info][:author] end.flatten
+      @reference_authors ||= references.map do |id, ref| ref[:bibliographic][:author] end.flatten
     end
 
     def paper_authors

@@ -55,8 +55,8 @@ module Processors
         ref = reference_by_identifier(:pmid, pmid)
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end

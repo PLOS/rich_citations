@@ -35,7 +35,7 @@ describe Processors::ReferencesInfoCacheLoader do
 
     process
 
-    expect(result[:references]['ref-1'][:info]).to eq(id_type: :doi, id:'10.111/111', id_source:"test", license:'cached')
+    expect(result[:references]['ref-1'][:bibliographic]).to eq(id_type: :doi, id:'10.111/111', id_source:"test", license:'cached')
   end
 
   it "Should do nothing if there was no cache record" do
@@ -44,7 +44,7 @@ describe Processors::ReferencesInfoCacheLoader do
 
     process
 
-    expect(result[:references]['ref-1'][:info]).to eq(id_type: :doi, id:'10.111/111', id_source:'test')
+    expect(result[:references]['ref-1'][:bibliographic]).to eq(id_type: :doi, id:'10.111/111', id_source:'test')
   end
 
 end

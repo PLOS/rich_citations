@@ -32,10 +32,10 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
       node: ref_node,
-      info: {},
+      bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( title:       'Citation counts: are they good predictors of RAE scores?',
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( title:       'Citation counts: are they good predictors of RAE scores?',
                                                        issued:      {:"date-parts"=>[[2008]]},
                                                        author:      [{literal:"Mahdi S, D'Este P, Neely A"}   ],
                                                        info_source: "RefText"
@@ -51,10 +51,10 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts: <em>are they good predictors of RAE scores</em>?')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Citation counts: <em>are they good predictors of RAE scores</em>?')
   end
 
   it "should not overwrite existing fields" do
@@ -66,7 +66,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             title: 'Article Title',
             issued: {:"date-parts"=>[[2001,1,1]] },
             author:
@@ -75,7 +75,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     } } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( title:   'Article Title',
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( title:   'Article Title',
                                                        issued:  {:"date-parts"=>[[2001,1,1]] },
                                                        author:
                                                            [{family:"Roberts", given:"J"},
@@ -92,10 +92,10 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( { } )
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( { } )
   end
 
   it "should not add an info_source attribute if no changes are made" do
@@ -107,7 +107,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             title: 'Citation counts',
             issued: {:"date-parts"=>[[2001,1,1]] },
             author:
@@ -116,7 +116,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to be_nil
+    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to be_nil
   end
 
   it "should not add an info_source attribute if one already exists" do
@@ -128,12 +128,12 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             info_source:'OriginalSource'
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts')
-    expect(result[:references]['ref-1'][:info][:info_source]).to eq('OriginalSource')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Citation counts')
+    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to eq('OriginalSource')
   end
 
 end

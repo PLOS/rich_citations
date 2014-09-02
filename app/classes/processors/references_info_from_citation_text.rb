@@ -26,7 +26,7 @@ module Processors
 
     def process
       references.each do |id, ref|
-        extract_citation_info(ref[:node], ref[:info])
+        extract_citation_info(ref[:node], ref[:bibliographic])
       end
     end
 

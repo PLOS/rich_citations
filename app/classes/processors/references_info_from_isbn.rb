@@ -51,8 +51,8 @@ module Processors
 
       results.each do |id, result|
         info = convert_result_to_info(result)
-        references[id][:info] ||= {}
-        references[id][:info].merge!(info)
+        references[id][:bibliographic] ||= {}
+        references[id][:bibliographic].merge!(info)
       end
     end
 

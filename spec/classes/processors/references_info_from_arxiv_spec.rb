@@ -41,7 +41,7 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   def ref_info
-    result[:references]['ref-1'][:info]
+    result[:references]['ref-1'][:bibliographic]
   end
 
   def test_response(arxiv='1111.1111', xml='')
@@ -103,7 +103,7 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { id_type: :arxiv, id:'1234.5678', info:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :arxiv, id:'1234.5678', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
@@ -202,14 +202,14 @@ describe Processors::ReferencesInfoFromArxiv do
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id:          '1111.1111',
                                                           id_type:     :arxiv,
                                                           info_source: 'arXiv',
                                                           ARXIV:       '1111.1111',
                                                           ARXIV_VER:    '1111.1111',
                                                       })
-    expect(result[:references]['ref-2'][:info]).to eq({
+    expect(result[:references]['ref-2'][:bibliographic]).to eq({
                                                           id:          '2222.2222',
                                                           id_type:     :arxiv,
                                                           info_source: 'arXiv',

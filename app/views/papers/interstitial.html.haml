@@ -1,5 +1,5 @@
 - content_for :title do
-  Redirect to #{@ref[:info][:title]}
+  Redirect to #{@ref[:bibliographic][:title]}
   
 %h3 Originating page
 %p
@@ -8,11 +8,11 @@
   
 %h3 Destination
 %p
-  = render partial: "cite", object: @ref[:info], locals: {cite_href: "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}"}
+  = render partial: "cite", object: @ref[:bibliographic], locals: {cite_href: "http://dx.doi.org/#{URI.encode_www_form_component(@ref[:bibliographic][:DOI])}"}
 
 %p
   Redirecting ...
 
 #redirect
   :javascript
-    redirectOnce("http://dx.doi.org/#{URI.encode_www_form_component(@ref[:info][:DOI])}");
+    redirectOnce("http://dx.doi.org/#{URI.encode_www_form_component(@ref[:bibliographic][:DOI])}");

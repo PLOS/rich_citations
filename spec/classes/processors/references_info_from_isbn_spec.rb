@@ -355,12 +355,12 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :isbn, id:'1234567890', info:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :isbn, id:'1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to eq('cached')
-    expect(result[:references]['ref-1'][:info][:title] ).to eq('cached title')
+    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to eq('cached')
+    expect(result[:references]['ref-1'][:bibliographic][:title] ).to eq('cached title')
   end
 
   it "should merge in the API results" do
@@ -369,7 +369,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id_source:         'test',
                                                           id:                '0451526538',
                                                           id_type:           :isbn,
@@ -400,7 +400,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:info]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary', type: 'book')
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary', type: 'book')
   end
 
   it "should handle missing results" do
@@ -409,7 +409,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id_source:  'test',
                                                           id:         '0451526538',
                                                           id_type:    :isbn,
@@ -431,14 +431,14 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id:          '1111111111',
                                                           id_type:     :isbn,
                                                           info_source: 'OpenLibrary',
                                                           key:         '/books/OL01',
                                                           type:        'book'
                                                       })
-    expect(result[:references]['ref-2'][:info]).to eq({
+    expect(result[:references]['ref-2'][:bibliographic]).to eq({
                                                           id:          '2222222222',
                                                           id_type:     :isbn,
                                                           info_source: 'OpenLibrary',
@@ -454,7 +454,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response_with_no_authors_in_data)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id:                '0451526538',
                                                           id_type:           :isbn,
                                                           info_source:       "OpenLibrary",
@@ -469,7 +469,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:info]).to include(
+    expect(result[:references]['ref-1'][:bibliographic]).to include(
                                                           id_type:     :isbn,
                                                           id:          '0451526538',
                                                           id_source:   'test',

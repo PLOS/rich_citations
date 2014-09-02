@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright (c) 2014 Public Library of Science
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +31,7 @@ describe Processors::NormalizeAuthorNames do
 
   def authors
     reference = result[:references].values.first
-    reference[:info][:author]
+    reference[:bibliographic][:author]
   end
 
   it "should normalize authors in the citing paper info" do

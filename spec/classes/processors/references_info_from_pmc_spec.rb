@@ -42,7 +42,7 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   def ref_info
-    result[:references]['ref-1'][:info]
+    result[:references]['ref-1'][:bibliographic]
   end
 
   def test_response(pmcid='1111111111', xml='')
@@ -177,7 +177,7 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { id_type: :pmcid, id:'PMC1234567890', info:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :pmcid, id:'PMC1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
@@ -264,13 +264,13 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id:          'PMC1111111111',
                                                           id_type:     :pmcid,
                                                           info_source: 'NIH',
                                                           PMCID:       'PMC1111111111',
                                                       })
-    expect(result[:references]['ref-2'][:info]).to eq({
+    expect(result[:references]['ref-2'][:bibliographic]).to eq({
                                                           id:          'PMC2222222222',
                                                           id_type:     :pmcid,
                                                           info_source: 'NIH',

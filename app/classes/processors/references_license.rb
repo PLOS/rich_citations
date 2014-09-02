@@ -69,7 +69,7 @@ module Processors
     end
 
     def references_without_licenses
-      references_for_type(:doi).select { |ref| ! ref[:info][:license] }
+      references_for_type(:doi).select { |ref| ! ref[:bibliographic][:license] }
     end
 
     def get_licenses(references)
@@ -86,7 +86,7 @@ module Processors
         license = get_license( result['license'] )
         next unless ref && license
 
-        ref[:info][:license] = license['type']
+        ref[:bibliographic][:license] = license['type']
       end
     end
 

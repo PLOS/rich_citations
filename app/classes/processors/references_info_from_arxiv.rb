@@ -53,8 +53,8 @@ module Processors
               reference_by_identifier(:arxiv, info[:ARXIV])
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end

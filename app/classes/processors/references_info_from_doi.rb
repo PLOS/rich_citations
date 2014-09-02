@@ -46,7 +46,7 @@ module Processors
     def get_doi_info(doi, ref)
       result = get_result(doi)
       result = result.except(:id, :id_type, :id_source, :info_source, :score)
-      ref[:info].merge!(result).merge!(info_source:'dx.doi.org')
+      ref[:bibliographic].merge!(result).merge!(info_source:'dx.doi.org')
     end
 
     def get_result(doi)

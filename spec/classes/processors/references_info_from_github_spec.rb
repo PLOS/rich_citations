@@ -41,14 +41,14 @@ describe Processors::ReferencesInfoFromGithub do
   end
 
   def ref_info
-    result[:references]['ref-1'][:info]
+    result[:references]['ref-1'][:bibliographic]
   end
 
   it "should not parse the URL if there are cached results" do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :github, id:'git@github.com:owner/repo', info:{info_source:'cached', title:'cached title', URL:'cached url'} },
+        'ref-1' => { id_type: :github, id:'git@github.com:owner/repo', bibliographic:{info_source:'cached', title:'cached title', URL:'cached url'} },
     } }
     process(cached)
 
@@ -78,7 +78,7 @@ describe Processors::ReferencesInfoFromGithub do
   #   expect(HttpUtilities).to_not receive(:post)
   #
   #   cached = { references: {
-  #       'ref-1' => { id_type: :github, id:'git@github.com:owner/repo', info:{info_source:'cached', title:'cached title'} },
+  #       'ref-1' => { id_type: :github, id:'git@github.com:owner/repo', bibliographic:{info_source:'cached', title:'cached title'} },
   #   } }
   #   process(cached)
   #

@@ -39,11 +39,11 @@ module Processors
 
     def fill_info_for_references(references)
       references.each do |ref|
-        ref[:info].merge!(
+        ref[:bibliographic].merge!(
             URL:          ref[:id][:url],
             URL_ACCESSED: ref[:id][:accessed],
         )
-        ref[:info][:info_source] = 'url'
+        ref[:bibliographic][:info_source] = 'url'
       end
     end
 

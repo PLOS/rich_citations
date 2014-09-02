@@ -78,8 +78,8 @@ describe Processors::ReferencesDelayedLicense do
 
     stub_clock(20.seconds)
 
-    expect( result[:references]['ref-1'][:info][:license] ).to eq('test-license-1')
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references]['ref-1'][:bibliographic][:license] ).to eq('test-license-1')
+    expect( result[:references]['ref-2'][:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should sleep if necessary" do

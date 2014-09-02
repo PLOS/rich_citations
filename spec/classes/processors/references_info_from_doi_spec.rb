@@ -45,7 +45,7 @@ describe Processors::ReferencesInfoFromDoi do
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id:          '10.111/111',
                                                           id_type:     :doi,
                                                           source:      'test',
@@ -61,12 +61,12 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :doi, id:'10.1371/11111', info:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { id_type: :doi, id:'10.1371/11111', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:info][:info_source] ).to eq('cached')
-    expect(result[:references]['ref-1'][:info][:title]).to eq('cached title')
+    expect(result[:references]['ref-1'][:bibliographic][:info_source] ).to eq('cached')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('cached title')
   end
 
   it "should not overwrite the type, id, score, info_source or id_source" do
@@ -82,7 +82,7 @@ describe Processors::ReferencesInfoFromDoi do
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
-    expect(result[:references]['ref-1'][:info]).to eq({
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
                                                           id_type:     :doi,
                                                           id:          '10.111/111',
                                                           id_source:   'test',

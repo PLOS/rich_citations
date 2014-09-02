@@ -26,7 +26,7 @@ module Processors
 
     def process
       plos_references = references_for_type(:doi).select { |ref| Id::Doi.is_plos_doi?(ref[:id]) }
-      plos_references_without_abstracts = plos_references.reject { |ref| ref[:info] && ref[:info][:abstract] }
+      plos_references_without_abstracts = plos_references.reject { |ref| ref[:bibliographic] && ref[:bibliographic][:abstract] }
 
       add_abstracts(plos_references_without_abstracts) if plos_references_without_abstracts.present?
     end
@@ -45,7 +45,7 @@ module Processors
         if result['abstract']
           reference = references.find { |ref| (ref[:id] == result['id']) }
           next unless reference
-          info = reference[:info] ||= {}
+          info = reference[:bibliographic] ||= {}
           info[:abstract] = result['abstract'].first.strip
         end
       end
