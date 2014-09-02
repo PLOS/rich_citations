@@ -39,7 +39,7 @@ module Processors
         next unless ref[:id_type] && ref[:bibliographic]
 
         cache = PaperInfoCache.find_by_identifier(ref[:id_type], ref[:id])
-        ref[:bibliographic].reverse_merge!(cache.info) if cache
+        ref[:bibliographic].reverse_merge!(cache.bibliographic) if cache
       end
     end
 

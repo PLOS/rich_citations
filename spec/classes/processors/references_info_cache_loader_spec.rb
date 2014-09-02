@@ -29,7 +29,7 @@ describe Processors::ReferencesInfoCacheLoader do
 
   it "should load info from the cache if it exists" do
     refs 'First'
-    PaperInfoCache.create!(identifier:'doi:10.111/111', info:{id_type: :doi, id:'10.111/111', id_source:'other', license:'cached' } )
+    PaperInfoCache.create!(identifier:'doi:10.111/111', bibliographic:{id_type: :doi, id:'10.111/111', id_source:'other', license:'cached' } )
 
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', id_source:'test' })
 

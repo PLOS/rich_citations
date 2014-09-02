@@ -55,10 +55,10 @@ class PaperResult < ActiveRecord::Base
     result
   end
 
-  def info
-    @info ||= ready? ? JSON.parse(info_json).symbolize_keys_recursive! : nil
+  def bibliographic
+    @bibliographic ||= ready? ? JSON.parse(info_json).symbolize_keys_recursive! : nil
   end
-  alias result info
+  alias result bibliographic
 
   def should_start_analysis?
     !ready? && ( new_record? || timed_out?)

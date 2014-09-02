@@ -36,11 +36,11 @@ describe Processors::ReferencesInfoCacheSaver do
 
     cache = PaperInfoCache.first
     expect(cache.identifier).to eq('doi:10.111/111')
-    expect(cache.info).to        eq({id_type: 'doi', id:'10.111/111', id_source:"test", score:1.23} )
+    expect(cache.bibliographic).to        eq({id_type: 'doi', id:'10.111/111', id_source:"test", score:1.23} )
   end
 
   it "Update an existing cache record" do
-    cache = PaperInfoCache.create!(identifier:'doi:10.111/111', info:{id_type: :doi, id:'10.111/111', id_source:'other', other:999 } )
+    cache = PaperInfoCache.create!(identifier:'doi:10.111/111', bibliographic:{id_type: :doi, id:'10.111/111', id_source:'other', other:999 } )
 
     refs 'First'
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', id_source:'test', score:1.23 })
@@ -49,7 +49,7 @@ describe Processors::ReferencesInfoCacheSaver do
 
     cache.reload
     expect(cache.identifier).to eq('doi:10.111/111')
-    expect(cache.info).to        eq({id_type: 'doi', id:'10.111/111', id_source:"test", score:1.23} )
+    expect(cache.bibliographic).to        eq({id_type: 'doi', id:'10.111/111', id_source:"test", score:1.23} )
   end
 
 end
