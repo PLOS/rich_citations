@@ -15,9 +15,9 @@ var citationFilter = function (el) {
 };
 
 function getDOI(ref) {
-    var info = ref.info;
-    if (info.id_type === 'doi') {
-        return info.id;
+    var bibliographic = ref.bibliographic;
+    if (bibliographic.id_type === 'doi') {
+        return bibliographic.id;
     } else {
         return undefined;
     }
@@ -60,10 +60,10 @@ var knownLicenses = {
     'uk-ogl':                   'read-and-reuse'};
 
 function getLicenseShorthand(ref) {
-    if (!ref.info || !ref.info.license || typeof(ref.info.license) !== "string") {
+    if (!ref.bibliographic || !ref.bibliographic.license || typeof(ref.bibliographic.license) !== "string") {
         return knownLicenses["failed-to-obtain-license"];
     } else {
-        return knownLicenses[ref.info.license.toLowerCase()];
+        return knownLicenses[ref.bibliographic.license.toLowerCase()];
     }
 }
 
@@ -119,11 +119,11 @@ function buildIndex(references) {
     for (var id in references) {
         var ref = references[id];
         var doc = { id: ref.ref_id,
-                    author: _.map(ref.info.author, formatAuthorNameInverted).join(" "),
-                    title: ref.info.title,
-                    journal: ref.info['container-title'],
+                    author: _.map(ref.bibliographic.author, formatAuthorNameInverted).join(" "),
+                    title: ref.bibliographic.title,
+                    journal: ref.bibliographic['container-title'],
                     body:  ref.text,
-                    abstract: ref.info['abstract']};
+                    abstract: ref.bibliographic['abstract']};
         index.add(doc);
     }
     return index;
@@ -162,20 +162,20 @@ function arraySorter(a, b) {
  * Make a sort field for this reference.
  */
 function mkSortField(ref, fieldname) {
-    var info = ref.info;
+    var bibliographic = ref.bibliographic;
     if (fieldname === 'appearance') {
         return ref.index;
     } else if (fieldname === 'repeated') {
         /* if no references in paper, sort at end */
         return (ref.citation_groups && ref.citation_groups[0].word_position) || 99999999;
     } else if (fieldname === 'journal') {
-        return mkSortString(info['container-title']);
+        return mkSortString(bibliographic['container-title']);
     } else if (fieldname === 'year') {
-        return (info.issued && info.issued["date-parts"] && info.issued["date-parts"][0][0]) || null;
+        return (bibliographic.issued && bibliographic.issued["date-parts"] && bibliographic.issued["date-parts"][0][0]) || null;
     } else if (fieldname === 'mentions') {
         return ref.mentions || 0;
     } else if (fieldname === 'author') {
-        var first_author = info.author && info.author[0];
+        var first_author = bibliographic.author && bibliographic.author[0];
         return (first_author && mkSortString(formatAuthorNameInverted(first_author))) || null;
     } else if (fieldname === "index") {
         return ref.index;
@@ -535,7 +535,7 @@ var Reference = React.createClass({
             <Maybe test={ this.props.reference.self_citations }>
               <span key={ this.props.reference.ref_id + "selfcitation" } className="selfcitation">Self-citation</span><br/>
             </Maybe>
-            <ReferenceAbstract text={ this.props.reference.info.abstract } qtip={ this.props.qtip }/>
+            <ReferenceAbstract text={ this.props.reference.bibliographic.abstract } qtip={ this.props.qtip }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
             </div>;
     }
@@ -544,9 +544,9 @@ var Reference = React.createClass({
 var ReferenceCore = React.createClass({
     render: function () {
         var ref = this.props.reference;
-        var info = ref.info;
+        var bibliographic = ref.bibliographic;
         var doi = getDOI(ref);
-        if (info.title) {
+        if (bibliographic.title) {
             var id = "";
             if (!this.props.isPopover) {
                 id = ref.ref_id + "_title";
@@ -573,8 +573,8 @@ var ReferenceCore = React.createClass({
             }
             return <span><a id={ ref.ref_id } name={ this.props.id }></a>
                 <span id={ id }>
-                <ReferenceAuthorList authorMax={ this.props.isPopover ? 3 : 5 } updateHighlighting={ this.props.updateHighlighting } authors={ info.author }/>
-                { info.issued && info.issued['date-parts'] && " (" + info.issued['date-parts'][0][0] + ")" }
+                <ReferenceAuthorList authorMax={ this.props.isPopover ? 3 : 5 } updateHighlighting={ this.props.updateHighlighting } authors={ bibliographic.author }/>
+                { bibliographic.issued && bibliographic.issued['date-parts'] && " (" + bibliographic.issued['date-parts'][0][0] + ")" }
                 </span><br/>
                 <ReferencePublicationInfo reference={ ref } suppressJournal={ this.props.suppressJournal } isPopover={ this.props.isPopover }/>
                 </span>;
@@ -587,7 +587,7 @@ var ReferenceCore = React.createClass({
 
 var ReferencePublicationInfo = React.createClass({
     render: function() {
-        var t = this.props.reference.info['type'];
+        var t = this.props.reference.bibliographic['type'];
         if (t === 'book') {
             return <ReferencePublicationInfoBook reference={ this.props.reference } />;
         } else {
@@ -598,25 +598,25 @@ var ReferencePublicationInfo = React.createClass({
                 
 var ReferencePublicationInfoGeneric = React.createClass({
     renderTitle: function(ref) {
-        var info = ref.info;
+        var bibliographic = ref.bibliographic;
         var encodedDOI = getEncodedDOI(ref);
         if (encodedDOI) {
             var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index;
-            return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: info.title }} /><br/></span>;
+            return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: bibliographic.title }} /><br/></span>;
         } else {
-            return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:info.title }} /><br/></span>;
+            return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:bibliographic.title }} /><br/></span>;
         }
     },
     render: function() {
         var ref = this.props.reference;
-        var info = ref.info;
+        var bibliographic = ref.bibliographic;
         var doi = getDOI(ref);
         return <span>
             { this.renderTitle(ref) }
-            <Maybe test={ info['container-title'] && !this.props.suppressJournal }>
-            <span className="reference-journal">{ info['container-title'] }</span>
-            <Maybe test={ !doi && (info['volume'] || info['issue'] || info['issued']) }>
-            <span> { info['volume'] }<Maybe test={ info['issue'] }><span>({ info['issue'] })</span></Maybe><Maybe test={ info['page'] }>: { info['page'] }</Maybe></span>
+            <Maybe test={ bibliographic['container-title'] && !this.props.suppressJournal }>
+            <span className="reference-journal">{ bibliographic['container-title'] }</span>
+            <Maybe test={ !doi && (bibliographic['volume'] || bibliographic['issue'] || bibliographic['issued']) }>
+            <span> { bibliographic['volume'] }<Maybe test={ bibliographic['issue'] }><span>({ bibliographic['issue'] })</span></Maybe><Maybe test={ bibliographic['page'] }>: { bibliographic['page'] }</Maybe></span>
                   </Maybe>
             <br/>
             </Maybe>
@@ -647,14 +647,14 @@ function getYearOrLiteral(d) {
 var ReferencePublicationInfoBook = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var info = ref.info;
+        var bibliographic = ref.bibliographic;
         var doi = getDOI(ref);
-        var place = info['place'];
-        var publisher = info['publisher'];
-        var issued = info['issued'];
-        var year = getYearOrLiteral(info['issued']);
+        var place = bibliographic['place'];
+        var publisher = bibliographic['publisher'];
+        var issued = bibliographic['issued'];
+        var year = getYearOrLiteral(bibliographic['issued']);
         return <span>
-            <span className="reference-journal">{ info['title'] }</span><br/>
+            <span className="reference-journal">{ bibliographic['title'] }</span><br/>
             <Maybe test={ place }>
               <span>{ place }</span>
             </Maybe>
@@ -710,7 +710,7 @@ function mkHeadingGrouper(by) {
             ref = ref[0];
         }
         if (by === "journal") {
-            return ref.data.info['container-title'];
+            return ref.data.bibliographic['container-title'];
         } else if (by === "appearance" || by === "repeated") {
             if (ref.group.section) {
                 /* hack to handle the fact that sometimes we have no
