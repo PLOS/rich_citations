@@ -1,10 +1,12 @@
-# Rich Citations API draft
+# About the Rich Citations API
+Rich Citations is a PLOS Labs project adding metadata to citation data in scientific articles and stores this information in a centralized database. This API allows you to access and scrape the Rich Citations database.
 
 ## Terminology
-- *paper*: a citable object with an identifer
-- *reference*: a reference from paper A to paper B with metadata
-- *citation*: a string in a paper which refers to a reference, e.g. `[1]`
-- *citation group*: a group of citations in a paper, e.g. `[1],[8]`
+For the definitions below, assume that you are reading a paper A, that contains in-text citations and references to other papers, including paper B.
+- *paper*: a citable object with an identifier, usually a scientific article
+- *reference*: a reference in paper A to paper B, containing metadata, usually at the end of the paper in the reference section
+- *citation*: a string in paper A which refers to paper B, e.g. `[1]`, usually the body of paper A
+- *citation group*: a group of citations in a paper, e.g. `[1],[8],[13]` or `[4]-[7]`
 - *reference metadata*: metadata about a reference in an article
 - *bibliographic metadata*: metadata about an article as returned by
     crossref, etc.
@@ -12,12 +14,12 @@
 ## Identifier formats
 
 - URIs should be used for all identifiers; this means that we do not
-    external information to distinguish between a a DOI and an ISBN.
+    use external information to distinguish between a a DOI and an ISBN.
     Examples:
     - DOI: `http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1`
     - ISBN: `urn:isbn:0-486-27557-4`
-    - Pubmed: `http://identifiers.org/pubmed/16381840`
-    - PMC: `http://identifiers.org/pmc/PMC3531190`
+    - PubMed: `http://identifiers.org/pubmed/16381840`
+    - PubMed Commons (PMC): `http://identifiers.org/pmc/PMC3531190`
     - arxiv ID: `http://arxiv.org/abs/1407.4120`
     - NIHMS ID: ?
     - github repo name/commit id:
@@ -26,7 +28,8 @@
     - URL + Date: ?
     - URL: `http://example.org/`
 
-## Getting the reference information for an article
+## Getting the reference information for a paper
+
 ```
 GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
 ```
@@ -63,12 +66,12 @@ fields.
 ```
 
 We distinguish between a paper and a reference. A paper is identified
-by a URI, e.g. `http://dx.doi.org/10.1234/1`. A reference is identified by a
-different URI. For PLOS papers this is the citing paper with an anchor
+by a URI, e.g. `http://dx.doi.org/10.1371/journal.pone.0000000`. A reference is identified by a
+different URI. For PLOS papers this is the citing paper A with an anchor
 link, e.g.: `http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1`.
 In the reference metadata the `id` field identifies the reference,
-while `citing_id` identifies the *citing* paper and the `cited_id`
-fields identifies the *cited* paper.
+while `citing_id` identifies the *citing* paper A and the `cited_id`
+fields identifies the *cited* paper B.
 
 ## Bibliographic metadata
 
@@ -78,7 +81,7 @@ as our format for bibliographic metadata, stored in the
 `bibliographic` fields above.
 
 In addition to the fields defined in the above document, we also
-include information about the item’s license in a `license` field.
+include information about Paper B's license in a `license` field.
 This field is a hash with a `url` field that links to information
 about the license.
 
@@ -90,14 +93,13 @@ about the license.
 
 ## Citation groups
 
-A *citation group* describes a group of citations in a paper and is 
- of the form:
+A *citation group* describes a group of citations in a paper. For PLOS, a citation's URL includes the author last name after a hyphen and is of the form:
 
 ```
 {
     "references": [
-        "http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1",
-        "http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Roe1"
+        "http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-PLOS1",
+        "http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-PLOS3"
     ],
     "context": {
         "ellipses_before": true,
