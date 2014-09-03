@@ -3,6 +3,7 @@ Rich Citations is a PLOS Labs project adding metadata to citation data in scient
 
 ## Terminology
 For the definitions below, assume that you are reading a paper A, that contains in-text citations and references to other papers, including paper B.
+
 - *paper*: a citable object with an identifier, usually a scientific article
 - *reference*: a reference in paper A to paper B, containing metadata, usually at the end of the paper in the reference section
 - *citation*: a string in paper A which refers to paper B, e.g. `[1]`, usually the body of paper A
