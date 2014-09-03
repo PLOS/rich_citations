@@ -28,7 +28,7 @@
 </ul></li>
 </ul>
 <h2 id="getting-the-reference-information-for-an-article">Getting the reference information for an article</h2>
-<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%10.1371%2Fjournal.pone.0000000</code></pre>
+<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000</code></pre>
 <p>This returns JSON describing the paper and its references:</p>
 <pre><code>{
     &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
@@ -76,7 +76,7 @@
 }</code></pre>
 <p>Each paper containing reference metadata will have an array of citation groups in the <code>citation_groups</code> field.</p>
 <h2 id="mostly-full-example">(Mostly) full example</h2>
-<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2F10.1371%2Fjournal.pone.0000000
+<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
 
 {
     &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,

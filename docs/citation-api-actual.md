@@ -28,7 +28,7 @@
 
 ## Getting the reference information for an article
 ```
-GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%10.1371%2Fjournal.pone.0000000
+GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
 ```
 
 This returns JSON describing the paper and its references:
@@ -117,7 +117,7 @@ citation groups in the `citation_groups` field.
 
 ## (Mostly) full example
 ```
-GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2F10.1371%2Fjournal.pone.0000000
+GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
 
 {
     "id": "http://dx.doi.org/10.1371/journal.pone.0000000",
