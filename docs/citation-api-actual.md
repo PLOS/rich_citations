@@ -1,5 +1,9 @@
-# About the Rich Citations API
-Rich Citations is a PLOS Labs project adding metadata to citation data in scientific articles and stores this information in a centralized database. This API allows you to access and scrape the Rich Citations database.
+# About the Rich Citations API Alpha
+
+Rich Citations is a PLOS Labs project adding metadata to citation data
+in scientific articles and stores this information in a centralized
+database. This alpha API allows you to access and scrape the Rich
+Citations database.
 
 ## Terminology
 For the definitions below, assume that you are reading a paper A, that contains in-text citations and references to other papers, including paper B.
@@ -22,11 +26,9 @@ For the definitions below, assume that you are reading a paper A, that contains 
     - PubMed: `http://identifiers.org/pubmed/16381840`
     - PubMed Commons (PMC): `http://identifiers.org/pmc/PMC3531190`
     - arxiv ID: `http://arxiv.org/abs/1407.4120`
-    - NIHMS ID: ?
     - github repo name/commit id:
         - `http://github.com/foo/bar`
         - `http://github.com/foo/bar/commit/f6f5500ac3d25ea379bc0e326ef69e05de11714f`
-    - URL + Date: ?
     - URL: `http://example.org/`
 
 ## Getting the reference information for a paper
