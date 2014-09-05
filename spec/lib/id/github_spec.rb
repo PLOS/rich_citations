@@ -25,44 +25,44 @@ describe Id::Github do
   describe '#extract' do
 
     it "should extract an https github id" do
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools'     ) ).to eq('https://github.com/ploslabs/citation_tools')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools.git' ) ).to eq('https://github.com/ploslabs/citation_tools.git')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools/'    ) ).to eq('https://github.com/ploslabs/citation_tools')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools.git/') ).to eq('https://github.com/ploslabs/citation_tools.git')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations'     ) ).to eq('https://github.com/ploslabs/rich_citations')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations.git' ) ).to eq('https://github.com/ploslabs/rich_citations.git')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations/'    ) ).to eq('https://github.com/ploslabs/rich_citations')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations.git/') ).to eq('https://github.com/ploslabs/rich_citations.git')
     end
 
     it "should extract an http github id" do
-      expect( Id::Github.extract('http://github.com/ploslabs/citation_tools'     ) ).to eq('http://github.com/ploslabs/citation_tools')
-      expect( Id::Github.extract('http://github.com/ploslabs/citation_tools.git' ) ).to eq('http://github.com/ploslabs/citation_tools.git')
-      expect( Id::Github.extract('http://github.com/ploslabs/citation_tools/'    ) ).to eq('http://github.com/ploslabs/citation_tools')
-      expect( Id::Github.extract('http://github.com/ploslabs/citation_tools.git/') ).to eq('http://github.com/ploslabs/citation_tools.git')
+      expect( Id::Github.extract('http://github.com/ploslabs/rich_citations'     ) ).to eq('http://github.com/ploslabs/rich_citations')
+      expect( Id::Github.extract('http://github.com/ploslabs/rich_citations.git' ) ).to eq('http://github.com/ploslabs/rich_citations.git')
+      expect( Id::Github.extract('http://github.com/ploslabs/rich_citations/'    ) ).to eq('http://github.com/ploslabs/rich_citations')
+      expect( Id::Github.extract('http://github.com/ploslabs/rich_citations.git/') ).to eq('http://github.com/ploslabs/rich_citations.git')
     end
 
     it "should extract an https github id with a commit" do
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c'    ) ).to eq('https://github.com/ploslabs/citation_tools/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c') ).to eq('https://github.com/ploslabs/citation_tools.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c'    ) ).to eq('https://github.com/ploslabs/rich_citations/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c') ).to eq('https://github.com/ploslabs/rich_citations.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
     end
 
     it "should match a ssh git id" do
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools'     ) ).to eq('git@github.com:ploslabs/citation_tools')
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools.git' ) ).to eq('git@github.com:ploslabs/citation_tools.git')
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools/'    ) ).to eq('git@github.com:ploslabs/citation_tools')
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools.git/') ).to eq('git@github.com:ploslabs/citation_tools.git')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations'     ) ).to eq('git@github.com:ploslabs/rich_citations')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations.git' ) ).to eq('git@github.com:ploslabs/rich_citations.git')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations/'    ) ).to eq('git@github.com:ploslabs/rich_citations')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations.git/') ).to eq('git@github.com:ploslabs/rich_citations.git')
     end
 
     it "should match a ssh git id with a commit" do
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c'     ) ).to eq('git@github.com:ploslabs/citation_tools/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c' ) ).to eq('git@github.com:ploslabs/citation_tools.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c'     ) ).to eq('git@github.com:ploslabs/rich_citations/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c' ) ).to eq('git@github.com:ploslabs/rich_citations.git/commit/b829df90ea5facf0acb1c2fd7a2cc81e0825d63c')
     end
 
     it "should handle extra whitespace" do
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools  '     ) ).to eq('git@github.com:ploslabs/citation_tools')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools  '     ) ).to eq('https://github.com/ploslabs/citation_tools')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations  '     ) ).to eq('git@github.com:ploslabs/rich_citations')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations  '     ) ).to eq('https://github.com/ploslabs/rich_citations')
     end
 
     it "should trim trailing punctuation" do
-      expect( Id::Github.extract('git@github.com:ploslabs/citation_tools.  '     ) ).to eq('git@github.com:ploslabs/citation_tools')
-      expect( Id::Github.extract('https://github.com/ploslabs/citation_tools.  '     ) ).to eq('https://github.com/ploslabs/citation_tools')
+      expect( Id::Github.extract('git@github.com:ploslabs/rich_citations.  '     ) ).to eq('git@github.com:ploslabs/rich_citations')
+      expect( Id::Github.extract('https://github.com/ploslabs/rich_citations.  '     ) ).to eq('https://github.com/ploslabs/rich_citations')
     end
 
   end
@@ -70,11 +70,11 @@ describe Id::Github do
   describe '#normalize' do
 
     it "should remove a trailing backslash" do
-      expect( Id::Github.normalize('https://ploslabs/citation_tools/' ) ).to eq('https://ploslabs/citation_tools')
+      expect( Id::Github.normalize('https://ploslabs/rich_citations/' ) ).to eq('https://ploslabs/rich_citations')
     end
 
     it "should remove whitespace" do
-      expect( Id::Github.normalize('  https://ploslabs/citation_tools   ' ) ).to eq('https://ploslabs/citation_tools')
+      expect( Id::Github.normalize('  https://ploslabs/rich_citations   ' ) ).to eq('https://ploslabs/rich_citations')
     end
 
   end
@@ -82,44 +82,44 @@ describe Id::Github do
   describe '#parse' do
 
     it "should parse a http/s url" do
-      expect( Id::Github.parse('https://github.com/ploslabs/citation_tools' ) ).to eq(
-                                URL:          "https://github.com/ploslabs/citation_tools",
+      expect( Id::Github.parse('https://github.com/ploslabs/rich_citations' ) ).to eq(
+                                URL:          "https://github.com/ploslabs/rich_citations",
                                 GITHUB_OWNER: "ploslabs",
-                                GITHUB_REPO:  "ploslabs/citation_tools"                )
+                                GITHUB_REPO:  "ploslabs/rich_citations"                )
     end
 
     it "should parse a gihub url" do
-      expect( Id::Github.parse('git@github.com:ploslabs/citation_tools' ) ).to eq(
-                                                                                       URL:          "git@github.com:ploslabs/citation_tools",
+      expect( Id::Github.parse('git@github.com:ploslabs/rich_citations' ) ).to eq(
+                                                                                       URL:          "git@github.com:ploslabs/rich_citations",
                                                                                        GITHUB_OWNER: "ploslabs",
-                                                                                       GITHUB_REPO:  "ploslabs/citation_tools"                )
+                                                                                       GITHUB_REPO:  "ploslabs/rich_citations"                )
     end
 
     it "should parse a url with a trailing backslash" do
-      expect( Id::Github.parse('https://github.com/ploslabs/citation_tools/' ) ).to eq(
-                                                                                       URL:          "https://github.com/ploslabs/citation_tools",
+      expect( Id::Github.parse('https://github.com/ploslabs/rich_citations/' ) ).to eq(
+                                                                                       URL:          "https://github.com/ploslabs/rich_citations",
                                                                                        GITHUB_OWNER: "ploslabs",
-                                                                                       GITHUB_REPO:  "ploslabs/citation_tools"                )
+                                                                                       GITHUB_REPO:  "ploslabs/rich_citations"                )
     end
 
     it "should parse a url containing .git" do
-      expect( Id::Github.parse('https://github.com/ploslabs/citation_tools.git' ) ).to eq(
-                                                                                        URL:          "https://github.com/ploslabs/citation_tools.git",
+      expect( Id::Github.parse('https://github.com/ploslabs/rich_citations.git' ) ).to eq(
+                                                                                        URL:          "https://github.com/ploslabs/rich_citations.git",
                                                                                         GITHUB_OWNER: "ploslabs",
-                                                                                        GITHUB_REPO:  "ploslabs/citation_tools"                )
+                                                                                        GITHUB_REPO:  "ploslabs/rich_citations"                )
 
-      expect( Id::Github.parse('https://github.com/ploslabs/citation_tools.git/' ) ).to eq(
-                                                                                           URL:          "https://github.com/ploslabs/citation_tools.git",
+      expect( Id::Github.parse('https://github.com/ploslabs/rich_citations.git/' ) ).to eq(
+                                                                                           URL:          "https://github.com/ploslabs/rich_citations.git",
                                                                                            GITHUB_OWNER: "ploslabs",
-                                                                                           GITHUB_REPO:  "ploslabs/citation_tools"                )
+                                                                                           GITHUB_REPO:  "ploslabs/rich_citations"                )
 
     end
 
     it "should parse a url containing a commit sha" do
-      expect( Id::Github.parse('https://github.com/ploslabs/citation_tools/commit/abcdefgh' ) ).to eq(
-                                                                                        URL:           "https://github.com/ploslabs/citation_tools/commit/abcdefgh",
+      expect( Id::Github.parse('https://github.com/ploslabs/rich_citations/commit/abcdefgh' ) ).to eq(
+                                                                                        URL:           "https://github.com/ploslabs/rich_citations/commit/abcdefgh",
                                                                                         GITHUB_OWNER:  "ploslabs",
-                                                                                        GITHUB_REPO:   "ploslabs/citation_tools",
+                                                                                        GITHUB_REPO:   "ploslabs/rich_citations",
                                                                                         GITHUB_COMMIT: "abcdefgh")
     end
 
