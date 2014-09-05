@@ -1,4 +1,4 @@
-citation_tools
+rich_citations
 ==============
 
-Citation Tools
+Rich Citations
