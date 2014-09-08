@@ -1,0 +1,91 @@
+---
+http_interactions:
+- request:
+    method: get
+    uri: http://dx.doi.org/10.1007%2Fs00114-005-0614-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/x-research-info-systems
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - Ruby
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - 30
+  response:
+    status:
+      code: 303
+      message: See Other
+    headers:
+      Server:
+      - Apache-Coyote/1.1
+      Vary:
+      - Accept
+      Location:
+      - http://data.crossref.org/10.1007%2Fs00114-005-0614-4
+      Expires:
+      - Tue, 09 Sep 2014 19:42:40 GMT
+      Content-Type:
+      - text/html;charset=utf-8
+      Content-Length:
+      - '190'
+      Date:
+      - Mon, 08 Sep 2014 22:38:43 GMT
+    body:
+      encoding: UTF-8
+      string: |2-
+
+        <HTML><HEAD><TITLE>Handle Redirect</TITLE></HEAD>
+        <BODY><A HREF="http://data.crossref.org/10.1007%2Fs00114-005-0614-4">http://data.crossref.org/10.1007%2Fs00114-005-0614-4</A></BODY></HTML>
+    http_version: 
+  recorded_at: Mon, 08 Sep 2014 22:38:43 GMT
+- request:
+    method: get
+    uri: http://data.crossref.org/10.1007%2Fs00114-005-0614-4
+    body:
+      encoding: US-ASCII
+      string: ''
+    headers:
+      Accept:
+      - application/x-research-info-systems
+      Accept-Encoding:
+      - gzip;q=1.0,deflate;q=0.6,identity;q=0.3
+      User-Agent:
+      - Ruby
+      Connection:
+      - keep-alive
+      Keep-Alive:
+      - 30
+  response:
+    status:
+      code: 200
+      message: OK
+    headers:
+      Access-Control-Allow-Headers:
+      - X-Requested-With
+      Access-Control-Allow-Origin:
+      - "*"
+      Content-Type:
+      - application/x-research-info-systems
+      Content-Length:
+      - '412'
+      Server:
+      - http-kit
+      Date:
+      - Mon, 08 Sep 2014 22:38:43 GMT
+    body:
+      encoding: UTF-8
+      string: "TY  - JOUR\nDO  - 10.1007/s00114-005-0614-4\nUR  - http://dx.doi.org/10.1007/s00114-005-0614-4\nTI
+        \ - Caudal fin allometry in the white shark Carcharodon carcharias: implications
+        for locomotory performance and ecology\nT2  - Naturwissenschaften\nAU  - Lingham-Soliar,
+        Theagarten\nPY  - 2005\nDA  - 2005/03/17\nPB  - Springer Science + Business
+        Media\nSP  - 231-236\nIS  - 5\nVL  - 92\nSN  - 0028-1042\nSN  - 1432-1904\nER
+        \ - \n"
+    http_version: 
+  recorded_at: Mon, 08 Sep 2014 22:38:43 GMT
+recorded_with: VCR 2.9.3
