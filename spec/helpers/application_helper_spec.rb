@@ -6,10 +6,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,15 +18,15 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require "spec_helper"
+require 'spec_helper'
 
 describe ApplicationHelper, type: :helper do
-  describe "#format_author_name_inverted_initials" do
-    it "formats authors properly " do
-      format_author_name_inverted_initials({given: "Jane", family: "Roe"}).should eql("Roe J")
-      format_author_name_inverted_initials({given: "Mary Jane", family: "Roe"}).should eql("Roe MJ")
-      format_author_name_inverted_initials({given: "Jane", family: "Roe Doe"}).should eql("Roe Doe J")
-      format_author_name_inverted_initials({given: "Jane", family: "Roe-Doe"}).should eql("Roe-Doe J")
+  describe '#format_author_name_inverted_initials' do
+    it 'formats authors properly ' do
+      format_author_name_inverted_initials(given: 'Jane', family: 'Roe').should eql('Roe J')
+      format_author_name_inverted_initials(given: 'Mary Jane', family: 'Roe').should eql('Roe MJ')
+      format_author_name_inverted_initials(given: 'Jane', family: 'Roe Doe').should eql('Roe Doe J')
+      format_author_name_inverted_initials(given: 'Jane', family: 'Roe-Doe').should eql('Roe-Doe J')
     end
   end
 end
