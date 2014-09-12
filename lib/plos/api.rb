@@ -81,16 +81,23 @@ module Plos
 
     # Given the DOI of a PLOS paper, downloads the XML and parses it
     def self.document(doi)
-      url = DOC_URL % [doi]
-      response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
-        HttpUtilities.get(url, :xml)
+      # HACK - but since we will be rewriting this, not a big deal now
+      if Id::Doi.is_elife_doi?(doi)
+        return Elife::Api.document(doi)
+      else
+        begin
+          url = DOC_URL % [doi]
+          response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
+            HttpUtilities.get(url, :xml)
+          end
+          Nokogiri::XML(response)
+          
+        rescue Net::HTTPFatalError => ex
+          raise unless ex.response.code == '500'
+          #todo Need a better way to detect invalid docs than 500 errors
+          nil
+        end
       end
-      Nokogiri::XML(response)
-
-    rescue Net::HTTPFatalError => ex
-      raise unless ex.response.code == '500'
-      #todo Need a better way to detect invalid docs than 500 errors
-      nil
     end
 
     # Given the DOI of a PLOS paper, downloads the XML and parses it
