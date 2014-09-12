@@ -100,6 +100,8 @@ class PaperResult < ActiveRecord::Base
       "http://www.plosntds.org"
     when /eLife/
       'http://elifesciences.org/content/elife/3'
+    when /peerj/
+      'https://peerj.com/'
     else
       raise Exception.new("Unknown journal found in #{doi}")
     end

@@ -84,6 +84,8 @@ module Plos
       # HACK - but since we will be rewriting this, not a big deal now
       if Id::Doi.is_elife_doi?(doi)
         return Elife::Api.document(doi)
+      elsif Id::Doi.is_peerj_doi?(doi)
+        return Peerj::Api.document(doi)
       else
         begin
           url = DOC_URL % [doi]

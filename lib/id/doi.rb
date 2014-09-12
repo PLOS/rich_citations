@@ -38,6 +38,7 @@ module Id
 
     PLOS_PREFIXES = [ '10.1371' ]
     ELIFE_PREFIXES = [ '10.7554' ]
+    PEERJ_PREFIXES = [ '10.7717' ]
     
     def self.extract(text, normalize=false)
       doi = match_regexes(text, DOI_URL_REGEX    => true,
@@ -69,7 +70,11 @@ module Id
     def self.is_elife_doi?(doi)
       prefix(doi).in?(ELIFE_PREFIXES)
     end
-    
+
+    def self.is_peerj_doi?(doi)
+      prefix(doi).in?(PEERJ_PREFIXES)
+    end
+
     private
 
     # Some stuff which is just too tricky to handle with regexes
