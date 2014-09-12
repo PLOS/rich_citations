@@ -27,7 +27,6 @@ module Plos
 
     SEARCH_URL   = 'http://api.plos.org/search'
     DOC_URL      = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
-    INFO_URL     = 'http://www.plosone.org/article/info:doi/%s'
 
     #Accesses the PLOS search API.
     #query: the text of your query.
@@ -101,13 +100,5 @@ module Plos
         end
       end
     end
-
-    # Given the DOI of a PLOS paper, downloads the XML and parses it
-    def self.info(doi)
-      url = INFO_URL % [doi]
-      response = HttpUtilities.get(url)
-      Nokogiri::HTML(response)
-    end
-
   end
 end
