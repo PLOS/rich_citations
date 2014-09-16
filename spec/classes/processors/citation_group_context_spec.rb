@@ -33,7 +33,6 @@ describe Processors::CitationGroupContext do
     expect(result[:groups][0][:context]).to eq(citation:    "[1]",
                                                text_before: "Some text ",
                                                text_after:  " More text",
-                                               quote:       "Some text [1] More text"
                                               )
   end
 
@@ -42,7 +41,6 @@ describe Processors::CitationGroupContext do
     expect(result[:groups][0][:context]).to eq(citation:    "[1], [3] - [5]",
                                                text_before: "Some text ",
                                                text_after:  " More text",
-                                               quote:       "Some text [1], [3] - [5] More text"
                                               )
   end
 
@@ -57,7 +55,6 @@ describe Processors::CitationGroupContext do
                                                ellipses_after:  "…",
                                                text_before:     expected_before,
                                                text_after:      expected_after,
-                                               quote:           "\u2026#{expected_before}[1]#{expected_after}\u2026"
                                               )
   end
 
@@ -66,7 +63,6 @@ describe Processors::CitationGroupContext do
     body "Some text #{cite(1)} More text"
     body "</sec>def</sec>"
     expect(result[:groups][0][:context]).to eq(citation:   "[1]",
-                                               quote:      "Some text [1] More text",
                                                text_after: " More text",
                                                text_before: "Some text "
                                             )
@@ -77,7 +73,6 @@ describe Processors::CitationGroupContext do
     body "Some text #{cite(1)} More text"
     body "</P>def</sec>"
     expect(result[:groups][0][:context]).to eq(citation:   "[1]",
-                                               quote:      "Some text [1] More text",
                                                text_after: " More text",
                                                text_before: "Some text "
                                               )

@@ -57,7 +57,6 @@ module Processors
           citation:        citation_text.presence,
           text_after:      text_after.presence,
           ellipses_after:  ellipses_after,
-          quote:           "#{ellipses_before}#{text_before}#{citation_text}#{text_after}#{ellipses_after}",
       }.compact
     end
 
