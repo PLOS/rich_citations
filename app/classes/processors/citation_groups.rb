@@ -28,11 +28,11 @@ module Processors
     # [11], [13]-[17], [21].
 
     def process
-      result[:groups] = citation_groups
+      result[:citation_groups] = citation_groups
     end
 
     def cleanup
-      result[:groups].each do |group|
+      result[:citation_groups].each do |group|
         group.delete(:nodes)
         group.compact!
       end

@@ -60,7 +60,7 @@ module Processors::Helpers
   end
 
   def citation_groups
-    @citation_groups ||= result[:groups]
+    @citation_groups ||= result[:citation_groups]
   end
 
 end

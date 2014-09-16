@@ -28,7 +28,7 @@ describe Processors::ReferencesCitedGroups do
     body "#{cite(1)},#{cite(2)} ... #{cite(2)},#{cite(3)}"
 
     @refs   = result[:references]
-    @groups = result[:groups]
+    @groups = result[:citation_groups]
   end
 
   it "return the correct citation groups" do
