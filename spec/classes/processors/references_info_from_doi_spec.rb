@@ -37,7 +37,7 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should merge in the API results" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', score:1.23, source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', score:1.23, uri_source:'test' } )
 
     info = {
         author:  [ {given:'C.', family:'Theron'} ],
@@ -46,11 +46,7 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri:         '10.111/111',
-                                                          uri_type:    :doi,
-                                                          source:      'test',
-                                                          info_source: 'dx.doi.org',
-                                                          score:       1.23,
+                                                          bib_source:  'dx.doi.org',
                                                           author:      [ {given:'C.', family:'Theron'} ],
                                                           title:       'A Title',
                                                       })
@@ -61,34 +57,26 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { uri_type: :doi, uri:'10.1371/11111', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :doi, uri:'10.1371/11111', bibliographic:{bib_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:bibliographic][:info_source] ).to eq('cached')
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source] ).to eq('cached')
     expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('cached title')
   end
 
-  it "should not overwrite the uri_type, uri, score, info_source or uri_source" do
-    refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', score:1.23, uri_source:'test' } )
+  it "should Set the bib_source and ignore any returned by the api" do
+    refs 'First'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', uri_source:'test' } )
 
     info = {
-        uri:         '10.xxx/xxx',
-        uri_type:    :foo,
+        id:          '10.xxx/xxx',
         score:       99,
-        uri_source:  'ignored',
-        info_source: 'ignored',
+        bib_source:  'ignored',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri_type:    :doi,
-                                                          uri:         '10.111/111',
-                                                          uri_source:  'test',
-                                                          info_source: 'dx.doi.org',
-                                                          score:       1.23,
-                                                      })
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('dx.doi.org')
   end
 
   it "handles a missing/bad doi" do

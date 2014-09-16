@@ -43,7 +43,7 @@ module Processors
             URL:          ref[:uri][:url],
             URL_ACCESSED: ref[:uri][:accessed],
         )
-        ref[:bibliographic][:info_source] = 'url'
+        ref[:bibliographic][:bib_source] = 'url'
       end
     end
 

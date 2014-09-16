@@ -68,7 +68,7 @@ module Processors
       details = (result[:records] && result[:records].values.first[:details].try(:[], :details) ) || {}
 
       {
-          info_source:       'OpenLibrary',
+          bib_source:        'OpenLibrary',
           key:               data[:key],
           ISBN:              data[:identifiers] && (data[:identifiers][:isbn_13] || data[:identifiers][:isbn_10]),
           OLID:              data[:identifiers] && data[:identifiers][:openlibrary],

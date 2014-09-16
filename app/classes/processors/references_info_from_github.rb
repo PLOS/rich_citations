@@ -40,7 +40,7 @@ module Processors
     def fill_info_for_references(references)
       references.each do |ref|
         ref[:bibliographic].merge!( Id::Github.parse(ref[:uri]) )
-        ref[:bibliographic][:info_source] = 'github'
+        ref[:bibliographic][:bib_source] = 'github'
       end
     end
 

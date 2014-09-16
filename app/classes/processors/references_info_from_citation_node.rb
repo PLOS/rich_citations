@@ -67,7 +67,7 @@ module Processors
 
       extract_citation_names(node, info)
 
-      set_field(info, :info_source, 'RefNode') if @field_changed
+      set_field(info, :bib_source, 'RefNode') if @field_changed
     end
 
     def extract_citation_names(node, info)

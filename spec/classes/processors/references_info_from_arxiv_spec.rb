@@ -40,8 +40,11 @@ describe Processors::ReferencesInfoFromArxiv do
     refs 'First'
   end
 
+  def reference
+    result[:references]['ref-1']
+  end
   def ref_info
-    result[:references]['ref-1'][:bibliographic]
+    reference[:bibliographic]
   end
 
   def test_response(arxiv='1111.1111', xml='')
@@ -103,11 +106,11 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { uri_type: :arxiv, uri:'1234.5678', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :arxiv, uri:'1234.5678', bibliographic:{bib_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(ref_info[:info_source]).to eq('cached')
+    expect(ref_info[:bib_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
   end
 
@@ -117,11 +120,7 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to eq({
-                              uri_source:          'test',
-                              uri:                 '1404.1899',
-                              uri_type:            :arxiv,
-                              score:               1.23,
-                              info_source:         "arXiv",
+                              bib_source:          "arXiv",
                               ARXIV:               '1404.1899',
                               ARXIV_VER:           '1404.1899v2',
                               DOI:                 "10.1088/2041-8205/789/2/L29",
@@ -143,10 +142,7 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to include({
-                               uri:                 '1404.1899v2',
-                               uri_type:            :arxiv,
-                               uri_source:          'test',
-                               info_source:         "arXiv",
+                               bib_source:          "arXiv",
                                ARXIV:               '1404.1899',
                                ARXIV_VER:           '1404.1899v2',
                            })
@@ -155,33 +151,30 @@ describe Processors::ReferencesInfoFromArxiv do
   it "shouldn't fail for any missing data" do
     response = '<feed><entry></entry></feed>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( uri:'1111.1111', uri_type: :arxiv)
+    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, index:1, ref:'ref-1')
   end
 
   it "shouldn't fail if there is no data" do
     response = '<feed></feed>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( uri:'1111.1111', uri_type: :arxiv)
+    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, index:1, ref:'ref-1')
   end
 
   it "should handle missing results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111', score:1.23, uri_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899', attribute:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return('{}')
 
     expect(ref_info).to eq({
-                                uri_source: 'test',
-                                uri:        '1111.1111',
-                                uri_type:   :arxiv,
-                                score:      1.23
+                                attribute: 1.23
                             })
   end
 
@@ -204,32 +197,23 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri:         '1111.1111',
-                                                          uri_type:    :arxiv,
-                                                          info_source: 'arXiv',
+                                                          bib_source:  'arXiv',
                                                           ARXIV:       '1111.1111',
                                                           ARXIV_VER:    '1111.1111',
                                                       })
     expect(result[:references]['ref-2'][:bibliographic]).to eq({
-                                                          uri:         '2222.2222',
-                                                          uri_type:    :arxiv,
-                                                          info_source: 'arXiv',
+                                                          bib_source:  'arXiv',
                                                           ARXIV:       '2222.2222',
                                                           ARXIV_VER:   '2222.2222',
                                                       })
   end
 
-  it "should not overwrite the uri_type, uri, score or uri_source" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111', score:1.23, uri_source:'test' } )
+  it "should set the bib_source" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
-    expect(ref_info).to include(
-                                    uri_type:    :arxiv,
-                                    uri:         '1111.1111',
-                                    uri_source:  'test',
-                                    score:       1.23
-                                )
+    expect(ref_info[:bib_source]).to eq('arXiv')
   end
 
   it "should include different types of authors" do

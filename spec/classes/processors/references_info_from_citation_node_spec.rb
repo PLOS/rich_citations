@@ -49,10 +49,9 @@ describe Processors::ReferencesInfoFromCitationNode do
                                                        :volume           => "51",
                                                        :issued           => {:"date-parts"=>[[1995]]},
                                                        :page             =>"404-410",
-                                                       :author           =>
-                                                           [{:family=>"Davenport", :given=>"E"},
-                                                            {:family=>"Snyder",    :given=>"H"}],
-                                                       :info_source      => 'RefNode'
+                                                       :author           => [{:family=>"Davenport", :given=>"E"},
+                                                                             {:family=>"Snyder",    :given=>"H"}],
+                                                       :bib_source       => 'RefNode'
                                                       )
   end
 
@@ -179,7 +178,7 @@ describe Processors::ReferencesInfoFromCitationNode do
     expect(result[:references]['ref-1'][:bibliographic]).to eq( { } )
   end
 
-  it "should not add an info_source if no changes are made" do
+  it "should not add a bib_source if no changes are made" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
@@ -205,10 +204,10 @@ describe Processors::ReferencesInfoFromCitationNode do
                  {:family=>"Jolie",   :given=>"J"} ]
         } } } )
 
-    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to be_nil
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to be_nil
   end
 
-  it "should not add an info_source if one already exists" do
+  it "should not add a bib_source if one already exists" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
@@ -220,10 +219,10 @@ describe Processors::ReferencesInfoFromCitationNode do
     process( references: { 'ref-1' => {
         node: ref_node,
         bibliographic: {
-            :info_source      => 'OriginalSource',
+            :bib_source      => 'OriginalSource',
         } } } )
 
-    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to eq('OriginalSource')
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OriginalSource')
   end
 
 end

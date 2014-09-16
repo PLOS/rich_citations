@@ -73,7 +73,7 @@ module Processors
       @result = result
 
       {
-          info_source:         'NIH',
+          bib_source:          'NIH',
           PMCID:               Id::Pmcid.normalize( value('article-meta article-id[pub-id-type=pmc]') ),
           PMID:                value('article-meta article-id[pub-id-type=pmid]'),
           DOI:                 value('article-meta article-id[pub-id-type=doi]'),

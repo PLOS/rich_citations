@@ -58,7 +58,7 @@ module Processors
         set_field info, :author, [ literal:matches[:authors].strip ]
       end
 
-      set_field(info, :info_source, 'RefText') if @field_changed
+      set_field(info, :bib_source, 'RefText') if @field_changed
     end
 
     def set_field(info, field, value)

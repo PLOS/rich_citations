@@ -72,7 +72,7 @@ module Processors
       @result = result
 
       {
-          info_source:         'NIH',
+          bib_source:          'NIH',
           PMID:                value('PubmedData ArticleIdList *[IdType=pubmed]'), # || value('MedlineCitation > PMID'),
           PMCID:               value('PubmedData ArticleIdList *[IdType=pmc]'),
           DOI:                 value('PubmedData ArticleIdList *[IdType=doi]'),

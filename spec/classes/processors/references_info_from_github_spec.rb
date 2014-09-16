@@ -48,26 +48,23 @@ describe Processors::ReferencesInfoFromGithub do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', bibliographic:{info_source:'cached', title:'cached title', URL:'cached url'} },
+        'ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
     } }
     process(cached)
 
-    expect(ref_info[:info_source]).to eq('cached')
+    expect(ref_info[:bib_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
     expect(ref_info[:URL] ).to eq('cached url')
   end
 
   it "should merge in the parsed url results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', score:1.23, uri_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', attribute:1.23, uri_source:'test' } )
 
     allow(HttpUtilities).to receive(:get).and_return({})
 
     expect(ref_info).to eq({
-                              uri_source:          'test',
-                              uri:                 'git@github.com:owner/repo',
-                              uri_type:            :github,
-                              score:               1.23,
-                              info_source:         "github",
+                              attribute:           1.23,
+                              bib_source:          'github',
                               URL:                 'git@github.com:owner/repo',
                               GITHUB_OWNER:        'owner',
                               GITHUB_REPO:         'owner/repo',
@@ -78,11 +75,11 @@ describe Processors::ReferencesInfoFromGithub do
   #   expect(HttpUtilities).to_not receive(:post)
   #
   #   cached = { references: {
-  #       'ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', bibliographic:{info_source:'cached', title:'cached title'} },
+  #       'ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', bibliographic:{bib_source:'cached', title:'cached title'} },
   #   } }
   #   process(cached)
   #
-  #   expect(ref_info[:info_source]).to eq('cached')
+  #   expect(ref_info[:bib_source]).to eq('cached')
   #   expect(ref_info[:title] ).to eq('cached title')
   # end
 
@@ -96,7 +93,7 @@ describe Processors::ReferencesInfoFromGithub do
   #                             uri:                 '1404.1899',
   #                             uri_type:            :github,
   #                             score:               1.23,
-  #                             info_source:         "github",
+  #                             bib_source:          "github",
   #                             DOI:                 "10.1088/2041-8205/789/2/L29",
   #                             abstract:            "Abstract Text.",
   #                             author:               [{:literal=>"Hao Liu", :affiliation=>"NBI Copenhagen"},
@@ -143,17 +140,12 @@ describe Processors::ReferencesInfoFromGithub do
   #                           })
   # end
 
-  # it "should not overwrite the uri_type, uri, score or uri_source" do
-  #   allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', score:1.23, uri_source:'test' } )
+  # it "should set and maintain the bib_source do
+  #   allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :github, uri:'git@github.com:owner/repo', score:1.23, uri_source:'test', bib_source:'Test' } )
   #
   #   expect(HttpUtilities).to receive(:post).and_return(sample_response)
   #
-  #   expect(ref_info).to include(
-  #                                   uri_type:    :github,
-  #                                   uri:         'git@github.com:owner/repo',
-  #                                   uri_source:  'test',
-  #                                   score:       1.23
-  #                               )
+  #   expect(ref_info[:bib_source]).to eq('GitHub')
   # end
 
   # it "should include different types of authors" do

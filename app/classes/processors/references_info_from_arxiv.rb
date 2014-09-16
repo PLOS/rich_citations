@@ -71,7 +71,7 @@ module Processors
       id      = Id::Arxiv.extract( value('> id') )
 
       {
-          info_source:         'arXiv',
+          bib_source:          'arXiv',
           ARXIV:               Id::Arxiv.without_version( id ),
           ARXIV_VER:           id,
           DOI:                 Id::Doi.extract( value('> doi') || link_value('doi') ),

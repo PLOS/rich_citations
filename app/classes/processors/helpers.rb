@@ -56,7 +56,7 @@ module Processors::Helpers
   end
 
   def references_without_bib_info(type)
-    references_for_type(type).reject { |ref| ref[:bibliographic] && ref[:bibliographic][:info_source] }
+    references_for_type(type).reject { |ref| ref[:bibliographic] && ref[:bibliographic][:bib_source] }
   end
 
   def citation_groups

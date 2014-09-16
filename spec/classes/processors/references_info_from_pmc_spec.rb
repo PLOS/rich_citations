@@ -41,8 +41,12 @@ describe Processors::ReferencesInfoFromPmc do
     refs 'First'
   end
 
+  def reference
+    result[:references]['ref-1']
+  end
+
   def ref_info
-    result[:references]['ref-1'][:bibliographic]
+    reference[:bibliographic]
   end
 
   def test_response(pmcid='1111111111', xml='')
@@ -177,11 +181,11 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { uri_type: :pmcid, uri:'PMC1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :pmcid, uri:'PMC1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(ref_info[:info_source]).to eq('cached')
+    expect(ref_info[:bib_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
   end
 
@@ -191,11 +195,7 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to eq({
-                              uri_source:          'test',
-                              uri:                 'PMC2647976',
-                              uri_type:            :pmcid,
-                              score:               1.23,
-                              info_source:         "NIH",
+                              bib_source:         "NIH",
                               DOI:                 "10.1073/pnas.0812194106",
                               PMCID:               "PMC2647976",
                               PMID:                "19246383",
@@ -220,7 +220,7 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( index:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "shouldn't fail if there is no data" do
@@ -230,19 +230,16 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( index:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "should handle missing results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmcid, uri:'PMC0451526538', score:1.23, uri_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmcid, uri:'PMC0451526538', attribute:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return('{}')
 
     expect(ref_info).to eq({
-                                uri_source: 'test',
-                                uri:        'PMC0451526538',
-                                uri_type:   :pmcid,
-                                score:      1.23
+                                attribute:      1.23
                             })
   end
 
@@ -265,30 +262,21 @@ describe Processors::ReferencesInfoFromPmc do
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri:         'PMC1111111111',
-                                                          uri_type:    :pmcid,
-                                                          info_source: 'NIH',
+                                                          bib_source: 'NIH',
                                                           PMCID:       'PMC1111111111',
                                                       })
     expect(result[:references]['ref-2'][:bibliographic]).to eq({
-                                                          uri:         'PMC2222222222',
-                                                          uri_type:    :pmcid,
-                                                          info_source: 'NIH',
+                                                          bib_source: 'NIH',
                                                           PMCID:       'PMC2222222222',
                                                       })
   end
 
-  it "should not overwrite the uri_type, uri, score or uri_source" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmcid, uri:'PMC0451526538', score:1.23, uri_source:'test' } )
+  it "should set and not overwrite the bib_source" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmcid, uri:'PMC2647976', attribute:1.23, uri_source:'test'  } )
 
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
-    expect(ref_info).to include(
-                                    uri_type:    :pmcid,
-                                    uri:         'PMC0451526538',
-                                    uri_source:  'test',
-                                    score:       1.23
-                                )
+    expect(ref_info[:bib_source]).to eq('NIH')
   end
 
   it "should include different types of authors" do

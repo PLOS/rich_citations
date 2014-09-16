@@ -355,11 +355,11 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { uri_type: :isbn, uri:'1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :isbn, uri:'1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:bibliographic][:info_source]).to eq('cached')
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('cached')
     expect(result[:references]['ref-1'][:bibliographic][:title] ).to eq('cached title')
   end
 
@@ -370,11 +370,7 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri_source:        'test',
-                                                          uri:               '0451526538',
-                                                          uri_type:          :isbn,
-                                                          score:             1.23,
-                                                          info_source:       "OpenLibrary",
+                                                          bib_source:        'OpenLibrary',
                                                           key:               "/books/OL1017798M",
                                                           ISBN:              ["0451526538"],
                                                           OCLC:              ["36792831"],
@@ -400,20 +396,17 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( uri:'1111111111', uri_type: :isbn, info_source:'OpenLibrary', type: 'book')
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( bib_source:'OpenLibrary', type: 'book')
   end
 
   it "should handle missing results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', score:1.23, uri_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', attribute:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri_source: 'test',
-                                                          uri:        '0451526538',
-                                                          uri_type:   :isbn,
-                                                          score:      1.23
+                                                          attribute:      1.23
                                                       })
   end
 
@@ -432,16 +425,12 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri:         '1111111111',
-                                                          uri_type:    :isbn,
-                                                          info_source: 'OpenLibrary',
+                                                          bib_source:  'OpenLibrary',
                                                           key:         '/books/OL01',
                                                           type:        'book'
                                                       })
     expect(result[:references]['ref-2'][:bibliographic]).to eq({
-                                                          uri:         '2222222222',
-                                                          uri_type:    :isbn,
-                                                          info_source: 'OpenLibrary',
+                                                          bib_source:  'OpenLibrary',
                                                           key:         '/books/OL02',
                                                           type:        'book'
                                                       })
@@ -455,27 +444,19 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to receive(:get).and_return(response_with_no_authors_in_data)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          uri:               '0451526538',
-                                                          uri_type:          :isbn,
-                                                          info_source:       "OpenLibrary",
+                                                          bib_source:        'OpenLibrary',
                                                           author:            [ {literal:"Mark Twain"} ],
                                                           type:              'book'
                                                       })
   end
 
-  it "should not overwrite the uri_type, uri, score or uri_source" do
+  it "should set and not overwrite the bib_source" do
     refs 'First'
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to include(
-                                                          uri_type:    :isbn,
-                                                          uri:         '0451526538',
-                                                          uri_source:  'test',
-                                                          score:       1.23,
-                                                          type:        'book'
-                                                      )
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OpenLibrary')
   end
 
 end
