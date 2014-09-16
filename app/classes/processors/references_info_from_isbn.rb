@@ -26,7 +26,7 @@ module Processors
 
     def process
       # Process in groups since IDs have to fit in a URL
-      references_without_info(:isbn).each_slice(10) do |references|
+      references_without_bib_info(:isbn).each_slice(10) do |references|
         fill_info_for_references(references)
       end
     end
@@ -45,7 +45,7 @@ module Processors
     API_URL = 'http://openlibrary.org/api/volumes/brief/json/'
 
     def fill_info_for_references(references)
-      references = references.map { |ref| [ "ISBN:#{ref[:id]}", ref]}.to_h
+      references = references.map { |ref| [ "ISBN:#{ref[:uri]}", ref]}.to_h
 
       results = fetch_results_for_ids(references.keys)
 

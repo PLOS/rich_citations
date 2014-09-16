@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references = references_without_info(:arxiv)
+      references = references_without_bib_info(:arxiv)
       fill_info_for_references( references ) if references.present?
     end
 
@@ -40,7 +40,7 @@ module Processors
     API_URL = 'http://export.arxiv.org/api/query?max_results=1000'
 
     def fill_info_for_references(references)
-      reference_ids = references.map { |ref| ref[:id]}
+      reference_ids = references.map { |ref| ref[:uri]}
 
       results = fetch_results_for_ids(reference_ids)
       results.remove_namespaces!
@@ -49,8 +49,8 @@ module Processors
         info = convert_result_to_info(result)
         next unless info.present?
 
-        ref = reference_by_identifier(:arxiv, info[:ARXIV_VER]) ||
-              reference_by_identifier(:arxiv, info[:ARXIV])
+        ref = reference_by_uri(:arxiv, info[:ARXIV_VER]) ||
+              reference_by_uri(:arxiv, info[:ARXIV])
 
         next unless ref
         ref[:bibliographic] ||= {}

@@ -43,19 +43,19 @@ module Processors::Helpers
     references.find { |id, ref| ref[:index] == index }.try(:second)
   end
 
-  def reference_by_identifier(type, identifier)
+  def reference_by_uri(type, uri)
     type = type.to_sym
     references.find { |id, ref|
-      ref[:id_type]==type && ref[:id]==identifier }.try(:second
+      ref[:uri_type]==type && ref[:uri]==uri }.try(:second
     )
   end
 
   def references_for_type(type)
     type = type.to_sym
-    references.values.select { |ref| ref[:id_type] == type }
+    references.values.select { |ref| ref[:uri_type] == type }
   end
 
-  def references_without_info(type)
+  def references_without_bib_info(type)
     references_for_type(type).reject { |ref| ref[:bibliographic] && ref[:bibliographic][:info_source] }
   end
 

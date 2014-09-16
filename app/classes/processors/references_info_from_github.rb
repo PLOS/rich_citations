@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references = references_without_info(:github)
+      references = references_without_bib_info(:github)
       fill_info_for_references( references ) if references.present?
     end
 
@@ -39,7 +39,7 @@ module Processors
 
     def fill_info_for_references(references)
       references.each do |ref|
-        ref[:bibliographic].merge!( Id::Github.parse(ref[:id]) )
+        ref[:bibliographic].merge!( Id::Github.parse(ref[:uri]) )
         ref[:bibliographic][:info_source] = 'github'
       end
     end

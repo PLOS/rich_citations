@@ -25,9 +25,9 @@ describe Processors::ReferencesInfoFromIsbn do
 
   it "should call the API" do
     refs 'First', 'Second', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111' },
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'1111111111' },
                                                               'ref-2' => { },
-                                                              'ref-3' => { id_type: :isbn, id:'2222222222' })
+                                                              'ref-3' => { uri_type: :isbn, uri:'2222222222' })
 
     expect(HttpUtilities).to receive(:get).with('http://openlibrary.org/api/volumes/brief/json/ISBN:1111111111%7CISBN:2222222222', anything).and_return('{}')
 
@@ -355,7 +355,7 @@ describe Processors::ReferencesInfoFromIsbn do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :isbn, id:'1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :isbn, uri:'1234567890', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
@@ -365,14 +365,14 @@ describe Processors::ReferencesInfoFromIsbn do
 
   it "should merge in the API results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test', type: 'book' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', score:1.23, uri_source:'test', type: 'book' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id_source:         'test',
-                                                          id:                '0451526538',
-                                                          id_type:           :isbn,
+                                                          uri_source:        'test',
+                                                          uri:               '0451526538',
+                                                          uri_type:          :isbn,
                                                           score:             1.23,
                                                           info_source:       "OpenLibrary",
                                                           key:               "/books/OL1017798M",
@@ -396,23 +396,23 @@ describe Processors::ReferencesInfoFromIsbn do
     response = '{ "ISBN:1111111111": {} }'
 
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111', type: 'book'} )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'1111111111', type: 'book'} )
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( id:'1111111111', id_type: :isbn, info_source:'OpenLibrary', type: 'book')
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( uri:'1111111111', uri_type: :isbn, info_source:'OpenLibrary', type: 'book')
   end
 
   it "should handle missing results" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id_source:  'test',
-                                                          id:         '0451526538',
-                                                          id_type:    :isbn,
+                                                          uri_source: 'test',
+                                                          uri:        '0451526538',
+                                                          uri_type:   :isbn,
                                                           score:      1.23
                                                       })
   end
@@ -426,21 +426,21 @@ describe Processors::ReferencesInfoFromIsbn do
     JSON
 
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'1111111111'},
-                                                              'ref-2' => { id_type: :isbn, id:'2222222222'}  )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'1111111111'},
+                                                              'ref-2' => { uri_type: :isbn, uri:'2222222222'}  )
 
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id:          '1111111111',
-                                                          id_type:     :isbn,
+                                                          uri:         '1111111111',
+                                                          uri_type:    :isbn,
                                                           info_source: 'OpenLibrary',
                                                           key:         '/books/OL01',
                                                           type:        'book'
                                                       })
     expect(result[:references]['ref-2'][:bibliographic]).to eq({
-                                                          id:          '2222222222',
-                                                          id_type:     :isbn,
+                                                          uri:         '2222222222',
+                                                          uri_type:    :isbn,
                                                           info_source: 'OpenLibrary',
                                                           key:         '/books/OL02',
                                                           type:        'book'
@@ -450,29 +450,29 @@ describe Processors::ReferencesInfoFromIsbn do
   it "should pick up authors from the details if they are not in the data" do
     # ISBN:9780262681087 appears to have this problem
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538' } )
 
     expect(HttpUtilities).to receive(:get).and_return(response_with_no_authors_in_data)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id:                '0451526538',
-                                                          id_type:           :isbn,
+                                                          uri:               '0451526538',
+                                                          uri_type:          :isbn,
                                                           info_source:       "OpenLibrary",
                                                           author:            [ {literal:"Mark Twain"} ],
                                                           type:              'book'
                                                       })
   end
 
-  it "should not overwrite the type, id, score or id_source" do
+  it "should not overwrite the uri_type, uri, score or uri_source" do
     refs 'First'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :isbn, id:'0451526538', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :isbn, uri:'0451526538', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to include(
-                                                          id_type:     :isbn,
-                                                          id:          '0451526538',
-                                                          id_source:   'test',
+                                                          uri_type:    :isbn,
+                                                          uri:         '0451526538',
+                                                          uri_source:  'test',
                                                           score:       1.23,
                                                           type:        'book'
                                                       )

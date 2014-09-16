@@ -27,9 +27,10 @@ module Processors
         info = identifier_for_reference[id]
 
         ref.merge!(
-          bibliographic:     info,
-          id:       info[:id],
-          id_type: info[:id_type]
+          bibliographic:   info,
+          uri:             info[:uri],
+          uri_type:        info[:uri_type],
+          uri_source:      info[:uri_source],
         ) if info
 
       end

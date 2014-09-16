@@ -25,9 +25,9 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should call the API" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' },
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' },
                                                               'ref-2' => { source:'none'},
-                                                              'ref-3' => { id_type: :doi, id:'10.333/333' })
+                                                              'ref-3' => { uri_type: :doi, uri:'10.333/333' })
 
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return('{}')
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.333%2F333', anything).and_return('{}')
@@ -37,7 +37,7 @@ describe Processors::ReferencesInfoFromDoi do
 
   it "should merge in the API results" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', score:1.23, source:'test' } )
 
     info = {
         author:  [ {given:'C.', family:'Theron'} ],
@@ -46,8 +46,8 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id:          '10.111/111',
-                                                          id_type:     :doi,
+                                                          uri:         '10.111/111',
+                                                          uri_type:    :doi,
                                                           source:      'test',
                                                           info_source: 'dx.doi.org',
                                                           score:       1.23,
@@ -61,7 +61,7 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: {
-        'ref-1' => { id_type: :doi, id:'10.1371/11111', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :doi, uri:'10.1371/11111', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
@@ -69,23 +69,23 @@ describe Processors::ReferencesInfoFromDoi do
     expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('cached title')
   end
 
-  it "should not overwrite the type, id, score, info_source or id_source" do
+  it "should not overwrite the uri_type, uri, score, info_source or uri_source" do
     refs 'First', 'Secpmd', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', score:1.23, uri_source:'test' } )
 
     info = {
-        id:          '10.xxx/xxx',
-        id_type:     :foo,
+        uri:         '10.xxx/xxx',
+        uri_type:    :foo,
         score:       99,
-        id_source:   'ignored',
+        uri_source:  'ignored',
         info_source: 'ignored',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id_type:     :doi,
-                                                          id:          '10.111/111',
-                                                          id_source:   'test',
+                                                          uri_type:    :doi,
+                                                          uri:         '10.111/111',
+                                                          uri_source:  'test',
                                                           info_source: 'dx.doi.org',
                                                           score:       1.23,
                                                       })
@@ -94,7 +94,7 @@ describe Processors::ReferencesInfoFromDoi do
   it "handles a missing/bad doi" do
     refs 'Some Reference'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' } )
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
 
     process

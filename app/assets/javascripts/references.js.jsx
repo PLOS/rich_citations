@@ -16,8 +16,8 @@ var citationFilter = function (el) {
 
 function getDOI(ref) {
     var bibliographic = ref.bibliographic;
-    if (bibliographic.id_type === 'doi') {
-        return bibliographic.id;
+    if (bibliographic.uri_type === 'doi') {
+        return bibliographic.uri;
     } else {
         return undefined;
     }

@@ -42,7 +42,6 @@ describe PapersController, type: :controller do
     it 'returns http success' do
       VCR.use_cassette('view_journal.pone.0067380') do
         get :reference, id: '10.1371/journal.pone.0067380', referenceid: '2'
-        get :reference, id: '10.1371/journal.pone.0067380', referenceid: '2'
         expect(response).to be_success
         parsed = JSON.parse(response.body)
         expect(parsed['bibliographic']['author']).to eq([{ 'family' => 'Similä', 'given' => 'T' },

@@ -25,9 +25,9 @@ describe Processors::ReferencesInfoFromArxiv do
 
   it "should call the API" do
     refs 'First', 'Second', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' },
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' },
                                                               'ref-2' => { },
-                                                              'ref-3' => { id_type: :arxiv, id:'2222.2222' })
+                                                              'ref-3' => { uri_type: :arxiv, uri:'2222.2222' })
 
     expect(HttpUtilities).to receive(:post).with("http://export.arxiv.org/api/query?max_results=1000",
                                                  'id_list=1111.1111,2222.2222',
@@ -103,7 +103,7 @@ describe Processors::ReferencesInfoFromArxiv do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { id_type: :arxiv, id:'1234.5678', bibliographic:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :arxiv, uri:'1234.5678', bibliographic:{info_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
@@ -112,14 +112,14 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   it "should merge in the API results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1404.1899', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to eq({
-                              id_source:           'test',
-                              id:                  '1404.1899',
-                              id_type:             :arxiv,
+                              uri_source:          'test',
+                              uri:                 '1404.1899',
+                              uri_type:            :arxiv,
                               score:               1.23,
                               info_source:         "arXiv",
                               ARXIV:               '1404.1899',
@@ -138,13 +138,14 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   it "should merge in the API results for a versioned arxiv document" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1404.1899v2', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1404.1899v2', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to include({
-                               id:                  '1404.1899v2',
-                               id_type:             :arxiv,
+                               uri:                 '1404.1899v2',
+                               uri_type:            :arxiv,
+                               uri_source:          'test',
                                info_source:         "arXiv",
                                ARXIV:               '1404.1899',
                                ARXIV_VER:           '1404.1899v2',
@@ -154,32 +155,32 @@ describe Processors::ReferencesInfoFromArxiv do
   it "shouldn't fail for any missing data" do
     response = '<feed><entry></entry></feed>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( id:'1111.1111', id_type: :arxiv)
+    expect(ref_info).to eq( uri:'1111.1111', uri_type: :arxiv)
   end
 
   it "shouldn't fail if there is no data" do
     response = '<feed></feed>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( id:'1111.1111', id_type: :arxiv)
+    expect(ref_info).to eq( uri:'1111.1111', uri_type: :arxiv)
   end
 
   it "should handle missing results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return('{}')
 
     expect(ref_info).to eq({
-                                id_source:  'test',
-                                id:         '1111.1111',
-                                id_type:    :arxiv,
+                                uri_source: 'test',
+                                uri:        '1111.1111',
+                                uri_type:   :arxiv,
                                 score:      1.23
                             })
   end
@@ -197,42 +198,42 @@ describe Processors::ReferencesInfoFromArxiv do
    XML
 
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111'},
-                                                              'ref-2' => { id_type: :arxiv, id:'2222.2222'}  )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111'},
+                                                              'ref-2' => { uri_type: :arxiv, uri:'2222.2222'}  )
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
     expect(result[:references]['ref-1'][:bibliographic]).to eq({
-                                                          id:          '1111.1111',
-                                                          id_type:     :arxiv,
+                                                          uri:         '1111.1111',
+                                                          uri_type:    :arxiv,
                                                           info_source: 'arXiv',
                                                           ARXIV:       '1111.1111',
                                                           ARXIV_VER:    '1111.1111',
                                                       })
     expect(result[:references]['ref-2'][:bibliographic]).to eq({
-                                                          id:          '2222.2222',
-                                                          id_type:     :arxiv,
+                                                          uri:         '2222.2222',
+                                                          uri_type:    :arxiv,
                                                           info_source: 'arXiv',
                                                           ARXIV:       '2222.2222',
                                                           ARXIV_VER:   '2222.2222',
                                                       })
   end
 
-  it "should not overwrite the type, id, score or id_source" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111', score:1.23, id_source:'test' } )
+  it "should not overwrite the uri_type, uri, score or uri_source" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return(sample_response)
 
     expect(ref_info).to include(
-                                    id_type:     :arxiv,
-                                    id:          '1111.1111',
-                                    id_source:   'test',
+                                    uri_type:    :arxiv,
+                                    uri:         '1111.1111',
+                                    uri_source:  'test',
                                     score:       1.23
                                 )
   end
 
   it "should include different types of authors" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('1111.1111', <<-XML))
         <!-- Author -->
@@ -254,7 +255,7 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   it "should include subjects" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('1111.1111', <<-XML))
         <arxiv:primary_category xmlns:arxiv="http://arxiv.org/schemas/atom" term="astro-ph.CO" scheme="http://arxiv.org/schemas/atom"/>
@@ -266,7 +267,7 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   it "should include markup in the title" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('1111.1111', <<-XML))
       <title>
@@ -278,7 +279,7 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   it "should include markup in the abstract" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :arxiv, id:'1111.1111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :arxiv, uri:'1111.1111' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('1111.1111', <<-XML))
       <summary>

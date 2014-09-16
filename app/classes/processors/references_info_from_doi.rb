@@ -25,8 +25,8 @@ module Processors
     include Helpers
 
     def process
-      references_without_info(:doi).each do |ref|
-        doi = ref[:id]
+      references_without_bib_info(:doi).each do |ref|
+        doi = ref[:uri]
         get_doi_info(doi, ref) if doi
       end
     end
@@ -45,7 +45,7 @@ module Processors
 
     def get_doi_info(doi, ref)
       result = get_result(doi)
-      result = result.except(:id, :id_type, :id_source, :info_source, :score)
+      result = result.except(:uri, :uri_type, :uri_source, :info_source, :score)
       ref[:bibliographic].merge!(result).merge!(info_source:'dx.doi.org')
     end
 

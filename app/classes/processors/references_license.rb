@@ -73,7 +73,7 @@ module Processors
     end
 
     def get_licenses(references)
-      data = references.map { |ref| {type:'doi', id:ref[:id]} }
+      data = references.map { |ref| {type:'doi', id:ref[:uri]} }
       results = HttpUtilities.post(API_URL, JSON.generate(data),
                           'Accept' => Mime::JSON, 'Content-Type' => Mime::JSON
       )
@@ -92,7 +92,7 @@ module Processors
 
     def get_reference(identifiers)
       identifiers.each do |identifier|
-        ref = reference_by_identifier(identifier['type'], identifier['id'])
+        ref = reference_by_uri(identifier['type'], identifier['id'])
         return ref if ref
       end
       return nil

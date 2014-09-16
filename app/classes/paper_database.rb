@@ -208,7 +208,7 @@ class PaperDatabase
   end
 
   def full_identifier(ref)
-    ref[:id_type] ? "#{ref[:id_type].downcase}:#{ref[:id]}" : nil
+    ref[:uri_type] ? "#{ref[:uri_type].downcase}:#{ref[:uri]}" : nil
   end
 
 end

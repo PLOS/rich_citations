@@ -90,8 +90,8 @@ class IdentifierResolver
   end
 
   def fixup_duplicates_for_all_keys
-    id_types = result.map { |id, result| result[:uri_type]}.uniq
-    id_types.each{|type| fixup_duplicates_for_types(type)}
+    uri_types = result.map { |id, result| result[:uri_type]}.uniq
+    uri_types.each{|type| fixup_duplicates_for_types(type)}
   end
 
   def fixup_duplicates_for_types(type)

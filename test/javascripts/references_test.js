@@ -71,7 +71,7 @@ var testRef = {
       "id": "pone.0000000-Doe1"
     };
 
-var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"id": "10.12345/67890", "id_type": "doi"}});
+var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"uri": "10.12345/67890", "uri_type": "doi"}});
 
 var spinnerPath = '/assets/loader.gif';
 

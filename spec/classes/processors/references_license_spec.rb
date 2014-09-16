@@ -25,7 +25,7 @@ describe Processors::ReferencesLicense do
 
   before do
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { id_type: :doi, id:'10.222/222' })
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222' })
   end
 
   def make_license(doi, type, status='active', date=Time.now)
@@ -120,8 +120,8 @@ describe Processors::ReferencesLicense do
     expect(HttpUtilities).to receive(:post).with(anything, '[{"type":"doi","id":"10.222/222"}]', anything).and_return(JSON.generate(licenses))
 
     cached = { references: {
-        'ref-1' => { id_type: :doi, id:'10.111/111', bibliographic:{license:'cached-license-1'} },
-        'ref-2' => { id_type: :doi, id:'10.222/222', bibliographic:{}  },
+        'ref-1' => { uri_type: :doi, uri:'10.111/111', bibliographic:{license:'cached-license-1'} },
+        'ref-2' => { uri_type: :doi, uri:'10.222/222', bibliographic:{}  },
     } }
     process(cached)
 
