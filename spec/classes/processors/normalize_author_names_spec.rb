@@ -44,10 +44,10 @@ describe Processors::NormalizeAuthorNames do
       </contrib>
     META
 
-    expect( result[:paper][:author] ).to eq( [
-                                              {given:"Angelina", family:"Jolie"},
-                                              {literal:"Roberts, Julia"}
-                                            ])
+    expect( result[:bibliographic][:author] ).to eq( [
+                                                       {given:"Angelina", family:"Jolie"},
+                                                       {literal:"Roberts, Julia"}
+                                                     ])
   end
 
   it "should normalize authors in the cited paper's info" do

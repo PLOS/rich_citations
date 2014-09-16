@@ -22,9 +22,9 @@ module Processors
   class Authors < Base
 
     def process
-      result[:paper] ||= {}
+      result[:bibliographic] ||= {}
       # result[:paper][:affiliations] = affiliations
-      result[:paper][:author] = authors
+      result[:bibliographic][:author] = authors
     end
 
     protected

@@ -60,7 +60,7 @@ module Processors
     end
 
     def paper_authors
-      @paper_authors ||= result[:paper].try(:[], :author)
+      @paper_authors ||= result[:bibliographic].try(:[], :author)
     end
 
   end

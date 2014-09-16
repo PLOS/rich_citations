@@ -23,14 +23,14 @@ module Processors
     include Helpers
 
     def process
-      paper = result[:paper] ||= {}
-      paper[:title]      = xml.at('article-meta article-title').try(:content).try(:strip)
+      bibliographic = result[:bibliographic] ||= {}
+      bibliographic[:title]      = xml.at('article-meta article-title').try(:content).try(:strip)
 
       result[:word_count] = word_count
     end
 
     def cleanup
-      result[:paper].compact!
+      result[:bibliographic].compact!
     end
 
     protected
