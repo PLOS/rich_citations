@@ -53,7 +53,7 @@ describe IdentifierResolvers::PmcidFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'PMC1234567890', id_type: :pmcid)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'PMC1234567890', uri_type: :pmcid)
       resolver.resolve
     end
 

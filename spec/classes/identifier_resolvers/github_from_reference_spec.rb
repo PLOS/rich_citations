@@ -54,9 +54,9 @@ describe IdentifierResolvers::GithubFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:'git@github.com/owner/repo/commit/abcdefgh',
-                                                    id_type: :github,
+                                                    uri_source: :ref,
+                                                    uri:        'git@github.com/owner/repo/commit/abcdefgh',
+                                                    uri_type:   :github,
                           )
       resolver.resolve
     end
