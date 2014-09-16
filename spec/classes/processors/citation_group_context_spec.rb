@@ -44,17 +44,17 @@ describe Processors::CitationGroupContext do
                                               )
   end
 
-  it "should truncate ellipses" do
+  it "should include truncation" do
     before = (1..25).to_a.reverse.join(" ")
     after  = (1..15).to_a.join(" ")
     body "#{before} #{cite(1)} #{after}."
     expected_before = (1..20).to_a.reverse.join(" ")+' '
     expected_after  = ' '+(1..10).to_a.join(" ")
-    expect(result[:groups][0][:context]).to eq(citation:        "[1]",
-                                               ellipses_before: "…",
-                                               ellipses_after:  "…",
-                                               text_before:     expected_before,
-                                               text_after:      expected_after,
+    expect(result[:groups][0][:context]).to eq(citation:         "[1]",
+                                               truncated_before: true,
+                                               truncated_after:  true,
+                                               text_before:      expected_before,
+                                               text_after:       expected_after,
                                               )
   end
 
