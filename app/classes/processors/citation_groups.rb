@@ -53,7 +53,7 @@ module Processors
 
     def reference_id_for_index(index)
       ref = reference_by_index(index)
-      ref && ref[:ref_id]
+      ref && ref[:ref]
     end
 
     protected
