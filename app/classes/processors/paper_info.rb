@@ -25,7 +25,8 @@ module Processors
     def process
       paper = result[:paper] ||= {}
       paper[:title]      = xml.at('article-meta article-title').try(:content).try(:strip)
-      paper[:word_count] = word_count
+
+      result[:word_count] = word_count
     end
 
     def cleanup

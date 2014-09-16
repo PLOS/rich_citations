@@ -38,7 +38,7 @@ describe Processors::PaperInfo do
 
   it "should have a word count" do
     body 'here is <b>some</b> text'
-    expect(result[:paper][:word_count]).to eq(4)
+    expect(result[:word_count]).to eq(4)
   end
 
   it "cleanup the paper object" do
