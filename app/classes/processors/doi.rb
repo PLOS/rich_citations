@@ -23,7 +23,8 @@ module Processors
 
     def process
       doi = xml.at('article-id[pub-id-type=doi]').try(:content).try(:strip)
-      result[:uri] = "http://dx.doi.org/#{doi}"
+      result[:uri]      = "http://dx.doi.org/#{doi}"
+      result[:uri_type] = :doi
     end
 
   end
