@@ -30,7 +30,7 @@ module Processors
          id = node[:id]
 
         reference   = {
-            ref_id: id,
+            ref:    id,
             index:  index,
             node:   node,       # for other processors
         }

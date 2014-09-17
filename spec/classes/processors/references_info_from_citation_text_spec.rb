@@ -32,13 +32,13 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
       node: ref_node,
-      info: {},
+      bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( title:       'Citation counts: are they good predictors of RAE scores?',
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( title:       'Citation counts: are they good predictors of RAE scores?',
                                                        issued:      {:"date-parts"=>[[2008]]},
                                                        author:      [{literal:"Mahdi S, D'Este P, Neely A"}   ],
-                                                       info_source: "RefText"
+                                                       bib_source:  "RefText"
                                                      )
   end
 
@@ -51,10 +51,10 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts: <em>are they good predictors of RAE scores</em>?')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Citation counts: <em>are they good predictors of RAE scores</em>?')
   end
 
   it "should not overwrite existing fields" do
@@ -66,7 +66,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             title: 'Article Title',
             issued: {:"date-parts"=>[[2001,1,1]] },
             author:
@@ -75,7 +75,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     } } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( title:   'Article Title',
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( title:   'Article Title',
                                                        issued:  {:"date-parts"=>[[2001,1,1]] },
                                                        author:
                                                            [{family:"Roberts", given:"J"},
@@ -92,13 +92,13 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( { } )
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( { } )
   end
 
-  it "should not add an info_source attribute if no changes are made" do
+  it "should not add a bib_source attribute if no changes are made" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Mahdi1"><label>3</label>
       <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts</mixed-citation>
@@ -107,7 +107,7 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             title: 'Citation counts',
             issued: {:"date-parts"=>[[2001,1,1]] },
             author:
@@ -116,10 +116,10 @@ describe Processors::ReferencesInfoFromCitationText do
 
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to be_nil
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to be_nil
   end
 
-  it "should not add an info_source attribute if one already exists" do
+  it "should not add a bib_source attribute if one already exists" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Mahdi1"><label>3</label>
       <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts</mixed-citation>
@@ -128,12 +128,12 @@ describe Processors::ReferencesInfoFromCitationText do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
-            info_source:'OriginalSource'
+        bibliographic: {
+            bib_source:'OriginalSource'
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Citation counts')
-    expect(result[:references]['ref-1'][:info][:info_source]).to eq('OriginalSource')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Citation counts')
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OriginalSource')
   end
 
 end

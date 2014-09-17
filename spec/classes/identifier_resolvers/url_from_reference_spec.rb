@@ -52,9 +52,9 @@ describe IdentifierResolvers::UrlFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
-                                                    id_type: :url,
+                                                    uri_source: :ref,
+                                                    uri:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
+                                                    uri_type: :url,
                           )
       resolver.resolve
     end
@@ -65,9 +65,9 @@ describe IdentifierResolvers::UrlFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
-                                                    id_type: :url,
+                                                    uri_source: :ref,
+                                                    uri:        {url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
+                                                    uri_type:   :url,
                           )
       resolver.resolve
     end

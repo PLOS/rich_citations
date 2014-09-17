@@ -24,7 +24,7 @@ module Processors
 
     def process
       references.each do |id, ref|
-        ref[:self_citations] = self_citations_for( ref[:info] )
+        ref[:self_citations] = self_citations_for( ref[:bibliographic] )
       end
     end
 
@@ -104,7 +104,7 @@ module Processors
     end
 
     def paper_authors
-      @paper_authors ||= result[:paper][:author]
+      @paper_authors ||= result[:bibliographic][:author]
     end
 
   end

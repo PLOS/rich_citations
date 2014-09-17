@@ -20,24 +20,25 @@
 
 require 'spec_helper'
 
-describe Processors::ReferencesZeroMentions do
-  include Spec::ProcessorHelper
-
-  before do
-    refs 'First', 'Second', 'Third', 'Fourth'
-    body "#{cite(1)}...#{cite(2)}#{cite(3)}"
+describe ApiV0Controller, type: :controller do
+  describe 'get PLOS doi' do
+    it 'returns 202' do
+      get 'paper', id: 'http://dx.doi.org/10.1371/journal.pone.0000000'
+      expect(response.status).to eq(202)
+    end
   end
 
-  it "should include zero citations" do
-    expect(result[:references]['ref-4'][:zero_mentions]).to eq true
+  describe 'GET non-DOI' do
+    it 'returns 404' do
+      get 'paper', id: 'http://example.org/abc'
+      expect(response.status).to eq(404)
+    end
   end
 
-  it "should not include zero citations for cited works" do
-    expect(result[:references]['ref-2'][:zero_mentions]).to be_falsey
+  describe 'GET non-plos DOI' do
+    it 'returns 404' do
+      get 'paper', id: 'http://dx.doi.org/10.1234'
+      expect(response.status).to eq(404)
+    end
   end
-
-  it "should not include zero citations if they are cited on their own" do
-    expect(result[:references]['ref-1'][:zero_mentions]).to be_falsey
-  end
-
 end

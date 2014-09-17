@@ -28,13 +28,13 @@ describe Processors::ReferencesCitedGroups do
     body "#{cite(1)},#{cite(2)} ... #{cite(2)},#{cite(3)}"
 
     @refs   = result[:references]
-    @groups = result[:groups]
+    @groups = result[:citation_groups]
   end
 
   it "return the correct citation groups" do
-    expect(@refs['ref-1'][:citation_groups]).to eq [ @groups.first ]
-    expect(@refs['ref-2'][:citation_groups]).to eq [ @groups.first, @groups.second ]
-    expect(@refs['ref-3'][:citation_groups]).to eq [ @groups.second ]
+    expect(@refs['ref-1'][:citation_groups]).to eq [ 0 ]
+    expect(@refs['ref-2'][:citation_groups]).to eq [ 0, 1 ]
+    expect(@refs['ref-3'][:citation_groups]).to eq [ 1 ]
   end
 
   it "returns nil if there are no groups" do

@@ -1,0 +1,144 @@
+<h1 id="about-the-rich-citations-api-alpha">About the Rich Citations API Alpha</h1>
+<p>Rich Citations is a PLOS Labs project adding metadata to citation data in scientific articles and stores this information in a centralized database. This alpha API allows you to access and scrape the Rich Citations database.</p>
+<h2 id="terminology">Terminology</h2>
+<p>For the definitions below, assume that you are reading a paper A, that contains in-text citations and references to other papers, including paper B.</p>
+<ul>
+<li><em>paper</em>: a citable object with an identifier, usually a scientific article</li>
+<li><em>reference</em>: a reference in paper A to paper B, containing metadata, usually at the end of the paper in the reference section</li>
+<li><em>citation</em>: a string in paper A which refers to paper B, e.g. <code>[1]</code>, usually the body of paper A</li>
+<li><em>citation group</em>: a group of citations in a paper, e.g. <code>[1],[8],[13]</code> or <code>[4]-[7]</code></li>
+<li><em>reference metadata</em>: metadata about a reference in an article</li>
+<li><em>bibliographic metadata</em>: metadata about an article as returned by crossref, etc.</li>
+</ul>
+<h2 id="identifier-formats">Identifier formats</h2>
+<ul>
+<li>URIs should be used for all identifiers; this means that we do not use external information to distinguish between a a DOI and an ISBN. Examples:
+<ul>
+<li>DOI: <code>http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1</code></li>
+<li>ISBN: <code>urn:isbn:0-486-27557-4</code></li>
+<li>PubMed: <code>http://identifiers.org/pubmed/16381840</code></li>
+<li>PubMed Commons (PMC): <code>http://identifiers.org/pmc/PMC3531190</code></li>
+<li>arxiv ID: <code>http://arxiv.org/abs/1407.4120</code></li>
+<li>github repo name/commit id:
+<ul>
+<li><code>http://github.com/foo/bar</code></li>
+<li><code>http://github.com/foo/bar/commit/f6f5500ac3d25ea379bc0e326ef69e05de11714f</code></li>
+</ul></li>
+<li>URL: <code>http://example.org/</code></li>
+</ul></li>
+</ul>
+<h2 id="getting-the-reference-information-for-a-paper">Getting the reference information for a paper</h2>
+<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000</code></pre>
+<p>This returns JSON describing the paper and its references:</p>
+<pre><code>{
+    &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
+    &quot;word_count&quot;: 4567,
+    &quot;references&quot;: { … },
+    &quot;bibliographic&quot;: { … },
+    &quot;citation_groups&quot;: [ … ]
+}</code></pre>
+<h2 id="references">References</h2>
+<p>The <code>references</code> part of the JSON is a hash with the key being the unique identifier for the paper as cited in another paper and the fields.</p>
+<pre><code>&quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1&quot;: {
+    &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1&quot;,
+    &quot;citing_id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
+    &quot;cited_id&quot;: &quot;http://dx.doi.org/10.1234/1&quot;,
+    &quot;index&quot;: 1,
+    &quot;self_citation&quot;: false,
+    &quot;text&quot;: &quot;Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.&quot;,
+    &quot;bibliographic&quot;: { … },
+    &quot;citation_groups&quot;: [ … ]
+}</code></pre>
+<p>We distinguish between a paper and a reference. A paper is identified by a URI, e.g. <code>http://dx.doi.org/10.1371/journal.pone.0000000</code>. A reference is identified by a different URI. For PLOS papers this is the citing paper A with an anchor link, e.g.: <code>http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1</code>. In the reference metadata the <code>id</code> field identifies the reference, while <code>citing_id</code> identifies the <em>citing</em> paper A and the <code>cited_id</code> fields identifies the <em>cited</em> paper B.</p>
+<h2 id="bibliographic-metadata">Bibliographic metadata</h2>
+<p>We use <a href="https://github.com/citation-style-language/schema/blob/master/csl-data.json">citeproc-json</a> as our format for bibliographic metadata, stored in the <code>bibliographic</code> fields above.</p>
+<p>In addition to the fields defined in the above document, we also include information about Paper B's license in a <code>license</code> field. This field is a hash with a <code>url</code> field that links to information about the license.</p>
+<pre><code>{
+    &quot;url&quot;: &quot;http://creativecommons.org/licenses/by/3.0/&quot;
+}</code></pre>
+<h2 id="citation-groups">Citation groups</h2>
+<p>A <em>citation group</em> describes a group of citations in a paper. For PLOS, a citation's URL includes the author last name after a hyphen and is of the form:</p>
+<pre><code>{
+    &quot;references&quot;: [
+        &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-PLOS1&quot;,
+        &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-PLOS3&quot;
+    ],
+    &quot;context&quot;: {
+        &quot;ellipses_before&quot;: true,
+        &quot;text_before&quot;: &quot;non tempor nisi, sed blandit enim. Nam a tortor sapien&quot;,
+        &quot;citation&quot;: &quot;[1, 2]&quot;,
+        &quot;text_after&quot;: &quot;. Praesent felis lorem, dignissim ac diam quis, bibendum vehicula leo.&quot;,
+        &quot;ellipses_after&quot;: false
+    },
+    &quot;section&quot;: &quot;Introduction&quot;,
+    &quot;word_position&quot;: 23
+    }
+}</code></pre>
+<p>Each paper containing reference metadata will have an array of citation groups in the <code>citation_groups</code> field.</p>
+<h2 id="mostly-full-example">(Mostly) full example</h2>
+<pre><code>GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
+
+{
+    &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
+    &quot;word_count&quot;: 4567,
+    &quot;bibliographic&quot;: {
+        &quot;source&quot;: &quot;CrossRef&quot;,
+        &quot;type&quot;: &quot;journal-article&quot;,
+        &quot;title&quot;: &quot;Quisque congue massa&quot;,
+        &quot;page&quot;: &quot;1-8&quot;,
+        &quot;reference-count&quot;: 2,
+        &quot;container-title&quot;: &quot;PLOS One&quot;,
+        &quot;author&quot;: [
+            {
+                &quot;given&quot;: &quot;John&quot;,
+                &quot;family&quot;: &quot;Doe&quot;
+            }
+        ],
+        &quot;issued&quot;: {
+            &quot;date-parts&quot;: [
+                [
+                     2013
+                ]
+            ]
+        }
+    },
+    &quot;references&quot;: {
+        &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1&quot;: {
+            &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1&quot;,
+            &quot;citing_id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
+            &quot;cited_id&quot;: &quot;http://dx.doi.org/10.1234/1&quot;,
+            &quot;index&quot;: 1,
+            &quot;self_citation&quot;: false,
+            &quot;text&quot;: &quot;Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.&quot;,
+            &quot;bibliographic&quot;: { … },
+            &quot;citation_groups&quot;: [ (see below) ],
+        },
+        &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Roe1&quot;: {
+            &quot;id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Roe1&quot;,
+            &quot;citing_id&quot;: &quot;http://dx.doi.org/10.1371/journal.pone.0000000&quot;,
+            &quot;cited_id&quot;: &quot;http://dx.doi.org/10.1234/1&quot;,
+            &quot;index&quot;: 1,
+            &quot;self_citation&quot;: false,
+            &quot;text&quot;: &quot;Roe J. (2000) Maecenas imperdiet leo ut bibendum auctor. Vivamus mollis. 88: 1012–22.&quot;,
+            &quot;bibliographic&quot;: { … },
+            &quot;citation_groups&quot;: [ (see below) ],
+        }
+    },
+    &quot;citation_groups&quot;: [
+        {
+            &quot;references&quot;: [
+                &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Doe1&quot;,
+                &quot;http://dx.doi.org/10.1371/journal.pone.0000000#pone.0000000-Roe1&quot;
+            ],
+            &quot;context&quot;: {
+                &quot;ellipses_before&quot;: true,
+                &quot;text_before&quot;: &quot;non tempor nisi, sed blandit enim. Nam a tortor sapien&quot;,
+                &quot;citation&quot;: &quot;[1, 2]&quot;,
+                &quot;text_after&quot;: &quot;. Praesent felis lorem, dignissim ac diam quis, bibendum vehicula leo.&quot;,
+                &quot;ellipses_after&quot;: false
+            },
+            &quot;section&quot;: &quot;Introduction&quot;,
+            &quot;word_position&quot;: 23
+        }
+    ]
+}</code></pre>

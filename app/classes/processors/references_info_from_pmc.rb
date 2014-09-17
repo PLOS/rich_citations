@@ -26,7 +26,7 @@ module Processors
 
     def process
       # Process in groups since IDs have to fit in a URL
-      references = references_without_info(:pmcid)
+      references = references_without_bib_info(:pmcid)
       fill_info_for_references(references) if references.present?
     end
 
@@ -43,7 +43,7 @@ module Processors
     API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&retmode=xml'
 
     def fill_info_for_references(references)
-      reference_ids = references.map { |ref| ref[:id]}
+      reference_ids = references.map { |ref| ref[:uri]}
 
       results = fetch_results_for_ids(reference_ids)
 
@@ -53,11 +53,11 @@ module Processors
 
         pmcid = Id::Pmcid.normalize( info[:PMCID] )
         next unless pmcid
-        ref = reference_by_identifier(:pmcid, pmcid)
+        ref = reference_by_uri(:pmcid, pmcid)
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end
@@ -73,7 +73,7 @@ module Processors
       @result = result
 
       {
-          info_source:         'NIH',
+          bib_source:          'NIH',
           PMCID:               Id::Pmcid.normalize( value('article-meta article-id[pub-id-type=pmc]') ),
           PMID:                value('article-meta article-id[pub-id-type=pmid]'),
           DOI:                 value('article-meta article-id[pub-id-type=doi]'),

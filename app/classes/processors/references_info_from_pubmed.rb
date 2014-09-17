@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references = references_without_info(:pmid)
+      references = references_without_bib_info(:pmid)
       fill_info_for_references(references) if references.present?
     end
 
@@ -42,7 +42,7 @@ module Processors
     API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml'
 
     def fill_info_for_references(references)
-      reference_ids = references.map { |ref| ref[:id]}
+      reference_ids = references.map { |ref| ref[:uri]}
 
       results = fetch_results_for_ids(reference_ids)
 
@@ -52,11 +52,11 @@ module Processors
 
         pmid = info[:PMID]
         next unless pmid
-        ref = reference_by_identifier(:pmid, pmid)
+        ref = reference_by_uri(:pmid, pmid)
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end
@@ -72,7 +72,7 @@ module Processors
       @result = result
 
       {
-          info_source:         'NIH',
+          bib_source:          'NIH',
           PMID:                value('PubmedData ArticleIdList *[IdType=pubmed]'), # || value('MedlineCitation > PMID'),
           PMCID:               value('PubmedData ArticleIdList *[IdType=pmc]'),
           DOI:                 value('PubmedData ArticleIdList *[IdType=doi]'),

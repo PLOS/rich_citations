@@ -26,7 +26,7 @@ module Processors
 
     def process
       references.each do |id, ref|
-        extract_citation_info(ref[:node], ref[:info])
+        extract_citation_info(ref[:node], ref[:bibliographic])
       end
     end
 
@@ -67,7 +67,7 @@ module Processors
 
       extract_citation_names(node, info)
 
-      set_field(info, :info_source, 'RefNode') if @field_changed
+      set_field(info, :bib_source, 'RefNode') if @field_changed
     end
 
     def extract_citation_names(node, info)

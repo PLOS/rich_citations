@@ -40,19 +40,18 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
       node: ref_node,
-      info: {},
+      bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :"container-type" => "journal",
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( :"container-type" => "journal",
                                                        :"container-title"=> "J Doc",
                                                        :title            => 'Who cites women? Whom do women cite? An exploration of gender and scholarly citation in sociology',
                                                        :volume           => "51",
                                                        :issued           => {:"date-parts"=>[[1995]]},
                                                        :page             =>"404-410",
-                                                       :author           =>
-                                                           [{:family=>"Davenport", :given=>"E"},
-                                                            {:family=>"Snyder",    :given=>"H"}],
-                                                       :info_source      => 'RefNode'
+                                                       :author           => [{:family=>"Davenport", :given=>"E"},
+                                                                             {:family=>"Snyder",    :given=>"H"}],
+                                                       :bib_source       => 'RefNode'
                                                       )
   end
 
@@ -67,10 +66,10 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <em>women</em>?')
+    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Who cites <em>women</em>?')
   end
 
   it "should extract only a start page" do
@@ -84,10 +83,10 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:page]).to eq('404-404')
+    expect(result[:references]['ref-1'][:bibliographic][:page]).to eq('404-404')
   end
 
   it "should extract a start and end page" do
@@ -101,10 +100,10 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:page]).to eq('404-410')
+    expect(result[:references]['ref-1'][:bibliographic][:page]).to eq('404-410')
   end
 
   it "should not add an invalid year" do
@@ -118,10 +117,10 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info][:issued]).to be_nil
+    expect(result[:references]['ref-1'][:bibliographic][:issued]).to be_nil
   end
 
   it "should not overwrite existing fields" do
@@ -139,7 +138,7 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             :"container-type" => "paper",
             :"container-title"=> "Container Title",
             :title            => 'Article Title',
@@ -152,7 +151,7 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     } } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :"container-type" => "paper",
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( :"container-type" => "paper",
                                                        :"container-title"=> "Container Title",
                                                        :title            => 'Article Title',
                                                        :volume           => "99",
@@ -173,13 +172,13 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {},
+        bibliographic: {},
     } } )
 
-    expect(result[:references]['ref-1'][:info]).to eq( { } )
+    expect(result[:references]['ref-1'][:bibliographic]).to eq( { } )
   end
 
-  it "should not add an info_source if no changes are made" do
+  it "should not add a bib_source if no changes are made" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
@@ -193,7 +192,7 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
+        bibliographic: {
             :"container-type" => "paper",
             :"container-title"=> "Container Title",
             :title            => 'Article Title',
@@ -205,10 +204,10 @@ describe Processors::ReferencesInfoFromCitationNode do
                  {:family=>"Jolie",   :given=>"J"} ]
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to be_nil
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to be_nil
   end
 
-  it "should not add an info_source if one already exists" do
+  it "should not add a bib_source if one already exists" do
     ref_node = Nokogiri::XML.parse <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
@@ -219,11 +218,11 @@ describe Processors::ReferencesInfoFromCitationNode do
 
     process( references: { 'ref-1' => {
         node: ref_node,
-        info: {
-            :info_source      => 'OriginalSource',
+        bibliographic: {
+            :bib_source      => 'OriginalSource',
         } } } )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to eq('OriginalSource')
+    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OriginalSource')
   end
 
 end

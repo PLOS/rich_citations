@@ -79,10 +79,10 @@ module IdentifierResolvers
       return nil unless doi.present?
 
       {
-          id_source:   :crossref,
-          id:          doi,
-          id_type:     :doi,
-          score:       result['score'].to_f,
+          uri_source:   :crossref,
+          uri_type:     :doi,
+          uri:          "http://dx.doi.org/#{doi}",
+          score:        result['score'].to_f,
       }
     end
 

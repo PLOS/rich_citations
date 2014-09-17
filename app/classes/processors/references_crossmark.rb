@@ -26,7 +26,7 @@ module Processors
       references_for_type(:doi).each do |ref|
         next if ref[:updated_by]
 
-        doi = ref[:id]
+        doi = ref[:uri]
         get_crossmark_info(doi, ref) if doi
       end
     end

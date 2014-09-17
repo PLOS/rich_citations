@@ -50,6 +50,7 @@ group :test do
   gem 'selenium-webdriver'
   gem 'webmock'
   gem 'vcr'
+  gem 'rake'
 end
 
 group :test, :development do

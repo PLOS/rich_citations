@@ -30,34 +30,31 @@ describe Processors::CitationGroupContext do
 
   it "should provide citation context" do
     body "Some text #{cite(1)} More text"
-    expect(result[:groups][0][:context]).to eq(citation:    "[1]",
+    expect(result[:citation_groups][0][:context]).to eq(citation:    "[1]",
                                                text_before: "Some text ",
                                                text_after:  " More text",
-                                               quote:       "Some text [1] More text"
                                               )
   end
 
   it "should provide the correct text for a group with multiple references context" do
     body "  Some text #{cite(1)}, #{cite(3)} - #{cite(5)} More text  "
-    expect(result[:groups][0][:context]).to eq(citation:    "[1], [3] - [5]",
+    expect(result[:citation_groups][0][:context]).to eq(citation:    "[1], [3] - [5]",
                                                text_before: "Some text ",
                                                text_after:  " More text",
-                                               quote:       "Some text [1], [3] - [5] More text"
                                               )
   end
 
-  it "should truncate ellipses" do
+  it "should include truncation" do
     before = (1..25).to_a.reverse.join(" ")
     after  = (1..15).to_a.join(" ")
     body "#{before} #{cite(1)} #{after}."
     expected_before = (1..20).to_a.reverse.join(" ")+' '
     expected_after  = ' '+(1..10).to_a.join(" ")
-    expect(result[:groups][0][:context]).to eq(citation:        "[1]",
-                                               ellipses_before: "…",
-                                               ellipses_after:  "…",
-                                               text_before:     expected_before,
-                                               text_after:      expected_after,
-                                               quote:           "\u2026#{expected_before}[1]#{expected_after}\u2026"
+    expect(result[:citation_groups][0][:context]).to eq(citation:         "[1]",
+                                               truncated_before: true,
+                                               truncated_after:  true,
+                                               text_before:      expected_before,
+                                               text_after:       expected_after,
                                               )
   end
 
@@ -65,8 +62,7 @@ describe Processors::CitationGroupContext do
     body "<sec>abc<sec>"
     body "Some text #{cite(1)} More text"
     body "</sec>def</sec>"
-    expect(result[:groups][0][:context]).to eq(citation:   "[1]",
-                                               quote:      "Some text [1] More text",
+    expect(result[:citation_groups][0][:context]).to eq(citation:   "[1]",
                                                text_after: " More text",
                                                text_before: "Some text "
                                             )
@@ -76,8 +72,7 @@ describe Processors::CitationGroupContext do
     body "<sec>abc<P>"
     body "Some text #{cite(1)} More text"
     body "</P>def</sec>"
-    expect(result[:groups][0][:context]).to eq(citation:   "[1]",
-                                               quote:      "Some text [1] More text",
+    expect(result[:citation_groups][0][:context]).to eq(citation:   "[1]",
                                                text_after: " More text",
                                                text_before: "Some text "
                                               )

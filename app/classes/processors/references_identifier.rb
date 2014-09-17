@@ -27,9 +27,11 @@ module Processors
         info = identifier_for_reference[id]
 
         ref.merge!(
-          info:     info,
-          id:       info[:id],
-          id_type: info[:id_type]
+          bibliographic:   info.except(:uri, :uri_type, :uri_source, :score),
+          uri:             info[:uri],
+          uri_type:        info[:uri_type],
+          uri_source:      info[:uri_source],
+          score:           info[:score],
         ) if info
 
       end
@@ -38,9 +40,9 @@ module Processors
 
     def cleanup
       references.each do |id, ref|
-        info = ref[:info]
+        info = ref[:bibliographic]
         info.compact! if info
-        ref.delete(:info) if info.blank?
+        ref.delete(:bibliographic) if info.blank?
       end
     end
 

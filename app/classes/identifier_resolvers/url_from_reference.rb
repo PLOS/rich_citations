@@ -38,9 +38,9 @@ module IdentifierResolvers
 
       return nil unless id.present?
       info = {
-          id_source:  :ref,
-          id:         id,
-          id_type:    :url,
+          uri_source:  :ref,
+          uri:         id,
+          uri_type:    :url,
       }
     end
 

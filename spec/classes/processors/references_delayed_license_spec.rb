@@ -29,7 +29,7 @@ describe Processors::ReferencesDelayedLicense do
 
   before do
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { id_type: :doi, id:'10.222/222' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222' } )
   end
 
   def stub_clock(difference)
@@ -78,8 +78,8 @@ describe Processors::ReferencesDelayedLicense do
 
     stub_clock(20.seconds)
 
-    expect( result[:references]['ref-1'][:info][:license] ).to eq('test-license-1')
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references]['ref-1'][:bibliographic][:license] ).to eq('test-license-1')
+    expect( result[:references]['ref-2'][:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should sleep if necessary" do

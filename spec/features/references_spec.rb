@@ -26,7 +26,7 @@ Capybara.default_wait_time = 60
 
 describe "reference viewing", :type => :feature, :js => true do
   before(:all) do
-    WebMock.stub_request(:get, 'www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/10.1371%2Fjournal.pone.0067380&representation=XML').
+    WebMock.stub_request(:get, 'www.plosone.org/article/fetchObjectAttachment.action?uri=bibliographic:doi/10.1371%2Fjournal.pone.0067380&representation=XML').
       to_return(:status => 200,
                 :body   => File.open(File.join(Rails.root, 'fixtures', '10.1371%2Fjournal.pone.0067380.xml')))
 #    WebMock.stub_request(:post, "http://search.crossref.org/links").

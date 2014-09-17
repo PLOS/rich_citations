@@ -25,9 +25,9 @@ describe Processors::ReferencesInfoFromPubmed do
 
   it "should call the API" do
     refs 'First', 'Second', 'Third'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'1111111111' },
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'1111111111' },
                                                               'ref-2' => { },
-                                                              'ref-3' => { id_type: :pmid, id:'2222222222' })
+                                                              'ref-3' => { uri_type: :pmid, uri:'2222222222' })
 
     expect(HttpUtilities).to receive(:post).with('http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&retmode=xml',
                                                  'id=1111111111,2222222222',
@@ -42,7 +42,7 @@ describe Processors::ReferencesInfoFromPubmed do
   end
 
   def ref_info
-    result[:references]['ref-1'][:info]
+    result[:references]['ref-1'][:bibliographic]
   end
 
   def test_response(pmid='1111111111', medline_xml='', pubmed_xml=nil)
@@ -71,7 +71,7 @@ describe Processors::ReferencesInfoFromPubmed do
     <PubmedArticleSet>
     <PubmedArticle>
         <MedlineCitation Owner="NLM" Status="MEDLINE">
-            <PMID Version="1">12466850</PMID>
+            <PMID Version="1">0451526538</PMID>
             <DateCreated>
                 <Year>2002</Year>
                 <Month>12</Month>
@@ -226,25 +226,21 @@ describe Processors::ReferencesInfoFromPubmed do
     expect(HttpUtilities).to_not receive(:post)
 
     cached = { references: {
-        'ref-1' => { id_type: :pmid, id:'1234567890', info:{info_source:'cached', title:'cached title'} },
+        'ref-1' => { uri_type: :pmid, uri:'1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
     } }
     process(cached)
 
-    expect(ref_info[:info_source]).to eq('cached')
+    expect(ref_info[:bib_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
   end
 
   it "should merge in the API results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538', score:1.23, uri_source:'test' } )
 
     expect(HttpUtilities).to receive(:post).and_return(complete_response)
 
     expect(ref_info).to eq({
-                              id_source:           'test',
-                              id:                  '0451526538',
-                              id_type:             :pmid,
-                              score:               1.23,
-                              info_source:         "NIH",
+                              bib_source:          'NIH',
                               DOI:                 "10.1038/nature01262",
                               PMCID:               "PMC111111",
                               PMID:                "0451526538",
@@ -266,34 +262,29 @@ describe Processors::ReferencesInfoFromPubmed do
   it "shouldn't fail for any missing data" do
     response = '<PubmedArticleSet><PubmedArticle></PubmedArticle></PubmedArticleSet>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538', attribute:'abc' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( id:'0451526538', id_type: :pmid)
+    expect(ref_info).to eq( attribute:'abc' )
   end
 
   it "shouldn't fail if there is no data" do
     response = '<PubmedArticleSet></PubmedArticleSet>'
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538', attribute:'abc' } )
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(ref_info).to eq( id:'0451526538', id_type: :pmid)
+    expect(ref_info).to eq( attribute:'abc' )
   end
 
   it "should handle missing results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538', score:1.23, uri_source:'test', attribute:'abc' } )
 
     expect(HttpUtilities).to receive(:post).and_return('{}')
 
-    expect(ref_info).to eq({
-                                id_source:  'test',
-                                id:         '0451526538',
-                                id_type:    :pmid,
-                                score:      1.23
-                            })
+    expect(ref_info).to eq({ attribute:'abc' } )
   end
 
   it "should match multiple results even if they are out of order" do
@@ -313,40 +304,31 @@ describe Processors::ReferencesInfoFromPubmed do
    XML
 
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'1111111111'},
-                                                              'ref-2' => { id_type: :pmid, id:'2222222222'}  )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'1111111111'},
+                                                              'ref-2' => { uri_type: :pmid, uri:'2222222222'}  )
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:info]).to eq({
-                                                          id:          '1111111111',
-                                                          id_type:     :pmid,
-                                                          info_source: 'NIH',
+    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+                                                          bib_source:  'NIH',
                                                           PMID:        '1111111111',
                                                       })
-    expect(result[:references]['ref-2'][:info]).to eq({
-                                                          id:           '2222222222',
-                                                          id_type:      :pmid,
-                                                          info_source:  'NIH',
+    expect(result[:references]['ref-2'][:bibliographic]).to eq({
+                                                          bib_source:   'NIH',
                                                           PMID:         '2222222222',
                                                       })
   end
 
-  it "should not overwrite the type, id, score or id_source" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538', score:1.23, id_source:'test' } )
+  it "should set and not overwrite the bib_source" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538', score:1.23, uri_source:'test'  } )
 
     expect(HttpUtilities).to receive(:post).and_return(complete_response)
 
-    expect(ref_info).to include(
-                                    id_type:     :pmid,
-                                    id:          '0451526538',
-                                    id_source:  'test',
-                                    score:       1.23
-                                )
+    expect(ref_info[:bib_source]).to eq('NIH')
   end
 
   it "should include different types of authors" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
             <AuthorList CompleteYN="Y">
@@ -386,7 +368,7 @@ describe Processors::ReferencesInfoFromPubmed do
   end
 
   it "should include subjects and nested subjects" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
         <MeshHeadingList>
@@ -405,7 +387,7 @@ describe Processors::ReferencesInfoFromPubmed do
   end
 
   it "should include markup in the title" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
       <Article PubModel="Print">
@@ -417,7 +399,7 @@ describe Processors::ReferencesInfoFromPubmed do
   end
 
   it "should include markup in the abstract" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :pmid, id:'0451526538' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :pmid, uri:'0451526538' } )
 
     expect(HttpUtilities).to receive(:post).and_return(test_response('0451526538', <<-XML))
       <Abstract>

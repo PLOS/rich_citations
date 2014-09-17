@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright (c) 2014 Public Library of Science
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,7 +31,7 @@ describe Processors::NormalizeAuthorNames do
 
   def authors
     reference = result[:references].values.first
-    reference[:info][:author]
+    reference[:bibliographic][:author]
   end
 
   it "should normalize authors in the citing paper info" do
@@ -43,10 +44,10 @@ describe Processors::NormalizeAuthorNames do
       </contrib>
     META
 
-    expect( result[:paper][:author] ).to eq( [
-                                              {given:"Angelina", family:"Jolie"},
-                                              {literal:"Roberts, Julia"}
-                                            ])
+    expect( result[:bibliographic][:author] ).to eq( [
+                                                       {given:"Angelina", family:"Jolie"},
+                                                       {literal:"Roberts, Julia"}
+                                                     ])
   end
 
   it "should normalize authors in the cited paper's info" do

@@ -27,9 +27,9 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111','10.1371/33333']).and_return([])
 
     input = { references: {
-      'ref-1' => { id_type: :doi, id:'10.1371/11111'},
-      'ref-2' => { id_type: :doi, id:'10.9999/22222'},
-      'ref-3' => { id_type: :doi, id:'10.1371/33333'},
+      'ref-1' => { uri_type: :doi, uri:'10.1371/11111'},
+      'ref-2' => { uri_type: :doi, uri:'10.9999/22222'},
+      'ref-3' => { uri_type: :doi, uri:'10.1371/33333'},
     } }
     process(input)
   end
@@ -44,14 +44,14 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).and_return( search_results )
 
     input = { references: {
-        'ref-1' => { id_type: :doi, id:'10.1371/11111'},
-        'ref-2' => { id_type: :doi, id:'10.9999/22222'},
-        'ref-3' => { id_type: :doi, id:'10.1371/33333'},
+        'ref-1' => { uri_type: :doi, uri:'10.1371/11111'},
+        'ref-2' => { uri_type: :doi, uri:'10.9999/22222'},
+        'ref-3' => { uri_type: :doi, uri:'10.1371/33333'},
     } }
     process(input)
 
-    expect(result[:references]['ref-1'][:info][:abstract]).to eq('abstract 1')
-    expect(result[:references]['ref-3'][:info][:abstract]).to eq('abstract 2')
+    expect(result[:references]['ref-1'][:bibliographic][:abstract]).to eq('abstract 1')
+    expect(result[:references]['ref-3'][:bibliographic][:abstract]).to eq('abstract 2')
   end
 
   it "should not query the API if the abstract is cached" do
@@ -62,13 +62,13 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/22222']).and_return( search_results )
 
     cached = { references: {
-        'ref-1' => { id_type: :doi, id:'10.1371/11111', info:{abstract:'cached-1'} },
-        'ref-2' => { id_type: :doi, id:'10.1371/22222' },
+        'ref-1' => { uri_type: :doi, uri:'10.1371/11111', bibliographic:{abstract:'cached-1'} },
+        'ref-2' => { uri_type: :doi, uri:'10.1371/22222' },
     } }
     process(cached)
 
-    expect(result[:references]['ref-1'][:info][:abstract]).to eq('cached-1')
-    expect(result[:references]['ref-2'][:info][:abstract]).to eq('abstract 2')
+    expect(result[:references]['ref-1'][:bibliographic][:abstract]).to eq('cached-1')
+    expect(result[:references]['ref-2'][:bibliographic][:abstract]).to eq('abstract 2')
   end
 
   it 'should work if the API does not return a result for a DOI' do
@@ -80,12 +80,12 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111', '10.1371/22222']).and_return(search_results)
 
     cached = { references: {
-      'ref-1' => { id_type: :doi, id: '10.1371/11111' },
-      'ref-2' => { id_type: :doi, id: '10.1371/22222' }
+      'ref-1' => { uri_type: :doi, uri: '10.1371/11111' },
+      'ref-2' => { uri_type: :doi, uri: '10.1371/22222' }
     } }
     process(cached)
 
-    expect(result[:references]['ref-2'][:info][:abstract]).to eq('abstract 2')
+    expect(result[:references]['ref-2'][:bibliographic][:abstract]).to eq('abstract 2')
   end
 
 end

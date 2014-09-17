@@ -18,28 +18,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require 'spec_helper'
+class ApiV0Controller < ApplicationController
+  def paper
+    id = params[:id]
+    case id
+    when %r{^http://dx.doi.org/10.1371/}
+      doi = Id::Doi.extract(params[:id])
+      # TODO : combine with code in papers controller
+      paper = PaperResult.find_or_new_for_doi(doi)
+      if paper.should_start_analysis?
+        paper.start_analysis!
+        paper.save
+      end
+      response.content_type = Mime::JSON
+      headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
+      result = paper.ready? ? paper.result : ''
+      status = paper.ready? ? :ok : :accepted
+      render(json: result, status: status)
 
-describe Processors::ReferencesMedianCoCitations do
-  include Spec::ProcessorHelper
-
-  before do
-    refs 'First', 'Second', 'Third'
+      @paper = PaperResult.find_or_new_for_doi(doi)
+    else
+      render status: 404, text: ''
+    end
   end
-
-  it "should include median co citations" do
-    body "#{cite(1)},#{cite(2)}#{cite(3)} ... #{cite(2)},#{cite(1)}#{cite(3)}"
-    expect(result[:references]['ref-2'][:median_co_citations]).to eq 2
-  end
-
-  it "should exclude itself" do
-    body "#{cite(1)}"
-    expect(result[:references]['ref-1'][:median_co_citations]).to eq 0
-  end
-
-  it "should not be present if it is not cited" do
-    body "#{cite(1)}"
-    expect(result[:references]['ref-3'][:median_co_citations]).to be_nil
-  end
-
 end
