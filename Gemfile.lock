@@ -214,6 +214,7 @@ DEPENDENCIES
   qunit-rails
   rails (~> 4.1.0)
   rails_12factor
+  rake
   react-rails (~> 0.10.0.0)
   rspec-rails (~> 3.0.0.beta)
   sass-rails (~> 4.0.0)
