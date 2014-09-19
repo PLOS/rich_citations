@@ -28,6 +28,7 @@ class CitationGrouper
               :groups
 
   def initialize(parser)
+    @group     = 0
     @parser    = parser
     @last_node = :none
     @groups    = []
@@ -69,12 +70,18 @@ class CitationGrouper
 
   def start_group!(node)
     @current_group =  {
+        id:            next_group_id,
         references:    [],
         nodes:         [],
     }
 
     @groups        << @current_group
     @last_node     =  :none
+  end
+
+  def next_group_id
+    @group += 1
+    @group.to_s
   end
 
   def parse_text_separators(citation)

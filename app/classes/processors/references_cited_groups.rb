@@ -38,7 +38,7 @@ module Processors
     protected
 
     def cited_groups(id)
-      groups = citation_groups.map.with_index { |group,index| group[:references].include?(id) ? index : nil }
+      groups = citation_groups.map { |group| group[:references].include?(id) ? group[:id] : nil }
       groups.compact.presence
     end
 

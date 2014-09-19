@@ -32,9 +32,9 @@ describe Processors::ReferencesCitedGroups do
   end
 
   it "return the correct citation groups" do
-    expect(@refs.first[:citation_groups]).to eq [ 0 ]
-    expect(@refs.second[:citation_groups]).to eq [ 0, 1 ]
-    expect(@refs.third[:citation_groups]).to eq [ 1 ]
+    expect(@refs.first[:citation_groups]).to eq [ '1' ]
+    expect(@refs.second[:citation_groups]).to eq [ '1', '2' ]
+    expect(@refs.third[:citation_groups]).to eq [ '2' ]
   end
 
   it "returns nil if there are no groups" do
