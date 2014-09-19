@@ -27,7 +27,6 @@ module Plos
 
     SEARCH_URL   = 'http://api.plos.org/search'
     DOC_URL      = 'http://www.plosone.org/article/fetchObjectAttachment.action?uri=info:doi/%s&representation=XML'
-    INFO_URL     = 'http://www.plosone.org/article/info:doi/%s'
 
     #Accesses the PLOS search API.
     #query: the text of your query.
@@ -81,24 +80,25 @@ module Plos
 
     # Given the DOI of a PLOS paper, downloads the XML and parses it
     def self.document(doi)
-      url = DOC_URL % [doi]
-      response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
-        HttpUtilities.get(url, :xml)
+      # HACK - but since we will be rewriting this, not a big deal now
+      if Id::Doi.is_elife_doi?(doi)
+        return Elife::Api.document(doi)
+      elsif Id::Doi.is_peerj_doi?(doi)
+        return Peerj::Api.document(doi)
+      else
+        begin
+          url = DOC_URL % [doi]
+          response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
+            HttpUtilities.get(url, :xml)
+          end
+          Nokogiri::XML(response)
+          
+        rescue Net::HTTPFatalError => ex
+          raise unless ex.response.code == '500'
+          #todo Need a better way to detect invalid docs than 500 errors
+          nil
+        end
       end
-      Nokogiri::XML(response)
-
-    rescue Net::HTTPFatalError => ex
-      raise unless ex.response.code == '500'
-      #todo Need a better way to detect invalid docs than 500 errors
-      nil
     end
-
-    # Given the DOI of a PLOS paper, downloads the XML and parses it
-    def self.info(doi)
-      url = INFO_URL % [doi]
-      response = HttpUtilities.get(url)
-      Nokogiri::HTML(response)
-    end
-
   end
 end

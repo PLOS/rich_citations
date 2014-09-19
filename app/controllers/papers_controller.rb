@@ -25,8 +25,8 @@ class PapersController < ApplicationController
       doi = Id::Doi.extract( params[:doi] )
       if doi.blank?
         redirect_to root_url, flash: { error: "DOI is Invalid" }
-      elsif !Id::Doi.is_plos_doi?(doi)
-        redirect_to root_url, flash: { error: "Not a PLOS DOI" }
+      elsif !Id::Doi.is_plos_doi?(doi) && !Id::Doi.is_elife_doi?(doi) && !Id::Doi.is_peerj_doi?(doi)
+        redirect_to root_url, flash: { error: "Not a PLOS or elife or PeerJ DOI" }
       else
         redirect_to action: 'view', id: Id::Doi.extract(doi)
       end

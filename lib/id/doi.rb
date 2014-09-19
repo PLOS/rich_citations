@@ -37,7 +37,9 @@ module Id
     DOI_ALONE_REGEX  = /^(#{PUNCT}|\s)*(?<result>#{DOI_REGEX})/io
 
     PLOS_PREFIXES = [ '10.1371' ]
-
+    ELIFE_PREFIXES = [ '10.7554' ]
+    PEERJ_PREFIXES = [ '10.7717' ]
+    
     def self.extract(text, normalize=false)
       doi = match_regexes(text, DOI_URL_REGEX    => true,
                                 DOI_PREFIX_REGEX => false,
@@ -63,6 +65,14 @@ module Id
 
     def self.is_plos_doi?(doi)
       prefix(doi).in?(PLOS_PREFIXES)
+    end
+
+    def self.is_elife_doi?(doi)
+      prefix(doi).in?(ELIFE_PREFIXES)
+    end
+
+    def self.is_peerj_doi?(doi)
+      prefix(doi).in?(PEERJ_PREFIXES)
     end
 
     private
