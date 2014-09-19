@@ -42,7 +42,7 @@ describe Processors::ReferencesInfoFromPmc do
   end
 
   def reference
-    result[:references]['ref-1']
+    result[:references].first
   end
 
   def ref_info
@@ -180,9 +180,9 @@ describe Processors::ReferencesInfoFromPmc do
   it "should not call the API if there are cached results" do
     expect(HttpUtilities).to_not receive(:post)
 
-    cached = { references: {
-        'ref-1' => { uri_type: :pmcid, uri:'PMC1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
-    } }
+    cached = { references: [
+        { id:'ref-1', uri_type: :pmcid, uri:'PMC1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
+    ] }
     process(cached)
 
     expect(ref_info[:bib_source]).to eq('cached')
@@ -220,7 +220,7 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( number:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( number:1, id:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "shouldn't fail if there is no data" do
@@ -230,7 +230,7 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( number:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( number:1, id:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "should handle missing results" do
@@ -261,11 +261,11 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source: 'NIH',
                                                           PMCID:       'PMC1111111111',
                                                       })
-    expect(result[:references]['ref-2'][:bibliographic]).to eq({
+    expect(result[:references].second[:bibliographic]).to eq({
                                                           bib_source: 'NIH',
                                                           PMCID:       'PMC2222222222',
                                                       })

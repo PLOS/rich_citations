@@ -36,23 +36,21 @@ module Processors::Helpers
   end
 
   def reference_by_id(id)
-    references[id]
+    references.find { |ref| ref[:id] == id }
   end
 
   def reference_by_number(number)
-    references.find { |id, ref| ref[:number] == number }.try(:second)
+    references.find { |ref| ref[:number] == number }
   end
 
   def reference_by_uri(type, uri)
     type = type.to_sym
-    references.find { |id, ref|
-      ref[:uri_type]==type && ref[:uri]==uri }.try(:second
-    )
+    references.find do |ref| ref[:uri_type]==type && ref[:uri]==uri end
   end
 
   def references_for_type(type)
     type = type.to_sym
-    references.values.select { |ref| ref[:uri_type] == type }
+    references.select { |ref| ref[:uri_type] == type }
   end
 
   def references_without_bib_info(type)

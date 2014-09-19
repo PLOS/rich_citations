@@ -23,7 +23,7 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references.each do |ref|
         ref[:self_citations] = self_citations_for( ref[:bibliographic] )
       end
     end

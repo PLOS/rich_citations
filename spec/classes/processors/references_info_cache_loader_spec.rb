@@ -35,7 +35,7 @@ describe Processors::ReferencesInfoCacheLoader do
 
     process
 
-    expect(result[:references]['ref-1'][:bibliographic]).to include(license:'cached')
+    expect(result[:references].first[:bibliographic]).to include(license:'cached')
   end
 
   it "Should do nothing if there was no cache record" do
@@ -44,7 +44,7 @@ describe Processors::ReferencesInfoCacheLoader do
 
     process
 
-    expect(result[:references]['ref-1']).to eq(uri_type: :doi, uri:'10.111/111', uri_source:'test', number:1, ref:'ref-1')
+    expect(result[:references].first).to eq(uri_type: :doi, uri:'10.111/111', uri_source:'test', number:1, id:'ref-1')
   end
 
 end

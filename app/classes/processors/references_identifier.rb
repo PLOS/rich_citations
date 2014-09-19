@@ -23,7 +23,8 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references.each do |ref|
+        id   = ref[:id]
         info = identifier_for_reference[id]
 
         ref.merge!(
@@ -39,7 +40,7 @@ module Processors
     end
 
     def cleanup
-      references.each do |id, ref|
+      references.each do |ref|
         info = ref[:bibliographic]
         info.compact! if info
         ref.delete(:bibliographic) if info.blank?
@@ -54,7 +55,7 @@ module Processors
 
     def identifier_for_reference
       @identifier_for_reference ||= begin
-        reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
+        reference_nodes = references.map { |ref| [ref[:id], ref[:node]] }.to_h
         IdentifierResolver.resolve(reference_nodes)
       end
     end

@@ -30,7 +30,7 @@ describe Processors::NormalizeAuthorNames do
   end
 
   def authors
-    reference = result[:references].values.first
+    reference = result[:references].first
     reference[:bibliographic][:author]
   end
 

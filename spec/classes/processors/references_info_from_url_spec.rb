@@ -27,13 +27,13 @@ describe Processors::ReferencesInfoFromUrl do
   end
 
   def ref_info
-    result[:references]['ref-1'][:bibliographic]
+    result[:references].first[:bibliographic]
   end
 
   it "should not parse the URL if there are cached results" do
-    cached = { references: {
-        'ref-1' => { uri_type: :url, uri:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
-    } }
+    cached = { references: [
+        {id:'ref-1', uri_type: :url, uri:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
+    ] }
     process(cached)
 
     expect(ref_info[:bib_source]).to eq('cached')

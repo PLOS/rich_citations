@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references.each do |ref|
         extract_citation_info(ref[:node], ref[:bibliographic])
       end
     end

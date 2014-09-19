@@ -45,7 +45,7 @@ describe Processors::ReferencesInfoFromDoi do
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:  'dx.doi.org',
                                                           author:      [ {given:'C.', family:'Theron'} ],
                                                           title:       'A Title',
@@ -56,13 +56,13 @@ describe Processors::ReferencesInfoFromDoi do
     refs 'First'
     expect(HttpUtilities).to_not receive(:get)
 
-    cached = { references: {
-        'ref-1' => { uri_type: :doi, uri:'10.1371/11111', bibliographic:{bib_source:'cached', title:'cached title'} },
-    } }
+    cached = { references: [
+        {id:'ref-1', uri_type: :doi, uri:'10.1371/11111', bibliographic:{bib_source:'cached', title:'cached title'} },
+    ] }
     process(cached)
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source] ).to eq('cached')
-    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('cached title')
+    expect(result[:references].first[:bibliographic][:bib_source] ).to eq('cached')
+    expect(result[:references].first[:bibliographic][:title]).to eq('cached title')
   end
 
   it "should Set the bib_source and ignore any returned by the api" do
@@ -76,7 +76,7 @@ describe Processors::ReferencesInfoFromDoi do
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('dx.doi.org')
+    expect(result[:references].first[:bibliographic][:bib_source]).to eq('dx.doi.org')
   end
 
   it "handles a missing/bad doi" do

@@ -51,7 +51,7 @@ describe Processors::SelfCitations do
   end
 
   def reference
-    result[:references].values.first
+    result[:references].first
   end
 
   it "should identify a self citation based on a given and family name" do

@@ -53,7 +53,7 @@ module Processors
 
     def reference_id_for_number(number)
       ref = reference_by_number(number)
-      ref && ref[:ref]
+      ref && ref[:id]
     end
 
     protected

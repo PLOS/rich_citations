@@ -354,13 +354,13 @@ describe Processors::ReferencesInfoFromIsbn do
     refs 'First'
     expect(HttpUtilities).to_not receive(:get)
 
-    cached = { references: {
-        'ref-1' => { uri_type: :isbn, uri:'1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
-    } }
+    cached = { references: [
+        {id:'ref-1', uri_type: :isbn, uri:'1234567890', bibliographic:{bib_source:'cached', title:'cached title'} },
+    ] }
     process(cached)
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('cached')
-    expect(result[:references]['ref-1'][:bibliographic][:title] ).to eq('cached title')
+    expect(result[:references].first[:bibliographic][:bib_source]).to eq('cached')
+    expect(result[:references].first[:bibliographic][:title] ).to eq('cached title')
   end
 
   it "should merge in the API results" do
@@ -369,7 +369,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:        'OpenLibrary',
                                                           key:               "/books/OL1017798M",
                                                           ISBN:              ["0451526538"],
@@ -396,7 +396,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( bib_source:'OpenLibrary', type: 'book')
+    expect(result[:references].first[:bibliographic]).to eq( bib_source:'OpenLibrary', type: 'book')
   end
 
   it "should handle missing results" do
@@ -405,7 +405,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return('{}')
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           attribute:      1.23
                                                       })
   end
@@ -424,12 +424,12 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:  'OpenLibrary',
                                                           key:         '/books/OL01',
                                                           type:        'book'
                                                       })
-    expect(result[:references]['ref-2'][:bibliographic]).to eq({
+    expect(result[:references].second[:bibliographic]).to eq({
                                                           bib_source:  'OpenLibrary',
                                                           key:         '/books/OL02',
                                                           type:        'book'
@@ -443,7 +443,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(response_with_no_authors_in_data)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:        'OpenLibrary',
                                                           author:            [ {literal:"Mark Twain"} ],
                                                           type:              'book'
@@ -456,7 +456,7 @@ describe Processors::ReferencesInfoFromIsbn do
 
     expect(HttpUtilities).to receive(:get).and_return(complete_response)
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OpenLibrary')
+    expect(result[:references].first[:bibliographic][:bib_source]).to eq('OpenLibrary')
   end
 
 end

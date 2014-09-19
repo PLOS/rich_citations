@@ -24,24 +24,24 @@ module Processors
 
     def process
 
-      references = result[:references] = {}
+      references = result[:references] = []
 
       reference_nodes.each do |number, node|
          id = node[:id]
 
         reference   = {
-            ref:    id,
+            id:     id,
             number: number,
             node:   node,       # for other processors
         }
 
-        references[id] = reference
+        references << reference
       end
 
     end
 
     def cleanup
-      references.each do |id, ref|
+      references.each do |ref|
         ref.delete(:node)
         ref.compact!
       end

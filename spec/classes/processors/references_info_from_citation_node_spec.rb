@@ -38,12 +38,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+      id:  'ref-1',
       node: ref_node,
       bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( :"container-type" => "journal",
+    expect(result[:references].first[:bibliographic]).to eq( :"container-type" => "journal",
                                                        :"container-title"=> "J Doc",
                                                        :title            => 'Who cites women? Whom do women cite? An exploration of gender and scholarly citation in sociology',
                                                        :volume           => "51",
@@ -64,12 +65,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:title]).to eq('Who cites <em>women</em>?')
+    expect(result[:references].first[:bibliographic][:title]).to eq('Who cites <em>women</em>?')
   end
 
   it "should extract only a start page" do
@@ -81,12 +83,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:page]).to eq('404-404')
+    expect(result[:references].first[:bibliographic][:page]).to eq('404-404')
   end
 
   it "should extract a start and end page" do
@@ -98,12 +101,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:page]).to eq('404-410')
+    expect(result[:references].first[:bibliographic][:page]).to eq('404-410')
   end
 
   it "should not add an invalid year" do
@@ -115,12 +119,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:issued]).to be_nil
+    expect(result[:references].first[:bibliographic][:issued]).to be_nil
   end
 
   it "should not overwrite existing fields" do
@@ -136,7 +141,8 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {
             :"container-type" => "paper",
@@ -149,9 +155,9 @@ describe Processors::ReferencesInfoFromCitationNode do
                  [{:family=>"Roberts", :given=>"J"},
                   {:family=>"Jolie",   :given=>"J"} ]
 
-    } } } )
+    } } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( :"container-type" => "paper",
+    expect(result[:references].first[:bibliographic]).to eq( :"container-type" => "paper",
                                                        :"container-title"=> "Container Title",
                                                        :title            => 'Article Title',
                                                        :volume           => "99",
@@ -170,12 +176,13 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
         bibliographic: {},
-    } } )
+    } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq( { } )
+    expect(result[:references].first[:bibliographic]).to eq( { } )
   end
 
   it "should not add a bib_source if no changes are made" do
@@ -190,7 +197,8 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:   'ref-1',
         node: ref_node,
         bibliographic: {
             :"container-type" => "paper",
@@ -202,9 +210,9 @@ describe Processors::ReferencesInfoFromCitationNode do
             :author           =>
                 [{:family=>"Roberts", :given=>"J"},
                  {:family=>"Jolie",   :given=>"J"} ]
-        } } } )
+        } } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to be_nil
+    expect(result[:references].first[:bibliographic][:bib_source]).to be_nil
   end
 
   it "should not add a bib_source if one already exists" do
@@ -216,13 +224,14 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:   'ref-1',
         node: ref_node,
         bibliographic: {
             :bib_source      => 'OriginalSource',
-        } } } )
+        } } ] )
 
-    expect(result[:references]['ref-1'][:bibliographic][:bib_source]).to eq('OriginalSource')
+    expect(result[:references].first[:bibliographic][:bib_source]).to eq('OriginalSource')
   end
 
 end

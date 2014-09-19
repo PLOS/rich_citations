@@ -43,7 +43,7 @@ describe Processors::ReferencesCrossmark do
     }')
 
     process
-    expect(result[:references]['ref-1'][:updated_by][0][:doi]).to eq("10.5555/26262626x")
+    expect(result[:references].first[:updated_by][0][:doi]).to eq("10.5555/26262626x")
   end
 
   it "handles missing crossref" do

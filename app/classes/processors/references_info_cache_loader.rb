@@ -35,7 +35,7 @@ module Processors
     protected
 
     def load_cached_info
-      references.each do |id, ref|
+      references.each do |ref|
         next unless ref[:uri_type] && ref[:bibliographic]
 
         cache = PaperInfoCache.find_by_identifier(ref[:uri_type], ref[:uri])

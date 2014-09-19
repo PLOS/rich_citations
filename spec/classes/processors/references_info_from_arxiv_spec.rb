@@ -41,7 +41,7 @@ describe Processors::ReferencesInfoFromArxiv do
   end
 
   def reference
-    result[:references]['ref-1']
+    result[:references].first
   end
   def ref_info
     reference[:bibliographic]
@@ -105,9 +105,9 @@ describe Processors::ReferencesInfoFromArxiv do
   it "should not call the API if there are cached results" do
     expect(HttpUtilities).to_not receive(:post)
 
-    cached = { references: {
-        'ref-1' => { uri_type: :arxiv, uri:'1234.5678', bibliographic:{bib_source:'cached', title:'cached title'} },
-    } }
+    cached = { references: [
+        {id:'ref-1', uri_type: :arxiv, uri:'1234.5678', bibliographic:{bib_source:'cached', title:'cached title'} },
+    ] }
     process(cached)
 
     expect(ref_info[:bib_source]).to eq('cached')
@@ -155,7 +155,7 @@ describe Processors::ReferencesInfoFromArxiv do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, number:1, ref:'ref-1')
+    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, number:1, id:'ref-1')
   end
 
   it "shouldn't fail if there is no data" do
@@ -165,7 +165,7 @@ describe Processors::ReferencesInfoFromArxiv do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, number:1, ref:'ref-1')
+    expect(reference).to eq( uri:'1404.1899', uri_type: :arxiv, number:1, id:'ref-1')
   end
 
   it "should handle missing results" do
@@ -196,12 +196,12 @@ describe Processors::ReferencesInfoFromArxiv do
 
     expect(HttpUtilities).to receive(:post).and_return(multiple_response)
 
-    expect(result[:references]['ref-1'][:bibliographic]).to eq({
+    expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:  'arXiv',
                                                           ARXIV:       '1111.1111',
                                                           ARXIV_VER:    '1111.1111',
                                                       })
-    expect(result[:references]['ref-2'][:bibliographic]).to eq({
+    expect(result[:references].second[:bibliographic]).to eq({
                                                           bib_source:  'arXiv',
                                                           ARXIV:       '2222.2222',
                                                           ARXIV_VER:   '2222.2222',

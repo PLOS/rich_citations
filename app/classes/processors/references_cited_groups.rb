@@ -25,8 +25,9 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, info|
-        info[:citation_groups] = cited_groups(id)
+      references.each do |info|
+        id = info[:id]
+        info[:citation_groups] = cited_groups(id) if id
       end
     end
 

@@ -57,7 +57,7 @@ describe IdentifierResolvers::GithubFromReference do
                                                     uri_source: :ref,
                                                     uri:        'git@github.com/owner/repo/commit/abcdefgh',
                                                     uri_type:   :github,
-                          )
+                            )
       resolver.resolve
     end
 

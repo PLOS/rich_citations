@@ -72,14 +72,14 @@ class PapersController < ApplicationController
   def reference
     @doi = params[:id]
     @paper = PaperResult.calculate_for(params[:id])
-    ref = @paper.bibliographic[:references].values.select{|r|r[:number] == params[:referenceid].to_i}.first
+    ref = @paper.bibliographic[:references].select{|r|r[:number] == params[:referenceid].to_i}.first
     render json: ref
   end
 
   def interstitial
     @doi = params[:from]
     @paper = PaperResult.calculate_for(params[:from])
-    @ref = @paper.bibliographic[:references].values.select{|r|r[:number] == params[:to].to_i}.first
+    @ref = @paper.bibliographic[:references].select{|r|r[:number] == params[:to].to_i}.first
     render layout: 'plain'
   end
 end
