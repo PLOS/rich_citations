@@ -26,12 +26,12 @@ module Processors
 
       references = result[:references] = {}
 
-      reference_nodes.each do |index, node|
+      reference_nodes.each do |number, node|
          id = node[:id]
 
         reference   = {
             ref:    id,
-            index:  index,
+            number: number,
             node:   node,       # for other processors
         }
 
@@ -51,7 +51,7 @@ module Processors
 
     def reference_nodes
       @reference_nodes ||= begin
-        xml.css('ref-list ref').map.with_index{ |n,i| [i+1, n] }.to_h
+        xml.css('ref-list ref').map.with_index{ |node, index| [index+1, node] }.to_h
       end
     end
 

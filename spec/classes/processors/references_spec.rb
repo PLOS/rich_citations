@@ -27,8 +27,8 @@ describe Processors::References do
     refs 'Some Reference', 'Another Reference'
 
     expect(result[:references].count).to eq(2)
-    expect(result[:references]['ref-1']).to eq(ref:'ref-1', index:1 )
-    expect(result[:references]['ref-2']).to eq(ref:'ref-2', index:2 )
+    expect(result[:references]['ref-1']).to eq(ref:'ref-1', number:1 )
+    expect(result[:references]['ref-2']).to eq(ref:'ref-2', number:2 )
   end
 
   it "should remove nil items during cleanup" do

@@ -39,8 +39,8 @@ module Processors::Helpers
     references[id]
   end
 
-  def reference_by_index(index)
-    references.find { |id, ref| ref[:index] == index }.try(:second)
+  def reference_by_number(number)
+    references.find { |id, ref| ref[:number] == number }.try(:second)
   end
 
   def reference_by_uri(type, uri)

@@ -45,14 +45,14 @@ module Processors
     ####################################################do
     # Callbacks for CitationGrouper
 
-    def index_for_citation_node(xref_node)
+    def number_for_citation_node(xref_node)
       refid = xref_node['rid']
       ref   = reference_by_id(refid)
-      ref && ref[:index]
+      ref && ref[:number]
     end
 
-    def reference_id_for_index(index)
-      ref = reference_by_index(index)
+    def reference_id_for_number(number)
+      ref = reference_by_number(number)
       ref && ref[:ref]
     end
 

@@ -220,7 +220,7 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( index:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( number:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "shouldn't fail if there is no data" do
@@ -230,7 +230,7 @@ describe Processors::ReferencesInfoFromPmc do
 
     expect(HttpUtilities).to receive(:post).and_return(response)
 
-    expect(reference).to eq( index:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
+    expect(reference).to eq( number:1, ref:'ref-1', uri:'PMC0451526538', uri_type: :pmcid)
   end
 
   it "should handle missing results" do
