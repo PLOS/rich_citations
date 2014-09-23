@@ -38,6 +38,7 @@ module Processors
     protected
 
     def get_crossmark_info(doi, ref)
+      doi = Id::Doi.extract(doi)
       doi_enc = URI.encode_www_form_component(doi)
       result = Rails.cache.fetch("crossmark_#{doi_enc}", :expires_in=> 108000) do
         url = "http://crossmark.crossref.org/crossmark/?doi=#{doi_enc}"

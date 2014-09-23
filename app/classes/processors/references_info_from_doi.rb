@@ -25,6 +25,7 @@ module Processors
     include Helpers
 
     def process
+      @first = true
       references_without_bib_info(:doi).each do |ref|
         doi = ref[:uri]
         get_doi_info(doi, ref) if doi
@@ -44,6 +45,7 @@ module Processors
     API_URL = "http://dx.doi.org/"
 
     def get_doi_info(doi, ref)
+      doi = Id::Doi.extract(doi)
       result = get_result(doi)
       result = result.except(:bib_source)
       ref[:bibliographic].merge!(result).merge!(bib_source:'dx.doi.org')
@@ -53,6 +55,7 @@ module Processors
       url  = API_URL + URI.encode_www_form_component(doi)
       json = HttpUtilities.get(url, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
+
     rescue Net::HTTPServerException => ex
       raise unless ex.response.is_a?(Net::HTTPNotFound)
       {}

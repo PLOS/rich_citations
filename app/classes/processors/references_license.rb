@@ -73,7 +73,7 @@ module Processors
     end
 
     def get_licenses(references)
-      data = references.map { |ref| {type:'doi', id:ref[:uri]} }
+      data = references.map { |ref| {type:'doi', id:  Id::Doi.extract(ref[:uri])  } }
       results = HttpUtilities.post(API_URL, JSON.generate(data),
                           'Accept' => Mime::JSON, 'Content-Type' => Mime::JSON
       )
