@@ -33,6 +33,8 @@ gem 'nokogiri'
 gem 'net-http-persistent'
 gem 'hashie'
 
+gem 'dalli'
+
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.
   gem 'sdoc', require: false
