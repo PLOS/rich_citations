@@ -58,7 +58,6 @@ class HttpUtilities
     redirects = []
     http = Net::HTTP::Persistent.new
     # http.debug_output = $stdout
-    http.retry_change_requests = true
 
     loop do
       # puts "POST #{url}"
