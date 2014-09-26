@@ -135,26 +135,18 @@ class IdentifierResolver
        Hashie::Mash.new(
            id:   id,
            node: node,
-           text: normalized_node_text(node, i+1)
+           text: node_text_without_prefix(node, i+1)
        )
       ]
     end.to_h
   end
 
-  def normalized_node_text(node, index)
+  def node_text_without_prefix(node, prefix)
     clean_text = XmlUtilities.spaced_text(node)
-    remove_index_from_text(index, clean_text)
-  end
 
-  # If the text starts with the index then remove it
-  def remove_index_from_text(index, text)
-    index = index.to_s+' '
-
-    if text.start_with?(index)
-      text[index.length..-1]
-    else
-      text
-    end
+    # Prefix + Punctuation or Whitespace
+    prefix_regex = /\A#{prefix}[[[:punct:]][[:space:]]]*/
+    clean_text.sub(prefix_regex, '')
   end
 
   def self.resolvers
