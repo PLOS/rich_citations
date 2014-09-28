@@ -105,38 +105,41 @@ class XmlUtilities
     container.traverse(&block)
   end
 
-  def self.jats2html(s)
-    return nil unless s.present?
-    jatsdoc2html(Nokogiri::XML::DocumentFragment.parse(s))
-  end
-
-  def self.jatsdoc2html(doc)
+  def self.jats2html(doc)
     return nil unless doc.present?
 
-    retval = ''
-    doc.xpath('node()').each do |n|
+    doc = Nokogiri::XML::DocumentFragment.parse(doc) unless doc.is_a?(Nokogiri::XML::Node)
+
+    doc.xpath('node()').map do |n|
       if n.text?
-        retval << n.text
+        n.text
       else
         case n.name
         when 'italic', 'i', 'em'
-          retval << "<em>#{jatsdoc2html(n)}</em>"
+          "<em>#{jats2html(n)}</em>"
         when 'bold', 'b', 'strong'
-          retval << "<strong>#{jatsdoc2html(n)}</strong>"
+          "<strong>#{jats2html(n)}</strong>"
         when 'ext-link'
           if (n['ext-link-type'] == 'uri')
             # get namespaced attribute
             url = n.xpath('@xlink:href', {'xlink' => 'http://www.w3.org/1999/xlink'})
-            retval << "<a href=\"#{url}\">#{jatsdoc2html(n)}</a>"
+            "<a href=\"#{url}\">#{jats2html(n)}</a>"
           else
-            retval << jatsdoc2html(n)
+            jats2html(n)
+          end
+        when 'a'
+          if n['href'].present?
+            # get namespaced attribute
+            url = n['href']
+            "<a href=\"#{url}\">#{jats2html(n)}</a>"
+          else
+            jats2html(n)
           end
         else
-          retval << jatsdoc2html(n)
+          jats2html(n)
         end
       end
-    end
-    retval
+    end.join('')
   end
 
 end
