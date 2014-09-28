@@ -45,6 +45,8 @@ module Processors::Helpers
 
   def reference_by_uri(type, uri)
     type = type.to_sym
+    outs "------------ returning root ----" if result[:uri_type]==type && result[:uri]==uri
+    return result if result[:uri_type]==type && result[:uri]==uri
     references.find do |ref| ref[:uri_type]==type && ref[:uri]==uri end
   end
 

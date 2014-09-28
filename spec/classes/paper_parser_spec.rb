@@ -34,7 +34,7 @@ describe PaperParser do
       expect( PaperParser.is_failure?(result) ).to be_truthy
     end
 
-    it "should normally return false" do
+    it "  should normally return false" do
       xml = Nokogiri::XML('<root/>')
       result = PaperParser.parse_xml(xml)
       expect( PaperParser.is_failure?(result) ).to be_falsy
@@ -124,6 +124,8 @@ describe PaperParser do
       allow(PaperParser).to receive(:processor_classes).and_call_original
       expect(PaperParser.resolved_processor_classes).to eq([
                                                              Processors::State,
+                                                             Processors::Doi,
+                                                             Processors::PaperInfo,
                                                              Processors::References,
                                                              Processors::ReferencesIdentifier,
                                                              Processors::ReferencesInfoCacheLoader,
@@ -133,7 +135,6 @@ describe PaperParser do
                                                              Processors::CitationGroupContext,
                                                              Processors::CitationGroupPosition,
                                                              Processors::CitationGroupSection,
-                                                             Processors::Doi,
                                                              Processors::ReferencesInfoFromDoi,
                                                              Processors::ReferencesInfoFromIsbn,
                                                              Processors::ReferencesInfoFromPubmed,
@@ -144,7 +145,6 @@ describe PaperParser do
                                                              Processors::ReferencesInfoFromCitationNode,
                                                              Processors::ReferencesInfoFromCitationText,
                                                              Processors::NormalizeAuthorNames,
-                                                             Processors::PaperInfo,
                                                              Processors::ReferencesAbstract,
                                                              Processors::ReferencesCitedGroups,
                                                              Processors::ReferencesCrossmark,
