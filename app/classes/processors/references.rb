@@ -32,7 +32,7 @@ module Processors
         reference   = {
             id:     id,
             number: number,
-            node:   node,       # for other processors
+            node:   remove_label(node),       # for other processors
         }
 
         references << reference
@@ -53,6 +53,12 @@ module Processors
       @reference_nodes ||= begin
         xml.css('ref-list ref').map.with_index{ |node, index| [index+1, node] }.to_h
       end
+    end
+
+    def remove_label(node)
+      label = node.css('label')
+      label.remove if label.present?
+      node
     end
 
   end

@@ -135,18 +135,10 @@ class IdentifierResolver
        Hashie::Mash.new(
            id:   id,
            node: node,
-           text: node_text_without_prefix(node, i+1)
+           text: XmlUtilities.spaced_text(node)
        )
       ]
     end.to_h
-  end
-
-  def node_text_without_prefix(node, prefix)
-    clean_text = XmlUtilities.spaced_text(node)
-
-    # Prefix + Punctuation or Whitespace
-    prefix_regex = /\A#{prefix}[[[:punct:]][[:space:]]]*/
-    clean_text.sub(prefix_regex, '')
   end
 
   def self.resolvers
