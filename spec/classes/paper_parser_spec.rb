@@ -148,6 +148,7 @@ describe PaperParser do
                                                              Processors::ReferencesAbstract,
                                                              Processors::ReferencesCitedGroups,
                                                              Processors::ReferencesCrossmark,
+                                                             Processors::ReferencesLiteral,
                                                              Processors::SelfCitations,
                                                              Processors::ReferencesDelayedLicense,
                                                              Processors::ReferencesInfoCacheSaver,
