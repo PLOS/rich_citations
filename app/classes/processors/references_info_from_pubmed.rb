@@ -65,7 +65,7 @@ module Processors
       data  = 'id=' + ids.join(',')
       xml   = HttpUtilities.post(API_URL, data,
                                  'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::XML  )
-      Nokogiri::XML(xml)
+      Loofah.xml_document(xml)
     end
 
     def convert_result_to_info(result)
@@ -76,7 +76,7 @@ module Processors
           PMID:                value('PubmedData ArticleIdList *[IdType=pubmed]'), # || value('MedlineCitation > PMID'),
           PMCID:               value('PubmedData ArticleIdList *[IdType=pmc]'),
           DOI:                 value('PubmedData ArticleIdList *[IdType=doi]'),
-          title:               xml('MedlineCitation ArticleTitle'),
+          title:               html('MedlineCitation ArticleTitle'),
           # subtitle:
           issued:              date_value('PubmedData PubMedPubDate[PubStatus=pubmed]'),
           # publisher:
@@ -87,7 +87,7 @@ module Processors
           :'container-title'=> value('MedlineCitation Journal Title'),
           volume:              value('MedlineCitation Journal Volume'),
           issue:               value('MedlineCitation Journal Issue'),
-          abstract:            xml('MedlineCitation AbstractText'),
+          abstract:            html('MedlineCitation AbstractText'),
       }.compact
     end
 
@@ -96,9 +96,9 @@ module Processors
       node && node.text.presence
     end
 
-    def xml(selector)
+    def html(selector)
       node = @result.at_css(selector)
-      XmlUtilities.jats2html(node)
+      XmlUtilities.clean_html(node)
     end
 
     def date_value(selector)

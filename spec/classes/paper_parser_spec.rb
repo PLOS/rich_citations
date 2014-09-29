@@ -35,7 +35,7 @@ describe PaperParser do
     end
 
     it "  should normally return false" do
-      xml = Nokogiri::XML('<root/>')
+      xml = Loofah.xml_document('<root/>')
       result = PaperParser.parse_xml(xml)
       expect( PaperParser.is_failure?(result) ).to be_falsy
     end

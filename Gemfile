@@ -31,6 +31,7 @@ gem 'simple_form'
 gem 'jbuilder', '~> 1.2'
 gem 'nokogiri'
 gem 'net-http-persistent'
+gem 'loofah'
 gem 'hashie'
 
 gem 'dalli'

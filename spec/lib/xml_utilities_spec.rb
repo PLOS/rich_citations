@@ -24,7 +24,7 @@ describe XmlUtilities do
   subject { XmlUtilities }
 
   def x(text)
-    Nokogiri::XML(text)
+    Loofah.xml_document(text)
   end
 
   describe "#text" do
@@ -254,5 +254,37 @@ describe XmlUtilities do
           to eq('foo <a href="http://www.example.org/foo">bar</a> baz')
     end
 
+    it 'should throw away other tags' do
+      expect(XmlUtilities.jats2html('<p>foo <div>bar</div> baz</p>')).
+          to eq('foo bar baz')
+    end
+
   end
+
+  describe "clean_html" do
+
+    it 'should change <italic> -> <em>' do
+      expect(XmlUtilities.clean_html('foo <italic>bar</italic> baz')).to eq('foo <em>bar</em> baz')
+      expect(XmlUtilities.clean_html('foo <i>bar</i> baz')).to eq('foo <em>bar</em> baz')
+      expect(XmlUtilities.clean_html('foo <em>bar</em> baz')).to eq('foo <em>bar</em> baz')
+    end
+
+    it 'should change <bold> -> <strong>' do
+      expect(XmlUtilities.clean_html('foo <bold>bar</bold> baz')).to eq('foo <strong>bar</strong> baz')
+      expect(XmlUtilities.clean_html('foo <b>bar</b> baz')).to eq('foo <strong>bar</strong> baz')
+      expect(XmlUtilities.clean_html('foo <strong>bar</strong> baz')).to eq('foo <strong>bar</strong> baz')
+    end
+
+    it 'should keep <a> tags' do
+      expect(XmlUtilities.clean_html('<p>foo <a href="http://www.example.org/foo">bar</a> baz</p>')).
+          to eq('foo <a href="http://www.example.org/foo">bar</a> baz')
+    end
+
+    it 'should throw away other tags' do
+      expect(XmlUtilities.clean_html('<p>foo <div>bar</div> baz</p>')).
+          to eq('foo bar baz')
+    end
+
+  end
+  
 end

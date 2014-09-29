@@ -34,7 +34,7 @@ describe IdentifierResolvers::DoiFromReference do
   context "Parsing DOI" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(

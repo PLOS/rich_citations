@@ -61,7 +61,7 @@ module Spec
         </root>
       EOS
 
-      Nokogiri.XML(xml)
+      Loofah.xml_document(xml)
     end
 
   end

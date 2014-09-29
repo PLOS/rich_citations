@@ -24,7 +24,7 @@ describe Processors::ReferencesInfoFromCitationText do
   include Spec::ProcessorHelper
 
   it "should extract info fields from the reference node" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
         <ref id="pbio.1001675-Mahdi1"><label>3</label>
         <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts: are they good predictors of RAE scores?</mixed-citation>
         </ref>
@@ -44,7 +44,7 @@ describe Processors::ReferencesInfoFromCitationText do
   end
 
   it "should extract html with the title" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
         <ref id="pbio.1001675-Mahdi1"><label>3</label>
         <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts: <italic>are they good predictors of RAE scores</italic>?</mixed-citation>
         </ref>
@@ -60,7 +60,7 @@ describe Processors::ReferencesInfoFromCitationText do
   end
 
   it "should not overwrite existing fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Mahdi1"><label>3</label>
       <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts: are they good predictors of RAE scores? Available: <ext-link ext-link-type="uri" xlink:href="http://dspace.lib.cranfield.ac.uk/handle/1826/2248" xlink:type="simple">http://dspace.lib.cranfield.ac.uk/handle/1826/2248</ext-link></mixed-citation>
       </ref>
@@ -86,7 +86,7 @@ describe Processors::ReferencesInfoFromCitationText do
   end
 
   it "should not add null info fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation xlink:type="simple">
         </mixed-citation>
@@ -103,7 +103,7 @@ describe Processors::ReferencesInfoFromCitationText do
   end
 
   it "should not add a bib_source attribute if no changes are made" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Mahdi1"><label>3</label>
       <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts</mixed-citation>
       </ref>
@@ -125,7 +125,7 @@ describe Processors::ReferencesInfoFromCitationText do
   end
 
   it "should not add a bib_source attribute if one already exists" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Mahdi1"><label>3</label>
       <mixed-citation xlink:type="simple">Mahdi S, D'Este P, Neely A (2008) Citation counts</mixed-citation>
       </ref>
