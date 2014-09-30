@@ -1,5 +1,5 @@
 # for travis-ci
 test:
   adapter: sqlite3
-  database: ":memory:"
+  database: "db/test.db"
   timeout: 500
