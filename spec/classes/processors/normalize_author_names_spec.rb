@@ -24,6 +24,10 @@ require 'spec_helper'
 describe Processors::NormalizeAuthorNames do
   include Spec::ProcessorHelper
 
+  before do
+    allow(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
+  end
+
   def resolve_authors!(*authors)
     refs 'First'
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author: authors })

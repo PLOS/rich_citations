@@ -69,9 +69,7 @@ module Processors
     end
 
     def references_without_licenses
-      references =  references_for_type(:doi).select { |ref| ! ref[:bibliographic][:license] }
-      references << result if (result[:uri_type] == :doi) && (! result[:bibliographic][:license] )
-      references
+      references_for_type(:doi).select { |ref| ! ref[:bibliographic][:license] }
     end
 
     def fetch_licenses(references)
@@ -97,7 +95,7 @@ module Processors
     def get_reference(references, identifiers)
       identifiers.each do |identifier|
         references.each do |ref|
-          #@todo  reference_by_uri(identifier['type'], identifier['id'])
+          #@todo  For pubmed id add  reference_by_uri(identifier['type'], identifier['id'])
           return ref if Id::Doi.extract(ref[:uri])==identifier['id']
         end
       end

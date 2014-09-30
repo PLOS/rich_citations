@@ -47,6 +47,10 @@ module Processors
       end
     end
 
+    def self.dependencies
+      [Doi, PaperInfo] #@todo can be removed after refactoring
+    end
+
     protected
 
     def reference_nodes

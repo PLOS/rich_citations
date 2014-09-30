@@ -23,18 +23,18 @@ require 'spec_helper'
 describe Processors::PaperInfo do
   include Spec::ProcessorHelper
 
-  it "should have a title" do
-    body <<-XML
-      <front>
-      <article-meta>
-      <title-group>
-        <article-title>Sexy Faces in a Male Paper Wasp</article-title>
-      </title-group>
-      </article-meta>
-      </front>
-    XML
-    expect(result[:bibliographic][:title]).to eq('Sexy Faces in a Male Paper Wasp')
-  end
+  # it "should have a title" do
+  #   body <<-XML
+  #     <front>
+  #     <article-meta>
+  #     <title-group>
+  #       <article-title>Sexy Faces in a Male Paper Wasp</article-title>
+  #     </title-group>
+  #     </article-meta>
+  #     </front>
+  #   XML
+  #   expect(result[:bibliographic][:title]).to eq('Sexy Faces in a Male Paper Wasp')
+  # end
 
   it "should have a word count" do
     body 'here is <b>some</b> text'

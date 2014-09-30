@@ -31,6 +31,7 @@ describe Processors::ReferencesInfoFromDoi do
 
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return('{}')
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.333%2F333', anything).and_return('{}')
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
 
     process
   end
@@ -44,6 +45,7 @@ describe Processors::ReferencesInfoFromDoi do
         title:   'A Title',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
 
     expect(result[:references].first[:bibliographic]).to eq({
                                                           bib_source:  'dx.doi.org',
@@ -57,7 +59,8 @@ describe Processors::ReferencesInfoFromDoi do
     expect(HttpUtilities).to_not receive(:get)
 
     cached = { references: [
-        {id:'ref-1', uri_type: :doi, uri:'10.1371/11111', bibliographic:{bib_source:'cached', title:'cached title'} },
+         {id:'ref-1', uri_type: :doi, uri:'10.1371/11111', bibliographic:{bib_source:'cached', title:'cached title'} },
+         {            uri_type: :doi, uri:'10.12345%2F1234.12345', bibliographic:{bib_source:'cached', title:'cached title'} },
     ] }
     process(cached)
 
@@ -75,8 +78,25 @@ describe Processors::ReferencesInfoFromDoi do
         bib_source:  'ignored',
     }
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
 
     expect(result[:references].first[:bibliographic][:bib_source]).to eq('dx.doi.org')
+  end
+
+  it "should not overwrite any existing author (in case it was set on the citing paper which is more accurate)" do
+    refs 'First'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', uri_source:'test', author:[{literal:'Peggy Sue'}] } )
+
+    info = {
+        id:          '10.xxx/xxx',
+        score:       99,
+        bib_source:  'ignored',
+        author:      [literal:'Sue, P.']
+    }
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_return(JSON.generate(info))
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
+
+    expect(result[:references].first[:bibliographic][:author]).to eq([{literal:'Peggy Sue'}])
   end
 
   it "handles a missing/bad doi" do
@@ -84,6 +104,7 @@ describe Processors::ReferencesInfoFromDoi do
 
     allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' } )
     expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.111%2F111', anything).and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
 
     process
 
