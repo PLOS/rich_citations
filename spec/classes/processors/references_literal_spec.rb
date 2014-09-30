@@ -20,30 +20,26 @@
 
 require 'spec_helper'
 
-describe Processors::PaperInfo do
+describe Processors::ReferencesLiteral do
   include Spec::ProcessorHelper
 
-  # it "should have a title" do
-  #   body <<-XML
-  #     <front>
-  #     <article-meta>
-  #     <title-group>
-  #       <article-title>Sexy Faces in a Male Paper Wasp</article-title>
-  #     </title-group>
-  #     </article-meta>
-  #     </front>
-  #   XML
-  #   expect(result[:bibliographic][:title]).to eq('Sexy Faces in a Male Paper Wasp')
-  # end
-
-  it "should have a word count" do
-    body 'here is <b>some</b> text'
-    expect(result[:word_count]).to eq(4)
+  before do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222', attribute:'test' })
   end
 
-  it "cleanup the paper object" do
-    cleanup(bibliographic:{a:1,b:nil,c:3})
-    expect(result[:bibliographic]).to eq(a:1, c:3)
+  it "should add the literal value of the reference" do
+    refs 'First Reference'
+    expect( result[:references].first[:literal] ).to eq('First Reference')
+  end
+
+  it "should handle tags appropriately" do
+    refs 'text <b>bold</b> <span>removed</span>'
+    expect( result[:references].first[:literal] ).to eq('text <strong>bold</strong> removed')
+  end
+
+  it "should remove the label" do
+    refs '<label>1</label> Citation Text'
+    expect( result[:references].first[:literal] ).to eq('Citation Text')
   end
 
 end

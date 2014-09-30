@@ -24,7 +24,7 @@ module Processors
 
     def process
       bibliographic = result[:bibliographic] ||= {}
-      bibliographic[:title]      = xml.at('article-meta article-title').try(:content).try(:strip)
+      # bibliographic[:title]      = xml.at('article-meta article-title').try(:content).try(:strip)
 
       result[:word_count] = word_count
     end

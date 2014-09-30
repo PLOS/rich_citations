@@ -105,38 +105,62 @@ class XmlUtilities
     container.traverse(&block)
   end
 
-  def self.jats2html(s)
-    return nil unless s.present?
-    jatsdoc2html(Nokogiri::XML::DocumentFragment.parse(s))
-  end
-
-  def self.jatsdoc2html(doc)
+  def self.jats2html(doc)
     return nil unless doc.present?
 
-    retval = ''
-    doc.xpath('node()').each do |n|
-      if n.text?
-        retval << n.text
-      else
-        case n.name
+    doc = Loofah.xml_fragment(doc.to_s)
+    doc.scrub!( Jats2Scrubber.new ).to_s.strip
+  end
+
+  # Removes non-html nodes and unsafe html tags
+  def self.clean_html(doc)
+    return nil unless doc.present?
+
+    doc = Loofah.xml_fragment(doc.to_s)
+    doc.scrub!( MarkupOnlyScrubber.new ).to_s.strip
+  end
+
+  private
+
+  class MarkupOnlyScrubber < Loofah::Scrubbers::Strip
+
+    def scrub(node)
+      return if node.text?
+
+      case node.name
         when 'italic', 'i', 'em'
-          retval << "<em>#{jatsdoc2html(n)}</em>"
+          node.name = 'em'
+
         when 'bold', 'b', 'strong'
-          retval << "<strong>#{jatsdoc2html(n)}</strong>"
-        when 'ext-link'
-          if (n['ext-link-type'] == 'uri')
-            # get namespaced attribute
-            url = n.xpath('@xlink:href', {'xlink' => 'http://www.w3.org/1999/xlink'})
-            retval << "<a href=\"#{url}\">#{jatsdoc2html(n)}</a>"
-          else
-            retval << jatsdoc2html(n)
-          end
+          node.name = 'strong'
+
+        when 'a'
+          # nothing
+
         else
-          retval << jatsdoc2html(n)
-        end
+          # delete this node
+          node.before(node.children)
+          node.remove
+          return
+
       end
+
+      super
     end
-    retval
+  end
+
+  class Jats2Scrubber < MarkupOnlyScrubber
+
+    def scrub(node)
+      if node.name == 'ext-link' && node['ext-link-type'] == 'uri'
+        url = node.xpath('@xlink:href', {'xlink' => 'http://www.w3.org/1999/xlink'})
+        node.attributes.each { |attr| node.remove_attribute(attr.first) }
+        node.name = 'a'
+        node['href'] = url
+      end
+
+      super
+    end
   end
 
 end

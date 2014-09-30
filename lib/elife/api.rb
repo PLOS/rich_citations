@@ -24,7 +24,7 @@ module Elife
           response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
             HttpUtilities.get("#{url}.source.xml")
           end
-          return Nokogiri::XML(response)
+          Loofah.xml_document(response)
         end
       end
     end

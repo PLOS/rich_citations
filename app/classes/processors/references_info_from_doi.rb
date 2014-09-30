@@ -20,12 +20,12 @@
 
 require 'uri'
 
+#@todo - Make all info fetchers resolve from a common class
 module Processors
   class ReferencesInfoFromDoi < Base
     include Helpers
 
     def process
-      @first = true
       references_without_bib_info(:doi).each do |ref|
         doi = ref[:uri]
         get_doi_info(doi, ref) if doi
@@ -47,8 +47,13 @@ module Processors
     def get_doi_info(doi, ref)
       doi = Id::Doi.extract(doi)
       result = get_result(doi)
+      bib = ref[:bibliographic]
+
       result = result.except(:bib_source)
-      ref[:bibliographic].merge!(result).merge!(bib_source:'dx.doi.org')
+      result = result.except(:author) if bib[:author]
+
+      bib.merge!(result)
+      bib[:bib_source] = 'dx.doi.org'
     end
 
     def get_result(doi)

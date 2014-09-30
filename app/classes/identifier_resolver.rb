@@ -135,26 +135,10 @@ class IdentifierResolver
        Hashie::Mash.new(
            id:   id,
            node: node,
-           text: normalized_node_text(node, i+1)
+           text: XmlUtilities.spaced_text(node)
        )
       ]
     end.to_h
-  end
-
-  def normalized_node_text(node, index)
-    clean_text = XmlUtilities.spaced_text(node)
-    remove_index_from_text(index, clean_text)
-  end
-
-  # If the text starts with the index then remove it
-  def remove_index_from_text(index, text)
-    index = index.to_s+' '
-
-    if text.start_with?(index)
-      text[index.length..-1]
-    else
-      text
-    end
   end
 
   def self.resolvers

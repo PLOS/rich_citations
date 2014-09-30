@@ -45,16 +45,19 @@ module Processors::Helpers
 
   def reference_by_uri(type, uri)
     type = type.to_sym
+    return result if result[:uri_type]==type && result[:uri]==uri
     references.find do |ref| ref[:uri_type]==type && ref[:uri]==uri end
   end
 
   def references_for_type(type)
     type = type.to_sym
-    references.select { |ref| ref[:uri_type] == type }
+    refs = references.select { |ref| ref[:uri_type] == type }
+    refs << result if result[:uri_type]==type
+    refs
   end
 
   def references_without_bib_info(type)
-    references_for_type(type).reject { |ref| ref[:bibliographic] && ref[:bibliographic][:bib_source] }
+    references_for_type(type).reject do |ref| ref[:bibliographic] && ref[:bibliographic][:bib_source] end
   end
 
   def citation_groups

@@ -41,7 +41,8 @@ describe Processors::ReferencesLicense do
   end
 
   it "should call the API" do
-    expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"}].to_json
+    expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"},
+                     {"type"=>"doi","id"=>"10.12345/1234.12345"} ].to_json
     expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup', expected_data, anything).and_return('{}')
     process
   end
@@ -51,6 +52,12 @@ describe Processors::ReferencesLicense do
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
     expect( result[:references].first[:bibliographic][:license] ).to eq('test-license-1')
     expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
+  end
+
+  it "should add the license of the citing paper" do
+    licenses = { results: [make_license('10.12345/1234.12345', 'citing-license-1')]}
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
+    expect( result[:bibliographic][:license] ).to eq('citing-license-1')
   end
 
   it "should add inactive licenses license" do

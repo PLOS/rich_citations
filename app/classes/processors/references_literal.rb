@@ -18,32 +18,28 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require 'spec_helper'
+# Add sections node
 
-describe Processors::PaperInfo do
-  include Spec::ProcessorHelper
+module Processors
+  class ReferencesLiteral < Base
+    include Helpers
 
-  # it "should have a title" do
-  #   body <<-XML
-  #     <front>
-  #     <article-meta>
-  #     <title-group>
-  #       <article-title>Sexy Faces in a Male Paper Wasp</article-title>
-  #     </title-group>
-  #     </article-meta>
-  #     </front>
-  #   XML
-  #   expect(result[:bibliographic][:title]).to eq('Sexy Faces in a Male Paper Wasp')
-  # end
+    def process
+      references = references_for_type(:doi)
+      references.each do |ref|
+        ref[:literal] ||= literal_for(ref)
+      end
+    end
 
-  it "should have a word count" do
-    body 'here is <b>some</b> text'
-    expect(result[:word_count]).to eq(4)
+    def self.dependencies
+      ReferencesInfoCacheLoader
+    end
+
+    protected
+
+    def literal_for(ref)
+      XmlUtilities.jats2html( ref[:node] )
+    end
+
   end
-
-  it "cleanup the paper object" do
-    cleanup(bibliographic:{a:1,b:nil,c:3})
-    expect(result[:bibliographic]).to eq(a:1, c:3)
-  end
-
 end

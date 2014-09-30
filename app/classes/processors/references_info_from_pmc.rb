@@ -66,7 +66,7 @@ module Processors
       data  = 'id=' + ids.join(',')
       xml   = HttpUtilities.post(API_URL, data,
                                  'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::XML  )
-      Nokogiri::XML(xml)
+      Loofah.xml_document(xml)
     end
 
     def convert_result_to_info(result)
@@ -77,7 +77,7 @@ module Processors
           PMCID:               Id::Pmcid.normalize( value('article-meta article-id[pub-id-type=pmc]') ),
           PMID:                value('article-meta article-id[pub-id-type=pmid]'),
           DOI:                 value('article-meta article-id[pub-id-type=doi]'),
-          title:               xml('article-meta article-title'),
+          title:               html('article-meta article-title'),
           # # subtitle:
           issued:              date_value('article-meta pub-date[pub-type=epub]') || date_value('article-meta pub-date[pub-type=ppub]'),
           publisher:           value('journal-meta publisher-name'),
@@ -88,7 +88,7 @@ module Processors
           :'container-title'=> value('journal-meta journal-title'),
           volume:              value('article-meta volume'),
           issue:               value('article-meta issue'),
-          abstract:            xml('article-meta abstract').try(:strip),
+          abstract:            html('article-meta abstract').try(:strip),
       }.compact
     end
 
@@ -97,9 +97,9 @@ module Processors
       node && node.text.presence
     end
 
-    def xml(selector)
+    def html(selector)
       node = @result.at_css(selector)
-      XmlUtilities.jatsdoc2html(node)
+      XmlUtilities.clean_html(node)
     end
 
     def date_value(selector)

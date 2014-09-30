@@ -32,7 +32,7 @@ module Processors
         reference   = {
             id:     id,
             number: number,
-            node:   node,       # for other processors
+            node:   remove_label(node),       # for other processors
         }
 
         references << reference
@@ -47,12 +47,22 @@ module Processors
       end
     end
 
+    def self.dependencies
+      [Doi, PaperInfo] #@todo can be removed after refactoring
+    end
+
     protected
 
     def reference_nodes
       @reference_nodes ||= begin
         xml.css('ref-list ref').map.with_index{ |node, index| [index+1, node] }.to_h
       end
+    end
+
+    def remove_label(node)
+      label = node.css('label')
+      label.remove if label.present?
+      node
     end
 
   end

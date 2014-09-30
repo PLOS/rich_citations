@@ -91,7 +91,7 @@ module Plos
           response = Rails.cache.fetch("#{doi}_xml", :expires_in=> 108000) do
             HttpUtilities.get(url, :xml)
           end
-          Nokogiri::XML(response)
+          Loofah.xml_document(response)
           
         rescue Net::HTTPFatalError => ex
           raise unless ex.response.code == '500'

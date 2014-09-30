@@ -27,15 +27,15 @@ Rails.configuration.app.use_cached_info = false
 require 'pp'
 
 DOI='10.1371/journal.pone.0046843'
-DOI='10.1371/journal.pbio.0050222xxx'
-DOI='10.1371/journal.pone.0032408' # The Paper from Hell
-DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
-DOI='10.1371/journal.pone.0041419' # ISBN
-DOI='10.1371/journal.pgen.1001139' # Pubmed ID
-DOI='10.1371/journal.pgen.1002666' # PMC ID
-DOI='10.1371/journal.pone.0036540' #  Arxiv ID
+# DOI='10.1371/journal.pbio.0050222xxx'
+# DOI='10.1371/journal.pone.0032408' # The Paper from Hell
+# DOI='10.1371/journal.pbio.0050093' # DOI with odd hyphens
+# DOI='10.1371/journal.pone.0041419' # ISBN
+# DOI='10.1371/journal.pgen.1001139' # Pubmed ID
+# DOI='10.1371/journal.pgen.1002666' # PMC ID
+# DOI='10.1371/journal.pone.0036540' #  Arxiv ID
 # DOI='10.1371/journal.pone.0038649' # Github
-DOI='10.1371/journal.pone.0071952' # Github
+# DOI='10.1371/journal.pone.0071952' # Github
 
 doi = ARGV.last || DOI
 
@@ -50,7 +50,7 @@ xml = r = Plos::Api.document( doi )
 info = PaperParser.parse_xml(xml)
 
 if info
-  pp info
+  pp info[:bibliographic]
 else
   puts "\n*************** Document #{doi} could not be retrieved\n"
 end

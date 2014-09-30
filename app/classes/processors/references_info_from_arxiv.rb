@@ -63,7 +63,7 @@ module Processors
       data  = 'id_list=' + ids.join(',')
       xml   = HttpUtilities.post(API_URL, data,
                                  'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::ATOM  )
-      Nokogiri::XML(xml)
+      Loofah.xml_document(xml)
     end
 
     def convert_result_to_info(result)
@@ -75,14 +75,14 @@ module Processors
           ARXIV:               Id::Arxiv.without_version( id ),
           ARXIV_VER:           id,
           DOI:                 Id::Doi.extract( value('> doi') || link_value('doi') ),
-          title:               xml('> title'),
+          title:               html('> title'),
           # subtitle:
           issued:              date_value('> published'),
           subject:             subjects,
           author:              authors,
           # page:
           :'container-title'=> value('> journal_ref'),
-          abstract:            xml('> summary'),
+          abstract:            html('> summary'),
           URL:                 link_value('pdf'),
       }.compact
 
@@ -93,9 +93,9 @@ module Processors
       node && node.text.presence
     end
 
-    def xml(selector)
+    def html(selector)
       node = @result.at_css(selector)
-      XmlUtilities.jatsdoc2html(node).try(:strip)
+      XmlUtilities.clean_html(node).try(:strip)
     end
 
     def date_value(selector)

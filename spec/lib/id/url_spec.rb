@@ -23,7 +23,7 @@ require 'spec_helper'
 describe Id::Url do
 
   def xml(text)
-    Nokogiri::XML(text)
+    Loofah.xml_document(text)
   end
 
   describe '#extract' do

@@ -41,6 +41,8 @@ describe Processors::Authors do
                             {family: 'Roberts', given:'Julia'   }  ])
   end
 
+  it "should overwrite existing authors (from the crossref api for example)"
+
   it "should parse out literal authors" do
     meta <<-EOS
       <contrib contrib-type="author">

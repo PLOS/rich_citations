@@ -26,7 +26,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   include Spec::ProcessorHelper
 
   it "should extract info fields from the reference node" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <name name-style="western"><surname>Davenport</surname><given-names>E</given-names></name>,
@@ -57,7 +57,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should extract html formatting with the title" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <article-title>Who cites <italic>women</italic>?</article-title>.
@@ -75,7 +75,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should extract only a start page" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <fpage>404</fpage>.
@@ -93,7 +93,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should extract a start and end page" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <fpage>404</fpage>-<lpage>410</lpage>.
@@ -111,7 +111,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not add an invalid year" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           (<year>in press</year>)
@@ -129,7 +129,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not overwrite existing fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <name name-style="western"><surname>Davenport</surname><given-names>E</given-names></name>,
@@ -169,7 +169,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not add null info fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation xlink:type="simple">
         </mixed-citation>
@@ -186,7 +186,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not add a bib_source if no changes are made" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
           <source></source>
@@ -216,7 +216,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not add a bib_source if one already exists" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
           <article-title>New Title.</article-title>.
