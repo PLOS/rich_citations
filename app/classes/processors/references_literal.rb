@@ -27,7 +27,7 @@ module Processors
     def process
       references = references_for_type(:doi)
       references.each do |ref|
-        ref[:literal] ||= literal_for(ref)
+        ref[:original_citation] ||= literal_for(ref)
       end
     end
 

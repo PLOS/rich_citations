@@ -29,17 +29,17 @@ describe Processors::ReferencesLiteral do
 
   it "should add the literal value of the reference" do
     refs 'First Reference'
-    expect( result[:references].first[:literal] ).to eq('First Reference')
+    expect( result[:references].first[:original_citation] ).to eq('First Reference')
   end
 
   it "should handle tags appropriately" do
     refs 'text <b>bold</b> <span>removed</span>'
-    expect( result[:references].first[:literal] ).to eq('text <strong>bold</strong> removed')
+    expect( result[:references].first[:original_citation] ).to eq('text <strong>bold</strong> removed')
   end
 
   it "should remove the label" do
     refs '<label>1</label> Citation Text'
-    expect( result[:references].first[:literal] ).to eq('Citation Text')
+    expect( result[:references].first[:original_citation] ).to eq('Citation Text')
   end
 
 end

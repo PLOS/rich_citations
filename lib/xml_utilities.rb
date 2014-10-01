@@ -126,6 +126,7 @@ class XmlUtilities
 
     def scrub(node)
       return if node.text?
+      node.name = node.name.downcase
 
       case node.name
         when 'italic', 'i', 'em'
@@ -134,7 +135,7 @@ class XmlUtilities
         when 'bold', 'b', 'strong'
           node.name = 'strong'
 
-        when 'a'
+        when  'a', 'u', 'cite', 'q'', mark', 'abbr', 'sub', 'sup', 's', 'wbr'
           # nothing
 
         else
