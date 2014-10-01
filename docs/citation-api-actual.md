@@ -62,7 +62,7 @@ fields.
     "cited_id": "http://dx.doi.org/10.1234/1",
     "index": 1,
     "self_citation": false,
-    "text": "Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.",
+    "original_citation": "Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.",
     "bibliographic": { … },
     "citation_groups": [ … ]
 }
@@ -155,7 +155,7 @@ GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2
             "cited_id": "http://dx.doi.org/10.1234/1",
             "index": 1,
             "self_citation": false,
-            "text": "Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.",
+            "original_citation": "Doe J. (2000) Morbi vitae lorem blandit. Duis in lorem interdum. 14: 11–18.",
             "bibliographic": { … },
             "citation_groups": [ (see below) ],
         },
@@ -165,7 +165,7 @@ GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2
             "cited_id": "http://dx.doi.org/10.1234/1",
             "index": 1,
             "self_citation": false,
-            "text": "Roe J. (2000) Maecenas imperdiet leo ut bibendum auctor. Vivamus mollis. 88: 1012–22.",
+            "original_citation": "Roe J. (2000) Maecenas imperdiet leo ut bibendum auctor. Vivamus mollis. 88: 1012–22.",
             "bibliographic": { … },
             "citation_groups": [ (see below) ],
         }
