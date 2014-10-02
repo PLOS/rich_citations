@@ -39,9 +39,10 @@ module Processors
 
     def fill_info_for_references(references)
       references.each do |ref|
+        accessed = ref[:accessed_at]
         ref[:bibliographic].merge!(
-            URL:          ref[:uri][:url],
-            URL_ACCESSED: ref[:uri][:accessed],
+            URL:          ref[:uri],
+            accessed:     accessed && {'date-parts' => [[accessed.year, accessed.month, accessed.day]] }
         )
         ref[:bibliographic][:bib_source] = 'url'
       end

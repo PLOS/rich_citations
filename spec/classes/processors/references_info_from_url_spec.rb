@@ -32,7 +32,7 @@ describe Processors::ReferencesInfoFromUrl do
 
   it "should not parse the URL if there are cached results" do
     cached = { references: [
-        {id:'ref-1', uri_type: :url, uri:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
+        {id:'ref-1', uri_type: :url, uri:'http://foo.com',accessed_at:Date.new(2012,1,13), bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
     ] }
     process(cached)
 
@@ -42,7 +42,7 @@ describe Processors::ReferencesInfoFromUrl do
   end
 
   it "should merge in the parsed url results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:{url:'http://foo.com' }, score:1.23, attribute:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:'http://foo.com', score:1.23, attribute:'test' } )
 
     allow(HttpUtilities).to receive(:get).and_return({})
 
@@ -53,16 +53,15 @@ describe Processors::ReferencesInfoFromUrl do
                            })
   end
 
-  it "should merge in the parsed url results including an accessed date" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, attribute:1.23, uri_source:'test' } )
+  it "should merge in the parsed url results" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:'http://foo.com', accessed_at:Date.new(2012,1,13), attribute:1.23, uri_source:'test' } )
 
     allow(HttpUtilities).to receive(:get).and_return({})
-
     expect(ref_info).to eq({
                                attribute:           1.23,
                                bib_source:          'url',
                                URL:                 'http://foo.com',
-                               URL_ACCESSED:        Date.new(2012,1,13),
+                               accessed:            { "date-parts" => [[2012, 1, 13]] }
                            })
   end
 
