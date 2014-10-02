@@ -49,7 +49,7 @@ module Id
         url  = extract(href, true)
         return {
             url:      url,
-            accessed: extract_date( XmlUtilities.text_after(xml, node) )
+            accessed_at: extract_date( XmlUtilities.text_after(xml, node) )
         }.compact if url.present?
       end
 
@@ -60,7 +60,7 @@ module Id
       offset = text.index(url) + url.length
       {
         url:      url,
-        accessed: extract_date( text[offset..-1] )
+        accessed_at: extract_date( text[offset..-1] )
       }.compact if url.present?
     end
 

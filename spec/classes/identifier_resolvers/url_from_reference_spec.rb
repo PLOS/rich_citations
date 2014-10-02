@@ -53,7 +53,8 @@ describe IdentifierResolvers::UrlFromReference do
 
       expect(resolver).to receive(:set_result).with('ref-1',
                                                     uri_source: :ref,
-                                                    uri:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
+                                                    uri:'http://foo.com/bar', 
+                                                    accessed_at:Date.new(2014,7,14),
                                                     uri_type: :url,
                           )
       resolver.resolve
@@ -66,7 +67,8 @@ describe IdentifierResolvers::UrlFromReference do
 
       expect(resolver).to receive(:set_result).with('ref-1',
                                                     uri_source: :ref,
-                                                    uri:        {url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
+                                                    uri:'http://foo.com/bar', 
+                                                    accessed_at:Date.new(2014,7,14),
                                                     uri_type:   :url,
                           )
       resolver.resolve

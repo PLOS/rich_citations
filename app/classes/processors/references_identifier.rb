@@ -28,11 +28,12 @@ module Processors
         info = identifier_for_reference[id]
 
         ref.merge!(
-          bibliographic:   info.except(:uri, :uri_type, :uri_source, :score),
+          bibliographic:   info.except(:uri, :uri_type, :uri_source, :score, :accessed_at),
           uri:             info[:uri],
           uri_type:        info[:uri_type],
           uri_source:      info[:uri_source],
           score:           info[:score],
+          accessed_at:     info[:accessed_at]
         ) if info
 
       end
