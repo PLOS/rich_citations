@@ -42,4 +42,8 @@ describe Processors::ReferencesLiteral do
     expect( result[:references].first[:original_citation] ).to eq('Citation Text')
   end
 
+  it 'should not include an empty original citation for the top-level' do
+    expect(result).not_to have_key(:original_citation)
+  end
+
 end
