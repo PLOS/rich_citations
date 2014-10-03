@@ -6,10 +6,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,31 +18,20 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-class ApiV0Controller < ApplicationController
-  def paper
-    id = params[:id]
-    case id
-    when %r{^http://dx.doi.org/10.1371/}
-      doi = Id::Doi.extract(params[:id])
-      # TODO : combine with code in papers controller
-      paper = PaperResult.find_or_new_for_doi(doi)
-      if paper.should_start_analysis?
-        paper.start_analysis!
-        paper.save
-      end
-      response.content_type = Mime::JSON
-      headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
-      result = if paper.ready?
-                 JsonUtilities.strip_uri_type(paper.result).to_json
-               else
-                 ''
-               end
-      status = paper.ready? ? :ok : :accepted
-      render(json: result, status: status)
+require 'spec_helper'
 
-      @paper = PaperResult.find_or_new_for_doi(doi)
-    else
-      render status: 404, text: ''
+describe JsonUtilities do
+  subject { jsonutilities }
+
+  describe '#strip_uri_type' do
+    it 'should strip top level uri_type, symbols & strings' do
+      expect(JsonUtilities.strip_uri_type({ 'uri_type' => 'foo' })).to eq({})
+      expect(JsonUtilities.strip_uri_type({ uri_type: 'foo' })).to eq({})
+    end
+
+    it 'should strip reference level uri_type, symbols & strings' do
+      expect(JsonUtilities.strip_uri_type({'references' => [{ 'uri_type' => 'foo' }]})).to eq('references' => [{}])
+      expect(JsonUtilities.strip_uri_type({'references' => [{ uri_type: 'foo' }]})).to eq('references' => [{}])
     end
   end
 end
