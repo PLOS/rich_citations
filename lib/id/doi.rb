@@ -30,7 +30,7 @@ module Id
     DOI_PREFIX_CHAR  = %q{[^\/[[:space:]]]}
     DOI_CHAR         = %q{[^[[:space:]]'"]}
     DOI_END_CHAR     = NPUNCT
-    DOI_REGEX        = "10\\.#{DOI_PREFIX_CHAR}+\\/#{DOI_CHAR}*#{DOI_END_CHAR}+"
+    DOI_REGEX        = "10\\.#{DOI_PREFIX_CHAR}+(\\/|%2[Ff])#{DOI_CHAR}*#{DOI_END_CHAR}+"
 
     DOI_PREFIX_REGEX = /\bdoi:?\s*(?<result>#{DOI_REGEX})/io
     DOI_URL_REGEX    = /\bdoi\.org\/(?<result>#{DOI_REGEX})/io
