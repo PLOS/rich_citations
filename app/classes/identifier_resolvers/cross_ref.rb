@@ -40,6 +40,7 @@ module IdentifierResolvers
             resolve_group([r].to_h)
           end
         end
+        sleep(5)
       end
     end
 
