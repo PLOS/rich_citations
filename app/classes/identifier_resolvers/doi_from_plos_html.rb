@@ -18,47 +18,49 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-module Processors
-  class ReferencesIdentifier < Base
-    include Helpers
+module IdentifierResolvers
+  class DoiFromPlosHtml < Base
 
-    def process
-      references.each do |ref|
-        id   = ref[:id]
-        info = identifier_for_reference[id]
+    def resolve
+      unresolved_references.each do |id, data|
+        ref_node = node_for_ref_id(id)
+        next unless ref_node.present?
 
-        ref.merge!(
-          bibliographic:   info.except(:uri, :uri_type, :uri_source, :score, :accessed_at),
-          uri:             info[:uri],
-          uri_type:        info[:uri_type],
-          uri_source:      info[:uri_source],
-          score:           info[:score],
-          accessed_at:     info[:accessed_at]
-        ) if info
+        links_node = ref_node.css('> ul.find')
+        next unless links_node.present?
 
-      end
+        doi = Id::Doi.extract(links_node.first['data-doi'])
 
-    end
-
-    def cleanup
-      references.each do |ref|
-        info = ref[:bibliographic]
-        info.compact! if info
-        ref.delete(:bibliographic) if info.blank?
+        info  = info_for_doi(doi)
+        set_result(id, info) if info
       end
     end
 
-    def self.dependencies
-      [References]
+    private
+
+    def reference_nodes
+      @reference_nodes ||= begin
+        response = HttpUtilities.get(root.citing_uri)
+        html     = Nokogiri::HTML::Document.parse(response)
+        html.css('ol.references li')
+      end
     end
 
-    protected
-
-    def identifier_for_reference
-      @identifier_for_reference ||= begin
-        reference_nodes = references.map { |ref| [ref[:id], ref[:node]] }.to_h
-        IdentifierResolver.resolve(result[:uri], reference_nodes)
+    def node_for_ref_id(ref_id)
+      reference_nodes.find do |n|
+        n.xpath("./a[@id = '#{ref_id}']").present?
       end
+    end
+
+    def info_for_doi(doi)
+      doi = Id::Doi.extract( doi )
+      return nil unless doi.present?
+
+      {
+        uri_source:   :plos_html,
+        uri_type:     :doi,
+        uri:          "http://dx.doi.org/#{doi}"
+      }
     end
 
   end

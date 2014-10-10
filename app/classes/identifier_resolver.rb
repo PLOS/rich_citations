@@ -20,16 +20,18 @@
 
 class IdentifierResolver
 
+  attr_reader :citing_uri
   attr_reader :references
   attr_reader :results
   attr_reader :unresolved_ids
   attr_reader :state
 
-  def self.resolve(references)
-    new(references).resolve
+  def self.resolve(citing_uri, references)
+    new(citing_uri, references).resolve
   end
 
-  def initialize(references)
+  def initialize(citing_uri, references)
+    @citing_uri = citing_uri
     @references = create_references_hash(references)
     @unresolved_ids = @references.keys
 
@@ -146,6 +148,7 @@ class IdentifierResolver
   end
 
   ALL_RESOLVERS = [
+      IdentifierResolvers::DoiFromPlosHtml,
       IdentifierResolvers::CrossRef,
       IdentifierResolvers::DoiFromReference,
       IdentifierResolvers::IsbnFromReference,
