@@ -33,6 +33,8 @@ For the definitions below, assume that you are reading a paper A, that contains 
 
 ## Getting the reference information for a paper
 
+For the moment, this will only work with PLOS papers.
+
 ```
 GET http://api.richcitations.org/v0/paper?id=http%3A%2F%2Fdx.doi.org%2F10.1371%2Fjournal.pone.0000000
 ```
