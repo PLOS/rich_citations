@@ -42,7 +42,7 @@ module Processors
     protected
 
     def extract_citation_info(node, info)
-      cite = node.at_css('mixed-citation')
+      cite = node.at_css('mixed-citation, element-citation')
       return unless cite.present?
 
       @field_changed = false
