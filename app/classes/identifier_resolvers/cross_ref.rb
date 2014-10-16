@@ -23,9 +23,9 @@ module IdentifierResolvers
     SLICE_SIZE=50
     
     # cf  http://search.crossref.org/help/api#match
-    #API_URL = 'http://search.crossref.org/links'
+    API_URL = 'http://search.crossref.org/links'
     # secret URL
-    API_URL = 'http://148.251.178.33/links'
+    #API_URL = 'http://148.251.178.33/links'
     
     def resolve
       unresolved_texts = unresolved_references.map { |id, data|
@@ -42,7 +42,7 @@ module IdentifierResolvers
             resolve_group([r].to_h)
           end
         end
-        sleep(1)
+        sleep(10)
       end
     end
 
