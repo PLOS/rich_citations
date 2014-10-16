@@ -28,6 +28,7 @@ class CitationGrouper
               :groups
 
   def initialize(parser)
+    @group     = 0
     @parser    = parser
     @last_node = :none
     @groups    = []
@@ -37,15 +38,15 @@ class CitationGrouper
     start_group!(citation) if citation.previous_sibling != @last_node
 
     @last_node = citation
-    index = parser.index_for_citation_node(citation)
+    number = parser.number_for_citation_node(citation)
 
     if @hyphen_found
       add_node(citation)
-      add_range(index)
+      add_range(number)
     else
       add_node(citation)
-      add(index)
-      @last_index = index
+      add(number)
+      @last_number = number
     end
 
     parse_text_separators(citation)
@@ -53,15 +54,14 @@ class CitationGrouper
 
   private
 
-  def add(index)
-    @current_group[:count] += 1
-    id = parser.reference_id_for_index(index)
+  def add(number)
+    id = parser.reference_id_for_number(number)
     @current_group[:references].push(id)
   end
 
   def add_range(range_end)
-    range_start = @last_index + 1
-    (range_start..range_end).each { |index| add(index) }
+    range_start = @last_number + 1
+    (range_start..range_end).each { |number| add(number) }
   end
 
   def add_node(node)
@@ -70,13 +70,18 @@ class CitationGrouper
 
   def start_group!(node)
     @current_group =  {
-        count:         0,
+        id:            next_group_id,
         references:    [],
         nodes:         [],
     }
 
     @groups        << @current_group
     @last_node     =  :none
+  end
+
+  def next_group_id
+    @group += 1
+    @group.to_s
   end
 
   def parse_text_separators(citation)

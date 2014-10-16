@@ -34,8 +34,8 @@ describe PaperParser do
       expect( PaperParser.is_failure?(result) ).to be_truthy
     end
 
-    it "should normally return false" do
-      xml = Nokogiri::XML('<root/>')
+    it "  should normally return false" do
+      xml = Loofah.xml_document('<root/>')
       result = PaperParser.parse_xml(xml)
       expect( PaperParser.is_failure?(result) ).to be_falsy
     end
@@ -124,6 +124,8 @@ describe PaperParser do
       allow(PaperParser).to receive(:processor_classes).and_call_original
       expect(PaperParser.resolved_processor_classes).to eq([
                                                              Processors::State,
+                                                             Processors::Doi,
+                                                             Processors::PaperInfo,
                                                              Processors::References,
                                                              Processors::ReferencesIdentifier,
                                                              Processors::ReferencesInfoCacheLoader,
@@ -133,7 +135,6 @@ describe PaperParser do
                                                              Processors::CitationGroupContext,
                                                              Processors::CitationGroupPosition,
                                                              Processors::CitationGroupSection,
-                                                             Processors::Doi,
                                                              Processors::ReferencesInfoFromDoi,
                                                              Processors::ReferencesInfoFromIsbn,
                                                              Processors::ReferencesInfoFromPubmed,
@@ -144,14 +145,10 @@ describe PaperParser do
                                                              Processors::ReferencesInfoFromCitationNode,
                                                              Processors::ReferencesInfoFromCitationText,
                                                              Processors::NormalizeAuthorNames,
-                                                             Processors::PaperInfo,
                                                              Processors::ReferencesAbstract,
                                                              Processors::ReferencesCitedGroups,
                                                              Processors::ReferencesCrossmark,
-                                                             Processors::ReferencesMedianCoCitations,
-                                                             Processors::ReferencesMentionCount,
-                                                             Processors::ReferencesSection,
-                                                             Processors::ReferencesZeroMentions,
+                                                             Processors::ReferencesLiteral,
                                                              Processors::SelfCitations,
                                                              Processors::ReferencesDelayedLicense,
                                                              Processors::ReferencesInfoCacheSaver,

@@ -21,24 +21,24 @@
 # Add sections node
 
 module Processors
-  class ReferencesZeroMentions < Base
+  class ReferencesLiteral < Base
     include Helpers
 
     def process
-      references.each do |id, info|
-        info[:zero_mentions] = has_zero_mentions(info)
+      references = references_for_type(:doi)
+      references.each do |ref|
+        ref[:original_citation] ||= literal_for(ref) unless literal_for(ref).blank?
       end
     end
 
     def self.dependencies
-      [ ReferencesCitedGroups ]
+      ReferencesInfoCacheLoader
     end
 
     protected
 
-    def has_zero_mentions(ref_info)
-      cited_groups = ref_info[:citation_groups]
-      cited_groups.blank? ? true : nil
+    def literal_for(ref)
+      XmlUtilities.jats2html( ref[:node] )
     end
 
   end

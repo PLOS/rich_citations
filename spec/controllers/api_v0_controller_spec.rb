@@ -18,35 +18,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Add sections node
+require 'spec_helper'
 
-module Processors
-  class ReferencesSection < Base
-    include Helpers
-
-    def process
-      references.each do |id, info|
-        add_sections_for_reference(id, info)
-      end
+describe ApiV0Controller, type: :controller do
+  describe 'get PLOS doi' do
+    it 'returns 202' do
+      get 'paper', id: 'http://dx.doi.org/10.1371/journal.pone.0000000'
+      expect(response.status).to eq(202)
     end
+  end
 
-    def self.dependencies
-      [References, CitationGroupSection]
+  describe 'GET non-DOI' do
+    it 'returns 404' do
+      get 'paper', id: 'http://example.org/abc'
+      expect(response.status).to eq(404)
     end
+  end
 
-    protected
-
-    def add_sections_for_reference(id, ref)
-      citation_groups.each do |group|
-        add_section(ref, group) if id.in?(group[:references])
-      end
+  describe 'GET non-plos DOI' do
+    it 'returns 404' do
+      get 'paper', id: 'http://dx.doi.org/10.1234'
+      expect(response.status).to eq(404)
     end
-
-    def add_section(ref, group)
-      sections        = ref[:sections] ||= {}
-      title           = group[:section]
-      sections[title] = sections[title].to_i + 1
-    end
-
   end
 end

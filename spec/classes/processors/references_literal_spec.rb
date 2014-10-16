@@ -20,18 +20,30 @@
 
 require 'spec_helper'
 
-describe Processors::ReferencesMentionCount do
+describe Processors::ReferencesLiteral do
   include Spec::ProcessorHelper
 
   before do
-    refs 'First', 'Second', 'Third'
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222', attribute:'test' })
   end
 
-  it "should have the correct mention counts" do
-    body "#{cite(1)},#{cite(2)} ... #{cite(2)},#{cite(3)}"
-    expect(result[:references]['ref-1'][:mentions]).to eq 1
-    expect(result[:references]['ref-2'][:mentions]).to eq 2
-    expect(result[:references]['ref-3'][:mentions]).to eq 1
+  it "should add the literal value of the reference" do
+    refs 'First Reference'
+    expect( result[:references].first[:original_citation] ).to eq('First Reference')
+  end
+
+  it "should handle tags appropriately" do
+    refs 'text <b>bold</b> <span>removed</span>'
+    expect( result[:references].first[:original_citation] ).to eq('text <strong>bold</strong> removed')
+  end
+
+  it "should remove the label" do
+    refs '<label>1</label> Citation Text'
+    expect( result[:references].first[:original_citation] ).to eq('Citation Text')
+  end
+
+  it 'should not include an empty original citation for the top-level' do
+    expect(result).not_to have_key(:original_citation)
   end
 
 end

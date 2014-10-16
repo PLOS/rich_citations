@@ -20,16 +20,18 @@
 
 class IdentifierResolver
 
+  attr_reader :citing_uri
   attr_reader :references
   attr_reader :results
   attr_reader :unresolved_ids
   attr_reader :state
 
-  def self.resolve(references)
-    new(references).resolve
+  def self.resolve(citing_uri, references)
+    new(citing_uri, references).resolve
   end
 
-  def initialize(references)
+  def initialize(citing_uri, references)
+    @citing_uri = citing_uri
     @references = create_references_hash(references)
     @unresolved_ids = @references.keys
 
@@ -74,11 +76,11 @@ class IdentifierResolver
   end
 
   def flag_duplicates_for_more_resolving(current_id, info)
-    return false unless info[:id_type] && info[:id]
+    return false unless info[:uri_type] && info[:uri]
 
     found = false
     results.each do |id, result|
-      if id != current_id && result && result[:id_type]==info[:id_type] && info[:id].casecmp( result[:id] )==0
+      if id != current_id && result && result[:uri_type]==info[:uri_type] && info[:uri].casecmp( result[:uri] )==0
         found = true
         unresolved_ids << id
       end
@@ -90,8 +92,8 @@ class IdentifierResolver
   end
 
   def fixup_duplicates_for_all_keys
-    id_types = result.map { |id, result| result[:id_type]}.uniq
-    id_types.each{|type| fixup_duplicates_for_types(type)}
+    uri_types = result.map { |id, result| result[:uri_type]}.uniq
+    uri_types.each{|type| fixup_duplicates_for_types(type)}
   end
 
   def fixup_duplicates_for_types(type)
@@ -110,8 +112,8 @@ class IdentifierResolver
   def mark_as_duplicate(id, duplicate_of)
     result = results[id]
     result[:duplicate_of] = duplicate_of
-    result[:_id_type] = result[:id_type]
-    result.delete(:id_type)
+    result[:_uri_type] = result[:uri_type]
+    result.delete(:uri_type)
   end
 
   def best_result_id(ids)
@@ -120,8 +122,8 @@ class IdentifierResolver
 
   def find_duplicates_for_type(type)
     groups = results.
-             select  {|id, result| r[:id_type] == type }.
-             group_by{|id, result| result[:id] && result[:id].downcase }
+             select  {|id, result| r[:uri_type] == type }.
+             group_by{|id, result| result[:uri] && result[:uri].downcase }
     groups.delete(nil)
     # Only keep those with duplicate
     groups.keep_if { |v, results| results.length > 1 }
@@ -135,26 +137,10 @@ class IdentifierResolver
        Hashie::Mash.new(
            id:   id,
            node: node,
-           text: normalized_node_text(node, i+1)
+           text: XmlUtilities.spaced_text(node)
        )
       ]
     end.to_h
-  end
-
-  def normalized_node_text(node, index)
-    clean_text = XmlUtilities.spaced_text(node)
-    remove_index_from_text(index, clean_text)
-  end
-
-  # If the text starts with the index then remove it
-  def remove_index_from_text(index, text)
-    index = index.to_s+' '
-
-    if text.start_with?(index)
-      text[index.length..-1]
-    else
-      text
-    end
   end
 
   def self.resolvers
@@ -162,6 +148,7 @@ class IdentifierResolver
   end
 
   ALL_RESOLVERS = [
+      IdentifierResolvers::DoiFromPlosHtml,
       IdentifierResolvers::CrossRef,
       IdentifierResolvers::DoiFromReference,
       IdentifierResolvers::IsbnFromReference,

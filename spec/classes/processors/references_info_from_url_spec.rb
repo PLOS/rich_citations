@@ -27,48 +27,41 @@ describe Processors::ReferencesInfoFromUrl do
   end
 
   def ref_info
-    result[:references]['ref-1'][:info]
+    result[:references].first[:bibliographic]
   end
 
   it "should not parse the URL if there are cached results" do
-    cached = { references: {
-        'ref-1' => { id_type: :url, id:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, info:{info_source:'cached', title:'cached title', URL:'cached url'} },
-    } }
+    cached = { references: [
+        {id:'ref-1', uri_type: :url, uri:'http://foo.com',accessed_at:Date.new(2012,1,13), bibliographic:{bib_source:'cached', title:'cached title', URL:'cached url'} },
+    ] }
     process(cached)
 
-    expect(ref_info[:info_source]).to eq('cached')
+    expect(ref_info[:bib_source]).to eq('cached')
     expect(ref_info[:title] ).to eq('cached title')
     expect(ref_info[:URL] ).to eq('cached url')
   end
 
   it "should merge in the parsed url results" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :url,  id:{url:'http://foo.com' }, score:1.23, id_source:'test' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:'http://foo.com', score:1.23, attribute:'test' } )
 
     allow(HttpUtilities).to receive(:get).and_return({})
 
     expect(ref_info).to eq({
-                              id_source:           'test',
-                              id:                  {url:'http://foo.com' },
-                              id_type:             :url,
-                              score:               1.23,
-                              info_source:         "url",
+                              attribute:           'test',
+                              bib_source:          'url',
                               URL:                 'http://foo.com',
                            })
   end
 
-  it "should merge in the parsed url results including an accessed date" do
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :url,  id:{url:'http://foo.com',accessed:Date.new(2012,1,13) }, score:1.23, id_source:'test' } )
+  it "should merge in the parsed url results" do
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :url,  uri:'http://foo.com', accessed_at:Date.new(2012,1,13), attribute:1.23, uri_source:'test' } )
 
     allow(HttpUtilities).to receive(:get).and_return({})
-
     expect(ref_info).to eq({
-                               id_source:           'test',
-                               id:                  {url:'http://foo.com',accessed:Date.new(2012,1,13) },
-                               id_type:             :url,
-                               score:               1.23,
-                               info_source:         "url",
+                               attribute:           1.23,
+                               bib_source:          'url',
                                URL:                 'http://foo.com',
-                               URL_ACCESSED:        Date.new(2012,1,13),
+                               accessed:            { "date-parts" => [[2012, 1, 13]] }
                            })
   end
 

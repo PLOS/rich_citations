@@ -25,8 +25,8 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
-        extract_citation_info(ref[:node], ref[:info])
+      references.each do |ref|
+        extract_citation_info(ref[:node], ref[:bibliographic])
       end
     end
 
@@ -55,6 +55,7 @@ module Processors
       # Add year issued
       if cite.at_css('year').present?
         year = cite.at_css('year').text.to_i
+#@todo check month and  day
         set_field info, :issued, :'date-parts' => [[year]] if year > 0
       end
 
@@ -67,12 +68,13 @@ module Processors
 
       extract_citation_names(node, info)
 
-      set_field(info, :info_source, 'RefNode') if @field_changed
+      set_field(info, :bib_source, 'RefNode') if @field_changed
     end
 
     def extract_citation_names(node, info)
       return if info[:author].present?
       names = node.css('name')
+#@todo check string-name => literal
       return unless names.present?
 
       authors = names.map do |name|

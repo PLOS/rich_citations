@@ -38,10 +38,11 @@ module IdentifierResolvers
 
       return nil unless id.present?
       info = {
-          id_source:  :ref,
-          id:         id,
-          id_type:    :url,
-      }
+        uri_source:  :ref,
+        uri:         !id.nil? && id[:url],
+        accessed_at: !id.nil? && id[:accessed_at],
+        uri_type:    :url
+      }.compact
     end
 
   end

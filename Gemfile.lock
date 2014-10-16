@@ -47,6 +47,7 @@ GEM
     coffee-script-source (1.7.0)
     crack (0.4.2)
       safe_yaml (~> 1.0.0)
+    dalli (2.7.2)
     diff-lcs (1.2.5)
     erubis (2.7.0)
     execjs (2.2.1)
@@ -69,6 +70,8 @@ GEM
       thor (>= 0.14, < 2.0)
     json (1.8.1)
     kgio (2.9.2)
+    loofah (2.0.1)
+      nokogiri (>= 1.5.9)
     mail (2.5.4)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)
@@ -202,11 +205,13 @@ PLATFORMS
 DEPENDENCIES
   capybara
   coffee-rails (~> 4.0.0)
+  dalli
   haml
   haml-rails
   hashie
   jbuilder (~> 1.2)
   jquery-rails
+  loofah
   net-http-persistent
   nokogiri
   pg
@@ -214,6 +219,7 @@ DEPENDENCIES
   qunit-rails
   rails (~> 4.1.0)
   rails_12factor
+  rake
   react-rails (~> 0.10.0.0)
   rspec-rails (~> 3.0.0.beta)
   sass-rails (~> 4.0.0)

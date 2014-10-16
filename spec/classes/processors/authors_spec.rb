@@ -24,7 +24,7 @@ describe Processors::Authors do
   include Spec::ProcessorHelper
 
   def authors
-    result[:paper][:author]
+    result[:bibliographic][:author]
   end
 
   it "should parse out the authors" do
@@ -40,6 +40,8 @@ describe Processors::Authors do
     expect(authors).to eq([ {family: 'Jolie',   given:'Angelina'},
                             {family: 'Roberts', given:'Julia'   }  ])
   end
+
+  it "should overwrite existing authors (from the crossref api for example)"
 
   it "should parse out literal authors" do
     meta <<-EOS

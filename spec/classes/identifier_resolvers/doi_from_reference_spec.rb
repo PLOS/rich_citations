@@ -34,7 +34,7 @@ describe IdentifierResolvers::DoiFromReference do
   context "Parsing DOI" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(
@@ -53,7 +53,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'10.1111/1111', id_type: :doi)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://dx.doi.org/10.1111/1111', uri_type: :doi)
       resolver.resolve
     end
 
@@ -64,7 +64,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'10.1111/1111', id_type: :doi)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://dx.doi.org/10.1111/1111', uri_type: :doi)
       resolver.resolve
     end
 
@@ -75,7 +75,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'10.1111/1111', id_type: :doi)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://dx.doi.org/10.1111/1111', uri_type: :doi)
       resolver.resolve
     end
 
@@ -89,7 +89,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'10.1111/1111', id_type: :doi)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://dx.doi.org/10.1111/1111', uri_type: :doi)
       resolver.resolve
     end
 
@@ -102,7 +102,7 @@ describe IdentifierResolvers::DoiFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'10.1111/1111', id_type: :doi)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://dx.doi.org/10.1111/1111', uri_type: :doi)
       resolver.resolve
     end
 

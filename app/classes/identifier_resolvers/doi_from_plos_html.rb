@@ -18,26 +18,50 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require 'spec_helper'
+module IdentifierResolvers
+  class DoiFromPlosHtml < Base
 
-describe Processors::ReferencesZeroMentions do
-  include Spec::ProcessorHelper
+    def resolve
+      unresolved_references.each do |id, data|
+        ref_node = node_for_ref_id(id)
+        next unless ref_node.present?
 
-  before do
-    refs 'First', 'Second', 'Third', 'Fourth'
-    body "#{cite(1)}...#{cite(2)}#{cite(3)}"
+        links_node = ref_node.css('> ul.find')
+        next unless links_node.present?
+
+        doi = Id::Doi.extract(links_node.first['data-doi'])
+
+        info  = info_for_doi(doi)
+        set_result(id, info) if info
+      end
+    end
+
+    private
+
+    def reference_nodes
+      @reference_nodes ||= begin
+        response = HttpUtilities.get(root.citing_uri)
+        html     = Nokogiri::HTML::Document.parse(response)
+        html.css('ol.references li')
+      end
+    end
+
+    def node_for_ref_id(ref_id)
+      reference_nodes.find do |n|
+        n.xpath("./a[@id = '#{ref_id}']").present?
+      end
+    end
+
+    def info_for_doi(doi)
+      doi = Id::Doi.extract( doi )
+      return nil unless doi.present?
+
+      {
+        uri_source:   :plos_html,
+        uri_type:     :doi,
+        uri:          "http://dx.doi.org/#{doi}"
+      }
+    end
+
   end
-
-  it "should include zero citations" do
-    expect(result[:references]['ref-4'][:zero_mentions]).to eq true
-  end
-
-  it "should not include zero citations for cited works" do
-    expect(result[:references]['ref-2'][:zero_mentions]).to be_falsey
-  end
-
-  it "should not include zero citations if they are cited on their own" do
-    expect(result[:references]['ref-1'][:zero_mentions]).to be_falsey
-  end
-
 end

@@ -69,4 +69,9 @@ RSpec.configure do |config|
   config.order = "random"
 
   config.include ActiveSupport::Testing::TimeHelpers
+
+  config.before do
+    Rails.cache.clear
+  end
+
 end

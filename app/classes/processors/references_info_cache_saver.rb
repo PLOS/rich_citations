@@ -40,10 +40,10 @@ module Processors
     protected
 
     def save_info_to_cache
-      references.each do |id, ref|
-        next unless ref[:id_type] && ref[:info]
+      references.each do |ref|
+        next unless ref[:uri_type] && ref[:bibliographic]
 
-        PaperInfoCache.update(ref[:id_type], ref[:id], ref[:info])
+        PaperInfoCache.update(ref[:uri_type], ref[:uri], ref[:bibliographic])
       end
     end
 

@@ -6,10 +6,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -20,26 +20,18 @@
 
 require 'spec_helper'
 
-describe Processors::ReferencesMedianCoCitations do
-  include Spec::ProcessorHelper
+describe JsonUtilities do
+  subject { jsonutilities }
 
-  before do
-    refs 'First', 'Second', 'Third'
+  describe '#strip_uri_type' do
+    it 'should strip top level uri_type, symbols & strings' do
+      expect(JsonUtilities.strip_uri_type({ 'uri_type' => 'foo' })).to eq({})
+      expect(JsonUtilities.strip_uri_type({ uri_type: 'foo' })).to eq({})
+    end
+
+    it 'should strip reference level uri_type, symbols & strings' do
+      expect(JsonUtilities.strip_uri_type({'references' => [{ 'uri_type' => 'foo' }]})).to eq('references' => [{}])
+      expect(JsonUtilities.strip_uri_type({'references' => [{ uri_type: 'foo' }]})).to eq('references' => [{}])
+    end
   end
-
-  it "should include median co citations" do
-    body "#{cite(1)},#{cite(2)}#{cite(3)} ... #{cite(2)},#{cite(1)}#{cite(3)}"
-    expect(result[:references]['ref-2'][:median_co_citations]).to eq 2
-  end
-
-  it "should exclude itself" do
-    body "#{cite(1)}"
-    expect(result[:references]['ref-1'][:median_co_citations]).to eq 0
-  end
-
-  it "should not be present if it is not cited" do
-    body "#{cite(1)}"
-    expect(result[:references]['ref-3'][:median_co_citations]).to be_nil
-  end
-
 end

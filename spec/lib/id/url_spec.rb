@@ -23,7 +23,7 @@ require 'spec_helper'
 describe Id::Url do
 
   def xml(text)
-    Nokogiri::XML(text)
+    Loofah.xml_document(text)
   end
 
   describe '#extract' do
@@ -131,7 +131,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed:Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed_at:Date.new(2012,5,7) )
       end
 
       it "should extract a link from an <a> attribute" do
@@ -146,7 +146,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed:Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed_at:Date.new(2012,5,7) )
       end
 
       it "should extract a link from the text" do
@@ -161,7 +161,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed:Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment) ).to eq(url:"https://github.com/samuellab/EarlyVersionWormTracker", accessed_at:Date.new(2012,5,7) )
       end
 
       it "should ignore extraneous punctuation" do
@@ -172,7 +172,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should ignore an 'accessed' keyword" do
@@ -183,7 +183,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should ignore a 'retrieved' keyword" do
@@ -194,7 +194,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should be ok if there is no keyword" do
@@ -205,7 +205,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should parse a date like '2012 December 7' " do
@@ -216,7 +216,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,12,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,12,7) )
       end
 
       it "should parse a date like 'December 7, 2012' " do
@@ -227,7 +227,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should parse a date like ' Mon, 07 May 2012' " do
@@ -238,7 +238,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,5,7) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,5,7) )
       end
 
       it "should parse a date like '2012-12-17' " do
@@ -248,7 +248,7 @@ describe Id::Url do
             <ext-link xlink:href="https://github.com/samuellab/EarlyVersionWormTracker">https://github.com/not-this-url</ext-link>2012-12-17
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,12,17) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,12,17) )
       end
 
       it "should parse a date like '14-07-2012' " do
@@ -259,7 +259,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to eq( Date.new(2012,7,14) )
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to eq( Date.new(2012,7,14) )
       end
 
       it "should ignore a year only" do
@@ -270,7 +270,7 @@ describe Id::Url do
           </ref>
         XML
 
-        expect( Id::Url.extract_from_xml(fragment)[:accessed] ).to be_nil
+        expect( Id::Url.extract_from_xml(fragment)[:accessed_at] ).to be_nil
       end
 
     end

@@ -3,4 +3,5 @@ rvm:
   - 2.1.2
 before_script:
   - cp config/database.travis.yml config/database.yml
+  - mkdir -p tmp/cache
 script: bundle exec rake db:test:prepare spec SPEC="--tag ~js" RAILS_ENV=test

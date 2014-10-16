@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references = references_without_info(:url)
+      references = references_without_bib_info(:url)
       fill_info_for_references( references ) if references.present?
     end
 
@@ -39,11 +39,12 @@ module Processors
 
     def fill_info_for_references(references)
       references.each do |ref|
-        ref[:info].merge!(
-            URL:          ref[:id][:url],
-            URL_ACCESSED: ref[:id][:accessed],
+        accessed = ref[:accessed_at]
+        ref[:bibliographic].merge!(
+            URL:          ref[:uri],
+            accessed:     accessed && {'date-parts' => [[accessed.year, accessed.month, accessed.day]] }
         )
-        ref[:info][:info_source] = 'url'
+        ref[:bibliographic][:bib_source] = 'url'
       end
     end
 

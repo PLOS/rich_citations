@@ -28,11 +28,11 @@ module Processors
     # [11], [13]-[17], [21].
 
     def process
-      result[:groups] = citation_groups
+      result[:citation_groups] = citation_groups
     end
 
     def cleanup
-      result[:groups].each do |group|
+      result[:citation_groups].each do |group|
         group.delete(:nodes)
         group.compact!
       end
@@ -45,15 +45,15 @@ module Processors
     ####################################################do
     # Callbacks for CitationGrouper
 
-    def index_for_citation_node(xref_node)
+    def number_for_citation_node(xref_node)
       refid = xref_node['rid']
       ref   = reference_by_id(refid)
-      ref && ref[:index]
+      ref && ref[:number]
     end
 
-    def reference_id_for_index(index)
-      ref = reference_by_index(index)
-      ref && ref[:ref_id]
+    def reference_id_for_number(number)
+      ref = reference_by_number(number)
+      ref && ref[:id]
     end
 
     protected

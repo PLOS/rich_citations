@@ -27,7 +27,7 @@ describe Processors::ReferencesCrossmark do
     refs 'Some Reference'
     Rails.cache.delete("crossmark_10.111%2F111")
 
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' } )
     expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F111').and_return('
     {"updated_by": [
         {
@@ -41,16 +41,19 @@ describe Processors::ReferencesCrossmark do
         }
       ]
     }')
+    expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.12345%2F1234.12345').and_return('{}')
 
     process
-    expect(result[:references]['ref-1'][:updated_by][0][:doi]).to eq("10.5555/26262626x")
+    expect(result[:references].first[:updated_by][0][:doi]).to eq("10.5555/26262626x")
   end
 
   it "handles missing crossref" do
     refs 'Some Reference'
     Rails.cache.delete("crossmark_10.111%2F112")
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/112' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/112' } )
     expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.111%2F112').and_raise(Net::HTTPServerException.new(404, Net::HTTPNotFound.new(nil, 404, '') ))
+    expect(HttpUtilities).to receive(:get).with('http://crossmark.crossref.org/crossmark/?doi=10.12345%2F1234.12345').and_return('{}')
     process
   end
+
 end

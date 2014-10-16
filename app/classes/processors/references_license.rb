@@ -32,12 +32,12 @@ module Processors
 
       references.each_slice(SLICE_SIZE) do |group|
         begin
-          add_licenses(get_licenses(group))
+          add_licenses(group)
         rescue Net::HTTPFatalError
           # try each item one at a time
           group.each do |item|
             begin
-              add_licenses(get_licenses([item]))
+              add_licenses([item])
             rescue Net::HTTPFatalError
             end
           end
@@ -53,7 +53,7 @@ module Processors
     end
 
     def self.dependencies
-      [State, ReferencesInfoCacheLoader]
+      [State, Doi, PaperInfo, ReferencesInfoCacheLoader]
     end
 
     protected
@@ -69,36 +69,41 @@ module Processors
     end
 
     def references_without_licenses
-      references_for_type(:doi).select { |ref| ! ref[:info][:license] }
+      references_for_type(:doi).select { |ref| ! ref[:bibliographic][:license] }
     end
 
-    def get_licenses(references)
-      data = references.map { |ref| {type:'doi', id:ref[:id]} }
+    def fetch_licenses(references)
+      data = references.map { |ref| {type:'doi', id:  Id::Doi.extract(ref[:uri])  } }
       results = HttpUtilities.post(API_URL, JSON.generate(data),
                           'Accept' => Mime::JSON, 'Content-Type' => Mime::JSON
       )
       JSON.parse(results)
     end
 
-    def add_licenses(results)
+    def add_licenses(references)
+      results = fetch_licenses(references)
+
       Array(results['results']).each do |result|
-        ref     = get_reference(result['identifier'] )
+        ref     = get_reference(references, result['identifier'] )
         license = get_license( result['license'] )
         next unless ref && license
 
-        ref[:info][:license] = license['type']
+        ref[:bibliographic][:license] = license['type']
       end
     end
 
-    def get_reference(identifiers)
+    def get_reference(references, identifiers)
       identifiers.each do |identifier|
-        ref = reference_by_identifier(identifier['type'], identifier['id'])
-        return ref if ref
+        references.each do |ref|
+          #@todo  For pubmed id add  reference_by_uri(identifier['type'], identifier['id'])
+          return ref if Id::Doi.extract(ref[:uri])==identifier['id']
+        end
       end
-      return nil
+
+      nil
     end
 
-    def get_license( licenses )
+    def get_license(licenses )
       prioritized_licenses = licenses.sort_by { |license|
         date = Time.parse( license['provenance']['date'] )
         # Prioritize active licenses

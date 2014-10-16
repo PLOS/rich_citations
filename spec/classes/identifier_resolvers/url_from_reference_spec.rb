@@ -34,7 +34,7 @@ describe IdentifierResolvers::UrlFromReference do
   context "Parsing a URL" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(
@@ -52,9 +52,10 @@ describe IdentifierResolvers::UrlFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
-                                                    id_type: :url,
+                                                    uri_source: :ref,
+                                                    uri:'http://foo.com/bar', 
+                                                    accessed_at:Date.new(2014,7,14),
+                                                    uri_type: :url,
                           )
       resolver.resolve
     end
@@ -65,9 +66,10 @@ describe IdentifierResolvers::UrlFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:{url:'http://foo.com/bar', accessed:Date.new(2014,7,14) },
-                                                    id_type: :url,
+                                                    uri_source: :ref,
+                                                    uri:'http://foo.com/bar', 
+                                                    accessed_at:Date.new(2014,7,14),
+                                                    uri_type:   :url,
                           )
       resolver.resolve
     end

@@ -35,11 +35,11 @@ module Processors
     protected
 
     def load_cached_info
-      references.each do |id, ref|
-        next unless ref[:id_type] && ref[:info]
+      references.each do |ref|
+        next unless ref[:uri_type] && ref[:bibliographic]
 
-        cache = PaperInfoCache.find_by_identifier(ref[:id_type], ref[:id])
-        ref[:info].reverse_merge!(cache.info) if cache
+        cache = PaperInfoCache.find_by_identifier(ref[:uri_type], ref[:uri])
+        ref[:bibliographic].reverse_merge!(cache.bibliographic) if cache
       end
     end
 

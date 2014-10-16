@@ -34,7 +34,7 @@ describe IdentifierResolvers::ArxivFromReference do
   context "Parsing Arxiv IDs" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(
@@ -53,7 +53,7 @@ describe IdentifierResolvers::ArxivFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234.5678', id_type: :arxiv)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'1234.5678', uri_type: :arxiv)
       resolver.resolve
     end
 
@@ -64,7 +64,7 @@ describe IdentifierResolvers::ArxivFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234.5678', id_type: :arxiv)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'1234.5678', uri_type: :arxiv)
       resolver.resolve
     end
 
@@ -78,7 +78,7 @@ describe IdentifierResolvers::ArxivFromReference do
           </ref>
         XML
 
-        expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234.5678', id_type: :arxiv)
+        expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'1234.5678', uri_type: :arxiv)
         resolver.resolve
       end
 
@@ -90,7 +90,7 @@ describe IdentifierResolvers::ArxivFromReference do
           </ref>
         XML
 
-        expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234.5678', id_type: :arxiv)
+        expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'1234.5678', uri_type: :arxiv)
         resolver.resolve
       end
 
@@ -103,7 +103,7 @@ describe IdentifierResolvers::ArxivFromReference do
           </ref>
         XML
 
-        expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234.5678', id_type: :arxiv)
+        expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'1234.5678', uri_type: :arxiv)
         resolver.resolve
       end
 

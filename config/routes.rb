@@ -20,7 +20,7 @@
 
 CitationTools::Application.routes.draw do
 
-  root 'papers#index'
+  root 'papers#index_api'
 
   get '', to:'results#index', as:'search'
 
@@ -40,4 +40,5 @@ CitationTools::Application.routes.draw do
   get '/view/:id/references/:referenceid', to: 'papers#reference', id:/.+/
   get '/view/:id', to: 'papers#view', id:/.+/ 
   get '/interstitial', to: 'papers#interstitial'
+  get '/v0/paper', to: 'api_v0#paper'
 end

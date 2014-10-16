@@ -29,7 +29,7 @@ describe Processors::ReferencesDelayedLicense do
 
   before do
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { id_type: :doi, id:'10.222/222' } )
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222' } )
   end
 
   def stub_clock(difference)
@@ -54,7 +54,7 @@ describe Processors::ReferencesDelayedLicense do
     first_licenses = { results: [make_license('10.222/222', 'test-license-2') ]}.to_json
     expect(HttpUtilities).to receive(:post).ordered.and_return(first_licenses)
 
-    expected_data = [{"type"=>"doi","id"=>"10.111/111"}].to_json
+    expected_data = [{"type"=>"doi","id"=>"10.111/111"}, {"type"=>"doi","id"=>"10.12345/1234.12345"}].to_json
     expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup', expected_data, anything).ordered.and_return('{}')
 
     stub_clock(20.seconds)
@@ -63,7 +63,8 @@ describe Processors::ReferencesDelayedLicense do
   end
 
   it "should not call the API twice if all licenses were matched on the first call" do
-    first_licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1') ]}.to_json
+    first_licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1'),
+                                 make_license('10.12345/1234.12345', 'citing-license-1')]}.to_json
     expect(HttpUtilities).to receive(:post).once.and_return(first_licenses)
 
     process
@@ -78,8 +79,8 @@ describe Processors::ReferencesDelayedLicense do
 
     stub_clock(20.seconds)
 
-    expect( result[:references]['ref-1'][:info][:license] ).to eq('test-license-1')
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references].first[:bibliographic][:license] ).to eq('test-license-1')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should sleep if necessary" do

@@ -26,7 +26,7 @@ module Processors
 
     def process
       # Process in groups since IDs have to fit in a URL
-      references = references_without_info(:pmcid)
+      references = references_without_bib_info(:pmcid)
       fill_info_for_references(references) if references.present?
     end
 
@@ -43,7 +43,7 @@ module Processors
     API_URL = 'http://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pmc&retmode=xml'
 
     def fill_info_for_references(references)
-      reference_ids = references.map { |ref| ref[:id]}
+      reference_ids = references.map { |ref| ref[:uri]}
 
       results = fetch_results_for_ids(reference_ids)
 
@@ -53,11 +53,11 @@ module Processors
 
         pmcid = Id::Pmcid.normalize( info[:PMCID] )
         next unless pmcid
-        ref = reference_by_identifier(:pmcid, pmcid)
+        ref = reference_by_uri(:pmcid, pmcid)
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end
@@ -66,18 +66,18 @@ module Processors
       data  = 'id=' + ids.join(',')
       xml   = HttpUtilities.post(API_URL, data,
                                  'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::XML  )
-      Nokogiri::XML(xml)
+      Loofah.xml_document(xml)
     end
 
     def convert_result_to_info(result)
       @result = result
 
       {
-          info_source:         'NIH',
+          bib_source:          'NIH',
           PMCID:               Id::Pmcid.normalize( value('article-meta article-id[pub-id-type=pmc]') ),
           PMID:                value('article-meta article-id[pub-id-type=pmid]'),
           DOI:                 value('article-meta article-id[pub-id-type=doi]'),
-          title:               xml('article-meta article-title'),
+          title:               html('article-meta article-title'),
           # # subtitle:
           issued:              date_value('article-meta pub-date[pub-type=epub]') || date_value('article-meta pub-date[pub-type=ppub]'),
           publisher:           value('journal-meta publisher-name'),
@@ -88,7 +88,7 @@ module Processors
           :'container-title'=> value('journal-meta journal-title'),
           volume:              value('article-meta volume'),
           issue:               value('article-meta issue'),
-          abstract:            xml('article-meta abstract').try(:strip),
+          abstract:            html('article-meta abstract').try(:strip),
       }.compact
     end
 
@@ -97,9 +97,9 @@ module Processors
       node && node.text.presence
     end
 
-    def xml(selector)
+    def html(selector)
       node = @result.at_css(selector)
-      XmlUtilities.jatsdoc2html(node)
+      XmlUtilities.clean_html(node)
     end
 
     def date_value(selector)

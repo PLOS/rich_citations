@@ -29,22 +29,22 @@ describe Processors::ReferencesInfoCacheLoader do
 
   it "should load info from the cache if it exists" do
     refs 'First'
-    PaperInfoCache.create!(identifier:'doi:10.111/111', info:{id_type: :doi, id:'10.111/111', id_source:'other', license:'cached' } )
+    PaperInfoCache.create!(identifier:'doi:10.111/111', bibliographic:{uri_type: :doi, uri:'10.111/111', uri_source:'other', license:'cached' } )
 
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', id_source:'test' })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', uri_source:'test' })
 
     process
 
-    expect(result[:references]['ref-1'][:info]).to eq(id_type: :doi, id:'10.111/111', id_source:"test", license:'cached')
+    expect(result[:references].first[:bibliographic]).to include(license:'cached')
   end
 
   it "Should do nothing if there was no cache record" do
     refs 'First'
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111', id_source:'test' })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111', uri_source:'test' })
 
     process
 
-    expect(result[:references]['ref-1'][:info]).to eq(id_type: :doi, id:'10.111/111', id_source:'test')
+    expect(result[:references].first).to eq(uri_type: :doi, uri:'10.111/111', uri_source:'test', number:1, id:'ref-1')
   end
 
 end

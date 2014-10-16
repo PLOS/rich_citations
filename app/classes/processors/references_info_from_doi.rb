@@ -20,13 +20,14 @@
 
 require 'uri'
 
+#@todo - Make all info fetchers resolve from a common class
 module Processors
   class ReferencesInfoFromDoi < Base
     include Helpers
 
     def process
-      references_without_info(:doi).each do |ref|
-        doi = ref[:id]
+      references_without_bib_info(:doi).each do |ref|
+        doi = ref[:uri]
         get_doi_info(doi, ref) if doi
       end
     end
@@ -44,15 +45,22 @@ module Processors
     API_URL = "http://dx.doi.org/"
 
     def get_doi_info(doi, ref)
+      doi = Id::Doi.extract(doi)
       result = get_result(doi)
-      result = result.except(:id, :id_type, :id_source, :info_source, :score)
-      ref[:info].merge!(result).merge!(info_source:'dx.doi.org')
+      bib = ref[:bibliographic]
+
+      result = result.except(:bib_source)
+      result = result.except(:author) if bib[:author]
+
+      bib.merge!(result)
+      bib[:bib_source] = 'dx.doi.org'
     end
 
     def get_result(doi)
       url  = API_URL + URI.encode_www_form_component(doi)
       json = HttpUtilities.get(url, 'application/citeproc+json')
       JSON.parse(json, symbolize_names:true)
+
     rescue Net::HTTPServerException => ex
       raise unless ex.response.is_a?(Net::HTTPNotFound)
       {}

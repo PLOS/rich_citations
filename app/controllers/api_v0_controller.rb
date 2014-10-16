@@ -18,18 +18,31 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-require 'spec_helper'
+class ApiV0Controller < ApplicationController
+  def paper
+    id = params[:id]
+    case id
+    when %r{^http://dx.doi.org/10.1371/}
+      doi = Id::Doi.extract(params[:id])
+      # TODO : combine with code in papers controller
+      paper = PaperResult.find_or_new_for_doi(doi)
+      if paper.should_start_analysis?
+        paper.start_analysis!
+        paper.save
+      end
+      response.content_type = Mime::JSON
+      headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
+      result = if paper.ready?
+                 JsonUtilities.strip_uri_type(paper.result).to_json
+               else
+                 ''
+               end
+      status = paper.ready? ? :ok : :accepted
+      render(json: result, status: status)
 
-describe Processors::ReferencesSection do
-  include Spec::ProcessorHelper
-
-  before do
-    refs 'First', 'Second', 'Third'
+      @paper = PaperResult.find_or_new_for_doi(doi)
+    else
+      render status: 404, text: ''
+    end
   end
-
-  it "should be limited to the nearest paragraph" do
-    body "<sec><title>Title 1</title>Some text #{cite(1)} More text<sec>"
-    expect(result[:references]['ref-1'][:sections]).to eq('Title 1' => 1)
-  end
-
 end

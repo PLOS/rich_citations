@@ -27,33 +27,34 @@ describe Processors::ReferencesIdentifier do
     refs 'Some Reference', 'Another Reference'
 
     expect(result[:references].count).to eq(2)
-    expect(result[:references]['ref-1'][:info]).to eq({text: "Some Reference"},    )
-    expect(result[:references]['ref-2'][:info]).to eq({text: "Another Reference"}  )
+    expect(result[:references].first[:bibliographic]).to eq({text: "Some Reference"},    )
+    expect(result[:references].second[:bibliographic]).to eq({text: "Another Reference"}  )
   end
 
   it "should include a doi in references" do
     refs 'Some Reference', 'Another Reference'
-    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.12345/12345', id_source:'test', score:1.23 })
+    expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.12345/12345', uri_source:'test', attribute:1.23 })
 
-    expect(result[:references]['ref-1'][:id_type]).to eq(:doi)
-    expect(result[:references]['ref-1'][:id]).to eq('10.12345/12345')
-    expect(result[:references]['ref-1'][:info]).to eq(id_type: :doi, id:'10.12345/12345', id_source:'test', score:1.23)
+    expect(result[:references].first[:uri_source]).to eq('test')
+    expect(result[:references].first[:uri_type]).to eq(:doi)
+    expect(result[:references].first[:uri]).to eq('10.12345/12345')
+    expect(result[:references].first[:bibliographic]).to eq(attribute:1.23)
   end
 
   it "should remove nil info entries during cleanup" do
-    cleanup( { references: {
-        ref1: { info: { a:1, b:nil, c:3} }
-    } } )
+    cleanup( { references: [
+        {id:'ref1', bibliographic: { a:1, b:nil, c:3} }
+    ] } )
 
-    expect(result[:references][:ref1]).to eq( info: { a:1, c:3 } )
+    expect(result[:references].first).to eq( id:'ref1', bibliographic: { a:1, c:3 } )
   end
 
   it "should remove nil info during cleanup" do
-    cleanup( { references: {
-        ref1: { a:1, info: { b:nil} }
-    } } )
+    cleanup( { references: [
+        {id:'ref1', a:1, bibliographic: { b:nil} }
+    ] } )
 
-    expect(result[:references][:ref1]).to eq( { a:1 } )
+    expect(result[:references].first).to eq( { id:'ref1', a:1 } )
   end
 
 end

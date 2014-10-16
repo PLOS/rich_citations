@@ -34,7 +34,7 @@ describe IdentifierResolvers::GithubFromReference do
   context "Parsing Github URL" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(
@@ -54,10 +54,10 @@ describe IdentifierResolvers::GithubFromReference do
       XML
 
       expect(resolver).to receive(:set_result).with('ref-1',
-                                                    id_source: :ref,
-                                                    id:'git@github.com/owner/repo/commit/abcdefgh',
-                                                    id_type: :github,
-                          )
+                                                    uri_source: :ref,
+                                                    uri:        'git@github.com/owner/repo/commit/abcdefgh',
+                                                    uri_type:   :github,
+                            )
       resolver.resolve
     end
 

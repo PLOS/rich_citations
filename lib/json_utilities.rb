@@ -6,10 +6,10 @@
 # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
-# 
+#
 # The above copyright notice and this permission notice shall be included in
 # all copies or substantial portions of the Software.
-# 
+#
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,30 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-# Add sections node
-
-module Processors
-  class ReferencesMentionCount < Base
-    include Helpers
-
-    def process
-      add_citation_counts
+class JsonUtilities
+  # Hack to remove :uri_type
+  def self.strip_uri_type(input)
+    out = input.deep_dup.with_indifferent_access
+    out.delete(:uri_type)
+    out[:references] && out[:references].each do |ref|
+      ref.delete(:uri_type)
     end
-
-    def self.dependencies
-      [ References, CitationGroups ]
-    end
-
-    protected
-
-    # The number of times each reference is cited in the paper
-    # aka ipm_dictionary
-    def add_citation_counts
-      all_citations = citation_groups.map{|g| g[:references] }.flatten
-      all_citations.group_by {|id| id }.each do |id, references|
-        reference_by_id(id)[:mentions] = references.count
-      end
-    end
-
+    out
   end
 end

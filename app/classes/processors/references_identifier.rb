@@ -23,13 +23,17 @@ module Processors
     include Helpers
 
     def process
-      references.each do |id, ref|
+      references.each do |ref|
+        id   = ref[:id]
         info = identifier_for_reference[id]
 
         ref.merge!(
-          info:     info,
-          id:       info[:id],
-          id_type: info[:id_type]
+          bibliographic:   info.except(:uri, :uri_type, :uri_source, :score, :accessed_at),
+          uri:             info[:uri],
+          uri_type:        info[:uri_type],
+          uri_source:      info[:uri_source],
+          score:           info[:score],
+          accessed_at:     info[:accessed_at]
         ) if info
 
       end
@@ -37,23 +41,23 @@ module Processors
     end
 
     def cleanup
-      references.each do |id, ref|
-        info = ref[:info]
+      references.each do |ref|
+        info = ref[:bibliographic]
         info.compact! if info
-        ref.delete(:info) if info.blank?
+        ref.delete(:bibliographic) if info.blank?
       end
     end
 
     def self.dependencies
-      References
+      [References]
     end
 
     protected
 
     def identifier_for_reference
       @identifier_for_reference ||= begin
-        reference_nodes = references.map { |id, ref| [id, ref[:node]] }.to_h
-        IdentifierResolver.resolve(reference_nodes)
+        reference_nodes = references.map { |ref| [ref[:id], ref[:node]] }.to_h
+        IdentifierResolver.resolve(result[:uri], reference_nodes)
       end
     end
 

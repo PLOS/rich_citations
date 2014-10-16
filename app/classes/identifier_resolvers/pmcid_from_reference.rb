@@ -35,9 +35,9 @@ module IdentifierResolvers
 
       return nil unless id.present?
       {
-          id_source:  :ref,
-          id:         id,
-          id_type:    :pmcid,
+          uri_source:  :ref,
+          uri:         id,
+          uri_type:    :pmcid,
       }
     end
 

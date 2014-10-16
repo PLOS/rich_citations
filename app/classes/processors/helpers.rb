@@ -36,31 +36,32 @@ module Processors::Helpers
   end
 
   def reference_by_id(id)
-    references[id]
+    references.find { |ref| ref[:id] == id }
   end
 
-  def reference_by_index(index)
-    references.find { |id, ref| ref[:index] == index }.try(:second)
+  def reference_by_number(number)
+    references.find { |ref| ref[:number] == number }
   end
 
-  def reference_by_identifier(type, identifier)
+  def reference_by_uri(type, uri)
     type = type.to_sym
-    references.find { |id, ref|
-      ref[:id_type]==type && ref[:id]==identifier }.try(:second
-    )
+    return result if result[:uri_type]==type && result[:uri]==uri
+    references.find do |ref| ref[:uri_type]==type && ref[:uri]==uri end
   end
 
   def references_for_type(type)
     type = type.to_sym
-    references.values.select { |ref| ref[:id_type] == type }
+    refs = references.select { |ref| ref[:uri_type] == type }
+    refs << result if result[:uri_type]==type
+    refs
   end
 
-  def references_without_info(type)
-    references_for_type(type).reject { |ref| ref[:info] && ref[:info][:info_source] }
+  def references_without_bib_info(type)
+    references_for_type(type).reject do |ref| ref[:bibliographic] && ref[:bibliographic][:bib_source] end
   end
 
   def citation_groups
-    @citation_groups ||= result[:groups]
+    @citation_groups ||= result[:citation_groups]
   end
 
 end

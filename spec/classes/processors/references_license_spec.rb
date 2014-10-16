@@ -25,7 +25,7 @@ describe Processors::ReferencesLicense do
 
   before do
     refs 'First', 'Second'
-    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { id_type: :doi, id:'10.111/111' }, 'ref-2' => { id_type: :doi, id:'10.222/222' })
+    allow(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { uri_type: :doi, uri:'10.111/111' }, 'ref-2' => { uri_type: :doi, uri:'10.222/222', attribute:'test' })
   end
 
   def make_license(doi, type, status='active', date=Time.now)
@@ -41,7 +41,8 @@ describe Processors::ReferencesLicense do
   end
 
   it "should call the API" do
-    expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"}].to_json
+    expected_data = [{"type"=>"doi","id"=>"10.111/111"},{"type"=>"doi","id"=>"10.222/222"},
+                     {"type"=>"doi","id"=>"10.12345/1234.12345"} ].to_json
     expect(HttpUtilities).to receive(:post).with('http://howopenisit.org/lookup', expected_data, anything).and_return('{}')
     process
   end
@@ -49,20 +50,26 @@ describe Processors::ReferencesLicense do
   it "should add the license" do
     licenses = { results: [make_license('10.222/222', 'test-license-2'), make_license('10.111/111', 'test-license-1')]}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-1'][:info][:license] ).to eq('test-license-1')
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references].first[:bibliographic][:license] ).to eq('test-license-1')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
+  end
+
+  it "should add the license of the citing paper" do
+    licenses = { results: [make_license('10.12345/1234.12345', 'citing-license-1')]}
+    expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
+    expect( result[:bibliographic][:license] ).to eq('citing-license-1')
   end
 
   it "should add inactive licenses license" do
     licenses = { results: [make_license('10.222/222', 'inactive-license-2', nil) ]}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('inactive-license-2')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('inactive-license-2')
   end
 
   it "should not set a license if no result is returned" do
     licenses = { results: []}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to be_nil
+    expect( result[:references].second[:bibliographic][:license] ).to be_nil
   end
 
   it "should choose from multiple returned identifiers" do
@@ -78,7 +85,7 @@ describe Processors::ReferencesLicense do
     }
     licenses = { results: [license]}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license')
   end
 
   it "should choose the most recent of multiple licenses" do
@@ -92,7 +99,7 @@ describe Processors::ReferencesLicense do
     }
     licenses = { results: [license]}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should prioritize active licenses over inactive ones" do
@@ -105,7 +112,7 @@ describe Processors::ReferencesLicense do
     }
     licenses = { results: [license]}
     expect(HttpUtilities).to receive(:post).and_return(JSON.generate(licenses))
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should not call the API if the license was in the cache" do
@@ -119,14 +126,14 @@ describe Processors::ReferencesLicense do
     licenses = { results: [license]}
     expect(HttpUtilities).to receive(:post).with(anything, '[{"type":"doi","id":"10.222/222"}]', anything).and_return(JSON.generate(licenses))
 
-    cached = { references: {
-        'ref-1' => { id_type: :doi, id:'10.111/111', info:{license:'cached-license-1'} },
-        'ref-2' => { id_type: :doi, id:'10.222/222', info:{}  },
-    } }
+    cached = { references: [
+        { id:'ref-1', uri_type: :doi, uri:'10.111/111', bibliographic:{license:'cached-license-1'} },
+        { id:'ref-2', uri_type: :doi, uri:'10.222/222', bibliographic:{}  },
+    ] }
     process(cached)
 
-    expect( result[:references]['ref-1'][:info][:license] ).to eq('cached-license-1')
-    expect( result[:references]['ref-2'][:info][:license] ).to eq('test-license-2')
+    expect( result[:references].first[:bibliographic][:license] ).to eq('cached-license-1')
+    expect( result[:references].second[:bibliographic][:license] ).to eq('test-license-2')
   end
 
   it "should record the time of the run" do

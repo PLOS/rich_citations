@@ -24,35 +24,45 @@ module Processors
 
     def process
 
-      references = result[:references] = {}
+      references = result[:references] = []
 
-      reference_nodes.each do |index, node|
+      reference_nodes.each do |number, node|
          id = node[:id]
 
         reference   = {
-            ref_id: id,
-            index:  index,
-            node:   node,       # for other processors
+            id:     id,
+            number: number,
+            node:   remove_label(node),       # for other processors
         }
 
-        references[id] = reference
+        references << reference
       end
 
     end
 
     def cleanup
-      references.each do |id, ref|
+      references.each do |ref|
         ref.delete(:node)
         ref.compact!
       end
+    end
+
+    def self.dependencies
+      [Doi, PaperInfo] #@todo can be removed after refactoring
     end
 
     protected
 
     def reference_nodes
       @reference_nodes ||= begin
-        xml.css('ref-list ref').map.with_index{ |n,i| [i+1, n] }.to_h
+        xml.css('ref-list ref').map.with_index{ |node, index| [index+1, node] }.to_h
       end
+    end
+
+    def remove_label(node)
+      label = node.css('label')
+      label.remove if label.present?
+      node
     end
 
   end

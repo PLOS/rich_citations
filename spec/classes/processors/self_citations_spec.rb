@@ -48,10 +48,11 @@ describe Processors::SelfCitations do
 
   def resolve_author!(author)
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author:[author] })
+    expect(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
   end
 
   def reference
-    result[:references].values.first
+    result[:references].first
   end
 
   it "should identify a self citation based on a given and family name" do

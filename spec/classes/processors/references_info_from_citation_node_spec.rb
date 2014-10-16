@@ -26,7 +26,7 @@ describe Processors::ReferencesInfoFromCitationNode do
   include Spec::ProcessorHelper
 
   it "should extract info fields from the reference node" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <name name-style="western"><surname>Davenport</surname><given-names>E</given-names></name>,
@@ -38,26 +38,26 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+      id:  'ref-1',
       node: ref_node,
-      info: {},
-    } } )
+      bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :"container-type" => "journal",
+    expect(result[:references].first[:bibliographic]).to eq( :"container-type" => "journal",
                                                        :"container-title"=> "J Doc",
                                                        :title            => 'Who cites women? Whom do women cite? An exploration of gender and scholarly citation in sociology',
                                                        :volume           => "51",
                                                        :issued           => {:"date-parts"=>[[1995]]},
                                                        :page             =>"404-410",
-                                                       :author           =>
-                                                           [{:family=>"Davenport", :given=>"E"},
-                                                            {:family=>"Snyder",    :given=>"H"}],
-                                                       :info_source      => 'RefNode'
+                                                       :author           => [{:family=>"Davenport", :given=>"E"},
+                                                                             {:family=>"Snyder",    :given=>"H"}],
+                                                       :bib_source       => 'RefNode'
                                                       )
   end
 
   it "should extract html formatting with the title" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <article-title>Who cites <italic>women</italic>?</article-title>.
@@ -65,16 +65,17 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {},
-    } } )
+        bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info][:title]).to eq('Who cites <em>women</em>?')
+    expect(result[:references].first[:bibliographic][:title]).to eq('Who cites <em>women</em>?')
   end
 
   it "should extract only a start page" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <fpage>404</fpage>.
@@ -82,16 +83,17 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {},
-    } } )
+        bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info][:page]).to eq('404-404')
+    expect(result[:references].first[:bibliographic][:page]).to eq('404-404')
   end
 
   it "should extract a start and end page" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <fpage>404</fpage>-<lpage>410</lpage>.
@@ -99,16 +101,17 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {},
-    } } )
+        bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info][:page]).to eq('404-410')
+    expect(result[:references].first[:bibliographic][:page]).to eq('404-410')
   end
 
   it "should not add an invalid year" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           (<year>in press</year>)
@@ -116,16 +119,17 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {},
-    } } )
+        bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info][:issued]).to be_nil
+    expect(result[:references].first[:bibliographic][:issued]).to be_nil
   end
 
   it "should not overwrite existing fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="journal" xlink:type="simple">
           <name name-style="western"><surname>Davenport</surname><given-names>E</given-names></name>,
@@ -137,9 +141,10 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {
+        bibliographic: {
             :"container-type" => "paper",
             :"container-title"=> "Container Title",
             :title            => 'Article Title',
@@ -150,9 +155,9 @@ describe Processors::ReferencesInfoFromCitationNode do
                  [{:family=>"Roberts", :given=>"J"},
                   {:family=>"Jolie",   :given=>"J"} ]
 
-    } } } )
+    } } ] )
 
-    expect(result[:references]['ref-1'][:info]).to eq( :"container-type" => "paper",
+    expect(result[:references].first[:bibliographic]).to eq( :"container-type" => "paper",
                                                        :"container-title"=> "Container Title",
                                                        :title            => 'Article Title',
                                                        :volume           => "99",
@@ -164,23 +169,24 @@ describe Processors::ReferencesInfoFromCitationNode do
   end
 
   it "should not add null info fields" do
-    ref_node = Nokogiri::XML.parse <<-XML
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation xlink:type="simple">
         </mixed-citation>
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:  'ref-1',
         node: ref_node,
-        info: {},
-    } } )
+        bibliographic: {},
+    } ] )
 
-    expect(result[:references]['ref-1'][:info]).to eq( { } )
+    expect(result[:references].first[:bibliographic]).to eq( { } )
   end
 
-  it "should not add an info_source if no changes are made" do
-    ref_node = Nokogiri::XML.parse <<-XML
+  it "should not add a bib_source if no changes are made" do
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
           <source></source>
@@ -191,9 +197,10 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:   'ref-1',
         node: ref_node,
-        info: {
+        bibliographic: {
             :"container-type" => "paper",
             :"container-title"=> "Container Title",
             :title            => 'Article Title',
@@ -203,13 +210,13 @@ describe Processors::ReferencesInfoFromCitationNode do
             :author           =>
                 [{:family=>"Roberts", :given=>"J"},
                  {:family=>"Jolie",   :given=>"J"} ]
-        } } } )
+        } } ] )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to be_nil
+    expect(result[:references].first[:bibliographic][:bib_source]).to be_nil
   end
 
-  it "should not add an info_source if one already exists" do
-    ref_node = Nokogiri::XML.parse <<-XML
+  it "should not add a bib_source if one already exists" do
+    ref_node = Loofah.xml_document <<-XML
       <ref id="pbio.1001675-Davenport1"><label>17</label>
         <mixed-citation publication-type="" xlink:type="simple">
           <article-title>New Title.</article-title>.
@@ -217,13 +224,14 @@ describe Processors::ReferencesInfoFromCitationNode do
       </ref>
     XML
 
-    process( references: { 'ref-1' => {
+    process( references: [ {
+        id:   'ref-1',
         node: ref_node,
-        info: {
-            :info_source      => 'OriginalSource',
-        } } } )
+        bibliographic: {
+            :bib_source      => 'OriginalSource',
+        } } ] )
 
-    expect(result[:references]['ref-1'][:info][:info_source]).to eq('OriginalSource')
+    expect(result[:references].first[:bibliographic][:bib_source]).to eq('OriginalSource')
   end
 
 end

@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright (c) 2014 Public Library of Science
 
 # Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -23,14 +24,18 @@ require 'spec_helper'
 describe Processors::NormalizeAuthorNames do
   include Spec::ProcessorHelper
 
+  before do
+    allow(HttpUtilities).to receive(:get).with('http://dx.doi.org/10.12345%2F1234.12345', anything).and_return('{}')
+  end
+
   def resolve_authors!(*authors)
     refs 'First'
     expect(IdentifierResolver).to receive(:resolve).and_return('ref-1' => { author: authors })
   end
 
   def authors
-    reference = result[:references].values.first
-    reference[:info][:author]
+    reference = result[:references].first
+    reference[:bibliographic][:author]
   end
 
   it "should normalize authors in the citing paper info" do
@@ -43,10 +48,10 @@ describe Processors::NormalizeAuthorNames do
       </contrib>
     META
 
-    expect( result[:paper][:author] ).to eq( [
-                                              {given:"Angelina", family:"Jolie"},
-                                              {literal:"Roberts, Julia"}
-                                            ])
+    expect( result[:bibliographic][:author] ).to eq( [
+                                                       {given:"Angelina", family:"Jolie"},
+                                                       {literal:"Roberts, Julia"}
+                                                     ])
   end
 
   it "should normalize authors in the cited paper's info" do

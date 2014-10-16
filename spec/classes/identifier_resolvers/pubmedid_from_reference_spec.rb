@@ -34,7 +34,7 @@ describe IdentifierResolvers::PubmedidFromReference do
   context "Parsing Pubmed ID" do
 
     def make_resolver(node)
-      node = Nokogiri::XML(node)
+      node = Loofah.xml_document(node)
       id   = node.at_css('ref').attr('id')
 
       ref = Hashie::Mash.new(
@@ -53,7 +53,7 @@ describe IdentifierResolvers::PubmedidFromReference do
         </ref>
       XML
 
-      expect(resolver).to receive(:set_result).with('ref-1', id_source: :ref, id:'1234567890', id_type: :pmid)
+      expect(resolver).to receive(:set_result).with('ref-1', uri_source: :ref, uri:'http://identifiers.org/pubmed/1234567890', uri_type: :pubmed)
       resolver.resolve
     end
 

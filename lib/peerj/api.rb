@@ -6,7 +6,7 @@ module Peerj
       response = Rails.cache.fetch("#{doi}_xml", expires_in: 108_000) do
         HttpUtilities.get("http://peerj.com/articles/#{number}.xml")
       end
-      Nokogiri::XML(response)
+      Loofah.xml_document(response)
     end
   end
 end

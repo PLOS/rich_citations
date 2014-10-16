@@ -25,7 +25,7 @@ module Processors
     include Helpers
 
     def process
-      references = references_without_info(:arxiv)
+      references = references_without_bib_info(:arxiv)
       fill_info_for_references( references ) if references.present?
     end
 
@@ -40,7 +40,7 @@ module Processors
     API_URL = 'http://export.arxiv.org/api/query?max_results=1000'
 
     def fill_info_for_references(references)
-      reference_ids = references.map { |ref| ref[:id]}
+      reference_ids = references.map { |ref| ref[:uri]}
 
       results = fetch_results_for_ids(reference_ids)
       results.remove_namespaces!
@@ -49,12 +49,12 @@ module Processors
         info = convert_result_to_info(result)
         next unless info.present?
 
-        ref = reference_by_identifier(:arxiv, info[:ARXIV_VER]) ||
-              reference_by_identifier(:arxiv, info[:ARXIV])
+        ref = reference_by_uri(:arxiv, info[:ARXIV_VER]) ||
+              reference_by_uri(:arxiv, info[:ARXIV])
 
         next unless ref
-        ref[:info] ||= {}
-        ref[:info].merge!(info)
+        ref[:bibliographic] ||= {}
+        ref[:bibliographic].merge!(info)
       end
 
     end
@@ -63,7 +63,7 @@ module Processors
       data  = 'id_list=' + ids.join(',')
       xml   = HttpUtilities.post(API_URL, data,
                                  'Content-Type' => Mime::URL_ENCODED_FORM, 'Accept' => Mime::ATOM  )
-      Nokogiri::XML(xml)
+      Loofah.xml_document(xml)
     end
 
     def convert_result_to_info(result)
@@ -71,18 +71,18 @@ module Processors
       id      = Id::Arxiv.extract( value('> id') )
 
       {
-          info_source:         'arXiv',
+          bib_source:          'arXiv',
           ARXIV:               Id::Arxiv.without_version( id ),
           ARXIV_VER:           id,
           DOI:                 Id::Doi.extract( value('> doi') || link_value('doi') ),
-          title:               xml('> title'),
+          title:               html('> title'),
           # subtitle:
           issued:              date_value('> published'),
           subject:             subjects,
           author:              authors,
           # page:
           :'container-title'=> value('> journal_ref'),
-          abstract:            xml('> summary'),
+          abstract:            html('> summary'),
           URL:                 link_value('pdf'),
       }.compact
 
@@ -93,9 +93,9 @@ module Processors
       node && node.text.presence
     end
 
-    def xml(selector)
+    def html(selector)
       node = @result.at_css(selector)
-      XmlUtilities.jatsdoc2html(node).try(:strip)
+      XmlUtilities.clean_html(node).try(:strip)
     end
 
     def date_value(selector)
