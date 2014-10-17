@@ -116,8 +116,8 @@ function buildIndex(references) {
         this.field('body');
         this.field('abstract');
     });
-    for (var i=0; i<references.length; i++) {
-        var ref = references[i];
+    for (var id in references) {
+        var ref = references[id];
         var doc = { id: ref.id,
                     author: _.map(ref.bibliographic.author, formatAuthorNameInverted).join(" "),
                     title: ref.bibliographic.title,
