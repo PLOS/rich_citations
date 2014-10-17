@@ -8,12 +8,21 @@
   = text_field_tag(:doi)
   = submit_tag("Search")
 
+%h3 Bookmarklet
+
 %p
   Use this bookmarklet to enable Rich Citations on any PLOS journal
   article! Just drag the bookmarklet to your bookmarks toolbar, then
   click it while reading any article on a PLOS journal site.
 
 %p= link_to('Rich Citations Bookmarklet', 'javascript:(function()%7Bjavascript%3A%7Bvar%20s%20%3D%20window.location.pathname%3Bvar%20n%20%3D%20s.indexOf(%2210%22)%3Bvar%20doi%20%3D%20s.slice(n)%3Bvar%20new_url%20%3D%20%22http%3A%2F%2Falpha.richcitations.org%2Fview%2F%22%20%2B%20doi%3Bwindow.location.assign(new_url)%3B%7D%7D)()')
+
+%h3 API
+
+%p
+  Please see our
+  = link_to('API page', 'http://api.richcitations.org/')
+  for more details.
 
 %h3 Examples
 
