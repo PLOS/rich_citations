@@ -286,15 +286,17 @@ function mkSortString(s) {
 /** 
  * Merge citation reference li elements and JSON data.
  */
-function buildReferenceData(json) {
+function buildReferenceData(json, noHtml) {
     var retval = {};
     $.each(json.references, function (k, v) {
         retval[v.id] = v;
-        var html = $(jq(v.id)).parent().first().remove("span.label").html();
-        // cannot get this to work properly in jquery
-        html = html.replace(/<span class="label">[^<]+<\/span>/, '');
-        retval[v.id]['html'] = html;
-        retval[v.id]['text'] = $(jq(v.id)).parent().first().text();
+        if (!noHtml) {
+            var html = $(jq(v.id)).parent().first().remove("span.label").html();
+            // cannot get this to work properly in jquery
+            html = html.replace(/<span class="label">[^<]+<\/span>/, '');
+            retval[v.id]['html'] = html;
+            retval[v.id]['text'] = $(jq(v.id)).parent().first().text();
+        }
         retval[v.id]['citation_groups'] = _.map(v.citation_groups,
                                              function (id) {
                                                  return json.citation_groups[id];

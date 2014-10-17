@@ -128,10 +128,20 @@ test("mkSearchResultsFilter", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
-            var filter = mkSearchResultsFilter(buildIndex(fixture.references), "odontodactylus");
+            var filter = mkSearchResultsFilter(buildIndex(buildReferenceData(fixture, true)), "odontodactylus");
             var results = _.filter(fixture.references, filter);
             strictEqual(results.length, 1);
             strictEqual(results[0].id, "pone.0067380-Patek1");
+            start();
+        });
+});
+
+test("buildReferenceData", function () {
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            var data = buildReferenceData(fixture, true);
+            strictEqual(data["pone.0067380-Aalbers1"].uri, "http://dx.doi.org/10.1111/j.1095-8649.2010.02616.x");
             start();
         });
 });
@@ -140,7 +150,7 @@ test("buildIndex", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
-            var idx = buildIndex(fixture.references);
+            var idx = buildIndex(buildReferenceData(fixture, true));
             var results = idx.search("odontodactylus");
             strictEqual(results.length, 1);
             strictEqual(results[0].ref, "pone.0067380-Patek1");
@@ -152,19 +162,8 @@ test("sortReferences", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
-            /* we need to include the citation group data here to make
-             it work. ordinarily this is done by buildReferenceData
-             but we can't use that on a test page because the page has
-             the wrong HTML */
             
-            _.each(fixture.references, function (ref) {
-                ref.citation_groups = _.map(ref.citation_groups,
-                                            function (id) {
-                                                return fixture.citation_groups[id];
-                                            });
-            });
-
-            var refs = fixture.references;
+            var refs = buildReferenceData(fixture, true);
             _.each([{by: "appearance",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Lowry1",
