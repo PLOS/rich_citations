@@ -35,6 +35,7 @@ gem 'loofah'
 gem 'hashie'
 
 gem 'dalli'
+gem 'httpclient'
 
 group :doc do
   # bundle exec rake doc:rails generates the API under doc/api.

@@ -19,13 +19,41 @@
 # THE SOFTWARE.
 
 class JsonUtilities
-  # Hack to remove :uri_type
-  def self.strip_uri_type(input)
-    out = input.deep_dup.with_indifferent_access
-    out.delete(:uri_type)
-    out[:references] && out[:references].each do |ref|
+  # Hack to remove :uri_type. Modifies data structure in place.
+  def self.strip_uri_type!(input)
+    input.delete(:uri_type)
+    input[:references] && input[:references].each do |ref|
       ref.delete(:uri_type)
     end
-    out
+    input
+  end
+
+  def self.encode_uri(uri)
+    return nil if uri.nil?
+    # properly encode DOI URIs
+    md = uri.match(%r{^http://dx.doi.org/(.*)$})
+    if md
+      doi_enc = URI.encode_www_form_component(md[1])
+      "http://dx.doi.org/#{doi_enc}"
+    else
+      URI.encode(uri)
+    end
+  end
+
+  # hack to fix dx.doi.org encoding.
+  def self.clean_uris!(json)
+    if json.is_a? Hash
+      json.keys.each do |k|
+        if (k == 'uri')
+          json[k] = JsonUtilities.encode_uri(json[k])
+        else
+          JsonUtilities.clean_uris!(json[k])
+        end
+      end
+    elsif json.is_a? Array
+      json.each do |v|
+        JsonUtilities.clean_uris!(v)
+      end
+    end
   end
 end

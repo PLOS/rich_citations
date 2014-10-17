@@ -20,6 +20,8 @@
 
 class PaperResult < ActiveRecord::Base
 
+  INGEST_BASE_URL = 'http://api.richcitations.org/papers'
+
   validates :doi, presence:true
 
   def self.find_by_doi(doi)
@@ -122,6 +124,21 @@ class PaperResult < ActiveRecord::Base
 
     self.info_json = JSON.generate(info)
     self.save!
+    ingest
+  end
+
+  # ingest into read/write API
+  def ingest
+    json = self.result.deep_dup.with_indifferent_access
+    JsonUtilities.strip_uri_type!(json)
+    JsonUtilities.clean_uris!(json)
+    client = HTTPClient.new
+    doi_uri = "http://dx.doi.org/#{URI.encode_www_form_component(doi)}"
+    return if (client.head(INGEST_BASE_URL, uri: doi_uri).status == 200)
+    client.post("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&uri=#{URI.encode_www_form_component(doi_uri)}",
+                MultiJson.dump(json),
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json')
   end
 
   def timed_out?

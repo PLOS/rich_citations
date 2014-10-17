@@ -33,7 +33,9 @@ class ApiV0Controller < ApplicationController
       response.content_type = Mime::JSON
       headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
       result = if paper.ready?
-                 JsonUtilities.strip_uri_type(paper.result).to_json
+                 json = paper.result.deep_dup.with_indifferent_access
+                 JsonUtilities.strip_uri_type!(json)
+                 json.to_json
                else
                  ''
                end
