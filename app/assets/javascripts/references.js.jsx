@@ -1243,15 +1243,16 @@ function addCitationIds(groups) {
     citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
 }
 
-function mkPopovers(references, citation_groups) {
+function mkPopovers(localReferences, citation_groups) {
     function handleSingle(node, refId, c) {
-        mkReferencePopover($(node).attr('id'), [references[refId]], [c]);
+        mkReferencePopover($(node).attr('id'), [localReferences[refId]], [c]);
     }
     function handleEndElissionGroup(start, end, refIds, counters) {
         var spanId = guid();
         wrapSpan($(start).attr('id'), $(end).attr('id'), spanId);
-        var references = _.map(refIds, function(refId) { return references[refId]; });
-        mkReferencePopover(spanId, references, counters);
+        mkReferencePopover(spanId,
+                           _.map(refIds, function(refId) { return localReferences[refId]; }),
+                           counters);
     }
     citationIterator(citation_groups, handleSingle, null, null, handleEndElissionGroup);
 }
