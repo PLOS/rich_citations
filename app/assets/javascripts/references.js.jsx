@@ -1241,17 +1241,17 @@ function addCitationIds(groups) {
     citationIterator(groups, handleSingle, handleBeginElissionGroup, handleElided, handleEndElissionGroup);
 }
 
-function mkPopovers(data) {
+function mkPopovers(references, citation_groups) {
     function handleSingle(node, refId, c) {
-        mkReferencePopover($(node).attr('id'), [data.references[refId]], [c]);
+        mkReferencePopover($(node).attr('id'), [references[refId]], [c]);
     }
     function handleEndElissionGroup(start, end, refIds, counters) {
         var spanId = guid();
         wrapSpan($(start).attr('id'), $(end).attr('id'), spanId);
-        var references = _.map(refIds, function(refId) { return data.references[refId]; });
+        var references = _.map(refIds, function(refId) { return references[refId]; });
         mkReferencePopover(spanId, references, counters);
     }
-    citationIterator(data.citation_groups, handleSingle, null, null, handleEndElissionGroup);
+    citationIterator(citation_groups, handleSingle, null, null, handleEndElissionGroup);
 }
 
 /* if we don't load after document ready we get an error */
@@ -1264,14 +1264,13 @@ $(document).ready(function () {
         withReferenceData(paper_doi, function (data) {
             try {
                 var references = buildReferenceData(data);
-                console.log(references);
                 /* and drop into react */
                 React.renderComponent(
                         <ReferencesApp references={references} />,
                     $("ol.references").get(0)
                 );
                 addCitationIds(data.citation_groups);
-                mkPopovers(data);
+                mkPopovers(references, data.citation_groups);
                 $("#richcites").replaceWith("<div id='richcites'>Rich Citations Engaged!</div>");
                 $("#loader2").replaceWith("<div id='loader2'></div>");
             } catch (err) {
