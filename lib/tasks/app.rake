@@ -36,10 +36,4 @@ namespace :app do
     RemoveOldSearches.run_all!
     puts "done."
   end
-
-  task :docbuild => :environment do
-    md = File.join(Rails.root, 'docs', 'citation-api-actual.md')
-    html = File.join(Rails.root, 'app', 'views', 'papers', 'index_api.html')
-    system("pandoc #{md} > #{html}")
-  end
 end

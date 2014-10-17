@@ -20,7 +20,7 @@
 
 CitationTools::Application.routes.draw do
 
-  root 'papers#index_api'
+  root 'papers#index'
 
   get '', to:'results#index', as:'search'
 
