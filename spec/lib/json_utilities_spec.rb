@@ -23,15 +23,17 @@ require 'spec_helper'
 describe JsonUtilities do
   subject { jsonutilities }
 
-  describe '#strip_uri_type' do
+  describe '#strip_uri_type!' do
     it 'should strip top level uri_type, symbols & strings' do
-      expect(JsonUtilities.strip_uri_type({ 'uri_type' => 'foo' })).to eq({})
-      expect(JsonUtilities.strip_uri_type({ uri_type: 'foo' })).to eq({})
+      j = { uri_type: 'foo' }
+      JsonUtilities.strip_uri_type!(j)
+      expect(j).to eq({})
     end
 
     it 'should strip reference level uri_type, symbols & strings' do
-      expect(JsonUtilities.strip_uri_type({'references' => [{ 'uri_type' => 'foo' }]})).to eq('references' => [{}])
-      expect(JsonUtilities.strip_uri_type({'references' => [{ uri_type: 'foo' }]})).to eq('references' => [{}])
+      j = {references: [{ uri_type: 'foo' }]}
+      JsonUtilities.strip_uri_type!(j)
+      expect(j).to eq(references: [{}])
     end
   end
 end
