@@ -443,7 +443,7 @@ var ReferenceAppearanceList = React.createClass({
         var ref = this.props.reference;
         /* generate an index (count) for each citation group; e.g., the 2nd citation of a given reference in the document */
         var citationGroupsWithIndex = _.map(ref.citation_groups, function (group, index) {
-            group['index'] = index;
+            group['number'] = index;
             return group;
         });
         /* group each citation group by the section it is in */
