@@ -46,7 +46,7 @@ var testRef = {
           "count": 1
         },
       ],
-      "info": {
+      "bibliographic": {
         "author": [
           {
             "given": "J",
@@ -67,11 +67,11 @@ var testRef = {
         "container-type": "journal",
         "text": "Doe J ( 2007 ) The best ever. Journal of Silly Studies 2: 79\u201395."
       },
-      "index": 1,
+      "number": 1,
       "id": "pone.0000000-Doe1"
     };
 
-var testRefWithDoi = $.extend(true, {}, testRef, {"info": {"uri": "10.12345/67890", "uri_type": "doi"}});
+var testRefWithDoi = $.extend(true, {}, testRef, {"bibliographic": {"uri": "10.12345/67890", "uri_type": "doi"}});
 
 var spinnerPath = '/assets/loader.gif';
 
@@ -103,17 +103,17 @@ test("mkSortField", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
-            var ref = fixture.references["pone.0067380-Lowry1"];
+            var ref = fixture.references[54];
             strictEqual(1, mkSortField(ref, "mentions"));
             strictEqual(55, mkSortField(ref, "appearance"));
             strictEqual("lowry d", mkSortField(ref, "author"));
             strictEqual(2008, mkSortField(ref, "year"));
-            strictEqual(55, mkSortField(ref, "index"));
+            strictEqual(55, mkSortField(ref, "number"));
             strictEqual("journal of royal society interface", mkSortField(ref, "journal"));
 
-            /* reference with no info */
+            /* reference with no bibliographic info */
             var refNoInfo = {id: "pone.0067380-Wahnbaeck1",
-                             info: {}};
+                             bibliographic: {}};
             strictEqual(null, mkSortField(refNoInfo, "author"));
             strictEqual(null, mkSortField(refNoInfo, "year"));
             strictEqual(null, mkSortField(refNoInfo, "journal"));
@@ -131,7 +131,7 @@ test("mkSearchResultsFilter", function () {
             var filter = mkSearchResultsFilter(buildIndex(fixture.references), "odontodactylus");
             var results = _.filter(fixture.references, filter);
             strictEqual(results.length, 1);
-            strictEqual(results[0].ref_id, "pone.0067380-Patek1");
+            strictEqual(results[0].id, "pone.0067380-Patek1");
             start();
         });
 });
@@ -152,24 +152,36 @@ test("sortReferences", function () {
     stop();
     $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
         done(function (fixture) {
+            /* we need to include the citation group data here to make
+             it work. ordinarily this is done by buildReferenceData
+             but we can't use that on a test page because the page has
+             the wrong HTML */
+            
+            _.each(fixture.references, function (ref) {
+                ref.citation_groups = _.map(ref.citation_groups,
+                                            function (id) {
+                                                return fixture.citation_groups[id];
+                                            });
+            });
+
+            var refs = fixture.references;
             _.each([{by: "appearance",
                      first: "pone.0067380-Clua1",
                      last: "pone.0067380-Lowry1",
                      sortableCount: 55,
                      unsortableCount: 0},
-                    {by: "repeated",
-                     first: "pone.0067380-Clua1",
-                     last: "pone.0067380-Heithaus1",
-                     sortableCount: 91,
-                     unsortableCount: 0}],
+                     {by: "repeated",
+                      first: "pone.0067380-Clua1",
+                      last: "pone.0067380-Deecke1",
+                      sortableCount: 89,
+                      unsortableCount: 0}],
                    function (d) {
-                       var refs = fixture.references;
                        var results = sortReferences(refs, d.by);
                        strictEqual(results.unsortable.length, d.unsortableCount);
                        strictEqual(results.sorted.length, d.sortableCount);
-                       strictEqual(results.sorted[0].data.ref_id, d.first);
-                       strictEqual(results.sorted[results.sorted.length-1].data.ref_id, d.last);
-                   }.bind(this));
+                       strictEqual(results.sorted[0].data.id, d.first);
+                       strictEqual(results.sorted[results.sorted.length-1].data.id, d.last);
+                   });
             start();
         });
 });
@@ -301,21 +313,21 @@ test("full reference", function() {
 test("withReferenceData", function() {
     stop();
     withReferenceData("10.1371/journal.pone.0097164", function (data) {
-        strictEqual(data.references["pone.0097164-Ptz7"].info.author[0].family, "Pütz");
+        strictEqual(data.references[65].bibliographic.author[0].family, "Pütz");
         start();
     });
 });
 
 test("CrossmarkBadge", function() {
-    var r = CrossmarkBadge({reference: {info: {}, updated_by: [{"type": "retraction"}]}});
+    var r = CrossmarkBadge({reference: {bibliographic: {}, updated_by: [{"type": "retraction"}]}});
     TestUtils.renderIntoDocument(r);
     strictEqual(r.getDOMNode().textContent, "RETRACTED");
 
-    var u = CrossmarkBadge({reference: {info: {}, updated_by: [{"type": "updated"}]}});
+    var u = CrossmarkBadge({reference: {bibliographic: {}, updated_by: [{"type": "updated"}]}});
     TestUtils.renderIntoDocument(u);
     strictEqual(u.getDOMNode().textContent, "UPDATED");
 
-    var n = CrossmarkBadge({reference: {info: {}}});
+    var n = CrossmarkBadge({reference: {bibliographic: {}}});
     TestUtils.renderIntoDocument(n);
     strictEqual(n.getDOMNode().textContent, "");
 });
@@ -335,7 +347,7 @@ test("ReferenceAppearanceListRevealable with 1 mention in popover", function() {
 test("ReferenceAppearanceList", function() {
     var l = ReferenceAppearanceList({ reference: testRef, currentMention: 0 });
     var x = TestUtils.renderIntoDocument(l);
-    strictEqual(x.getDOMNode().textContent, "Introduction▸Bacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. …");
+    strictEqual(x.getDOMNode().textContent, "IntroductionBacon ipsum dolor sit amet jerky pork loin pariatur pork chop, salami do aliqua fatback. [1] Venison filet mignon exercitation adipisicing meatloaf veniam. …");
 });
 
 test("Revealable", function() {
@@ -475,26 +487,26 @@ test("render mention", function() {
 
 test("get license shorthand", function() {
     strictEqual(getLicenseShorthand({}), "paywall");
-    strictEqual(getLicenseShorthand({info: {}}), "paywall");
-    strictEqual(getLicenseShorthand({info: {license: "CC-BY"}}), "read-and-reuse");
-    strictEqual(getLicenseShorthand({info: {license: 'cc-by'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-by-nc-nd'}}), 'read');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-by-nc-sa'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-nc'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-nc-nd'}}), 'read');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-nc-sa'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'cc-zero'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'failed-to-obtain-license'}}), 'paywall');
-    strictEqual(getLicenseShorthand({info: {license: 'free-to-read'}}), 'read');
-    strictEqual(getLicenseShorthand({info: {license: 'other-closed'}}), 'paywall');
-    strictEqual(getLicenseShorthand({info: {license: 'other-pd'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'plos-who'}}), 'read-and-reuse');
-    strictEqual(getLicenseShorthand({info: {license: 'uk-ogl'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {}}), "paywall");
+    strictEqual(getLicenseShorthand({bibliographic: {license: "CC-BY"}}), "read-and-reuse");
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-by'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-by-nc-nd'}}), 'read');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-by-nc-sa'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-nc'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-nc-nd'}}), 'read');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-nc-sa'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'cc-zero'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'failed-to-obtain-license'}}), 'paywall');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'free-to-read'}}), 'read');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'other-closed'}}), 'paywall');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'other-pd'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'plos-who'}}), 'read-and-reuse');
+    strictEqual(getLicenseShorthand({bibliographic: {license: 'uk-ogl'}}), 'read-and-reuse');
 });
 
 test("mkHeadingGrouper", function() {
     var licenseGrouper = mkHeadingGrouper("license");
     strictEqual(licenseGrouper({data: {}}), "paywall");
-    strictEqual(licenseGrouper({data: {info:{}}}), "paywall");
-    strictEqual(licenseGrouper({data: {info:{license: "cc-by"}}}), "read-and-reuse");
+    strictEqual(licenseGrouper({data: {bibliographic:{}}}), "paywall");
+    strictEqual(licenseGrouper({data: {bibliographic:{license: "cc-by"}}}), "read-and-reuse");
 });

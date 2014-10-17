@@ -116,9 +116,9 @@ function buildIndex(references) {
         this.field('body');
         this.field('abstract');
     });
-    for (var id in references) {
-        var ref = references[id];
-        var doc = { id: ref.ref_id,
+    for (var i=0; i<references.length; i++) {
+        var ref = references[i];
+        var doc = { id: ref.id,
                     author: _.map(ref.bibliographic.author, formatAuthorNameInverted).join(" "),
                     title: ref.bibliographic.title,
                     journal: ref.bibliographic['container-title'],
@@ -140,7 +140,7 @@ function getReferenceId (el) {
  */
 function arraySorter(a, b) {
     var retval = _.chain(_.zip(a.sort, b.sort)).map(function (x) {
-        var aval = x[0];
+        var aval = x[0]; 
         var bval = x[1];
         if (aval === null || bval === null) {
             return 0;
@@ -164,7 +164,7 @@ function arraySorter(a, b) {
 function mkSortField(ref, fieldname) {
     var bibliographic = ref.bibliographic;
     if (fieldname === 'appearance') {
-        return ref.index;
+        return ref.number;
     } else if (fieldname === 'repeated') {
         /* if no references in paper, sort at end */
         return (ref.citation_groups && ref.citation_groups[0].word_position) || 99999999;
@@ -173,12 +173,12 @@ function mkSortField(ref, fieldname) {
     } else if (fieldname === 'year') {
         return (bibliographic.issued && bibliographic.issued["date-parts"] && bibliographic.issued["date-parts"][0][0]) || null;
     } else if (fieldname === 'mentions') {
-        return ref.mentions || 0;
+        return ref.citation_groups.length;
     } else if (fieldname === 'author') {
         var first_author = bibliographic.author && bibliographic.author[0];
         return (first_author && mkSortString(formatAuthorNameInverted(first_author))) || null;
-    } else if (fieldname === "index") {
-        return ref.index;
+    } else if (fieldname === "number") {
+        return ref.number;
     } else if (fieldname === 'license') {
         return getLicenseSort(ref);
     } else {
@@ -192,28 +192,31 @@ function mkSortField(ref, fieldname) {
  */
 function sortReferences (refs, by) {
     /* data structure to use for sorting */
-    var t = [];
+    var tmp = [];
     if (by === 'repeated') {
         /* special case, show repeated citations in order of appearance */
-        _.each(refs, function(ref) {
-            _.each(ref.citation_groups, function (group) {
-                t.push({ data: ref,
-                         group: group,
-                         sort: [group.word_position, ref.index]});
-                  
-            });
-        });
+        tmp = _.chain(refs).map(function(ref) {
+            return _.map(ref.citation_groups, function (group) {
+                if (!group) {
+                    return null;
+                } else {
+                    return { data: ref,
+                             group: group,
+                             sort: [group.word_position, ref.number]};
+                }
+            }.bind(this));
+        }).flatten().compact().value();
     } else {
-        t = _.map(refs, function(ref) {
+        tmp = _.map(refs, function(ref) {
             return { data: ref,
                      group: (ref.citation_groups && ref.citation_groups[0]) || "References",
-                     sort: [mkSortField(ref, by), ref.index] };
+                     sort: [mkSortField(ref, by), ref.number] };
         });
     }
-    var retval = _.partition(t, function (ref) {
+    var retval = _.partition(tmp, function (ref) {
         return (ref.sort[0] !== null); // split into sortable, unsortable
     }).map(function(a) {
-        return a.sort(arraySorter); // sort both (unsortable will be sorted by index)
+        return a.sort(arraySorter); // sort both (unsortable will be sorted by number)
     });
     return {sorted:     retval[0],
             unsortable: retval[1]};
@@ -231,7 +234,7 @@ function mkSearchResultsFilter(index, filterText) {
             resultHash[res['ref']] = res['score'];
         });
         return function (ref) {
-            return (resultHash[ref.ref_id] != null);
+            return (resultHash[ref.id] != null);
         };
     } else {
         /* by default return all results */
@@ -283,15 +286,20 @@ function mkSortString(s) {
 /** 
  * Merge citation reference li elements and JSON data.
  */
-function buildReferenceData(json, elements) {
+function buildReferenceData(json) {
     var retval = {};
     $.each(json.references, function (k, v) {
-        retval[k] = v;
-        var html = $(jq(v.ref_id)).parent().first().remove("span.label").html();
+        retval[v.id] = v;
+        var html = $(jq(v.id)).parent().first().remove("span.label").html();
         // cannot get this to work properly in jquery
         html = html.replace(/<span class="label">[^<]+<\/span>/, '');
-        retval[k]['html'] = html;
-        retval[k]['text'] = $(jq(v.ref_id)).parent().first().text();
+        retval[v.id]['html'] = html;
+        retval[v.id]['text'] = $(jq(v.id)).parent().first().text();
+        retval[v.id]['citation_groups'] = _.map(v.citation_groups,
+                                             function (id) {
+                                                 return json.citation_groups[id];
+                                             });
+        retval[v.id]['mentions'] = v.citation_groups.length;
     });
     return retval;
 }
@@ -423,11 +431,11 @@ var MentionContext = React.createClass({
 var ReferenceAppearanceList = React.createClass({
     renderMention: function(mention) {
         var ref = this.props.reference;
-        if (this.props.currentMention === mention.index) {
+        if (this.props.currentMention === mention.number) {
             return <div key={ "mention" + mention.word_position } ><dt>▸</dt><dd><MentionContext context={ mention.context }/></dd></div>;
         } else {
             return <div key={ "mention" + mention.word_position } >
-                <dt></dt><dd><a href={ "#ref_" + ref.ref_id + "_" + mention.index } ><MentionContext context={ mention.context }/></a></dd>
+                <dt></dt><dd><a href={ "#ref_" + ref.id + "_" + mention.number } ><MentionContext context={ mention.context }/></a></dd>
                 </div>;
         }
     },
@@ -441,7 +449,7 @@ var ReferenceAppearanceList = React.createClass({
         /* group each citation group by the section it is in */
         var citationGroupsBySection = _.groupBy(citationGroupsWithIndex, function(g) { return g.section; });
         var t = _.map(citationGroupsBySection, function(value, key) {
-            return <div key={ "appearance_list_" + ref.ref_id + "-" + key } ><p><strong>{ key }</strong></p>
+            return <div key={ "appearance_list_" + ref.id + "-" + key } ><p><strong>{ key }</strong></p>
                 <dl className="appearances">{ _.map(value, this.renderMention) }</dl>
                 </div>;
         }.bind(this));
@@ -479,10 +487,10 @@ var ReferenceAuthorList = React.createClass({
 var ReferenceActionList = React.createClass({
     render: function() {
         var ref = this.props.reference;
-        var actionListId = ref.ref_id + "action-list";
+        var actionListId = ref.id + "action-list";
         setTimeout(function () {
             $(jq(actionListId)).hide();
-            $(jq('reference_' + ref.ref_id)).hover(
+            $(jq('reference_' + ref.id)).hover(
                 function () {
                     $(jq(actionListId)).fadeIn();
                 }, 
@@ -509,9 +517,9 @@ var Reference = React.createClass({
             /* check if this is the selected anchor */
             var ref = this.props.reference;
             if (this.props.selected) {
-                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>↩{ ref.index }</a>.</span>;
+                return <span className="label"><a href="#" onClick={ function() { window.history.back(); return false; } }>↩{ ref.number }</a>.</span>;
             } else {
-                return <span className="label">{ ref.index }.</span>;
+                return <span className="label">{ ref.number }.</span>;
             }
         } else {
             return <span/>;
@@ -522,7 +530,7 @@ var Reference = React.createClass({
         if (this.props.selected) {
             className = className + " selected";
         }
-        return <div id={ 'reference_' + this.props.reference.ref_id } className={ className }>
+        return <div id={ 'reference_' + this.props.reference.id } className={ className }>
             { this.renderLabel() }
             <CrossmarkBadge reference={ this.props.reference }/>
             <ReferenceCore reference={ this.props.reference } isPopover={ this.isPopover() }
@@ -533,7 +541,7 @@ var Reference = React.createClass({
               <LicenseBadge reference={ this.props.reference }/>
             </Maybe>
             <Maybe test={ this.props.reference.self_citations }>
-              <span key={ this.props.reference.ref_id + "selfcitation" } className="selfcitation">Self-citation</span><br/>
+              <span key={ this.props.reference.id + "selfcitation" } className="selfcitation">Self-citation</span><br/>
             </Maybe>
             <ReferenceAbstract text={ this.props.reference.bibliographic.abstract } qtip={ this.props.qtip }/>
             <ReferenceAppearanceListRevealable reference={ this.props.reference } currentMention={ this.props.currentMention } qtip={ this.props.qtip }/>
@@ -549,7 +557,7 @@ var ReferenceCore = React.createClass({
         if (bibliographic.title) {
             var id = "";
             if (!this.props.isPopover) {
-                id = ref.ref_id + "_title";
+                id = ref.id + "_title";
                 setTimeout(function (){
                     $(jq(id)).qtip({
                         content: {
@@ -571,7 +579,7 @@ var ReferenceCore = React.createClass({
                     });
                 }, 1000);
             }
-            return <span><a id={ ref.ref_id } name={ this.props.id }></a>
+            return <span><a id={ ref.id } name={ this.props.id }></a>
                 <span id={ id }>
                 <ReferenceAuthorList authorMax={ this.props.isPopover ? 3 : 5 } updateHighlighting={ this.props.updateHighlighting } authors={ bibliographic.author }/>
                 { bibliographic.issued && bibliographic.issued['date-parts'] && " (" + bibliographic.issued['date-parts'][0][0] + ")" }
@@ -601,7 +609,7 @@ var ReferencePublicationInfoGeneric = React.createClass({
         var bibliographic = ref.bibliographic;
         var encodedDOI = getEncodedDOI(ref);
         if (encodedDOI) {
-            var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.index;
+            var url = "/interstitial?from=" + encodeURIComponent(paper_doi) + "&to=" + ref.number;
             return <span className="reference-title"><a target="_blank" className="reference-link" href={ url } dangerouslySetInnerHTML={{ __html: bibliographic.title }} /><br/></span>;
         } else {
             return <span><span className="reference-title" dangerouslySetInnerHTML={{ __html:bibliographic.title }} /><br/></span>;
@@ -676,9 +684,9 @@ var CrossmarkBadge = React.createClass({
         if (this.props.reference.updated_by) {
             var types = _.map(this.props.reference.updated_by, function(u) { return u.type; });
             if (_.contains(types, "retraction")) {
-                return <span key={ ref.ref_id + "retracted"} className="retracted">RETRACTED<br/></span>;
+                return <span key={ ref.id + "retracted"} className="retracted">RETRACTED<br/></span>;
             } else if (types.length > 0) {
-                return <span key={ ref.ref_id + "retracted"} className="updated">UPDATED<br/></span>;
+                return <span key={ ref.id + "retracted"} className="updated">UPDATED<br/></span>;
             }
         }
         return <span/>;
@@ -690,9 +698,9 @@ var LicenseBadge = React.createClass({
         var ref = this.props.reference;
         var license = getLicenseShorthand(ref);
         if (license === "read") {
-            return <span key={ ref.ref_id + "license" } className="text-available">● { getLicenseText(license) }<br/></span>;
+            return <span key={ ref.id + "license" } className="text-available">● { getLicenseText(license) }<br/></span>;
         } else if (license === "read-and-reuse") {
-            return <span key={ ref.ref_id + "license" } className="open-access">● { getLicenseText(license) }<br/></span>;
+            return <span key={ ref.id + "license" } className="open-access">● { getLicenseText(license) }<br/></span>;
         }
         return <span/>;
     }
@@ -784,7 +792,7 @@ var SortedReferencesList = React.createClass({
             setTimeout(function () {
                 var tokens = lunr.tokenizer(this.props.filterText);
                 /* highlight raw tokens & stemmed */
-                var allTokens = $.unique(tokens.concat(this.props.index.pipeline.run(tokens)));
+                var allTokens = $.unique(tokens.concat(this.props.number.pipeline.run(tokens)));
                 $("ol.references").highlight(allTokens);
             }.bind(this), 1);
         }
@@ -792,8 +800,8 @@ var SortedReferencesList = React.createClass({
     renderReferenceItem: function(ref) {
         /* Build elements for react */
         var selected = (this.props.current.by !== 'repeated') &&
-                ($.param.fragment() === ref.data.ref_id);
-        return <li key={ "" + ref.data.ref_id + ref.group.word_position }>
+                ($.param.fragment() === ref.data.id);
+        return <li key={ "" + ref.data.id + ref.group.word_position }>
             <Reference reference={ ref.data }
                        selected = { selected }
                        showLabel={ true }
@@ -921,7 +929,7 @@ var ReferencePopover = React.createClass({
               selected={ false }
               reference={ d[0] }
               qtip={ this.props.qtip }
-              key={ d[0].ref_id }
+              key={ d[0].id }
               showLabel={ this.props.references.length > 1 }
               currentMention={ d[1] } />;
         }.bind(this));
@@ -936,7 +944,7 @@ var ReferencesApp = React.createClass({
     },
     componentWillMount: function() {
         /* build full-text index */
-        this.index = buildIndex(this.props.references);
+        this.number = buildIndex(this.props.references);
     },
     componentDidMount: function() {
         $(citationSelector).filter(citationFilter).on( "click", function() {
@@ -975,8 +983,8 @@ var ReferencesApp = React.createClass({
               references={this.props.references}
               filterText={this.state.filterText}
               onClick={this.handleSorterClick}
-              index={ this.index }
-              searchResultsFilter={mkSearchResultsFilter(this.index, this.state.filterText)}
+              number={ this.number }
+              searchResultsFilter={mkSearchResultsFilter(this.number, this.state.filterText)}
             />
             </div>;
     }
@@ -1243,7 +1251,7 @@ function mkPopovers(data) {
         var references = _.map(refIds, function(refId) { return data.references[refId]; });
         mkReferencePopover(spanId, references, counters);
     }
-    citationIterator(data.groups, handleSingle, null, null, handleEndElissionGroup);
+    citationIterator(data.citation_groups, handleSingle, null, null, handleEndElissionGroup);
 }
 
 /* if we don't load after document ready we get an error */
@@ -1256,12 +1264,13 @@ $(document).ready(function () {
         withReferenceData(paper_doi, function (data) {
             try {
                 var references = buildReferenceData(data);
+                console.log(references);
                 /* and drop into react */
                 React.renderComponent(
                         <ReferencesApp references={references} />,
                     $("ol.references").get(0)
                 );
-                addCitationIds(data.groups);
+                addCitationIds(data.citation_groups);
                 mkPopovers(data);
                 $("#richcites").replaceWith("<div id='richcites'>Rich Citations Engaged!</div>");
                 $("#loader2").replaceWith("<div id='loader2'></div>");
