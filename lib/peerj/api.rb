@@ -4,7 +4,7 @@ module Peerj
     def self.document(doi)
       number = doi.match(/([0-9]+)$/)[-1]
       response = Rails.cache.fetch("#{doi}_xml", expires_in: 108_000) do
-        HttpUtilities.get("http://peerj.com/articles/#{number}.xml")
+        HttpUtilities.get("https://peerj.com/articles/#{number}.xml")
       end
       Loofah.xml_document(response)
     end

@@ -60,6 +60,7 @@ module Id
     end
 
     def self.prefix(doi)
+      doi = extract(doi)
       doi && doi.strip.split('/',2).first
     end
 

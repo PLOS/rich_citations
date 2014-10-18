@@ -22,6 +22,8 @@ module IdentifierResolvers
   class DoiFromPlosHtml < Base
 
     def resolve
+      return unless Id::Doi.is_plos_doi?(root.citing_uri)
+
       unresolved_references.each do |id, data|
         ref_node = node_for_ref_id(id)
         next unless ref_node.present?

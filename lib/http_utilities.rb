@@ -31,7 +31,7 @@ class HttpUtilities
     # http.debug_output = $stdout
 
     loop do
-      # puts "GET #{url}"
+      puts "GET #{url}"
       uri = URI.parse(url)
       req = Net::HTTP::Get.new(uri.request_uri, parse_headers(headers))
       response = http.request uri, req

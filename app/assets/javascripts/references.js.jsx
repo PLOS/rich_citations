@@ -4,15 +4,19 @@
 
 var paper_doi = $('meta[name=citation_doi]').attr("content");
 
-/* local part of the doi */
-var paper_doi_local_part = paper_doi && paper_doi.match(/^10.1371\/journal\.(.*)$/)[1];
+//#@todo this needs to be generalized
+var match = paper_doi && paper_doi.match(/^10.1371\/journal\.(.*)$/);
+if (match) {
+    /* local part of the doi */
+    var paper_doi_local_part = match[1];
 
-/* selector that can be used to match all the a elements that are citation links */
-var citationSelector = "a[href^='#" + paper_doi_local_part + "']";
-var citationFilter = function (el) {
-    /* return true for refs that link to a target in the references section */
-    return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
-};
+    /* selector that can be used to match all the a elements that are citation links */
+    var citationSelector = "a[href^='#" + paper_doi_local_part + "']";
+    var citationFilter = function (el) {
+        /* return true for refs that link to a target in the references section */
+        return ($("ol.references " + jq($(this).attr("href").substring(1))).length > 0);
+    };
+}
 
 function getDOI(ref) {
     if (ref.uri && ref.uri.match("^http://dx.doi.org/")) {
