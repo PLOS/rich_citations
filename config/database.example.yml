@@ -1,12 +1,7 @@
-# SQLite version 3.x
-#   gem install sqlite3
-#
-#   Ensure the SQLite 3 gem is defined in your Gemfile
-#   gem 'sqlite3'
 development:
-  adapter: postgresql
-  database: citations_dev
-  pool: 5
+  adapter: sqlite3
+  database: db/development.sqlite3
+  pool: 10
   timeout: 5000
 
 # Warning: The database defined as "test" will be erased and
@@ -16,10 +11,4 @@ test:
   adapter: sqlite3
   database: db/test.sqlite3
   pool: 10
-  timeout: 5000
-
-production:
-  adapter: postgresql
-  database: citations_prod
-  pool: 5
   timeout: 5000
