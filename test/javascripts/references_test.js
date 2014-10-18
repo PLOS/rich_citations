@@ -193,6 +193,16 @@ test("guid generator", function() {
     ok(guid2.match("^[0-9a-z]{8}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{4}-[0-9a-z]{12}$"));
 });
 
+test("getEncodedDOI", function() {
+    stop();
+    $.getJSON("/papers/10.1371/journal.pone.0067380?format=json").
+        done(function (fixture) {
+            var references = buildReferenceData(fixture, true);
+            equal(getEncodedDOI(references[0], "xyz"));
+            start();
+        });
+});
+
 test("extract and generated citation reference ids", function() {
     var id = "pone.0067380-Sperone2";
     strictEqual(extractCitationReferenceInfo("pone.0067380-Sperone2"), null);

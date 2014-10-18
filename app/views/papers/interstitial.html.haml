@@ -3,7 +3,7 @@
   
 %h3 Originating page
 %p
-  = render partial: "cite", object: @paper.info[:paper], locals: {cite_href: "/view/#{URI.encode_www_form_component(@doi)}"}
+  = render partial: "cite", object: @paper.bibliographic[:bibliographic], locals: {cite_href: "/view/#{URI.encode_www_form_component(@doi)}"}
 
   
 %h3 Destination

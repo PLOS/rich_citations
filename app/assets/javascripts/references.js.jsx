@@ -15,9 +15,8 @@ var citationFilter = function (el) {
 };
 
 function getDOI(ref) {
-    var bibliographic = ref.bibliographic;
-    if (bibliographic.uri_type === 'doi') {
-        return bibliographic.uri;
+    if (ref.uri && ref.uri.match("^http://dx.doi.org/")) {
+        return ref.uri;
     } else {
         return undefined;
     }
