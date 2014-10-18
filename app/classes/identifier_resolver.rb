@@ -157,6 +157,7 @@ class IdentifierResolver
       IdentifierResolvers::PmcidFromReference,
       IdentifierResolvers::ArxivFromReference,
       IdentifierResolvers::GithubFromReference,
+      IdentifierResolvers::WikipediaFromReference,  # runs before UrlFromReference
       IdentifierResolvers::UrlFromReference,
       IdentifierResolvers::LowScoreCrossRef,
       IdentifierResolvers::Fail,     # When nothing else has worked
