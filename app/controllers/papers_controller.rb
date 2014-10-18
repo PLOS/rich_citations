@@ -37,7 +37,7 @@ class PapersController < ApplicationController
     @doi = Id::Doi.extract( params[:id] )
 
     raise "DOI is Invalid" if @doi.blank?
-    raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(@doi)
+    # raise "Not a PLOS DOI" unless Id::Doi.is_plos_doi?(@doi)
 
     @paper = PaperResult.find_or_new_for_doi(@doi)
     if @paper.should_start_analysis?
