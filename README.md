@@ -20,3 +20,6 @@ $ bundle exec rails server
 ```
 
 Visit <http://localhost:3000/> to see the Rich Citations API.
+
+
+ - [Ubuntu 14.04 Install Guide](https://github.com/ploslabs/rich_citations/wiki/Install-Guide)
