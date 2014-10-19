@@ -9,7 +9,7 @@ Live version: http://alpha.richcitations.org/
 Installing
 ----------
 Requirements:
-`Ruby 2.1.2`,`bundler`
+`Ruby 2.1.2`,`bundler`,`java`
 
 ```
 $ cd rich_citations
