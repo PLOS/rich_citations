@@ -149,7 +149,8 @@ class IdentifierResolver
 
   ALL_RESOLVERS = [
       IdentifierResolvers::DoiFromPlosHtml,
-      IdentifierResolvers::CrossRef,
+      # disabled to see if that improves performance - everything *should* be available from HTML -egh
+      # IdentifierResolvers::CrossRef,
       IdentifierResolvers::DoiFromReference,
       IdentifierResolvers::IsbnFromReference,
       IdentifierResolvers::PubmedidFromReference,
