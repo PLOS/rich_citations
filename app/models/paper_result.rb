@@ -100,6 +100,8 @@ class PaperResult < ActiveRecord::Base
       "http://www.plospathogens.org"
     when /journal\.pntd/
       "http://www.plosntds.org"
+    when /journal\.pctr/
+      "http://www.plosclinicaltrials.org/"
     when /eLife/
       'http://elifesciences.org/content/elife/3'
     when /peerj/
