@@ -36,4 +36,10 @@ namespace :app do
     RemoveOldSearches.run_all!
     puts "done."
   end
+
+  task :dump_dois => :environment do
+    $stdout.write('["')
+    $stdout.write(PaperResult.pluck(:doi).join("\",\n\""))
+    $stdout.write('"]')
+  end
 end
