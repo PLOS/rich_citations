@@ -302,7 +302,8 @@ function buildReferenceData(json, noHtml) {
         }
         retval[v.id]['citation_groups'] = _.map(v.citation_groups,
                                              function (id) {
-                                                 return json.citation_groups[id];
+                                                 return _.find(json.citation_groups,
+                                                               function(g) { return g['id'] == id; });
                                              });
         retval[v.id]['mentions'] = v.citation_groups.length;
     });
