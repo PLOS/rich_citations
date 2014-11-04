@@ -63,7 +63,8 @@ module Processors
     rescue JSON::JSONError => ex
       {}
     rescue Net::HTTPServerException => ex
-      raise unless ex.response.is_a?(Net::HTTPNotFound)
+      raise unless ex.response.is_a?(Net::HTTPNotFound) ||
+                   ex.response.is_a?(Net::HTTPNotAcceptable)
       {}
     end
   end
