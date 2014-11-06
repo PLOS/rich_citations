@@ -137,7 +137,9 @@ class XmlUtilities
 
         when  'a', 'u', 'cite', 'q'', mark', 'abbr', 'sub', 'sup', 's', 'wbr'
           # nothing
-
+        when 'surname'
+          # insert space after surname if none exists
+          node.after(' ') if node.next_sibling.name == 'given-names'
         else
           # delete this node
           node.before(node.children)

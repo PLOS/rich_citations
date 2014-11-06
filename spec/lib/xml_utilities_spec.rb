@@ -285,6 +285,14 @@ describe XmlUtilities do
           to eq('foo bar baz')
     end
 
+    it 'should insert space between names' do
+      expect(XmlUtilities.clean_html('<surname>Doe</surname><given-names>J</given-names>')).
+        to eq('Doe J')
+    end
+
+    it 'should not insert extra space between names' do
+      expect(XmlUtilities.clean_html('<surname>Doe</surname> <given-names>J</given-names>')).
+        to eq('Doe J')
+    end
   end
-  
 end
