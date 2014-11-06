@@ -1006,22 +1006,13 @@ function wrapSpan(startId, endId, spanId) {
     } else {
         var startSelector = jq(startId);
         var endSelector = jq(endId);
-        $(startSelector).parent().children().each(function(){
+        $(startSelector).first().each(function(){
             var set = $();
-            var nxt = this;
-            var inSpan = false;
+            var nxt = this.nextSibling;
+            set.push(this);
             while(nxt) {
-                if (!inSpan) {
-                    if ($(nxt).is(startSelector)) {
-                        set.push(nxt);
-                        inSpan = true;
-                    }
-                } else {
-                    set.push(nxt);
-                    if ($(nxt).is(endSelector)) {
-                        break;
-                    }
-                }
+                set.push(nxt);
+                if ($(nxt).is(endSelector)) break;
                 nxt = nxt.nextSibling;
             }
             set.wrapAll("<span id='" + spanId + "'/>");
