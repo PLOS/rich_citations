@@ -19,32 +19,34 @@
 # THE SOFTWARE.
 
 class ApiV0Controller < ApplicationController
-  def paper
-    id = params[:id]
-    case id
-    when %r{^http://dx.doi.org/10.1371/}
-      doi = Id::Doi.extract(params[:id])
-      # TODO : combine with code in papers controller
-      paper = PaperResult.find_or_new_for_doi(doi)
-      if paper.should_start_analysis?
-        paper.start_analysis!
-        paper.save
-      end
-      response.content_type = Mime::JSON
-      headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
-      result = if paper.ready?
-                 json = paper.result.deep_dup.with_indifferent_access
-                 JsonUtilities.strip_uri_type!(json)
-                 json.to_json
-               else
-                 ''
-               end
-      status = paper.ready? ? :ok : :accepted
-      render(json: result, status: status)
+  before_action do
+    @doi = if params[:doi]
+             params[:doi]
+           else
+             Id::Doi.extract(params[:id])
+           end
+    render status: 404, text: '' unless Id::Doi.is_plos_doi?(@doi)
+  end
 
-      @paper = PaperResult.find_or_new_for_doi(doi)
-    else
-      render status: 404, text: ''
+  def paper
+    # TODO : combine with code in papers controller
+    paper = PaperResult.find_or_new_for_doi(@doi)
+    if paper.should_start_analysis?
+      paper.start_analysis!
+      paper.save
     end
+    response.content_type = Mime::JSON
+    headers['Content-Disposition'] = %Q{attachment; filename="#{paper.doi}.json"} unless params[:inline]
+    result = if paper.ready?
+               json = paper.result.deep_dup.with_indifferent_access
+               JsonUtilities.strip_uri_type!(json)
+               json.to_json
+             else
+               ''
+             end
+    status = paper.ready? ? :ok : :accepted
+    render(json: result, status: status)
+
+    @paper = PaperResult.find_or_new_for_doi(@doi)
   end
 end
