@@ -41,5 +41,6 @@ CitationTools::Application.routes.draw do
   get '/view/:id', to: 'papers#view', id:/.+/ 
   get '/interstitial', to: 'papers#interstitial'
   get '/v0/paper', to: 'api_v0#paper'
+  get '/v0/paper_list', to: 'api_v0#paper_list'
   delete '/v0/paper', to: 'api_v0#destroy'
 end

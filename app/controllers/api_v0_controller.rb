@@ -21,7 +21,7 @@
 class ApiV0Controller < ApplicationController
   protect_from_forgery with: :null_session
   
-  before_action do
+  before_action except: [:paper_list] do
     @doi = if params[:doi]
              params[:doi]
            else
@@ -39,7 +39,12 @@ class ApiV0Controller < ApplicationController
     render status: :no_content, text: ''
   end
 
-  def paper
+  def paper_list
+    dois = PaperResult.all.select(:doi).map(&:doi)
+    render json: dois
+  end
+
+  def papers
     # TODO : combine with code in papers controller
     paper = PaperResult.find_or_new_for_doi(@doi)
     if paper.should_start_analysis?
