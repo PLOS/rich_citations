@@ -19,6 +19,8 @@
 # THE SOFTWARE.
 
 class ApiV0Controller < ApplicationController
+  protect_from_forgery with: :null_session
+  
   before_action do
     @doi = if params[:doi]
              params[:doi]
@@ -26,6 +28,15 @@ class ApiV0Controller < ApplicationController
              Id::Doi.extract(params[:id])
            end
     render status: 404, text: '' unless Id::Doi.is_plos_doi?(@doi)
+  end
+
+  def destroy
+    paper = PaperResult.find_by(doi: @doi)
+    json = paper.bibliographic
+    ref_uris = json[:references].map { |r| "#{r[:uri_type]}:#{r[:uri]}" }
+    PaperInfoCache.delete_all(identifier: ref_uris)
+    paper.destroy!
+    render status: :no_content, text: ''
   end
 
   def paper
