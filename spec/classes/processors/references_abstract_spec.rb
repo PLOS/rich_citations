@@ -27,9 +27,9 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111','10.1371/33333']).and_return([])
 
     input = { references: [
-        {id:'ref-1', uri_type: :doi, uri:'10.1371/11111'},
-        {id:'ref-2', uri_type: :doi, uri:'10.9999/22222'},
-        {id:'ref-3', uri_type: :doi, uri:'10.1371/33333'},
+        {id:'ref-1', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/11111'},
+        {id:'ref-2', uri_type: :doi, uri: '10.9999/22222'},
+        {id:'ref-3', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/33333'},
     ] }
     process(input)
   end
@@ -44,9 +44,9 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).and_return( search_results )
 
     input = { references: [
-        {id:'ref-1', uri_type: :doi, uri:'10.1371/11111'},
-        {id:'ref-2', uri_type: :doi, uri:'10.9999/22222'},
-        {id:'ref-3', uri_type: :doi, uri:'10.1371/33333'},
+        {id:'ref-1', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/11111'},
+        {id:'ref-2', uri_type: :doi, uri: '10.9999/22222'},
+        {id:'ref-3', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/33333'},
     ] }
     process(input)
 
@@ -62,8 +62,8 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/22222']).and_return( search_results )
 
     cached = { references: [
-        {id:'ref-1', uri_type: :doi, uri:'10.1371/11111', bibliographic:{abstract:'cached-1'} },
-        {id:'ref-2', uri_type: :doi, uri:'10.1371/22222' },
+        {id:'ref-1', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/11111', bibliographic:{abstract:'cached-1'} },
+        {id:'ref-2', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/22222' },
     ] }
     process(cached)
 
@@ -80,8 +80,8 @@ describe Processors::ReferencesAbstract do
     expect(Plos::Api).to receive(:search_dois).with(['10.1371/11111', '10.1371/22222']).and_return(search_results)
 
     cached = { references: [
-      {id:'ref-1', uri_type: :doi, uri: '10.1371/11111' },
-      {id:'ref-2', uri_type: :doi, uri: '10.1371/22222' }
+      {id:'ref-1', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/11111' },
+      {id:'ref-2', uri_type: :doi, uri: 'http://dx.doi.org/10.1371/22222' }
     ] }
     process(cached)
 
