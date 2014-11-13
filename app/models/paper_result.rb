@@ -141,9 +141,7 @@ class PaperResult < ActiveRecord::Base
     JsonUtilities.strip_uri_type!(json)
     JsonUtilities.clean_uris!(json)
     client = HTTPClient.new
-    doi_uri = "http://dx.doi.org/#{URI.encode_www_form_component(doi)}"
-    return if (client.head(INGEST_BASE_URL, uri: doi_uri).status == 200)
-    client.post("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&uri=#{URI.encode_www_form_component(doi_uri)}",
+    client.put("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&doi=#{URI.encode_www_form_component(doi)}",
                 MultiJson.dump(json),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json')
