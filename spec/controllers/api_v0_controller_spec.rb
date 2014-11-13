@@ -23,21 +23,28 @@ require 'spec_helper'
 describe ApiV0Controller, type: :controller do
   describe 'get PLOS doi' do
     it 'returns 202' do
-      get 'paper', id: 'http://dx.doi.org/10.1371/journal.pone.0000000'
+      get :show, id: 'http://dx.doi.org/10.1371/journal.pone.0000000'
+      expect(response.status).to eq(202)
+    end
+  end
+
+  describe 'doi parameter works' do
+    it 'returns 202' do
+      get :show, doi: '10.1371/journal.pone.0000000'
       expect(response.status).to eq(202)
     end
   end
 
   describe 'GET non-DOI' do
     it 'returns 404' do
-      get 'paper', id: 'http://example.org/abc'
+      get :show, id: 'http://example.org/abc'
       expect(response.status).to eq(404)
     end
   end
 
   describe 'GET non-plos DOI' do
     it 'returns 404' do
-      get 'paper', id: 'http://dx.doi.org/10.1234'
+      get :show, id: 'http://dx.doi.org/10.1234'
       expect(response.status).to eq(404)
     end
   end

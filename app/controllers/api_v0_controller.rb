@@ -44,7 +44,7 @@ class ApiV0Controller < ApplicationController
     render json: dois
   end
 
-  def papers
+  def show
     # TODO : combine with code in papers controller
     paper = PaperResult.find_or_new_for_doi(@doi)
     if paper.should_start_analysis?
