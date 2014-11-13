@@ -32,9 +32,6 @@ class ApiV0Controller < ApplicationController
 
   def destroy
     paper = PaperResult.find_by(doi: @doi)
-    json = paper.bibliographic
-    ref_uris = json[:references].map { |r| "#{r[:uri_type]}:#{r[:uri]}" }
-    PaperInfoCache.delete_all(identifier: ref_uris)
     paper.destroy!
     render status: :no_content, text: ''
   end

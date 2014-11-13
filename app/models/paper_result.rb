@@ -24,6 +24,12 @@ class PaperResult < ActiveRecord::Base
 
   validates :doi, presence:true
 
+  before_destroy do
+    ref_uris = bibliographic && bibliographic[:references] &&
+               bibliographic[:references].compact.map { |r| "#{r[:uri_type]}:#{r[:uri]}" }
+    PaperInfoCache.delete_all(identifier: ref_uris) if ref_uris
+  end
+
   def self.find_by_doi(doi)
     self.where(doi:doi).first
   end
@@ -111,8 +117,6 @@ class PaperResult < ActiveRecord::Base
     end
   end
 
-  private
-
   def analyze!
     if ready?
       Rails.logger.info("Using cached #{doi}")
@@ -128,6 +132,8 @@ class PaperResult < ActiveRecord::Base
     self.save!
     ingest
   end
+
+  private
 
   # ingest into read/write API
   def ingest
