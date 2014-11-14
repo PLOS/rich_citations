@@ -55,4 +55,15 @@ namespace :app do
       AnalyzePaper.perform_async(doi)
     end
   end
+
+  desc 'Process DOIs from stdin list.'
+  task process: :environment do
+    $stdin.each_line do |doi|
+      doi = doi.chomp
+      paper = PaperResult.find_by(doi: doi)
+      paper.destroy! if paper
+      puts doi
+      AnalyzePaper.perform_async(doi)
+    end
+  end
 end
