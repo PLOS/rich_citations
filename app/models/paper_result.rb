@@ -24,6 +24,12 @@ class PaperResult < ActiveRecord::Base
 
   validates :doi, presence:true
 
+  before_destroy do
+    ref_uris = bibliographic && bibliographic[:references] &&
+               bibliographic[:references].compact.map { |r| "#{r[:uri_type]}:#{r[:uri]}" }
+    PaperInfoCache.delete_all(identifier: ref_uris) if ref_uris
+  end
+
   def self.find_by_doi(doi)
     self.where(doi:doi).first
   end
@@ -111,8 +117,6 @@ class PaperResult < ActiveRecord::Base
     end
   end
 
-  private
-
   def analyze!
     if ready?
       Rails.logger.info("Using cached #{doi}")
@@ -129,15 +133,15 @@ class PaperResult < ActiveRecord::Base
     ingest
   end
 
+  private
+
   # ingest into read/write API
   def ingest
     json = self.result.deep_dup.with_indifferent_access
     JsonUtilities.strip_uri_type!(json)
     JsonUtilities.clean_uris!(json)
     client = HTTPClient.new
-    doi_uri = "http://dx.doi.org/#{URI.encode_www_form_component(doi)}"
-    return if (client.head(INGEST_BASE_URL, uri: doi_uri).status == 200)
-    client.post("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&uri=#{URI.encode_www_form_component(doi_uri)}",
+    client.put("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&doi=#{URI.encode_www_form_component(doi)}",
                 MultiJson.dump(json),
                 'Content-Type' => 'application/json',
                 'Accept' => 'application/json')

@@ -42,4 +42,28 @@ namespace :app do
     $stdout.write(PaperResult.pluck(:doi).join("\",\n\""))
     $stdout.write('"]')
   end
+
+  desc 'Reprocess papers over 30 days old.'
+  task reprocess: :environment do
+    days = (ENV['days'] || 30).to_i
+    max  = ENV['max'].present? && ENV['max'].to_i
+    puts "Reprocessing up to #{max || 'all'} results older than #{days} days."
+    PaperResult.where('updated_at < ?', days.days.ago).limit(max).each do |p|
+      doi = p.doi
+      puts doi
+      p.destroy!
+      AnalyzePaper.perform_async(doi)
+    end
+  end
+
+  desc 'Process DOIs from stdin list.'
+  task process: :environment do
+    $stdin.each_line do |doi|
+      doi = doi.chomp
+      paper = PaperResult.find_by(doi: doi)
+      paper.destroy! if paper
+      puts doi
+      AnalyzePaper.perform_async(doi)
+    end
+  end
 end
