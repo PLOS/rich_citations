@@ -18,6 +18,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+require 'httpclient'
 
 namespace :app do
 
@@ -47,7 +48,11 @@ namespace :app do
   task reprocess: :environment do
     days = (ENV['days'] || 30).to_i
     max  = ENV['max'].present? && ENV['max'].to_i
-    puts "Reprocessing up to #{max || 'all'} results older than #{days} days."
+    q = PaperResult.where('updated_at < ?', days.days.ago)
+    total_count = q.count
+    q = q.limit(max)
+    count = q.count
+    puts "Reprocessing #{count} (of #{total_count}) results older than #{days} days."
     PaperResult.where('updated_at < ?', days.days.ago).limit(max).each do |p|
       doi = p.doi
       puts doi
@@ -62,6 +67,23 @@ namespace :app do
       doi = doi.chomp
       paper = PaperResult.find_by(doi: doi)
       paper.destroy! if paper
+      puts doi
+      AnalyzePaper.perform_async(doi)
+    end
+  end
+
+  desc 'Process recent DOIs from PLOS; use days=10 to specify to process the last 10 days'
+  task process_recent: :environment do
+    client = HTTPClient.new
+    days = (ENV['days'] || 30).to_i
+    params = { 'q' => "publication_date:[NOW-#{days}DAY/DAY TO NOW]",
+               'fl' => 'id,publication_date',
+               'fq' => 'doc_type:full',
+               'wt' => 'json',
+               'rows' => 10_000 }
+    resp = client.get('http://api.plos.org/search', params)
+    dois = MultiJson.load(resp.body)['response']['docs'].map { |x| x['id'] }
+    dois.each do |doi|
       puts doi
       AnalyzePaper.perform_async(doi)
     end
