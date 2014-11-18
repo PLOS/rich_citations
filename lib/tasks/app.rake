@@ -47,7 +47,11 @@ namespace :app do
   task reprocess: :environment do
     days = (ENV['days'] || 30).to_i
     max  = ENV['max'].present? && ENV['max'].to_i
-    puts "Reprocessing up to #{max || 'all'} results older than #{days} days."
+    q = PaperResult.where('updated_at < ?', days.days.ago)
+    total_count = q.count
+    q = q.limit(max)
+    count = q.count
+    puts "Reprocessing #{count} (of #{total_count}) results older than #{days} days."
     PaperResult.where('updated_at < ?', days.days.ago).limit(max).each do |p|
       doi = p.doi
       puts doi
