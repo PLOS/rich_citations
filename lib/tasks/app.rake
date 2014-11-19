@@ -84,6 +84,7 @@ namespace :app do
     resp = client.get('http://api.plos.org/search', params)
     dois = MultiJson.load(resp.body)['response']['docs'].map { |x| x['id'] }
     dois.each do |doi|
+      next if PaperResult.exists?(doi: doi)
       puts doi
       AnalyzePaper.perform_async(doi)
     end
