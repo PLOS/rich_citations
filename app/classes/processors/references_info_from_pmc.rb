@@ -167,7 +167,8 @@ module Processors
 
       if xref.present?
         rid = xref['rid']
-        aff = @result.at_css("article-meta contrib-group aff[id=#{rid}]").xpath("text()")
+        aff_node = @result.at_css("article-meta contrib-group aff[id=#{rid}]")
+        aff = aff_node && aff_node.xpath('text()')
         aff && aff.text.strip.presence
       end
     end
