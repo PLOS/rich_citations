@@ -76,7 +76,7 @@ namespace :app do
   task process_recent: :environment do
     client = HTTPClient.new
     days = (ENV['days'] || 30).to_i
-    params = { 'q' => "publication_date:[NOW-#{days}DAY/DAY TO NOW]",
+    params = { 'q' => "publication_date:[NOW-#{days}DAY/DAY TO NOW-1DAY/DAY]",
                'fl' => 'id,publication_date',
                'fq' => 'doc_type:full',
                'wt' => 'json',
