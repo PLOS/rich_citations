@@ -141,10 +141,11 @@ class PaperResult < ActiveRecord::Base
     JsonUtilities.strip_uri_type!(json)
     JsonUtilities.clean_uris!(json)
     client = HTTPClient.new
-    client.put("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&doi=#{URI.encode_www_form_component(doi)}",
-                MultiJson.dump(json),
-                'Content-Type' => 'application/json',
-                'Accept' => 'application/json')
+    # fire & forget
+    client.put_async("#{INGEST_BASE_URL}?api_key=#{ENV['RC_API_KEY']}&doi=#{URI.encode_www_form_component(doi)}",
+                     MultiJson.dump(json),
+                     'Content-Type' => 'application/json',
+                     'Accept' => 'application/json')
   end
 
   def timed_out?
