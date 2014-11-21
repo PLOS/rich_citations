@@ -53,7 +53,8 @@ namespace :app do
     q = q.limit(max)
     count = q.count
     puts "Reprocessing #{count} (of #{total_count}) results older than #{days} days."
-    PaperResult.where('updated_at < ?', days.days.ago).limit(max).each do |p|
+    # small batch size for heroku
+    PaperResult.where('updated_at < ?', days.days.ago).limit(max).find_each(batch_size: 100) do |p|
       doi = p.doi
       puts doi
       p.destroy!
