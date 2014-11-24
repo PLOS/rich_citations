@@ -53,12 +53,12 @@ namespace :app do
     q = q.limit(max)
     count = q.count
     puts "Reprocessing #{count} (of #{total_count}) results older than #{days} days."
-    PaperResult.where('updated_at < ?', days.days.ago)
-      .limit(max).select(:id, :doi).find_in_batches do |paper_group|
-      args = paper_group.map { |p| [p.doi] }
-      puts args
-      Sidekiq::Client.push_bulk('class' => ReprocessPaper, 'args' => args)
+    args = PaperResult.where('updated_at < ?', days.days.ago).limit(max)
+           .select(:doi).map(&:doi).map do |doi|
+      puts doi
+      [doi]
     end
+    Sidekiq::Client.push_bulk('class' => ReprocessPaper, 'args' => args)
   end
 
   desc 'Process DOIs from stdin list.'

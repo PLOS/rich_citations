@@ -1,4 +1,4 @@
 ---
 :concurrency: 5
 production:
-  :concurrency: 25
+  :concurrency: 20
