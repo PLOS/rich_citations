@@ -18,6 +18,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+require 'id/pmid'
+
 module IdentifierResolvers
   class PubmedidFromReference < Base
 

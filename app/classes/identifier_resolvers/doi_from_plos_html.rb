@@ -18,6 +18,9 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+require 'http_utilities'
+require 'id/doi'
+
 module IdentifierResolvers
   class DoiFromPlosHtml < Base
 
