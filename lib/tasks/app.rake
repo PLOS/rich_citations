@@ -19,6 +19,7 @@
 # THE SOFTWARE.
 
 require 'httpclient'
+require 'sidekiq/api'
 
 namespace :app do
 
@@ -78,6 +79,11 @@ namespace :app do
         puts doi
         AnalyzePaper.perform_async(doi)
       end
+    end
+
+    desc 'Clear job queue.'
+    task clear: :environment do
+      Sidekiq::Queue.new.clear
     end
   end
 end
