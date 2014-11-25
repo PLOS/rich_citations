@@ -58,7 +58,7 @@ namespace :app do
       args = PaperResult.where('updated_at < ?', days.days.ago).limit(max)
              .select(:doi).map(&:doi).map do |doi|
         puts doi
-        [doi]
+        [doi, days]
       end
       Sidekiq::Client.push_bulk('class' => ReprocessPaper, 'args' => args)
     end
