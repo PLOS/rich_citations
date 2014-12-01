@@ -73,7 +73,7 @@ class HttpUtilities
         redirect_count += 1
         redirects << location
         url = location
-      elsif (response.code.to_i == 502)
+      elsif (response.code.to_i == 502 || response.code.to_i == 500)
         response.value if retry_count > 2
         retry_count +=1
         # slow it down
