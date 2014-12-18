@@ -70,6 +70,7 @@ namespace :app do
       params = { 'q' => "publication_date:[NOW-#{days}DAY/DAY TO NOW-1DAY/DAY]",
                  'fl' => 'id,publication_date',
                  'fq' => 'doc_type:full',
+                 'article_type' => 'Research Article',
                  'wt' => 'json',
                  'rows' => 10_000 }
       resp = client.get('http://api.plos.org/search', params)
