@@ -77,7 +77,7 @@ module Processors
     def fetch_results_for_page(page,lang='en')
       html = HttpUtilities.get(API_URL % {:page => page, :lang => lang})
       doc = Loofah.document(html)
-      return ReferencesInfoFromCoins.extract_coins(doc,coins_map,coins_constraints)
+      return CoinsUtilities.extract_coins(doc,coins_map,coins_constraints)
     end
 
   end

@@ -20,16 +20,7 @@
 
 require 'uri'
 
-module Processors
-  class ReferencesInfoFromCoins < Base
-    include Helpers
-
-    # slightly lower priority than the URL handler, since this class's recognizer is also a URL
-    def self.priority
-      49
-    end
-
-    protected
+class CoinsUtilities 
 
     # doc:          Nokogiri XML document object
     # key_mapping:  COINs => Rich Citations name mapping
@@ -48,8 +39,5 @@ module Processors
       # return mapped values
       Hash[key_mapping.map{|coins,theirs| [theirs, params[coins]] }].compact
     end
-
-  end
-
 end
 
