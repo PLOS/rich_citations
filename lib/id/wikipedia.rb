@@ -44,18 +44,19 @@ module Id
 
         if url
           return match_url_parts(url).merge!(
-              accessed_at: extract_date( XmlUtilities.text_after(xml, node) )
-          )
+              get_accessed_date(XmlUtilities.text_after(xml, node))
+          ).compact
         end
       end
 
+      # attempt to extract url from text node of the reference
       text = xml.text
       url = extract(text, false)
       return nil unless url.present?
       offset = text.index(url) + url.length
       return match_url_parts(url).merge!(
-          accessed_at: extract_date( text[offset..-1] )
-      )
+          get_accessed_date(text[offset..-1])
+      ).compact
     end
 
     def self.match_url_parts(url)
@@ -66,6 +67,11 @@ module Id
         language: language,
         page:     page
       }.compact
+    end
+
+    def self.get_accessed_date(text)
+      return { accessed_at: extract_date(text) } if text && text.length > 0
+      return {}
     end
 
   end

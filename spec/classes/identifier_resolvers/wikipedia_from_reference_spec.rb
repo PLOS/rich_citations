@@ -78,6 +78,75 @@ describe IdentifierResolvers::WikipediaFromReference do
       resolver.resolve
     end
 
+    it "should resolve with a mixed-citation reference" do
+      resolver = make_resolver <<-XML
+        <ref id="pbio.1001417-Wikipedia1">
+          <label>1</label>
+        <mixed-citation publication-type="other" xlink:type="simple">Wikipedia (n.d.) Research Works Act. Available: <ext-link ext-link-type="uri" xlink:href="http://en.wikipedia.org/wiki/Research_Works_Act" xlink:type="simple">http://en.wikipedia.org/wiki/Research_Works_Act</ext-link>. Accessed 18 September 2012.</mixed-citation>
+        </ref>
+      XML
+      expect(resolver).to receive(:set_result).with(
+       'pbio.1001417-Wikipedia1',
+        uri_source:   :ref,
+        uri:          'http://en.wikipedia.org/wiki/Research_Works_Act',
+        accessed_at:  Date.new(2012,9,18),
+        uri_type:     :url,
+        page:         'Research_Works_Act',
+        language:     'en'
+      )
+      resolver.resolve
+
+      resolver = make_resolver <<-XML
+      <ref id="pbio.1001417-Wikipedia2">
+        <label>2</label>
+        <mixed-citation publication-type="other" xlink:type="simple">Wikipedia (n.d.) Federal Research Public Access Act. Available: <ext-link ext-link-type="uri" xlink:href="http://en.wikipedia.org/wiki/Federal_Research_Public_Access_Act" xlink:type="simple">http://en.wikipedia.org/wiki/Federal_Research_Public_Access_Act</ext-link>. Accessed 18 September 2012.</mixed-citation>
+      </ref>
+      XML
+      expect(resolver).to receive(:set_result).with(
+        'pbio.1001417-Wikipedia2',
+        uri_source:   :ref,
+        uri:          'http://en.wikipedia.org/wiki/Federal_Research_Public_Access_Act',
+        accessed_at:  Date.new(2012,9,18),
+        uri_type:     :url,
+        page:         'Federal_Research_Public_Access_Act',
+        language:     'en'
+      )
+      resolver.resolve
+
+      resolver = make_resolver <<-XML
+      <ref id="pbio.1001417-Wikipedia3">
+        <label>14</label>
+        <mixed-citation publication-type="other" xlink:type="simple">Wikipedia (n.d.) Metcalfe's law. Available: <ext-link ext-link-type="uri" xlink:href="http://en.wikipedia.org/wiki/Metcalfe%27s_law" xlink:type="simple">http://en.wikipedia.org/wiki/Metcalfe%27s_law</ext-link>. Accessed 16 September 2012.</mixed-citation>
+      </ref>
+      XML
+      expect(resolver).to receive(:set_result).with(
+        'pbio.1001417-Wikipedia3',
+        uri_source:   :ref,
+        uri:          'http://en.wikipedia.org/wiki/Metcalfe%27s_law',
+        accessed_at:  Date.new(2012,9,16),
+        uri_type:     :url,
+        page:         'Metcalfe%27s_law',
+        language:     'en'
+      )
+      resolver.resolve
+
+      resolver = make_resolver <<-XML
+      <ref id="pbio.1001417-Wikipedia4">
+        <label>15</label>
+        <mixed-citation publication-type="other" xlink:type="simple">Wikipedia (n.d.) Open access. <ext-link ext-link-type="uri" xlink:href="http://en.wikipedia.org/wiki/Open_access" xlink:type="simple">http://en.wikipedia.org/wiki/Open_access</ext-link>. Accessed 18 September 2012.</mixed-citation>
+      </ref>
+      XML
+      expect(resolver).to receive(:set_result).with(
+        'pbio.1001417-Wikipedia4',
+        uri_source:   :ref,
+        uri:          'http://en.wikipedia.org/wiki/Open_access',
+        accessed_at:  Date.new(2012,9,18),
+        uri_type:     :url,
+        page:         'Open_access',
+        language:     'en'
+      )
+      resolver.resolve
+    end
   end
 
 end

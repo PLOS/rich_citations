@@ -328,4 +328,35 @@ WIKIPEDIA_HTML
     })
   end
 
+  it "should handle URI encoded page names" do
+    refs 'First'
+    allow(IdentifierResolver).to receive(:resolve).and_return(
+      'ref-1' => { uri_type: :wikipedia, uri: 'http://en.wikipedia.org/wiki/Metcalfe%27s_law'}
+    )
+    response_html = <<'RESPONSE_HTML'
+      <!DOCTYPE html>
+      <html lang="en" dir="ltr" class="client-nojs">
+          <head>
+          </head>
+          <body class="mediawiki ltr sitedir-ltr ns--1 ns-special mw-special-CiteThisPage page-Special_CiteThisPage skin-vector action-view vector-animateLayout">
+              <span class="Z3988" title="ctx_ver=Z39.88-2004&amp;rft_val_fmt=info%3Aofi%2Ffmt%3Akev%3Amtx%3Adc&amp;rfr_id=info%3Asid%2Fen.wikipedia.org%3Aarticle&amp;rft.type=encyclopediaArticle&amp;rft.title=Metcalfe%27s_law&amp;rft.date=2014-12-09&amp;rft.source=Wikipedia%2C+The+Free+Encyclopedia&amp;rft.aucorp=Wikipedia+contributors&amp;rft.publisher=Wikimedia+Foundation&amp;rft.artnum=637300347&amp;rft.identifier=http%3A%2F%2Fen.wikipedia.org%2Fw%2Findex.php%3Ftitle%3DMetcalfe%2527s_law%26oldid%3D637300347&amp;rft.language=en&amp;rft.format=text&amp;rft.rights=CC-BY-SA+3.0"><span style="display: none;"> </span></span>
+          </body>
+      </html>
+RESPONSE_HTML
+    expect(HttpUtilities).to receive(:get).and_return(response_html)
+    ref_info = result[:references].first[:bibliographic]
+    expect(ref_info).to eq({
+      "type"        =>  "encyclopediaArticle",
+      "title"       =>  "Metcalfe's_law",
+      "issued"      =>  "2014-12-09",
+      "bib_source"  =>  "Wikipedia, The Free Encyclopedia",
+      "author"      =>  "Wikipedia contributors",
+      "publisher"   =>  "Wikimedia Foundation",
+      "URL"         =>  "http://en.wikipedia.org/w/index.php?title=Metcalfe%27s_law&oldid=637300347",
+      "language"    =>  "en",
+      "license"     =>  "CC-BY-SA 3.0"
+    })
+  end
+
+
 end
