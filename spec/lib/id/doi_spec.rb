@@ -51,6 +51,10 @@ describe Id::Doi do
       expect( Id::Doi.extract('dOi.ORG/10.123/4567.890') ).to eq('10.123/4567.890')
     end
 
+    it "should handle encoded DOIs with ." do
+      expect( Id::Doi.extract('doi.org/10.12345%2F1234.12345') ).to eq('10.12345/1234.12345')
+    end
+    
     it "should match a doi url inside an attribute" do
       expect( Id::Doi.extract("<ref id=\"ref-1\"> <comment><elem attr=\"http://dx.doi.org/10.1111/1234\"/></comment> </ref>")). to eq('10.1111/1234')
     end
